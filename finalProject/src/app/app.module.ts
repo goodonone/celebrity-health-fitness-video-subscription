@@ -15,6 +15,8 @@ import { SignupComponent } from './components/signup/signup.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { NotfoundComponent } from './components/notfound/notfound.component';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { FormsModule } from '@angular/forms';
     EditprofileComponent,
     SignupComponent,
     SigninComponent,
+    NotfoundComponent,
 
   ],
   imports: [

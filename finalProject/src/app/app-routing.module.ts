@@ -11,9 +11,22 @@ import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { SigninComponent } from './components/signin/signin.component';
+import { NotfoundComponent } from './components/notfound/notfound.component';
 
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: "", redirectTo: "home", pathMatch: "full" },
+  { path: "home", component: HomeComponent },
+  { path: "about", component: AboutComponent },
+  { path: "contact", component: ContactComponent },
+  { path: "content", component: ContentComponent },
+  { path: "create-profile", component: CreateprofileComponent },
+  { path: "edit-profile/:id", component: EditprofileComponent },
+  { path: "profile/:id", component: ProfileComponent },
+  { path: "signup", component: SignupComponent },
+  { path: "signin", component: SigninComponent },
+  { path: "error", component: NotfoundComponent }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
