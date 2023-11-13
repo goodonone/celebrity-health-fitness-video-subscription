@@ -9,13 +9,13 @@ import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ContentComponent } from './components/content/content.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { CreateprofileComponent } from './components/createprofile/createprofile.component';
-import { EditprofileComponent } from './components/editprofile/editprofile.component';
-import { SignupComponent } from './components/signup/signup.component';
-import { SigninComponent } from './components/signin/signin.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { NotfoundComponent } from './components/notfound/notfound.component';
+import { CreateProfileComponent } from './components/create-profile/create-profile.component';
+import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
+import { SignInComponent } from './components/sign-in/sign-in.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 
 @NgModule({
@@ -26,12 +26,11 @@ import { NotfoundComponent } from './components/notfound/notfound.component';
     ContactComponent,
     ContentComponent,
     ProfileComponent,
-    CreateprofileComponent,
-    EditprofileComponent,
-    SignupComponent,
-    SigninComponent,
-    NotfoundComponent,
-
+    CreateProfileComponent,
+    EditProfileComponent,
+    NotFoundComponent,
+    SignInComponent,
+    SignUpComponent,
   ],
   imports: [
     BrowserModule,
