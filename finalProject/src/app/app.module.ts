@@ -4,14 +4,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomeComponent } from './home/home.component';
-import { AboutComponent } from './about/about.component';
-import { ContactComponent } from './contact/contact.component';
-import { SigninupComponent } from './signinup/signinup.component';
-import { ContentComponent } from './content/content.component';
-import { ProfileComponent } from './profile/profile.component';
-import { CreateprofileComponent } from './createprofile/createprofile.component';
-import { EditprofileComponent } from './editprofile/editprofile.component';
+import { HomeComponent } from './components/home/home.component';
+import { AboutComponent } from './components/about/about.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { ContentComponent } from './components/content/content.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { CreateprofileComponent } from './components/createprofile/createprofile.component';
+import { EditprofileComponent } from './components/editprofile/editprofile.component';
+import { SignupComponent } from './components/signup/signup.component';
+import { SigninComponent } from './components/signin/signin.component';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,16 +22,20 @@ import { EditprofileComponent } from './editprofile/editprofile.component';
     HomeComponent,
     AboutComponent,
     ContactComponent,
-    SigninupComponent,
     ContentComponent,
     ProfileComponent,
     CreateprofileComponent,
-    EditprofileComponent
+    EditprofileComponent,
+    SignupComponent,
+    SigninComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule,
+    FormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
