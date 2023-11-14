@@ -9,10 +9,20 @@
 
 .navBar {
   border-radius: 5px;
+  /* background-color: #71BBF5;*/
+  background-color: #CBFF4C;
+  /* background-color:#FFB716; */
+  /* background-color: #FFD942; */
 }
 
 .container{
-  padding-top: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
+  padding-top: 12px;
+  margin-left: 10px;
+  margin-right: 10px;
+  position: sticky;
+}
+
+.navBarText{
+  font-size: smaller;
+  padding: 0 5px 0 5px;
 }
