@@ -19,6 +19,12 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { SearchComponent } from './components/search/search.component';
+import { StoreComponent } from './components/store/store.component';
+import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 
 @NgModule({
@@ -34,6 +40,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     NotFoundComponent,
     SignInComponent,
     SignUpComponent,
+    SearchComponent,
+    StoreComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +52,10 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
+    MatDialogModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

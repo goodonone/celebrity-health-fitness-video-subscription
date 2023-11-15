@@ -1,28 +1,46 @@
-* {
-  margin: 0;
-  padding: 0;
-}
-
 .example-spacer {
   flex: 1 1 auto;
 }
 
 .navBar {
-  border-radius: 5px;
-  /* background-color: #71BBF5;*/
+  border-radius: 6px;
+  /* background-color: #71BBF5; */
   background-color: #CBFF4C;
   /* background-color:#FFB716; */
   /* background-color: #FFD942; */
 }
 
 .container{
-  padding-top: 12px;
-  margin-left: 10px;
-  margin-right: 10px;
-  position: sticky;
+  padding-top: 10px;
+  padding-left: 10px;
+  /* padding-right: -240px; */
+  position:fixed;
+  top:0;
+  width: 99%;
+  /* margin-bottom: 50px; */
 }
 
 .navBarText{
+  font-family: 'Outfit', sans-serif;
   font-size: smaller;
-  padding: 0 5px 0 5px;
+  padding: 0 6px 0 6px;
+  cursor: pointer;
 }
+
+mat-icon{
+  padding: 7.5px 6px 0 6px;
+  cursor: pointer;
+}
+
+h6:hover{
+  text-shadow: 0 0 7px #71BBF5;
+}
+
+mat-icon:hover{
+  color:#71BBF5;
+}
+
+.logo{
+  cursor: pointer;
+}
+

@@ -1,4 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* html, body { height: 100%; }
+body { margin: 0; font-family: 'Outfit', sans-serif;} */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    height: 100%;
+    font-family: 'Outfit', sans-serif;
+    padding-top: 80px;
+    overflow: overlay;
+}
+
+
+/* ::-webkit-scrollbar
+{
+    background: transparent;
+} */
+
+/* ::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border-radius: 10px;
+    padding-right: 2px;
+    width: 3px;
+}
+
+::-webkit-scrollbar-corner {
+    background: lightgray;
+    border-radius: 10px;
+} */

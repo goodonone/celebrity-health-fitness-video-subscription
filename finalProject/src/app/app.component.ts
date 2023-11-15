@@ -1,4 +1,6 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -8,4 +10,17 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'finalProject';
-}
+  // constructor(public dialog: MatDialog) {}
+
+  // openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+  //   this.dialog.open(Dialog,{
+  //     width: '250px',
+  //     enterAnimationDuration,
+  //     exitAnimationDuration,
+  //   });
+  }
+
+
+
+
+

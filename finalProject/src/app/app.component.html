@@ -1,37 +1,40 @@
 <div class="container">
-  <nav>
-    <mat-toolbar  class="navBar">
-      <span>&lt;Insert Logo Here&gt;</span>
+  
+<nav>
+    <mat-toolbar class="navBar">
+      <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
       <span class="example-spacer"></span>
 
-      <h6 src="" class="navBarText">About</h6>
-      
-      <h6 src="" class="navBarText">Contact</h6>
+      <!--Make these buttons The profile name of the person with a drop down with Sign out when signed in-->
+      <!-- <div ngIf=""> -->
+        <h6 class="navBarText" routerLink="/signup">Sign Up</h6>
+      <!-- </div> -->
 
+      <!-- <div ngIf=""> -->
+        <!-- <h6 class="navBarText" routerLink="/profile/id"></h6> -->
+      <!-- </div> -->
 
-      <!--Make this button Sign out when signed in-->
-      
-      <h6 src="" class="navBarText">Sign Up</h6>
-
+      <!-- <h6 class="navBarText" routerLink="/content">Workouts</h6> -->
       <!--  -->
 
-      <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+      <h6 class="navBarText" routerLink="/about">About</h6>
+
+      <h6 class="navBarText" routerLink="/contact">Contact</h6>
+
+      <h6 class="navBarText" routerLink="/store">Store</h6>
+
+      <!-- Maybe this button also only shows up if logged in-->
+
+      <span>
+        <!-- <button mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms')"> -->
         <mat-icon>search</mat-icon>
-      </button>
-
-      <!--Activate this feature when person is logged in-->
-
-      <!-- <button mat-button>
-        <p src=""> *Person's Name when signed in and when clicked on goes to their profile</p>
-      </button> -->
-
-      <!---->
+        <!-- (click)="openDialog('0ms', '0ms')" -->
+        <!-- </button> -->
+      </span>
 
     </mat-toolbar>
   </nav>
-</div>
-
-
-
+  </div>
+ 
 
 <router-outlet></router-outlet>
