@@ -1,22 +1,56 @@
 .banner{
     width:100vw;
-    height:100vh;
+    height:800px;
+    /* position: relative; */
+    margin-bottom: 50px;
 }
 
 .fullscreen-bg {
-    position: fixed;
-    top: 0;
+    /* position: ; */
+    /* top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
-    overflow: hidden;
-    z-index: -100; 
+    left: 0; */
+    /* overflow: hidden; */
+
+    /* z-index: -100;  */
 }
 
 .fullscreen-bg_video {
     position: absolute;
     top: 0;
-    left: 0;
+    /* left: 0;
     width: 100%;
-    height: 100%;
+    height: 100%; */
 }
+
+.bannerTwo{
+    padding-top: 100px;
+    height: 1800px;
+    width:100%;
+    margin: auto;
+    background-color: black;
+    padding-top: 50px;
+    background: url("src/assets/Images/steven-erixon-FxlYmu_To7o-unsplash.jpg");
+    background-size: cover;
+    object-fit: scale-down;
+
+    /* background: url("/assets/Images/alonso-reyes-0HlI76m4jxU-unsplash.jpg"); */
+    /* display: flex; */
+    /* zoom: 20%; */
+   
+    /* padding-left: 50px; */
+    /* display: block; */
+    /* height: 500px;
+    width: 400px; */
+
+    /* z- */
+    /* max-height: 500px;
+    max-width: 100%; */
+    
+    /* text-align:center; */
+}
+
+/* .container{
+display: flex;
+} */

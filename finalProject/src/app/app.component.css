@@ -16,8 +16,9 @@
   /* padding-right: -240px; */
   position:fixed;
   top:0;
-  width: 99%;
+  width: 98.7%;
   /* margin-bottom: 50px; */
+  z-index: 1030;
 }
 
 .navBarText{
