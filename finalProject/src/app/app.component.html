@@ -1,5 +1,5 @@
 <div class="container">
-  
+
 <nav>
     <mat-toolbar class="navBar">
       <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
@@ -25,12 +25,21 @@
 
       <!-- Maybe this button also only shows up if logged in-->
 
+      <form class="formSearch" *ngIf="viewSearchBar">
+        <input id="mySearch" name="search" type="input" placeholder="         Enter to Search" aria-label="Search" >
+      </form>
+       <!-- (keyup.enter)="search(search)" -->
+
       <span>
-        <!-- <button mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms')"> -->
+        <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false">
         <mat-icon>search</mat-icon>
+
+        <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
         <!-- (click)="openDialog('0ms', '0ms')" -->
-        <!-- </button> -->
+
+        </button>
       </span>
+      
 
     </mat-toolbar>
   </nav>

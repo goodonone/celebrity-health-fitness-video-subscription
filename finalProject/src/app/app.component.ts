@@ -10,6 +10,8 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AppComponent {
   title = 'finalProject';
+
+  viewSearchBar: boolean = false;
   // constructor(public dialog: MatDialog) {}
 
   // openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
@@ -18,6 +20,17 @@ export class AppComponent {
   //     enterAnimationDuration,
   //     exitAnimationDuration,
   //   });
+
+  toggleTable(){
+    if(this.viewSearchBar){
+      this.viewSearchBar = false;
+    }
+    else{
+      this.viewSearchBar = true;
+    }
+  }
+
+
   }
 
 

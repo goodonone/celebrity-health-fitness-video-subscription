@@ -4,8 +4,9 @@
 
 .navBar {
   border-radius: 6px;
-  /* background-color: #71BBF5; */
   background-color: #CBFF4C;
+  height:50px
+  /* background-color: #71BBF5; */
   /* background-color:#FFB716; */
   /* background-color: #FFD942; */
 }
@@ -13,12 +14,12 @@
 .container{
   padding-top: 10px;
   padding-left: 10px;
-  /* padding-right: -240px; */
   position:fixed;
   top:0;
   width: 98.7%;
-  /* margin-bottom: 50px; */
   z-index: 1030;
+  /* padding-right: -240px; */
+  /* margin-bottom: 50px; */
 }
 
 .navBarText{
@@ -29,8 +30,8 @@
 }
 
 mat-icon{
-  padding: 7.5px 6px 0 6px;
   cursor: pointer;
+  /* padding: 7.5px 6px 0 6px; */
 }
 
 h6:hover{
@@ -45,3 +46,12 @@ mat-icon:hover{
   cursor: pointer;
 }
 
+#mySearch{
+  border-radius: 3px;
+  border-color: none;
+  background-color: #CBFF4C;
+}
+
+.formSearch{
+  padding-bottom: 5px;
+}
