@@ -18,6 +18,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +32,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
     NotFoundComponent,
     SignInComponent,
     SignUpComponent,
+    
   ],
   imports: [
     BrowserModule,
