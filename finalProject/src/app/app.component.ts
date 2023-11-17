@@ -1,7 +1,8 @@
-import { Dialog } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
+// Insert Service/area where the search can Search and model here
 
 @Component({
   selector: 'app-root',
@@ -11,27 +12,33 @@ import { MatDialog } from '@angular/material/dialog';
 export class AppComponent {
   title = 'finalProject';
 
+  searchString: string = "";
+
   viewSearchBar: boolean = false;
-  // constructor(public dialog: MatDialog) {}
 
-  // openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
-  //   this.dialog.open(Dialog,{
-  //     width: '250px',
-  //     enterAnimationDuration,
-  //     exitAnimationDuration,
-  //   });
+  constructor(private actRoute: ActivatedRoute, private router: Router) { }
 
-  toggleTable(){
-    if(this.viewSearchBar){
+
+  toggleTable() {
+    if (this.viewSearchBar) {
       this.viewSearchBar = false;
     }
-    else{
+    else {
       this.viewSearchBar = true;
     }
   }
 
 
+  search(searchString: string) {
+    var search = (<HTMLInputElement>document.getElementById('mySearch') ?? "").value;
+    var input = search.charAt(0).toUpperCase() + search.slice(1);
+    // window.location.assign('/search/`input`');
+    // window.open("/search", "`input`");
+    this.router.navigate(['/search', input]);
   }
+
+
+}
 
 
 

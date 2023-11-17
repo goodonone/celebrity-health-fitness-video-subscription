@@ -16,7 +16,7 @@
   padding-left: 10px;
   position:fixed;
   top:0;
-  width: 98.7%;
+  width: 99%;
   z-index: 1030;
   /* padding-right: -240px; */
   /* margin-bottom: 50px; */
@@ -31,7 +31,7 @@
 
 mat-icon{
   cursor: pointer;
-  /* padding: 7.5px 6px 0 6px; */
+  margin-left: 5px;
 }
 
 h6:hover{
@@ -48,10 +48,38 @@ mat-icon:hover{
 
 #mySearch{
   border-radius: 3px;
-  border-color: none;
+  margin-top: 20px;
+  /* margin-right:5px; */
+  border-color: black;
   background-color: #CBFF4C;
+  padding-top: 3px;
 }
 
 .formSearch{
-  padding-bottom: 5px;
+  padding-bottom: 3px;
+  margin-left: 5px;
+  margin-bottom: 10px;
+  /* padding-bottom: 10px; */
+  /* padding-left: 7px; */
+  /* padding-right: 4px; */
+}
+
+/* #icon{
+  /* margin-top: 10px; */
+  /* padding-left: 10px; */
+  /* padding-top: 55px; */
+ 
+
+.form{
+  margin-bottom: 10px;
+  margin-right: 4px;
+}
+
+.buttonContainer{
+  display: inline;
+  margin-top: 100px;
+}
+
+.spacer{
+  padding-top: 100px;
 }

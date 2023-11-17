@@ -21,10 +21,11 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
-import {MatDialogActions, MatDialogClose, MatDialogContent, MatDialogModule, MatDialogRef, MatDialogTitle} from '@angular/material/dialog';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCardModule} from '@angular/material/card'
+import {MatGridListModule} from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -52,10 +53,11 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatIconModule,
     MatButtonModule,
     MatToolbarModule,
-    MatDialogModule,
     MatInputModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatCardModule,
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

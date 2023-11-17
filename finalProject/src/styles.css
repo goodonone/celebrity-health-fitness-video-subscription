@@ -13,23 +13,26 @@ body {
     height: 100%;
     font-family: 'Outfit', sans-serif;
     padding-top: 80px;
-    overflow: overlay;
+    overflow:auto;
+    background:black;
+    width: 100%;
 }
 
 
 /* ::-webkit-scrollbar
 {
     background: transparent;
-} */
+    width: 10px
+}  */
 
 /* ::-webkit-scrollbar-thumb {
     background: lightgray;
     border-radius: 10px;
     padding-right: 2px;
     width: 3px;
-}
+} */
 
-::-webkit-scrollbar-corner {
+/* ::-webkit-scrollbar-corner {
     background: lightgray;
     border-radius: 10px;
 } */

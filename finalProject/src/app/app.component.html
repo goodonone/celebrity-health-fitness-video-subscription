@@ -25,20 +25,25 @@
 
       <!-- Maybe this button also only shows up if logged in-->
 
-      <form class="formSearch" *ngIf="viewSearchBar">
-        <input id="mySearch" name="search" type="input" placeholder="         Enter to Search" aria-label="Search" >
+      <form class="form" *ngIf="viewSearchBar" #form="ngForm">
+        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search" aria-label="Search"  (keyup.enter)="search(searchString)">
+          <!-- <button mat-icon-button id="icon"> -->
+            
+            <!-- </button> -->
       </form>
-       <!-- (keyup.enter)="search(search)" -->
 
-      <span>
-        <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false">
-        <mat-icon>search</mat-icon>
+      <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>
+      
+
+        <!-- <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false"> -->
+
+        <mat-icon (click)="toggleTable()" *ngIf="viewSearchBar===false">search</mat-icon>
 
         <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
         <!-- (click)="openDialog('0ms', '0ms')" -->
 
-        </button>
-      </span>
+        <!-- </button> -->
+      
       
 
     </mat-toolbar>
