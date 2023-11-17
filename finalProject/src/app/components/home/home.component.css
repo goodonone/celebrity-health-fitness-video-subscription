@@ -38,7 +38,7 @@
 .bannerTwo {
     /* display: flex; */
     /* position: sticky; */
-    margin-top: 1000px;
+    /* margin-top: 1000px; */
     /* padding-bottom:10px; */
     height: 1100px;
     width: 100%;
@@ -87,7 +87,8 @@ display: flex;
 }
 
 
-h6, .heading {
+h6,
+.heading {
     padding-top: 150px;
     margin-left: 200px;
     justify-content: center;
@@ -122,12 +123,12 @@ h6, .heading {
     z-index:0;
 } */
 .overlay {
-    display: flex;
+    /* display: flex; */
     position: absolute;
     top: 0;
     margin: auto;
     left: 0;
-    z-index: 1;
+    z-index: 100;
     font-size: xx-large;
     width: 100%;
     /* justify-content: center; */
@@ -167,7 +168,7 @@ h6, .heading {
     overflow: auto;
 }
 
-.cardText{
+.cardText {
     zoom: 200%;
     max-width: 300px;
     margin-right: 110px;
@@ -203,19 +204,50 @@ h6, .heading {
     /* left:0;
     right:0;
     top:0; */
-    /* max-width: 800px; */
-    /* max-height: 1000px; */
+    max-width: 500px;
+    max-height: 700px;
     /* background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg'); */
-    background-size: cover;
+    /* background-size: cover; */
     /* margin-left: 150px; */
     margin-top: 250px;
-    overflow: auto;
+    overflow: hidden;
 }
 
-.cardTextTwo{
+.fullscreen-bg_video-two {
+    object-fit:cover;
+    position:absolute;
+    /* zoom:500% */
+    /* position: fixed; */
+    top:0;
+    bottom:0;
+    left: 0;
+    right: 0;
+    height: 750px;
+    width: 550px;
+    overflow: hidden;
+    /* text-align: center; */
+    /* background-size: cover; */
+}
+
+.example-header-image {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    /* overflow:auto; */
+}
+
+.cardTextTwo {
     zoom: 200%;
     max-width: 300px;
     padding-top: 150px;
     color: black;
     line-height: 1.5;
+}
+
+
+.bannerFive {
+    height: 1100px;
+    width: 100%;
+    margin: auto;
 }
