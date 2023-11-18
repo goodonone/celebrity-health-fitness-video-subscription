@@ -28,6 +28,7 @@ import {MatCardModule} from '@angular/material/card'
 import {MatGridListModule} from '@angular/material/grid-list';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +58,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatSelectModule,
     MatFormFieldModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,170 +1,127 @@
+/* Banner One Styling */
+
 .banner {
     margin-top: -80px;
     width: 100%;
-    /* overflow: overlay; */
-    /* height:100vh; */
-    /* padding: 800px; */
-    /* height:100vh; */
-    /* position: relative; */
-    /* margin-bottom: 50px; */
-    /* position:static; */
-
-    /* padding-bottom: -50px; */
-    /* position:absolute; */
-    /* top: 0; */
-    /* z-index: -100; */
 }
 
-
-.fullscreen-bg {
-    /* position: ; */
-    /* top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0; */
-    /* overflow: hidden; */
-    /*   */
-}
-
-.fullscreen-bg_video {
-    /* position: absolute;
-    top: 0; */
-
-    /* left: 0;
+.overlay {
+    position: absolute;
+    /* display:flex; */
+    top: 0;
+    margin: auto;
+    left:0;
+    bottom:0;
+    right:0;
+    z-index: 100;
+    font-size: xx-large;
     width: 100%;
-    height: 100%; */
+    /* margin-top: 500px; */
 }
+
+
+.heading {
+    /* display: block; */
+    /* position:absolute; */
+    margin-top:100px;
+    /* top:0;
+    bottom: 0;
+    left:0;
+    right:0; */
+    text-align: center;
+    margin: auto;
+    /* padding-top: 150px;
+    margin-left: 200px; */
+    justify-content: center;
+    color: white;
+    font-size: 100px;
+    margin-bottom: 40px;
+}
+
+h3{
+    /* position:absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0; */
+    font-size:xx-large;
+    color: white;
+    border: solid;
+    border-color: white;
+    border-radius: 6px;
+    padding: auto;
+    margin:auto;
+    text-align: center;
+    padding-top: 10px;
+    width: 170px;
+    height: 40px;
+    container-name: overlay;
+    cursor: pointer;
+}
+
+.joinNow:hover{
+    color: #C7FF20;
+    border-color:#C7FF20;
+    cursor: pointer;
+}
+
+.textContainer{
+    position:relative;
+    top:40%;
+}
+
+/* Beginning of Banner Two Styling */
 
 .bannerTwo {
-    /* display: flex; */
-    /* position: sticky; */
-    /* margin-top: 1000px; */
-    /* padding-bottom:10px; */
     height: 1100px;
     width: 100%;
     margin: auto;
-    /* background-color: black; */
-    /* padding-top: 50px; */
     background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
     background-size: cover;
-    /* object-fit: scale-down; */
-    /* flex-direction: column; */
     text-align: center;
     align-items: center;
-    /* z-index: -100px; */
-
-
-    /* background: url("/assets/Images/alonso-reyes-0HlI76m4jxU-unsplash.jpg"); */
-    /* display: flex; */
-    /* zoom: 20%; */
-
-    /* padding-left: 50px; */
-    /* display: block; */
-    /* height: 500px;
-    width: 400px; */
-
-    /* z- */
-    /* max-height: 500px;
-    max-width: 100%; */
-
-    /* text-align:center; */
 }
-
-/* .container{
-display: flex;
-} */
 
 .textOverlay {
     font-family: 'Outfit', sans-serif;
     font-weight: 300;
     padding-top: 50px;
-    /* position: absolute; */
-    /* display: flex; */
     zoom: 500%;
-    /* margin-right:500px; */
     color: white;
-    /* z-index: 1; */
+
 }
 
-
-h6,
-.heading {
-    padding-top: 150px;
-    margin-left: 200px;
-    justify-content: center;
-    color: white;
-    zoom: 300%;
-}
-
-/* .spacer{
- height: 840px;
-} */
-
-
-/* .hero{
-    display:flex;
-    font-family: 'Outfit', sans-serif;
-    zoom:500%;
-    z-index: 100;
-    color: white;
-}
-
-.container{
-    /* display:flex; */
-/* justify-content: center; */
-/* position:absolute;
-    padding-left: 600px;
-    margin-top: -600px; */
-/* } */
-
-/* .banner { position:relative; }
-.banner video {
-    position:relative;
-    z-index:0;
-} */
-.overlay {
-    /* display: flex; */
-    position: absolute;
-    top: 0;
-    margin: auto;
-    left: 0;
-    z-index: 100;
-    font-size: xx-large;
-    width: 100%;
-    /* justify-content: center; */
-}
+/* Beginning of Banner Three Styling */
 
 .bannerThree {
     height: 1100px;
     width: 100%;
-    /* margin: auto; */
-    background-color: #CBFF4C;
+    /* background-color: #CBFF4C; */
+    background-color: #C7FF20;
 }
 
-.example-card {
-    /* position: relative; */
-    /* display: flex; */
+.card {
+    display: flex;
+    flex-direction: column;
     height: 700px;
     width: 500px;
-    /* left:0;
-    right:0;
-    top:0; */
-    /* max-width: 800px; */
-    /* max-height: 1000px; */
     background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
     background-size: cover;
     margin-left: 150px;
     margin-top: 250px;
-    max-width: 100%;
-    max-height: 100%;
-    /* overflow: auto; */
+    /* max-width: 100%;
+    max-height: 100%; */
+    min-width: 400px;
+    min-height: 270px;
+    /* margin-top: 250px; */
+    overflow: hidden;
 }
 
 .cardContainer {
     display: flex;
     justify-content: space-around;
-    min-height: 50px;
-    min-width: 25px;
+    min-height: 100px;
+    min-width: 50px;
     overflow: auto;
 }
 
@@ -176,65 +133,52 @@ h6,
     line-height: 1.5;
     padding-top: 150px;
     margin-left: 200px;
-    /* justify-content: left; */
 }
+
+/* Beginning of Banner Four Styling */
 
 .bannerFour {
     height: 1100px;
     width: 100%;
-    /* margin: auto; */
-    background-color: #CBFF4C;
+    /* background-color: #CBFF4C; */
+    background-color: #C7FF20;
 }
 
 .cardContainerTwo {
     display: flex;
     justify-content: space-around;
-    min-height: 50px;
-    min-width: 25px;
+    min-height: 100px;
+    min-width: 50px;
     overflow: auto;
 }
 
-
-.example-card-two {
-    /* position: relative; */
+.cardTwo {
     display: flex;
     height: 700px;
     width: 500px;
-    /* justify-content: left; */
-    /* left:0;
-    right:0;
-    top:0; */
     max-width: 500px;
     max-height: 700px;
-    /* background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg'); */
-    /* background-size: cover; */
-    /* margin-left: 150px; */
     margin-top: 250px;
     overflow: hidden;
 }
 
 .fullscreen-bg_video-two {
-    object-fit:cover;
-    position:absolute;
-    /* zoom:500% */
-    /* position: fixed; */
-    top:0;
-    bottom:0;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     height: 750px;
     width: 550px;
     overflow: hidden;
-    /* text-align: center; */
-    /* background-size: cover; */
 }
 
-.example-header-image {
+.cardTwoContent {
     min-width: 100%;
     min-height: 100%;
     width: auto;
     height: auto;
-    /* overflow:auto; */
 }
 
 .cardTextTwo {
@@ -245,9 +189,23 @@ h6,
     line-height: 1.5;
 }
 
+/* Beginning of Banner Five Styling */
 
 .bannerFive {
+    /* position: absolute; */
     height: 1100px;
     width: 100%;
     margin: auto;
+}
+
+.carouselHeading{
+    position: static;
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    padding-top: 35px;
+    zoom: 500%;
+    color: white;
+    color: white;
+
 }
