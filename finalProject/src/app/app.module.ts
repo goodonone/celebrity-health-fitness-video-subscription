@@ -26,7 +26,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatCardModule} from '@angular/material/card'
 import {MatGridListModule} from '@angular/material/grid-list';
-
+import { CarouselModule } from './carousel/carousel.module';
 
 
 @NgModule({
@@ -59,6 +59,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatFormFieldModule,
     MatCardModule,
     MatGridListModule,
+   CarouselModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

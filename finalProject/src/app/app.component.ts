@@ -19,6 +19,7 @@ export class AppComponent {
   constructor(private actRoute: ActivatedRoute, private router: Router) { }
 
 
+
   toggleTable() {
     if (this.viewSearchBar) {
       this.viewSearchBar = false;
@@ -37,6 +38,7 @@ export class AppComponent {
     this.router.navigate(['/search', input]);
   }
 
+  
 
 }
 
