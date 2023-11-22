@@ -11,19 +11,20 @@ box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Outfit', sans-serif;
-    font-size: calc( var(--page-width) / 50 );
+    /* font-size: calc( var(--page-width) / 50 ); */
 }
 
 body {
-    position: relative;
+    /* position: relative; */
     min-height: 100%;
     font-family: 'Outfit', sans-serif;
     padding-top: 80px;
     overflow:auto;
     background:black;
-    width: 100%;
-    box-sizing: inherit;
-    padding-bottom: 70px;
+    /* min-width: 100%; */
+    /* box-sizing: border-box; */
+    /* padding-bottom: 70px; */
+    font-size: calc( var(--font-size) * 1vw );
 }
 
 

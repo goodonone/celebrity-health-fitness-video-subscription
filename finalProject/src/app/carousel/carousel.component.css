@@ -1,34 +1,48 @@
 .carouselMain{
 display: flex;
-flex-flow: row;
+/* flex-flow: row; */
 /* flex-wrap: wrap; */
 justify-content: space-evenly;
-flex-direction: column;
+/* flex-direction: column; */
 position: relative;
 flex-direction: row;
-width: auto;
+width: 100%;
 margin: auto;
-margin-top: 50px;
+/* margin-top: 50px; */
+/* align-items: center; */
+/* box-sizing: border-box; */
+/* overflow:inherit; */
 }
 
 .image-container {
-    position: relative;
+    display: flex;
+    /* resize: both; */
+    /* float: left; */
+    /* position: relative; */
     /* margin: auto; */
     text-align: center;
     transform: scale(80%,80%);
-    min-width:  300px;
-    min-height: 50%;
+    /* min-width:  500px;
+    min-height: 700px; */
+
+    /* min-height: 50%; */
+    /* resize:both; */
     /* width:50%; */
     /* height: 700px;
     width: 500px; */
     /* border-radius: 50px; */
     /* box-shadow: 0 6px 12px #dce1e1; */
+    /* align-content: center; */
 }
 
 .text-container{
-    margin-top: 80px;
+    margin-top: 100px;
     width:50%;
     display:flex;
+    /* overflow: overlay; */
+    /* padding-top: 190px; */
+    /* flex-wrap: wrap; */
+   
 }
 
 /* img{
