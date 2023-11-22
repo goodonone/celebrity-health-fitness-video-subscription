@@ -203,7 +203,7 @@ h3 {
 }
 
 .nutritionText {
-    width: 50%;
+    width: 35%;
 }
 
 /* Beginning of Banner Four Styling */
@@ -224,7 +224,7 @@ h3 {
     /* position: absolute; */
     display: flex;
 
-    justify-content: space-evenly;
+    justify-content: space-around;
 
     margin: auto;
     height: 100vh;
@@ -290,7 +290,7 @@ h3 {
 }
 
 .workoutText {
-    width: 50%;
+    width: 25%;
 }
 
 /* Beginning of Banner Five Styling */
