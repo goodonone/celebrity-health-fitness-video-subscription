@@ -1,38 +1,58 @@
 /* You can add global styles to this file, and also import other style files */
 
-/* html, body { height: 100%; }
-body { margin: 0; font-family: 'Outfit', sans-serif;} */
+html, body { height: 100%; margin:0;}
+/* body { margin: 0; font-family: 'Outfit', sans-serif;} */ */
+
+html{
+box-sizing: border-box;
+}
 
 * {
     margin: 0;
     padding: 0;
     font-family: 'Outfit', sans-serif;
+    font-size: calc( var(--page-width) / 50 );
 }
 
 body {
-    height: 100%;
+    position: relative;
+    min-height: 100%;
     font-family: 'Outfit', sans-serif;
     padding-top: 80px;
     overflow:auto;
     background:black;
     width: 100%;
+    box-sizing: inherit;
+    padding-bottom: 70px;
 }
+
+
+
+
+/* :root {
+    --container-width: 35;
+    --page-width: 100;
+    --page-height: calc( var(--page-width) * 1.41 );
+    --font-size: calc( var(--page-width) / 50 );
+    --ratio: calc( var(--container-width) / var(--page-width) );
+  } */
+
 
 
 /* ::-webkit-scrollbar
 {
     background: transparent;
     width: 10px
-}  */
+} 
 
-/* ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     background: lightgray;
     border-radius: 10px;
     padding-right: 2px;
     width: 3px;
-} */
+}
 
-/* ::-webkit-scrollbar-corner {
+::-webkit-scrollbar-corner {
     background: lightgray;
     border-radius: 10px;
 } */

@@ -1,27 +1,33 @@
 .carouselMain{
 display: flex;
+flex-flow: row;
+/* flex-wrap: wrap; */
 justify-content: space-evenly;
 flex-direction: column;
 position: relative;
 flex-direction: row;
 width: auto;
 margin: auto;
-margin-top: 70px;
+margin-top: 50px;
 }
 
 .image-container {
     position: relative;
     /* margin: auto; */
     text-align: center;
-    height: 700px;
-    width: 500px;
+    transform: scale(80%,80%);
+    min-width:  300px;
+    min-height: 50%;
+    /* width:50%; */
+    /* height: 700px;
+    width: 500px; */
     /* border-radius: 50px; */
     /* box-shadow: 0 6px 12px #dce1e1; */
 }
 
 .text-container{
-    margin-top: 50px;
-    width:700px;
+    margin-top: 80px;
+    width:50%;
     display:flex;
 }
 
@@ -34,7 +40,7 @@ margin-top: 70px;
 
 p{
     font-family: 'Outfit', sans-serif;
-    font-size: 1.7vw;
+    font-size: 30px;
     line-height: 1.5;
 }
 

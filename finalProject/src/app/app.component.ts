@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'finalProject';
 
   searchString: string = "";
@@ -17,6 +17,12 @@ export class AppComponent {
   viewSearchBar: boolean = false;
 
   constructor(private actRoute: ActivatedRoute, private router: Router) { }
+
+
+  ngOnInit(): void {
+
+
+  }
 
 
 

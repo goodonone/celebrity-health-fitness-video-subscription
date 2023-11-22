@@ -1,21 +1,21 @@
 /* Banner One Styling */
 
 .banner {
-    /* position: absolute; */
+    position: relative;
     /* display: table-cell; */
     /*vertical-align: middle;*/
     /* text-align: center; */
     margin-top: -80px;
     width: 100%;
-    z-index: -1;
+    /* z-index: -1; */
 }
 
-.minsu{
+/* .minus{
     margin-top: -50px;
-}
+} */
 
 .textContainer{
-    position:relative;
+    /* position:relative; */
     /* top:40%; */
 }
 
@@ -30,7 +30,7 @@
     margin: auto;
     left:0;
 
-    /* bottom:-40%; */
+    bottom:40%;
 
     right:0;
 
@@ -68,7 +68,7 @@
     margin-left: 200px; */
     justify-content: center;
     color: white;
-    font-size: 5vw;
+    font-size: 90px;
     margin-bottom: 3vh;
 }
 
@@ -79,7 +79,7 @@ h3{
     left:0;
     right:0; */
     font-family: 'Outfit', sans-serif;
-    font-size:2vw;
+    font-size:35px;
     color: white;
     border: solid;
     border-color: white;
@@ -89,7 +89,7 @@ h3{
     text-align: center;
     padding-top: 10px;
     /* width: 170px; */
-    width: 10vw;
+    width: 160px;
     height: 40px;
     /* container-name: overlay; */
     cursor: pointer;
@@ -105,20 +105,21 @@ h3{
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
-    height: 1100px;
+    height: 105vh;
     /* width: 100%; */
     margin: auto;
     background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
     background-size: cover;
     text-align: center;
+    min-height: 100vh;
     /* align-items: center; */
 }
 
 .textOverlay {
     font-family: 'Outfit', sans-serif;
     font-weight: 300;
-    padding-top: 50px;
-    font-size: 7vw;
+    padding-top: 60px;
+    font-size: 130px;
     font-weight: 400;
     line-height: 1.6;
     color: white;
@@ -128,31 +129,34 @@ h3{
 /* Beginning of Banner Three Styling */
 
 .bannerThree {
-    height: 1100px;
+    height: 100vh;
     width: 100%;
     /* background-color: #CBFF4C; */
     background-color: #C7FF20;
+    min-height: 100vh;
 }
 
 .containerOne {
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
     /* min-height: 100px;
     min-width: 50px; */
-    overflow: auto;
+
+    /* overflow: auto; */
 }
 
 
 .card {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     /* padding-left: 50px; */
     height: 700px;
     width: 500px;
     background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
     background-size: cover;
     /* margin-left: 100px; */
-    margin-top: 250px;
+    margin-top: 150px;
     /* max-width: 100%;
     max-height: 100%; */
 
@@ -167,13 +171,13 @@ h3{
 
 
 .cardText {
-    font-size: 1.7vw;
+    font-size: 30px;
     /* max-width: 600px; */
     width: 500px;
     margin: auto;
     color: black;
     line-height: 1.5;
-    padding-top: 300px;
+    padding-top: 250px;
     margin-left: 100px;
 }
 
@@ -181,26 +185,29 @@ h3{
 /* Beginning of Banner Four Styling */
 
 .bannerFour {
-    height: 1100px;
+    height: 100vh;
     width: 100%;
     /* background-color: #CBFF4C; */
     background-color: #C7FF20;
+    min-height: 100vh;
 }
 
 .containerTwo {
     display: flex;
     justify-content: space-evenly;
-    overflow: auto;
+    flex-wrap: wrap-reverse;
+
+    /* overflow: auto;*/
 }
 
 .cardTwo {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     height: 700px;
     width: 500px;
     /* max-width: 500px;
     max-height: 700px; */
-    margin-top: 250px;
+    margin-top: 150px;
     overflow: hidden;
     border-radius: 8px;
 }
@@ -225,21 +232,15 @@ h3{
 }
 
 .cardTextTwo {
-    font-size: 1.7vw;
+    font-size: 30px;
     /* max-width: 600px; */
     width: 550px;
     margin: auto;
     color: black;
     line-height: 1.5;
-    padding-top: 300px;
+    padding-top: 250px;
     /* margin-left: 0px; */
 }
-
-
-.workoutText{
-    /* width:60%; */
-    /* padding-right: 70px; */
-    }
 
 
 /* Beginning of Banner Five Styling */
@@ -249,15 +250,21 @@ h3{
     height: 100vh;
     width: 100%;
     margin: auto;
+    min-height: 100vh;
+    margin-bottom: 100px;
 }
 
 .carouselHeading{
-    position: static;
+    /* position: static; */
+    /* display: flex; */
     text-align: center;
+    margin: auto;
     font-family: 'Outfit', sans-serif;
     /* font-weight: 300; */
-    padding-top: 210px;
+    margin-top: 120px;
     color: white;
-    font-size: 5vw;
-
+    font-size: 90px;
+    /* line-height: 1.5; */
 }
+
+
