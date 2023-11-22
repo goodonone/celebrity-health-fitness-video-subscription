@@ -19,7 +19,7 @@ export class SignInComponent implements OnInit {
 
  signin(){
    this.userService.login(this.email, this.password).subscribe((response:any) => {
-       this.router.navigateByUrl('/content');
+       this.router.navigateByUrl('/profile');
    }, error => {
        console.log('Error: ', error);
        window.alert('Unsuccessful Login');

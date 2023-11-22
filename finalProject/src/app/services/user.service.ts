@@ -10,16 +10,15 @@ import { Observable, tap } from 'rxjs';
 export class UserService {
 
   baseURL: string = "https://localhost:7025"
-  // tokenKey: string = "myVideoToken";
-  // the token to delete the user.
+  
 
   constructor(private http: HttpClient) { }
 
-  signUp(newUser: User){
+  signUp(newUser: User) {
     return this.http.post(`${this.baseURL}/register`, newUser)
 }
 
-login(email: string, password: string){
+login(email: string, password: string) {
   let queryParams = new HttpParams();
   queryParams = queryParams.append('email', email);
   queryParams = queryParams.append('password', password);
@@ -30,14 +29,33 @@ login(email: string, password: string){
     }));
 }
 
-// deleteUser(email: string) : Observable<any> 
-// {
-//   let reqHeaders = {
-//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-//   }
-//   return this.http.delete<any>(this.baseURL + "/" + email, {headers: reqHeaders});
-// }
-//if we delete the profile we should delete the user to.
+loggedIn() {
+  return !!localStorage.getItem('myVideoToken')
+}
+
+logoutUser() {
+  localStorage.removeItem('myVideoToken')
+}
+
+updateUser(updatedUser: User) {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+  }
+    return this.http.put<User>(this.baseURL + "/" + updatedUser.email, updatedUser);
+  }
+
+getUser(email: string){
+  console.log(this.baseURL + "/" + email);
+  return this.http.get<User>(this.baseURL + "/" + email);
+  }
+  
+deleteUser(email: string) : Observable<any> {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+  }
+  return this.http.delete<any>(this.baseURL + "/" + email, {headers: reqHeaders});
+}
+
 
 }
 
