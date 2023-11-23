@@ -16,17 +16,18 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatToolbarModule} from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatCardModule} from '@angular/material/card'
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card'
+import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './carousel/carousel.module';
+import { LayoutModule } from '@angular/cdk/layout';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { CarouselModule } from './carousel/carousel.module';
     MatFormFieldModule,
     MatCardModule,
     MatGridListModule,
-   CarouselModule,
+    CarouselModule,
+    LayoutModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

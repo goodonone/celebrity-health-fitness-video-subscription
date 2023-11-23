@@ -216,15 +216,13 @@ h3 {
     /* background-color: #CBFF4C; */
     background-color: #C7FF20;
     min-height: 100vh;
-
-
 }
 
 .containerTwo {
     /* position: absolute; */
     display: flex;
 
-    justify-content: space-around;
+    justify-content: space-evenly;
 
     margin: auto;
     height: 100vh;
@@ -284,13 +282,13 @@ h3 {
     margin: auto;
     color: black;
     line-height: 1.5;
-    padding-top: 250px;
+    padding-top: 300px;
 
     /* margin-left: 0px; */
 }
 
 .workoutText {
-    width: 25%;
+    width: 30%;
 }
 
 /* Beginning of Banner Five Styling */
