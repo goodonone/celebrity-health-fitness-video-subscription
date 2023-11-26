@@ -37,14 +37,14 @@ logoutUser() {
   localStorage.removeItem('myVideoToken')
 }
 
-updateUser(updatedUser: User) {
+updateUser(updatedUser: User): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
   }
     return this.http.put<User>(this.baseURL + "/" + updatedUser.email, updatedUser);
   }
 
-getUser(email: string){
+getUser(email: string): Observable<User> {
   console.log(this.baseURL + "/" + email);
   return this.http.get<User>(this.baseURL + "/" + email);
   }
@@ -56,6 +56,13 @@ deleteUser(email: string) : Observable<any> {
   return this.http.delete<any>(this.baseURL + "/" + email, {headers: reqHeaders});
 }
 
+getTier(email: string): Observable<string> {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+  };
 
+  return this.http.get<string>(this.baseURL + "/" + "getUserTier" + email, {headers: reqHeaders});
+
+}
 }
 
