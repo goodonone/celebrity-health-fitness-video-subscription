@@ -1,18 +1,21 @@
 <!-- <div class="container"> -->
 
 <nav>
-    <mat-toolbar class="navBar">
-      <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
-      <span class="example-spacer"></span>
+  <mat-toolbar class="navBar">
+    <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
+    <span class="example-spacer"></span>
 
-<div class="menu">
-  <!--Make these buttons The profile name of the person with a drop down with Sign out when signed in-->
+    <label id="hamburger" for="toggle">&#9776;</label>
+    <input type="checkbox" id="toggle">
+
+    <div class="menu">
+      <!--Make these buttons The profile name of the person with a drop down with Sign out when signed in-->
       <!-- <div ngIf=""> -->
-        <h6 class="navBarText" routerLink="/signup">Sign Up</h6>
+      <h6 class="navBarText" routerLink="/signup">Sign Up</h6>
       <!-- </div> -->
 
       <!-- <div ngIf=""> -->
-        <!-- <h6 class="navBarText" routerLink="/profile/id"></h6> -->
+      <!-- <h6 class="navBarText" routerLink="/profile/id"></h6> -->
       <!-- </div> -->
 
       <!-- <h6 class="navBarText" routerLink="/content">Workouts</h6> -->
@@ -27,29 +30,30 @@
       <!-- Maybe this button also only shows up if logged in-->
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">
-        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search" aria-label="Search"  (keyup.enter)="search(searchString)">
-          <!-- <button mat-icon-button id="icon"> -->
-            
-            <!-- </button> -->
+        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search"
+          aria-label="Search" (keyup.enter)="search(searchString)">
+        <!-- <button mat-icon-button id="icon"> -->
+
+        <!-- </button> -->
       </form>
 
       <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>
-      
 
-        <!-- <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false"> -->
 
-        <mat-icon (click)="toggleTable()" *ngIf="viewSearchBar===false">search</mat-icon>
+      <!-- <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false"> -->
 
-        <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
-        <!-- (click)="openDialog('0ms', '0ms')" -->
+      <mat-icon (click)="toggleTable()" *ngIf="viewSearchBar===false">search</mat-icon>
 
-        <!-- </button> -->
+      <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
+      <!-- (click)="openDialog('0ms', '0ms')" -->
 
-  </div>
-</mat-toolbar>
-  </nav>
-  <!-- </div> -->
- 
+      <!-- </button> -->
+
+    </div>
+  </mat-toolbar>
+</nav>
+<!-- </div> -->
+
 
 
 
@@ -57,8 +61,8 @@
 
 
 <div class="footerContainer">
-      <footer>
-          <p><strong> &lt;Insert Company Name Here&gt; LLC. |</strong> <strong> © Copyright 2023</strong></p>
-          <p class="footer">Privacy Policy | Careers | Terms Of Use </p>
-      </footer>
+  <footer>
+    <p><strong> &lt;Insert Company Name Here&gt; LLC. |</strong> <strong> © Copyright 2023</strong></p>
+    <p class="footer">Privacy Policy | Careers | Terms Of Use </p>
+  </footer>
 </div>

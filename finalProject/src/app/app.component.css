@@ -6,7 +6,7 @@ nav {
   position: fixed;
   top: 0;
   width: 99%;
-  z-index: 1;
+  z-index: 2;
 
   /* padding-right: -240px; */
   /* margin-bottom: 50px; */
@@ -72,6 +72,7 @@ mat-icon:hover {
 }
 
 .formSearch {
+  /* display: inline; */
   padding-bottom: 3px;
   margin-left: 5px;
   /* margin-bottom: 10px; */
@@ -91,9 +92,66 @@ mat-icon:hover {
 }
 
 
-/* .spacer{
-  padding-top: 100px;
-} */
+label {
+  /* margin: 0 40px 0 0;
+  font-size: 26px;
+  line-height: 70px; */
+  display: none;
+}
+
+/* hamburger icon */
+
+#toggle {
+  display: none;
+}
+
+/* Mobile First Design: portrait phone & < 576 px*/
+/* SMALL DEVICES - MOBILE PHONE */
+@media screen and (min-width: 500px) and (max-width: 717px) {
+nav{
+  width: 94vw;
+}
+
+  label {
+    display: block;
+    /* position: relative; */
+    cursor: pointer;
+    font-size: 26px;
+    /* line-height: 60px; */
+    width: 40px;
+    padding-bottom: 4px;
+    float:left;
+  }
+
+  .menu {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    display: none;
+    clear: right;
+    z-index: 2;
+    right: 0;
+  }
+
+  .menu {
+    /* display: block; */
+    /* margin-top: 150px; */
+    /* border-bottom: solid 1px black; */
+    margin-top: 230px;
+    /* margin-right: 50px; */
+    color: Black;
+    background-color: #C7FF20;
+    opacity: 90%;
+    border-radius: 6px;
+   /* text-align: center; */
+   
+  }
+
+  #toggle:checked + .menu {
+    display: block;
+  }
+}
+
 
 
 /* Footer Starts Here */
