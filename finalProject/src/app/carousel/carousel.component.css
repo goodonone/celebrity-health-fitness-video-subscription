@@ -62,19 +62,19 @@ p{
     color: white;
 }
 
-.btn-carousel{
+/* .btn-carousel{
     /* top: 0;
     bottom: 0; */
-    display: flex;
-    justify-content: left;
+    /* display: flex; */
+    /* justify-content: left; */
     /* align-items: center; */
-    justify-content: center;
-    width: 150px;
-    height: 100px;
+    /* justify-content: center; */
+    /* width: 150px; */
+    /* height: 100px;
     padding: 0;
     color: white;
     text-align: center;
     background-color: white;
     border: 0;
-    cursor: pointer;
-}
+    cursor: pointer; */
+/* } */

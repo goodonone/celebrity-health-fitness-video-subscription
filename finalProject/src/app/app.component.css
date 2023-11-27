@@ -1,68 +1,80 @@
-.example-spacer {
-  flex: 1 1 auto;
+/* Navbar Starts Here */
+
+nav {
+  padding-top: 10px;
+  padding-left: 10px;
+  position: fixed;
+  top: 0;
+  width: 99%;
+  z-index: 1;
+
+  /* padding-right: -240px; */
+  /* margin-bottom: 50px; */
 }
 
 .navBar {
   border-radius: 6px;
- /* display: flex; */
+  /* display: flex; */
   /* background-color: #CBFF4C; */
   background-color: #C7FF20;
-  height:50px;
+  height: 50px;
   /* overflow: auto; */
   /* background-color: #71BBF5; */
   /* background-color:#FFB716; */
   /* background-color: #FFD942; */
 }
 
-.container{
-  padding-top: 10px;
-  padding-left: 10px;
-  position:fixed;
-  top:0;
-  width: 99%;
-  z-index: 1;
-  
-  /* padding-right: -240px; */
-  /* margin-bottom: 50px; */
+.example-spacer {
+  flex: 1 1 auto;
 }
 
-.navBarText{
+
+.navBarText {
   font-family: 'Outfit', sans-serif;
   font-size: smaller;
   padding: 0 6px 0 6px;
   cursor: pointer;
 }
 
-mat-icon{
-  cursor: pointer;
-  margin-left: 5px;
+.menu {
+  display: flex;
+  align-items: center;
+  /* flex-flow: column; */
 }
 
-h6:hover{
+mat-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+h6:hover {
   text-shadow: 0 0 7px #71BBF5;
 }
 
-mat-icon:hover{
-  color:#71BBF5;
+mat-icon:hover {
+  color: #71BBF5;
 }
 
-.logo{
+.logo {
   cursor: pointer;
 }
 
-#mySearch{
+#mySearch {
   border-radius: 3px;
-  margin-top: 20px;
-  /* margin-right:5px; */
+  /* margin-top: 20px; */
+  margin-right: 2px;
   border-color: black;
   background-color: #CBFF4C;
   padding-top: 3px;
+  margin-bottom: 2px;
 }
 
-.formSearch{
+.formSearch {
   padding-bottom: 3px;
   margin-left: 5px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   /* padding-bottom: 10px; */
   /* padding-left: 7px; */
   /* padding-right: 4px; */
@@ -70,44 +82,42 @@ mat-icon:hover{
 
 /* #icon{
   /* margin-top: 10px; */
-  /* padding-left: 10px; */
-  /* padding-top: 55px; */
- 
+/* padding-left: 10px; */
+/* padding-top: 55px; */
 
-.form{
-  margin-bottom: 10px;
-  margin-right: 4px;
+
+.form {
+  margin-bottom: 3px;
 }
 
-.buttonContainer{
-  display: inline;
-  margin-top: 100px;
-}
 
-.spacer{
+/* .spacer{
   padding-top: 100px;
-}
+} */
 
-.footerContainer{
+
+/* Footer Starts Here */
+
+.footerContainer {
   box-sizing: border-box;
-  position:relative;
- 
+  position: relative;
+
   /* margin-top:100px; */
   /* position:fixed; */
   /* bottom: 1000; */
   width: 100%;
   background-color: #C7FF20;
   /* padding-top: 10px; */
-  
+
   font-size: smaller;
   height: 70px;
 
- margin-bottom: -500px;
-  
+  margin-bottom: -500px;
+
   /* z-index: 100; */
 }
 
-footer{
+footer {
   position: absolute;
   left: 0;
   right: 0;
@@ -117,6 +127,6 @@ footer{
 
 }
 
-.footer{
+.footer {
   cursor: pointer;
 }

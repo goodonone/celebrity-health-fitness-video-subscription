@@ -105,13 +105,18 @@ h3 {
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
+    /* display: flex; */
+    /* position: relative; */
     height: 105vh;
     /* width: 100%; */
     margin: auto;
     background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
-    background-size: cover;
-    text-align: center;
+    /* background-size: cover; */
+    background-size:contain;
+    background-repeat:no-repeat ;
+    /* text-align: center; */
     min-height: 100vh;
+    min-width: 300px;
     /* align-items: center; */
 }
 
@@ -123,6 +128,8 @@ h3 {
     font-weight: 400;
     line-height: 1.6;
     color: white;
+    text-align: center;
+
 
 }
 
