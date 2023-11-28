@@ -14,10 +14,7 @@
     margin-top: -50px;
 } */
 
-.textContainer {
-    /* position:relative; */
-    /* top:40%; */
-}
+
 
 .overlay {
     /* display: inline-block; */
@@ -25,12 +22,12 @@
     position: absolute;
     /* display:flex; */
 
-    top: 40%;
+    top: 45%;
 
     margin: auto;
     left: 0;
 
-    bottom: 40%;
+    bottom: 45%;
 
     right: 0;
 
@@ -51,6 +48,14 @@
 }
 
 
+.textContainer{
+    display: flex;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+
 .heading {
     /* display: block; */
     /* position:absolute; */
@@ -63,14 +68,36 @@
     right:0; */
     font-family: 'Outfit', sans-serif;
     text-align: center;
+    /* margin: auto; */
+    /* padding-top: 150px;
+    margin-left: 200px; */
+    justify-content: center;
+    color: white;
+    font-size: 5vw;
+    /* margin-bottom: 30px; */
+    margin: 0;
+    padding: 0;
+}
+
+.headingContd {
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
     margin: auto;
     /* padding-top: 150px;
     margin-left: 200px; */
     justify-content: center;
     color: white;
     font-size: 5vw;
-    margin-bottom: 3vh;
+    margin: 0;
+    padding: 0;
 }
+
+.headingContd:hover {
+    color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+}
+
 
 h3 {
     /* position:absolute; */
@@ -80,6 +107,8 @@ h3 {
     right:0; */
     font-family: 'Outfit', sans-serif;
     font-size: 1.6vw;
+    margin-top: 4vw;
+
     color: white;
     border: solid;
     border-color: white;
@@ -88,9 +117,12 @@ h3 {
     margin: auto;
     text-align: center;
     padding-top: 0.8vh;
-    /* width: 170px; */
+
     width: 7.5vw;
     height: 4vh;
+
+
+    /* width: 170px; */
     /* container-name: overlay; */
     cursor: pointer;
 }
@@ -111,12 +143,14 @@ h3 {
     /* width: 100%; */
     margin: auto;
     background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
-    /* background-size: cover; */
-    background-size:contain;
-    background-repeat:no-repeat ;
+    background-size: cover;
+    /* background-size:contain;
+    background-repeat:no-repeat ; */
     /* text-align: center; */
-    min-height: 100vh;
-    min-width: 300px;
+
+    /* min-height: 100vh;
+    min-width: 300px; */
+
     /* align-items: center; */
 }
 
@@ -124,12 +158,46 @@ h3 {
     font-family: 'Outfit', sans-serif;
     font-weight: 300;
     padding-top: 60px;
-    font-size: 10vw;
+    font-size: 100px;
     font-weight: 400;
     line-height: 1.6;
     color: white;
     text-align: center;
 
+
+}
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+    .banner {}
+
+    .bannerTwo {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position-x: center;
+    }
+
+    .heading {
+        margin-bottom: 0.01vh;
+    }
+
+    h3 {
+        text-align: center;
+        width: 7.5vw;
+        height: 1.3vw;
+        align-items: center;
+        cursor: pointer;
+        /* padding-top: 1vw; */
+    }
+
+    .textOverlay {
+        margin-top: 250px;
+        align-items: center;
+    }
+
+    /* .overlay{
+        top: 50%;
+        bottom: 50%;
+    } */
 
 }
 
@@ -193,8 +261,11 @@ h3 {
 
     overflow: hidden;
     border-radius: 8px;
-    
+
 }
+
+
+
 
 
 .cardText {
@@ -324,7 +395,7 @@ h3 {
     text-align: center;
     margin: auto;
     font-family: 'Outfit', sans-serif;
-    
+
     /* font-weight: 300; */
     margin-top: 120px;
     color: white;
