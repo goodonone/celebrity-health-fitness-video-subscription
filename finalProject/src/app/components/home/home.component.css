@@ -2,53 +2,22 @@
 
 .banner {
     position: relative;
-    /* display: table-cell; */
-    /*vertical-align: middle;*/
-    /* text-align: center; */
     margin-top: -80px;
     width: 100%;
-    /* z-index: -1; */
 }
-
-/* .minus{
-    margin-top: -50px;
-} */
-
-
 
 .overlay {
-    /* display: inline-block; */
-
     position: absolute;
-    /* display:flex; */
-
     top: 45%;
-
-    margin: auto;
-    left: 0;
-
     bottom: 45%;
-
+    left: 0;
     right: 0;
-
+    margin: auto;
     z-index: 1;
-
-    /* width: 100%;
-
-    /* top: 40%; */
-    /* left: 0;
-  bottom: 40%;
-  right: 0;  */
-
-    /* -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%); */
-
-    /* margin-top: 500px; */
-
 }
 
 
-.textContainer{
+.textContainer {
     display: flex;
     margin: auto;
     text-align: center;
@@ -57,24 +26,11 @@
 
 
 .heading {
-    /* display: block; */
-    /* position:absolute; */
-
-    /* margin-top:100px; */
-
-    /* top:3em;
-    bottom: 3em;
-    left:0;
-    right:0; */
     font-family: 'Outfit', sans-serif;
     text-align: center;
-    /* margin: auto; */
-    /* padding-top: 150px;
-    margin-left: 200px; */
     justify-content: center;
     color: white;
     font-size: 5vw;
-    /* margin-bottom: 30px; */
     margin: 0;
     padding: 0;
 }
@@ -83,8 +39,6 @@
     font-family: 'Outfit', sans-serif;
     text-align: center;
     margin: auto;
-    /* padding-top: 150px;
-    margin-left: 200px; */
     justify-content: center;
     color: white;
     font-size: 5vw;
@@ -99,16 +53,10 @@
 }
 
 
-h3 {
-    /* position:absolute; */
-    /* top:0; */
-    /* bottom:0;
-    left:0;
-    right:0; */
+/* h3 {
     font-family: 'Outfit', sans-serif;
     font-size: 1.6vw;
     margin-top: 4vw;
-
     color: white;
     border: solid;
     border-color: white;
@@ -117,41 +65,25 @@ h3 {
     margin: auto;
     text-align: center;
     padding-top: 0.8vh;
-
     width: 7.5vw;
     height: 4vh;
-
-
-    /* width: 170px; */
-    /* container-name: overlay; */
     cursor: pointer;
-}
+} */
 
-.joinNow:hover {
+/* .joinNow:hover {
     color: #C7FF20;
     border-color: #C7FF20;
     cursor: pointer;
-}
+} */
 
 
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
-    /* display: flex; */
-    /* position: relative; */
     height: 105vh;
-    /* width: 100%; */
     margin: auto;
     background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
     background-size: cover;
-    /* background-size:contain;
-    background-repeat:no-repeat ; */
-    /* text-align: center; */
-
-    /* min-height: 100vh;
-    min-width: 300px; */
-
-    /* align-items: center; */
 }
 
 .textOverlay {
@@ -163,41 +95,84 @@ h3 {
     line-height: 1.6;
     color: white;
     text-align: center;
-
-
 }
 
 @media screen and (min-width: 500px) and (max-width: 717px) {
-    .banner {}
+
+    .banner {
+    height: 1000px ;
+    }
+
+    @keyframes grow {
+        from {
+          transform: scale(0%);
+        }
+      
+        to {
+          transform: scale(800%, 800%);
+        }
+      }
+
+
+
+    .videoBackground {
+        /* animation: zoom; */
+        transform: scale(500%, 500%);
+        animation: grow 3s infinity;
+        object-fit:contain;
+        width: 80%;
+        height: 100%;
+        /* background-position-x: right; */
+    }
+
+    .overlay {
+        top: 45%;
+        bottom: 45%;
+        left: 0;
+        right: 0;
+        margin: auto;
+        z-index: 1;
+    }
+    
 
     .bannerTwo {
+        position: relative;
         background-size: cover;
         background-repeat: no-repeat;
         background-position-x: center;
     }
 
     .heading {
-        margin-bottom: 0.01vh;
+        font-size: 10vw;
+        /* margin-bottom: 0.01vh; */
     }
 
-    h3 {
+    .headingContd {
+        font-size: 10vw;
+    }
+
+    .headingContd:hover {
+        color: #C7FF20;
+        border-color: #C7FF20;
+        cursor: pointer;
+    }
+
+    /* h3 {
         text-align: center;
         width: 7.5vw;
         height: 1.3vw;
         align-items: center;
         cursor: pointer;
-        /* padding-top: 1vw; */
-    }
+    } */
 
     .textOverlay {
-        margin-top: 250px;
+        position: absolute;
+        /* margin-top: 250px; */
+        padding: 200px 0 200px 0;
         align-items: center;
     }
 
-    /* .overlay{
-        top: 50%;
-        bottom: 50%;
-    } */
+
 
 }
 
@@ -206,7 +181,6 @@ h3 {
 .bannerThree {
     height: 100vh;
     width: 100%;
-    /* background-color: #CBFF4C; */
     background-color: #C7FF20;
     min-height: 100vh;
 }
@@ -216,69 +190,29 @@ h3 {
     justify-content: space-evenly;
     margin: auto;
     height: 100vh;
-    /* flex-wrap: wrap; */
-
-    /* min-height: 100px;
-    min-width: 50px; */
-
-    /* width: 100%; */
     position: relative;
-    /* overflow: overlay; */
-
-
     flex-direction: row;
-    /* position: relative; */
-    /* flex-direction: column; */
-    /* width: 100%; */
-    /* margin: auto; */
     align-items: center;
 
 }
 
 
 .card {
-    /* display: flex; */
-    /* flex-shrink: 5; */
-    /* flex-direction: column; */
-    /* padding-left: 50px; */
-    height: 70vh;
-    width: 28vw;
-
-    /* height: 700px;
-    width: 500px; */
-
+    height: 700px;
+    width: 500px;
     background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
     background-size: cover;
-    /* margin-left: 100px; */
-    margin-top: 130px;
-    /* max-width: 100%;
-    max-height: 100%; */
-
-    /* min-width: 400px;
-    min-height: 270px; */
-
-    /* margin-top: 250px; */
-
+    margin-top: 50px;
     overflow: hidden;
     border-radius: 8px;
-
 }
 
 
-
-
-
 .cardText {
-    /* display: flex; */
     font-size: 30px;
-    /* max-width: 600px; */
-    /* width: 50%; */
-
     margin: auto;
     color: black;
     line-height: 1.5;
-    /* padding-top: 50px; */
-    /* margin-left: 100px; */
 }
 
 .nutritionText {
@@ -288,45 +222,26 @@ h3 {
 /* Beginning of Banner Four Styling */
 
 .bannerFour {
-    /* display: flex; */
-    /* position: relative; */
     height: 100vh;
     width: 100%;
-    /* background-color: #CBFF4C; */
     background-color: #C7FF20;
     min-height: 100vh;
-
-
 }
 
 .containerTwo {
-    /* position: absolute; */
     display: flex;
-
+    flex-wrap: wrap;
     justify-content: space-evenly;
-
     margin: auto;
     height: 100vh;
-    /* flex-wrap: wrap-reverse; */
     position: relative;
     flex-direction: row;
     align-content: center;
-    /* overflow: auto;*/
 }
 
 .cardTwo {
-    /* display: flex; */
-    /* flex-direction: column; */
     height: 70vh;
     width: 28vw;
-
-    /* height: 700px;
-    width: 500px;
-    min-height: 600px;
-    min-width: 400px; */
-
-    /* max-width: 500px;
-    max-height: 700px; */
     margin-top: 130px;
     overflow: hidden;
     border-radius: 8px;
@@ -353,53 +268,60 @@ h3 {
 }
 
 .cardTextTwo {
-    /* display: flex; */
     font-size: 30px;
-    /* max-width: 600px; */
-
-    /* width: 50%; */
-
-    /* width: 50vw; */
-
     margin: auto;
     color: black;
     line-height: 1.5;
     padding-top: 250px;
-
-    /* margin-left: 0px; */
 }
 
 .workoutText {
     width: 30%;
 }
 
+@media screen and (min-width: 500px) and (max-width: 717px) {
+
+    .containerOne {
+        display: flex;
+        flex-wrap: wrap;
+        height: 80vh;
+    }
+
+    .card {
+        transform: scale(80%, 80%);
+    }
+
+
+    .nutritionText {
+        padding-bottom: 30px;
+        padding-left: 10px;
+        text-align: left;
+        width: 80%;
+    }
+
+    .space {
+        padding-bottom: 0;
+    }
+
+}
+
+
+
 /* Beginning of Banner Five Styling */
 
-.bannerFive {
-    /* position: absolute; */
+.bannerFive {   
     height: 100vh;
     width: 100%;
     margin: auto;
     min-height: 100vh;
-    /* margin-bottom: 100px; */
 }
 
 .carouselHeading {
-    /* position: static; */
-    /* display: flex; */
-
-    /* White background */
-    /* padding-top: 1.05vw;
-    background-color: white; */
-
     text-align: center;
     margin: auto;
     font-family: 'Outfit', sans-serif;
-
-    /* font-weight: 300; */
     margin-top: 120px;
     color: white;
     font-size: 4.2vw;
     height: 3vw;
-    /* line-height: 1.5; */
 }
