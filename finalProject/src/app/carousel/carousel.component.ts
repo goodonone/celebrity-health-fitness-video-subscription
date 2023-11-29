@@ -14,8 +14,7 @@ interface carouselImage {
 })
 export class CarouselComponent implements OnInit {
 
-  @Input() images: carouselImage[] = []
-  // @Input() indicators = true;
+  @Input() images: carouselImage[] = [];
   @Input() controls = true;
   @Input() autoSlide = false;
   @Input() slideInterval = 3000;
