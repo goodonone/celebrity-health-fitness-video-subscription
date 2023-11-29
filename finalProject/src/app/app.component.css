@@ -24,7 +24,7 @@ nav {
   /* background-color: #FFD942; */
 }
 
-.example-spacer {
+.spacer {
   flex: 1 1 auto;
 }
 
@@ -39,6 +39,7 @@ nav {
 .menu {
   display: flex;
   align-items: center;
+  /* flex-direction: column; */
   /* flex-flow: column; */
 }
 
@@ -105,8 +106,9 @@ label {
   display: none;
 }
 
-/* Mobile First Design: portrait phone & < 576 px*/
-/* SMALL DEVICES - MOBILE PHONE */
+
+/* Makes Home Page Flexible */
+
 @media screen and (min-width: 500px) and (max-width: 717px) {
 nav{
   width: 94vw;
@@ -131,24 +133,32 @@ nav{
     clear: right;
     z-index: 2;
     right: 0;
+    /* flex-direction: column; */
   }
 
   .menu {
     /* display: block; */
     /* margin-top: 150px; */
     /* border-bottom: solid 1px black; */
-    margin-top: 230px;
+    margin-top: 66px;
+    margin-right: 1px;
     /* margin-right: 50px; */
     color: Black;
     background-color: #C7FF20;
     opacity: 90%;
     border-radius: 6px;
+    /* display: flex;
+    flex-direction: column; */
    /* text-align: center; */
    
   }
 
   #toggle:checked + .menu {
-    display: block;
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 0;
+    /* bottom: 200 */
+
   }
 
   
@@ -172,7 +182,7 @@ nav{
   font-size: smaller;
   height: 70px;
 
-  margin-bottom: -500px;
+  margin-bottom: -100px;
 
   /* z-index: 100; */
 }

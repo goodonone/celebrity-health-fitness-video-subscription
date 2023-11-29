@@ -3,7 +3,7 @@
 <nav>
   <mat-toolbar class="navBar">
     <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
-    <span class="example-spacer"></span>
+    <span class="spacer"></span>
 
     <label id="hamburger" for="toggle">&#9776;</label>
     <input type="checkbox" id="toggle">
@@ -42,7 +42,7 @@
 
       <!-- <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false"> -->
 
-      <mat-icon (click)="toggleTable()" *ngIf="viewSearchBar===false">search</mat-icon>
+      <mat-icon (click)="toggleSearch()" *ngIf="viewSearchBar===false">search</mat-icon>
 
       <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
       <!-- (click)="openDialog('0ms', '0ms')" -->

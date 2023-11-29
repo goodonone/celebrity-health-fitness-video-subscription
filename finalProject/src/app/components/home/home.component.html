@@ -6,7 +6,8 @@
             <!-- <h3 class="joinNow" routerLink="/signup">Join Now</h3> -->
         </div>
     </div>
-    <video class="videoBackground" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay loop playsinline>
+    <video class="videoBackground" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
+        loop playsinline>
         <source src="/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4" type="video/mp4">
         <!-- <source src="/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" type="video/mp4">
                 <source src="/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4" type="video/mp4">
@@ -16,20 +17,21 @@
 </div>
 
 
-<div class="bannerTwo" >
+<div class="bannerTwo">
     <h1 class="textOverlay">Everything is hard, <br> before it is Easy.</h1>
 </div>
 
 <div class="bannerThree">
     <div class="containerOne">
-        <div class="space">
+        <!-- <div class="space"> -->
             <mat-card class="card">
                 <mat-card-content class="cardOneContent">
                 </mat-card-content>
             </mat-card>
-        </div>
+        <!-- </div> -->
         <div class="nutritionText">
-            <p class="cardText">Whether its building muscle or burning fat, Nutrition is Everything. <br><br> Fresh recipes.
+            <p class="cardText">Whether its building muscle or burning fat, Nutrition is Everything. <br><br> Fresh
+                recipes.
                 <strong>EVERYDAY.</strong>
             </p>
         </div>
@@ -41,11 +43,20 @@
 <div class="bannerFour">
     <div class="containerTwo">
         <div class="workoutText">
-            <p class="cardTextTwo">Motivated? You're in good company. <br> New Workouts <strong>EVERY WEEK.</strong>
-                <br><br><br> All in? Join Me <strong>Live!</strong>
-            </p>
+            <label class="label" for="toggleView">
+                <p class="cardTextTwo">Motivated? You're in good company. <br> New Workouts <strong>EVERY WEEK.</strong>
+                    <br><br><br> All in? Join Me <strong>Live!</strong>
+                </p>
+            </label>
+            <input type="checkbox" id="toggleView">
+            <label for="toggle">
+                <p class="cardTextTwo">Motivated? You're in good company. New Workouts <strong>EVERY WEEK.</strong>
+                   <br><br> All in? Join Me <strong>Live!</strong>
+                </p>
+            </label>
+            <input type="checkbox" id="toggle">
         </div>
-        <div >
+        <!-- <div class="spaceTwo"> -->
             <mat-card class="cardTwo">
                 <mat-card-content class="cardTwoContent">
                     <video class="fullscreen-bg_video-two" oncanplay="this.play()" onloadedmetadata="this.muted = true"
@@ -57,7 +68,7 @@
             </mat-card>
         </div>
     </div>
-</div>
+<!-- </div> -->
 
 
 
@@ -65,6 +76,6 @@
 <div class="bannerFive">
     <h1 class="carouselHeading">Success Stories</h1>
 
-    <app-carousel [images]="images" [autoSlide] = "true"></app-carousel>
+    <app-carousel [images]="images" [autoSlide]="true"></app-carousel>
 
 </div>

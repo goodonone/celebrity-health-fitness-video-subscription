@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
 
 
 
-  toggleTable() {
+  toggleSearch() {
     if (this.viewSearchBar) {
       this.viewSearchBar = false;
     }
@@ -36,12 +36,19 @@ export class AppComponent implements OnInit {
   }
 
 
+
   search(searchString: string) {
     var search = (<HTMLInputElement>document.getElementById('mySearch') ?? "").value;
-    var input = search.charAt(0).toUpperCase() + search.slice(1);
-    // window.location.assign('/search/`input`');
-    // window.open("/search", "`input`");
-    this.router.navigate(['/search', input]);
+    if(search !== ''){
+      var input = search.charAt(0).toUpperCase() + search.slice(1);
+      // window.location.assign('/search/`input`');
+      // window.open("/search", "`input`");
+      this.router.navigate(['/search', input]);
+    }
+    else{
+      this.viewSearchBar = false;
+    }
+   
   }
 
   

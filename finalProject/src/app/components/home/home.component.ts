@@ -11,6 +11,8 @@ export class HomeComponent implements OnInit {
 
   // counter: number = 0;
 
+  // show: boolean = false;
+
   foodImg: string = "/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg";
 
   videoPlaylist: homePageVideos[] = [{ "src": "/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4", "startTime": 0, "endTime": 8 },
@@ -25,7 +27,7 @@ export class HomeComponent implements OnInit {
     { imageSrc: '/assets/Images/3new.jpg', imageAlt: 'man 3', manName:'Alvin 40, New York', imageText:'"This guy got me out of eating chips all day."'},
     { imageSrc: '/assets/Images/4.jpg', imageAlt: 'man 4', manName:'Shermon 32, Ohio', imageText:'"The best money I have spent in a long time. Period!"' },
     { imageSrc: '/assets/Images/5.jpg', imageAlt: 'man 5', manName:'Jorge 38, California', imageText:'"Hooooo! I got my six pack and got rid of that other six pack🤘"' },
-    { imageSrc: '/assets/Images/6.jpg', imageAlt: 'man 6', manName:'Billy 27, Oregon', imageText:'" Just, Start!"' }
+    { imageSrc: '/assets/Images/6.jpg', imageAlt: 'man 6', manName:'Billy 27, Oregon', imageText:'"Just, Start!"' }
   ]
 
 
