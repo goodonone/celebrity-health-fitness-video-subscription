@@ -10,7 +10,7 @@ import { Observable, tap } from 'rxjs';
 export class UserService {
 
   baseURL: string = "https://localhost:7025"
-  
+  tokenKey: string = "myVideoToken";
 
   constructor(private http: HttpClient) { }
 
@@ -25,44 +25,44 @@ login(email: string, password: string) {
 
   return this.http.get(`${this.baseURL}/login`,  { params: queryParams, responseType: 'text' })
     .pipe(tap((response: any) => {
-      localStorage.setItem('myVideoToken', response);
+      localStorage.setItem(this.tokenKey, response);
     }));
 }
 
 loggedIn() {
-  return !!localStorage.getItem('myVideoToken')
+  return !!localStorage.getItem(this.tokenKey)
 }
 
 logoutUser() {
-  localStorage.removeItem('myVideoToken')
+  localStorage.removeItem(this.tokenKey)
 }
 
 updateUser(updatedUser: User): Observable<User> {
   let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
-    return this.http.put<User>(this.baseURL + "/" + updatedUser.email, updatedUser);
+    return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser);
   }
 
-getUser(email: string): Observable<User> {
-  console.log(this.baseURL + "/" + email);
-  return this.http.get<User>(this.baseURL + "/" + email);
+getUser(userId: string): Observable<User> {
+  console.log(this.baseURL + "/" + userId);
+  return this.http.get<User>(this.baseURL + "/" + userId);
   }
   
-deleteUser(email: string) : Observable<any> {
+deleteUser(userId: string) : Observable<any> {
   let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
-  return this.http.delete<any>(this.baseURL + "/" + email, {headers: reqHeaders});
+  return this.http.delete<any>(this.baseURL + "/" + userId, {headers: reqHeaders});
 }
 
-getTier(email: string): Observable<string> {
-  let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
-  };
+// getTier(userId: string): Observable<string> {
+//   let reqHeaders = {
+//     Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
+//   };
 
-  return this.http.get<string>(this.baseURL + "/" + "getUserTier" + email, {headers: reqHeaders});
+//   return this.http.get<string>(this.baseURL + "/" + "getUserTier" + userId, {headers: reqHeaders});
 
-}
+// }
 }
 
