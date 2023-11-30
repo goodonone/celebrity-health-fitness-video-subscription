@@ -1,1 +1,67 @@
-<p>home works!</p>
+<div class="banner">
+    <div class="overlay">
+        <div class="textContainer">
+            <h1 class="heading">Just, </h1>
+            <h1 class="headingContd" routerLink="/signup"> &nbsp; Start.</h1>
+        </div>
+    </div>
+    <div >
+        <video class="videoBackground" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
+        loop playsinline>
+        <source src="assets/Videos/AdobeStock_572824595_Video_HD_Preview.mp4" type="video/mp4"> 
+        Your browser does not support the video tag.
+        [autoPlay]="true";
+    </video>
+</div>
+</div>
+
+
+<div class="bannerTwo">
+    <h1 class="textOverlay">Everything is hard, <br> before it is Easy.</h1>
+</div>
+
+<div class="bannerThree">
+    <div class="containerOne">
+            <mat-card class="card">
+                <mat-card-content class="cardOneContent">
+                </mat-card-content>
+            </mat-card>
+        <div class="nutritionText">
+            <p class="cardText">Whether its building muscle or burning fat, Nutrition is Everything. <br><br> Fresh
+                recipes.
+                <strong>EVERYDAY.</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<div class="bannerFour">
+    <div class="containerTwo">
+        <div class="workoutText">
+            <label class="label" for="toggleView">
+                <p class="cardTextTwo">Motivated? You're in good company. <br> New Workouts <strong>EVERY WEEK.</strong>
+                    <br><br><br> All in? Join Me <strong>Live!</strong>
+                </p>
+            </label>
+            <input type="checkbox" id="toggleView">
+            <label for="toggle">
+                <p class="cardTextTwo">Motivated? You're in good company. New Workouts <strong>EVERY WEEK.</strong>
+                   <br><br> All in? Join Me <strong>Live!</strong>
+                </p>
+            </label>
+            <input type="checkbox" id="toggle">
+        </div>
+            <mat-card class="cardTwo">
+                <mat-card-content class="cardTwoContent">
+                    <app-video-player [videos]="videos" [autoPlay]="true"> </app-video-player>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+
+<div class="bannerFive">
+    <h1 class="carouselHeading">Success Stories</h1>
+    <app-carousel [images]="images" [autoSlide]="true"></app-carousel>
+</div>
