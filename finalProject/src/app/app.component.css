@@ -128,7 +128,7 @@ nav{
   .menu {
     position: absolute;
     text-align: center;
-    width: 470px;
+    width: 200px;
     display: none;
     clear: right;
     z-index: 2;

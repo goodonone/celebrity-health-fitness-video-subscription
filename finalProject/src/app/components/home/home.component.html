@@ -6,17 +6,15 @@
             <!-- <h3 class="joinNow" routerLink="/signup">Join Now</h3> -->
         </div>
     </div>
-    <!-- <div > -->
-        <video class="videoBackground" id="myVideo" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
+    <div >
+        <video class="videoBackground" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
         loop playsinline>
-        <source *ngFor="let videos of videoPlaylist; let i=index" [src]="videos.videoSrc" type="video/mp4" [ngClass]="{'image-active': selectedIndex === i}">
-        <!-- <source src="/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" type="video/mp4">
-                <source src="/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4" type="video/mp4">
-                <source src="/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4" type="video/mp4"> -->
+        <source src="assets/Videos/AdobeStock_572824595_Video_HD_Preview.mp4" type="video/mp4"> 
         Your browser does not support the video tag.
+        [autoPlay]="true";
     </video>
-    </div>
-<!-- </div> -->
+</div>
+</div>
 
 
 <div class="bannerTwo">
@@ -61,11 +59,12 @@
         <!-- <div class="spaceTwo"> -->
             <mat-card class="cardTwo">
                 <mat-card-content class="cardTwoContent">
-                    <video class="fullscreen-bg_video-two" oncanplay="this.play()" onloadedmetadata="this.muted = true"
+                    <!-- <video class="fullscreen-bg_video-two" oncanplay="this.play()" onloadedmetadata="this.muted = true"
                         autoplay loop playsinline>
                         <source src="/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" type="video/mp4">
                         Your browser does not support the video tag.
-                    </video>
+                    </video> -->
+                    <app-video-player [videos]="videos" [autoPlay]="true"> </app-video-player>
                 </mat-card-content>
             </mat-card>
         </div>
