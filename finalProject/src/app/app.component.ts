@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
-// Insert Service/area where the search can Search and model here
+// Insert Service/Area where the search can Search and model here
 
 @Component({
   selector: 'app-root',
@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   }
 
 // Toggles the visiblity of the search input field
+
   toggleSearch() {
     if (this.viewSearchBar) {
       this.viewSearchBar = false;
@@ -35,7 +36,7 @@ export class AppComponent implements OnInit {
   }
 
 
-  // Search Function(INCOMPLETE)
+// Search Function(INCOMPLETE)
 
   search(searchString: string) {
     var search = (<HTMLInputElement>document.getElementById('mySearch') ?? "").value;

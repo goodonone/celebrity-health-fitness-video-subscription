@@ -51,7 +51,8 @@ p {
 
 .text-container p.image-active {
     display: block;
-    width: 85%;
+    margin: auto;
+    width: 50%;
     text-align: left;
     color: white;
     padding-bottom: 180px;
