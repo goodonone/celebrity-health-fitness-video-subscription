@@ -15,27 +15,12 @@ interface videoPlaylist {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  // ngAfterViewInit(): void {
-  // }
 
-  // counter: number = 0;
-
-  // show: boolean = false;
-
-
-  // selectedIndex = 0;
-
-  // foodImg: string = "/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg";
 
   videos = [
     { videoSrc: "/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" },
     { videoSrc: "/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4" }
   ];
-
-  // videoPlaylist: homePageVideos[] = [{ "src": "/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4", "startTime": 0, "endTime": 8 },
-  // { "src": "/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4", "startTime": 8, "endTime": 14 },
-  // { "src": "/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4", "startTime": 14, "endTime": 20 },
-  // { "src": "/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4", "startTime": 21, "endTime": 28 }];
 
 
   images = [
@@ -47,136 +32,15 @@ export class HomeComponent implements OnInit {
     { imageSrc: '/assets/Images/6.jpg', imageAlt: 'man 6', manName: 'Billy 27, Oregon', imageText: '"Just, Start!"' }
   ];
 
-  // video: any;
-  //     player: any;
-  // selectedIndex= 0;
-
-
-  // constructor(
-  //   private elementRef: ElementRef,
-  // ) {}
-  // <Code to lay sequence of videos in video tag
-
   ngOnInit(): void {
 
-    // if (this.autoPlay) {
-
-    //   // if (this.selectedIndex === this.videosPlaylist.length - 1) {
-    //   //   this.selectedIndex = 0;
-    //   // }
-    //   // else {
-    //   //   this.selectedIndex++;
-    //   // };
-    // this.autoSlideImages();
-
   }
-
-  // const videoBanner = document.getElementById("videoBanner");
-  // videoBanner?.addEventListener('ended', myHandler, false);
-  // function myHandler(this: any) {
-  //   while(this.selectedIndex){
-  //     this.selectedIndex++;
-  //   }
-  // }
-
-  // if (this.selectedIndex === this.videosPlaylist.length - 1) {
-  //   this.selectedIndex = 0;
-  //   () => ;
-  // }
-  // else {
-  //   this.selectedIndex++;
-  // };
-
-  //   this.video = document.getElementById('videoBanner');
-  //   this.player = videojs('video');
-
-  //   this.player.playlist([{
-  //   source: [{
-  //   src: '/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4',
-  //   type: 'video/mp4'
-  //   },{
-  //     src:'/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4',
-  //     type: 'video/mp4'
-  //   },{
-  //     src:'/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4',
-  //     type: 'video/mp4'
-  //   },{
-  //     src:'/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4',
-  //     type: 'video/mp4'
-  //   }],
-  //   }])
-  //   this.player.playlist.autoadvance(0);
-  // }
 
 
 }
 
 
-// autoSlideImages(): void {
-//   setInterval(() => {
-//     this.onNextClick();
-//   }, this.slideInterval);
-// }
 
-
-// selectImage(index: number): void {
-//   this.selectedIndex = index;
-// }
-
-
-//   onNextClick(): void {
-//     if (this.selectedIndex === this.videos.length - 1){
-//       this.selectedIndex = 0;
-//     }
-//     else{
-//       this.selectedIndex++;
-//     }
-// }
-// }
-
-// autoPlayVideos() {
-//   this.onNextClick();
-// }
-
-
-
-//   const element = document.getElementById("sample");
-//   element?.addEventListener("click", listenerFunction);
-// }
-
-// Or this code
-//   <script type='text/javascript'>
-//     document.getElementById('myVideo').addEventListener('ended',myHandler,false);
-//     function myHandler(e) {
-//         // What you want to do after the event
-//     }
-// </script>
-
-
-
-// autoSlideImages(): void {
-//   setInterval(() => {
-//   this.onNextClick();
-// }, this.slideInterval);
-// }
-
-
-// selectVideo(index: number): void {
-//   this.selectedIndex = index;
-// }
-
-
-// nextVideo(): void {
-//   if(this.selectedIndex === this.videosPlaylist.length - 1){
-//   this.selectedIndex = 0;
-// }
-//           else {
-//   this.selectedIndex++;
-// };
-// }
-
-
-// };
 
 
 

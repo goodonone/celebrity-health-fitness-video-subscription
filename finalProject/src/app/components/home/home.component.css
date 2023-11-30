@@ -57,31 +57,6 @@
     cursor: pointer;
 }
 
-
-/* h3 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.6vw;
-    margin-top: 4vw;
-    color: white;
-    border: solid;
-    border-color: white;
-    border-radius: 0.5vw;
-    padding: auto;
-    margin: auto;
-    text-align: center;
-    padding-top: 0.8vh;
-    width: 7.5vw;
-    height: 4vh;
-    cursor: pointer;
-} */
-
-/* .joinNow:hover {
-    color: #C7FF20;
-    border-color: #C7FF20;
-    cursor: pointer;
-} */
-
-
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
@@ -102,6 +77,8 @@
     text-align: center;
 }
 
+/* Makes the page flexible */
+
 @media screen and (min-width: 500px) and (max-width: 717px) {
 
     .banner {
@@ -113,23 +90,10 @@
 
 
     .videoBackground {
-        /* animation: zoomIn 0.5s infinity; */
-        /* transform: scale(100, 50); */
         object-fit: none;
-        /* width: 50vw; */
         height: 100vh;
-        /* width: 100%; */
-        overflow: auto;
-        /* background-position-x: right; */
+        overflow: hidden;
     }
-
-    /* video{
-        object-fit: none;
-        /* width: 50vw; */
-        /* height: 100vh; */
-        /* width: 100%; */
-        /* overflow: auto; */
-    /* } */ 
 
     .overlay {
         top: 45%;
@@ -150,7 +114,6 @@
 
     .heading {
         font-size: 10vw;
-        /* margin-bottom: 0.01vh; */
     }
 
     .headingContd {
@@ -163,23 +126,11 @@
         cursor: pointer;
     }
 
-    /* h3 {
-        text-align: center;
-        width: 7.5vw;
-        height: 1.3vw;
-        align-items: center;
-        cursor: pointer;
-    } */
-
     .textOverlay {
         position: absolute;
-        /* margin-top: 250px; */
         padding: 200px 0 200px 0;
         font-size: 97px;
-        /* align-items: center; */
     }
-
-
 
 }
 
@@ -202,7 +153,6 @@
     align-items: center;
 }
 
-
 .card {
     height: 700px;
     width: 500px;
@@ -212,7 +162,6 @@
     overflow: hidden;
     border-radius: 8px;
 }
-
 
 .cardText {
     font-size: 30px;
@@ -254,30 +203,6 @@
     padding-right: 20px;
 }
 
-/* .fullscreen-bg_video-two {
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0; */
-
-    /* height: 70vh;
-    width: 28vw; */
-
-    /* height: 700px;
-    width: 500px;
-
-    overflow: hidden;
-} */
-
-/* .cardTwoContent {
-    min-width: 100%;
-    min-height: 100%;
-    width: auto;
-    height: auto;
-} */
-
 .cardTextTwo {
     font-size: 30px;
     margin: auto;
@@ -306,6 +231,8 @@ label {
     display: none;
 }
 
+/* Makes the page flexible */
+
 @media screen and (min-width: 500px) and (max-width: 717px) {
 
     .containerOne {
@@ -313,8 +240,6 @@ label {
         flex-wrap: wrap;
         height: 80vh;
         padding-top: 70px;
-        /* width: 100vw; */
-        /* overflow: hidden; */
     }
 
     .card {
@@ -329,19 +254,9 @@ label {
         width: 80%;
     }
 
-    /* .space { */
-        /* padding-bottom: 0; */
-        /* width: 99%; */
-        /* overflow: hidden; */
-    /* } */
-
     .bannerFour {
         height: 105vh;
     }
-
-    /* .spaceTwo {
-        margin-top: 290px;
-    } */
 
     .containerTwo {
         display: flex;
@@ -366,7 +281,6 @@ label {
     .cardTextTwo {
         padding-top: 10px;
         margin-top: -10px;
-        /* line-height: 1.0; */
     }
 
     .label {
@@ -387,22 +301,15 @@ label {
 }
 
 
-
 /* Beginning of Banner Five Styling */
 
 .bannerFive {
     display: flex;
     align-items: center;
-    /* display: inline; */
     position: relative;
     height: 100vh;
     width: 100%;
-    /* margin: auto; */
-    /* min-height: 100vh; */
     background: black;
-    /* margin-top: -39px; */
-    /* align-content: center; */
-    
 }
 
 .carouselHeading {
@@ -419,6 +326,8 @@ label {
     font-size: 70px;
     height: 3vw;
 }
+
+/* Makes the page flexible */
 
 @media screen and (min-width: 500px) and (max-width: 717px) {
 

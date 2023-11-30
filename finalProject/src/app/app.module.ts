@@ -26,8 +26,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
-import { CarouselModule } from './carousel/carousel.module';
-import { VideoPlayerModule } from './video-player/video-player.module';
+import { CarouselModule } from './Carousel and Video Player etc./carousel/carousel.module';
+import { VideoPlayerModule } from './Carousel and Video Player etc./video-player/video-player.module';
 
 
 @NgModule({

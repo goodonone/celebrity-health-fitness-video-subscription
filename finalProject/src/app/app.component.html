@@ -1,19 +1,14 @@
-<!-- <div class="container"> -->
-
 <nav>
   <mat-toolbar class="navBar">
     <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
     <span class="spacer"></span>
-    
-<div (onClick)="flipIcon()">
-  <label id="hamburger" for="toggle" *ngIf="icon">&#9776;</label>
-  <label id="x" for="toggle" *ngIf="!icon">&#x2715;</label>
-</div>
-   
+    <label id="hamburger" for="toggle">&#9776;</label>
     <input type="checkbox" id="toggle">
 
     <div class="menu">
+
       <!--Make these buttons The profile name of the person with a drop down with Sign out when signed in-->
+
       <!-- <div ngIf=""> -->
       <h6 class="navBarText" routerLink="/signup">Sign Up</h6>
       <!-- </div> -->
@@ -31,34 +26,17 @@
 
       <h6 class="navBarText" routerLink="/store">Store</h6>
 
-      <!-- Maybe this button also only shows up if logged in-->
+      <!-- Maybe this button also only shows up only if logged in-->
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">
         <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search"
           aria-label="Search" (keyup.enter)="search(searchString)">
-        <!-- <button mat-icon-button id="icon"> -->
-
-        <!-- </button> -->
       </form>
-
       <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>
-
-
-      <!-- <button mat-icon-button class="example-icon search-icon" (click)="toggleTable()" *ngIf="viewSearchBar===false"> -->
-
       <mat-icon (click)="toggleSearch()" *ngIf="viewSearchBar===false">search</mat-icon>
-
-      <!-- mat-icon-button class="example-icon search-icon" aria-label="Icon-button with search icon" (click)="openDialog('0ms', '0ms') -->
-      <!-- (click)="openDialog('0ms', '0ms')" -->
-
-      <!-- </button> -->
-
     </div>
   </mat-toolbar>
 </nav>
-<!-- </div> -->
-
-
 
 
 <router-outlet></router-outlet>

@@ -15,11 +15,7 @@ export class VideoPlayerComponent implements OnInit {
   @Input() videos: videoPlaylist[] = [];
   @Input() slideInterval = 5500;
 
-  // currentVideo: number
-
   selectedIndex = 0;
-  indexSelected = 0;
-  i: number = 0;
 
   ngOnInit(): void {
     if (this.autoPlay) {

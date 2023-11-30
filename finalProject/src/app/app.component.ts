@@ -16,18 +16,15 @@ export class AppComponent implements OnInit {
 
   viewSearchBar: boolean = false;
 
-  icon: boolean = true;
 
   constructor(private actRoute: ActivatedRoute, private router: Router) { }
 
 
   ngOnInit(): void {
 
-
   }
 
-
-
+// Toggles the visiblity of the search input field
   toggleSearch() {
     if (this.viewSearchBar) {
       this.viewSearchBar = false;
@@ -38,6 +35,7 @@ export class AppComponent implements OnInit {
   }
 
 
+  // Search Function(INCOMPLETE)
 
   search(searchString: string) {
     var search = (<HTMLInputElement>document.getElementById('mySearch') ?? "").value;
@@ -53,9 +51,6 @@ export class AppComponent implements OnInit {
 
   }
 
-  flipIcon() {
-    this.icon==!this.icon;
-  }
 
 }
 

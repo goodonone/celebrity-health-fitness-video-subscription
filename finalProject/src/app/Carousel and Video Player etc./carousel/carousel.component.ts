@@ -15,7 +15,6 @@ interface carouselImage {
 export class CarouselComponent implements OnInit {
 
   @Input() images: carouselImage[] = [];
-  // @Input() controls = true;
   @Input() autoSlide = false;
   @Input() slideInterval = 3000;
 
@@ -32,12 +31,6 @@ export class CarouselComponent implements OnInit {
       this.onNextClick();
     }, this.slideInterval);
   }
-
-
-  // selectImage(index: number): void {
-  //   this.selectedIndex = index;
-  // }
-
 
   onNextClick(): void {
     if (this.selectedIndex === this.images.length - 1){

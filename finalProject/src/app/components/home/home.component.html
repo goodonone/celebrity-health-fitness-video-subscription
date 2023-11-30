@@ -3,7 +3,6 @@
         <div class="textContainer">
             <h1 class="heading">Just, </h1>
             <h1 class="headingContd" routerLink="/signup"> &nbsp; Start.</h1>
-            <!-- <h3 class="joinNow" routerLink="/signup">Join Now</h3> -->
         </div>
     </div>
     <div >
@@ -23,12 +22,10 @@
 
 <div class="bannerThree">
     <div class="containerOne">
-        <!-- <div class="space"> -->
             <mat-card class="card">
                 <mat-card-content class="cardOneContent">
                 </mat-card-content>
             </mat-card>
-        <!-- </div> -->
         <div class="nutritionText">
             <p class="cardText">Whether its building muscle or burning fat, Nutrition is Everything. <br><br> Fresh
                 recipes.
@@ -37,7 +34,6 @@
         </div>
     </div>
 </div>
-
 
 
 <div class="bannerFour">
@@ -56,27 +52,16 @@
             </label>
             <input type="checkbox" id="toggle">
         </div>
-        <!-- <div class="spaceTwo"> -->
             <mat-card class="cardTwo">
                 <mat-card-content class="cardTwoContent">
-                    <!-- <video class="fullscreen-bg_video-two" oncanplay="this.play()" onloadedmetadata="this.muted = true"
-                        autoplay loop playsinline>
-                        <source src="/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video> -->
                     <app-video-player [videos]="videos" [autoPlay]="true"> </app-video-player>
                 </mat-card-content>
             </mat-card>
         </div>
     </div>
-<!-- </div> -->
-
-
 
 
 <div class="bannerFive">
     <h1 class="carouselHeading">Success Stories</h1>
-
     <app-carousel [images]="images" [autoSlide]="true"></app-carousel>
-
 </div>
