@@ -11,16 +11,16 @@
     position: absolute;
     top: 45%;
     bottom: 45%;
-    left: 35%;
+    left: 38%;
     right: 0;
     margin: auto;
     z-index: 1;
 }
 
-.videoBackground {
+/* .videoBackground {
     transform: scale(100%, 102%);
-    overflow:hidden;
-}
+    overflow: hidden;
+} */
 
 .textContainer {
     display: inline-flex;
@@ -51,19 +51,65 @@
     padding: 0;
     animation: zoomIn 0.25s;
     animation-iteration-count: infinite;
-    
+
 }
 
-@keyframes zoomIn{
+@keyframes zoomIn {
     from {
         font-weight: 300;
     }
+
     to {
         font-weight: 600;
     }
 }
 
-.headingContd:hover {
+/* .headingContd:hover {
+    color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+} */
+
+.overlayTwo {
+    position: absolute;
+    top: 80%;
+    bottom: 100%;
+    left: 13%;
+    
+    /* right: 200%; */
+    /* margin: auto; */
+
+    z-index: 1;
+}
+
+.here {
+    display: inline;
+    /* position: absolute; */
+    font-family: 'Outfit', sans-serif;
+    /* text-align: center; */
+    /* margin: auto; */
+    margin-top: -2vw;
+    /* padding: 0; */
+    /* justify-content: center; */
+    color: white;
+    font-size: 1.2vw;
+    border: solid;
+    border-radius: .2vw;
+    width: 7vw;
+    padding: .3vw .3vw .5vw .3vw;
+    /* padding-bottom: ; */
+    /* top:75%;
+  bottom: -30%;
+  
+    /* margin-top:20px; */
+    /* margin-left: 140px; */
+
+    /* left: 80%;
+  right: 0; */
+
+}
+
+.here:hover {
     color: #C7FF20;
     border-color: #C7FF20;
     cursor: pointer;
@@ -111,12 +157,51 @@
         position: absolute;
         top: 45%;
         bottom: 45%;
-        left: 25%;
+        left: 24%;
         right: 0;
         margin: auto;
         z-index: 1;
     }
+
+    .overlayTwo {
+        position: absolute;
+        top: 49%;
+        bottom: 120%;
+        left: 25%;
+        
+        /* right: 200%; */
+        /* margin: auto; */
     
+        z-index: 1;
+        /* padding-bottom: 122vw; */
+    }
+
+    .here {
+        display: inline;
+        /* position: absolute; */
+        font-family: 'Outfit', sans-serif;
+        /* text-align: center; */
+        /* margin: auto; */
+        /* margin-bottom: 100vw; */
+        /* padding: 0; */
+        /* justify-content: center; */
+        color: white;
+        font-size: 2.4vw;
+        border: solid;
+        border-radius: .4vw;
+        width: 15vw;
+        padding: .3vw .3vw .5vw .3vw;
+        /* padding-bottom: ; */
+        /* top:75%;
+      bottom: -30%;
+      
+        /* margin-top:20px; */
+        /* margin-left: 140px; */
+    
+        /* left: 80%;
+      right: 0; */
+    
+    }
 
 
     .bannerTwo {
@@ -134,11 +219,11 @@
         font-size: 10vw;
     }
 
-    .headingContd:hover {
+    /* .headingContd:hover {
         color: #C7FF20;
         border-color: #C7FF20;
         cursor: pointer;
-    }
+    } */
 
     .textOverlay {
         position: absolute;
@@ -344,7 +429,7 @@ label {
 
 @media screen and (min-width: 500px) and (max-width: 717px) {
 
-    .bannerFive{
+    .bannerFive {
         height: 102vh;
     }
 
