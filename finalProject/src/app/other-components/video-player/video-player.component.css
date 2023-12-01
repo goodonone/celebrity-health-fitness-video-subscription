@@ -1,0 +1,25 @@
+.cardVideo {
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 24%;
+    right: 0;
+    height: 700px;
+    width: 500px;
+    overflow:inherit;
+    animation: fadeIn 2s;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+  } 
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+    .videoBackground {
+            object-fit: none;
+            height: 100vh;
+            overflow: hidden;
+        }
+    }

@@ -1,0 +1,202 @@
+/* Navbar Starts Here */
+
+nav {
+  padding-top: 10px;
+  padding-left: 10px;
+  position: fixed;
+  top: 0;
+  width: 99%;
+  z-index: 2;
+
+  /* padding-right: -240px; */
+  /* margin-bottom: 50px; */
+}
+
+.navBar {
+  border-radius: 6px;
+  /* display: flex; */
+  /* background-color: #CBFF4C; */
+  background-color: #C7FF20;
+  height: 50px;
+  /* overflow: auto; */
+  /* background-color: #71BBF5; */
+  /* background-color:#FFB716; */
+  /* background-color: #FFD942; */
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+
+.navBarText {
+  font-family: 'Outfit', sans-serif;
+  font-size: smaller;
+  padding: 0 6px 0 6px;
+  cursor: pointer;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  /* flex-direction: column; */
+  /* flex-flow: column; */
+}
+
+mat-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+h6:hover {
+  text-shadow: 0 0 7px #71BBF5;
+}
+
+mat-icon:hover {
+  color: #71BBF5;
+}
+
+.logo {
+  cursor: pointer;
+}
+
+#mySearch {
+  border-radius: 3px;
+  /* margin-top: 20px; */
+  margin-right: 2px;
+  border-color: black;
+  background-color: #CBFF4C;
+  padding-top: 3px;
+  margin-bottom: 2px;
+}
+
+.formSearch {
+  /* display: inline; */
+  padding-bottom: 3px;
+  margin-left: 5px;
+  /* margin-bottom: 10px; */
+  /* padding-bottom: 10px; */
+  /* padding-left: 7px; */
+  /* padding-right: 4px; */
+}
+
+/* #icon{
+  /* margin-top: 10px; */
+/* padding-left: 10px; */
+/* padding-top: 55px; */
+
+
+.form {
+  margin-bottom: 3px;
+}
+
+
+label {
+  /* margin: 0 40px 0 0;
+  font-size: 26px;
+  line-height: 70px; */
+  display: none;
+}
+
+/* hamburger icon */
+
+#toggle {
+  display: none;
+}
+
+
+/* Makes Home Page Flexible */
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+nav{
+  width: 94vw;
+}
+
+  label {
+    display: block;
+    /* position: relative; */
+    cursor: pointer;
+    font-size: 26px;
+    /* line-height: 60px; */
+    width: 40px;
+    padding-bottom: 4px;
+    float:left;
+  }
+
+  .menu {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    display: none;
+    clear: right;
+    z-index: 2;
+    right: 0;
+    /* flex-direction: column; */
+  }
+
+  .menu {
+    /* display: block; */
+    /* margin-top: 150px; */
+    /* border-bottom: solid 1px black; */
+    margin-top: 65px;
+    margin-right: 1px;
+    /* margin-right: 50px; */
+    color: Black;
+    background-color: #C7FF20;
+    opacity: 90%;
+    border-radius: 6px;
+    /* display: flex;
+    flex-direction: column; */
+   /* text-align: center; */
+   
+  }
+
+  #toggle:checked + .menu {
+    display: flex; flex-direction: column;
+    position: absolute;
+    top: 0;
+    /* bottom: 200 */
+
+  }
+
+  
+}
+
+
+
+/* Footer Starts Here */
+
+.footerContainer {
+  box-sizing: border-box;
+  position: relative;
+
+  /* margin-top:100px; */
+  /* position:fixed; */
+  /* bottom: 1000; */
+  width: 100%;
+  background-color: #C7FF20;
+  /* padding-top: 10px; */
+
+  font-size: smaller;
+  height: 70px;
+
+  margin-bottom: -100px;
+
+  /* z-index: 100; */
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* margin-top: 200px; */
+  padding-left: 10px;
+
+}
+
+.footer {
+  cursor: pointer;
+}

@@ -16,6 +16,18 @@ import { EditProfileComponent } from './components/edit-profile/edit-profile.com
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { SearchComponent } from './components/search/search.component';
+import { StoreComponent } from './components/store/store.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card'
+import { MatGridListModule } from '@angular/material/grid-list';
+import { CarouselModule } from './other-components/carousel/carousel.module';
+import { VideoPlayerModule } from './other-components/video-player/video-player.module';
 
 
 
@@ -32,7 +44,8 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
     NotFoundComponent,
     SignInComponent,
     SignUpComponent,
-    
+    SearchComponent,
+    StoreComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +53,16 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatGridListModule,
+    CarouselModule,
+    VideoPlayerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
