@@ -17,11 +17,6 @@
     z-index: 1;
 }
 
-/* .videoBackground {
-    transform: scale(100%, 102%);
-    overflow: hidden;
-} */
-
 .textContainer {
     display: inline-flex;
     margin: auto;
@@ -64,49 +59,25 @@
     }
 }
 
-/* .headingContd:hover {
-    color: #C7FF20;
-    border-color: #C7FF20;
-    cursor: pointer;
-} */
 
 .overlayTwo {
     position: absolute;
     top: 80%;
     bottom: 100%;
     left: 13%;
-    
-    /* right: 200%; */
-    /* margin: auto; */
-
     z-index: 1;
 }
 
 .here {
     display: inline;
-    /* position: absolute; */
     font-family: 'Outfit', sans-serif;
-    /* text-align: center; */
-    /* margin: auto; */
     margin-top: -2vw;
-    /* padding: 0; */
-    /* justify-content: center; */
     color: white;
     font-size: 1.2vw;
     border: solid;
     border-radius: .2vw;
     width: 7vw;
     padding: .3vw .3vw .5vw .3vw;
-    /* padding-bottom: ; */
-    /* top:75%;
-  bottom: -30%;
-  
-    /* margin-top:20px; */
-    /* margin-left: 140px; */
-
-    /* left: 80%;
-  right: 0; */
-
 }
 
 .here:hover {
@@ -143,7 +114,6 @@
         height: 100vh;
         width: 100%;
         overflow: hidden;
-        /* object-fit: contain; */
     }
 
 
@@ -168,39 +138,18 @@
         top: 49%;
         bottom: 120%;
         left: 25%;
-        
-        /* right: 200%; */
-        /* margin: auto; */
-    
         z-index: 1;
-        /* padding-bottom: 122vw; */
     }
 
     .here {
         display: inline;
-        /* position: absolute; */
         font-family: 'Outfit', sans-serif;
-        /* text-align: center; */
-        /* margin: auto; */
-        /* margin-bottom: 100vw; */
-        /* padding: 0; */
-        /* justify-content: center; */
         color: white;
         font-size: 2.4vw;
         border: solid;
         border-radius: .4vw;
         width: 15vw;
         padding: .3vw .3vw .5vw .3vw;
-        /* padding-bottom: ; */
-        /* top:75%;
-      bottom: -30%;
-      
-        /* margin-top:20px; */
-        /* margin-left: 140px; */
-    
-        /* left: 80%;
-      right: 0; */
-    
     }
 
 
@@ -218,12 +167,6 @@
     .headingContd {
         font-size: 10vw;
     }
-
-    /* .headingContd:hover {
-        color: #C7FF20;
-        border-color: #C7FF20;
-        cursor: pointer;
-    } */
 
     .textOverlay {
         position: absolute;
