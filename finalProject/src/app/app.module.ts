@@ -30,6 +30,7 @@ import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
