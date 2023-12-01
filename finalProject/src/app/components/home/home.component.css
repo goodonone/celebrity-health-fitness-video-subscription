@@ -51,7 +51,6 @@
     padding: 0;
     animation: zoomIn 0.25s;
     animation-iteration-count: infinite;
-    
 }
 
 @keyframes zoomIn{
