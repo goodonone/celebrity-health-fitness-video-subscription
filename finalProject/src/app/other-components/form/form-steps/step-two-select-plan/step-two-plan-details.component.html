@@ -1,0 +1,48 @@
+<ng-container [formGroup]="stepForm">
+    <mat-card class="step-two">
+      <mat-card-header>
+        <mat-card-title-group class="title">
+          <mat-card-title role="heading"
+                          aria-level="1"
+                          class="select">Select your plan</mat-card-title>
+          <mat-card-subtitle role="heading"
+                             aria-level="2">You have the option of monthly or yearly billing.</mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content>
+  
+        <mat-button-toggle-group name="options"
+                                 #group="matButtonToggleGroup"
+                                 aria-label="planOptions"
+                                 [value]="group.value"
+                                 (change)="onPlanChange(group.value)">
+          <mat-button-toggle *ngFor="let plan of planOptions"
+                             [value]="plan.plan"
+                             [checked]="plan.plan === planType"
+                             (click)="updatePlanType(plan.plan, plan.duration[timeFrame].addToTotal)">
+  
+            <div class="plan">
+              <img mat-card-image
+                   src="{{ plan.icon }}"
+                   alt="plan-icon" />
+              <div class="details">
+                <span class="plan_title">{{plan.plan | titlecase}}</span>
+                <span class="price">{{ plan.duration[timeFrame].price }}</span>
+                <span class="promo">{{ plan.duration[timeFrame].promo }}</span>
+              </div>
+            </div>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+  
+        <div class="toggle-area">
+          <div class="toggle">
+            <label [ngClass]="{'checked':checked}">Monthly</label>
+            <mat-slide-toggle [checked]="checked"
+                              (change)="toggleDuration()">
+            </mat-slide-toggle>
+            <label [ngClass]="{'checked':!checked}">Yearly</label>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>

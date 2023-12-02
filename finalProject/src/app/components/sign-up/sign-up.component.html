@@ -5,7 +5,7 @@
             </div>
             <div class="overlayTwo">
                 <div class="textContainer">
-                    <h1 class="otherText" routerLink="/signup">You're in <br> the <br> right <br> place.</h1>
+                    <h1 class="otherText">You're in <br> the <br> right <br> place.</h1>
                 </div>
             </div>
         </div>
@@ -19,11 +19,29 @@
 
         <mat-card class="card">
             <mat-card-content class="cardContent">
-               <mat-card class="state">
+                <div class="innerCardContainer">
+                    <mat-card class="innerCardOne">
 
-               </mat-card>
-            </mat-card-content>
-        </mat-card>  
+                    </mat-card>
+                    <mat-card class="innerCardTwo">
+                    <p class="alreadyMemberText">Already a Member?<span class="highlight" routerLink="/login"> Log-in</span> here.</p>
+                    </mat-card>
+                </div>
+           </mat-card-content> 
+    </mat-card>  
+
+<!-- <div class="cardContainer">
+    <mat-card class="state">
+
+    </mat-card>
+    <mat-card class="stateTwo">
+
+    </mat-card>
+</div> -->
+
+<!-- <mat-card class="opaqueCard">
+
+</mat-card> -->
         
 
     </div>

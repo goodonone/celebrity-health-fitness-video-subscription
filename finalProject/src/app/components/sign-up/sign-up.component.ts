@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatButtonModule} from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card'
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -18,7 +19,8 @@ import { MatCardModule } from '@angular/material/card'
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCardModule
+    MatCardModule,
+    RouterModule
   ],
 })
 export class SignUpComponent {

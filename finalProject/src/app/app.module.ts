@@ -10,7 +10,7 @@ import { ContactComponent } from './components/contact/contact.component';
 import { ContentComponent } from './components/content/content.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateProfileComponent } from './components/create-profile/create-profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
@@ -25,10 +25,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
-import { CarouselModule } from './Carousel and Video Player etc./carousel/carousel.module';
-import { VideoPlayerModule } from './Carousel and Video Player etc./video-player/video-player.module';
+import { CarouselModule } from './other-components/carousel/carousel.module';
+import { VideoPlayerModule } from './other-components/video-player/video-player.module';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
+import { FormComponent } from './other-components/form/form.component';
 
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import { MaterialModule } from './material.module';
+import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
+import { StepFourSummaryComponent } from './other-components/form/form-steps/step-four-summary/step-four-summary.component';
+import { StepOnePersonalInfoComponent } from './other-components/form/form-steps/step-one-personal-info/step-one-personal-info.component';
+import { StepThreeAddOnsComponent } from './other-components/form/form-steps/step-three-add-ons/step-three-add-one.component';
+import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
+import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
+import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +55,14 @@ import { MatStepperModule } from '@angular/material/stepper';
     SignInComponent,
     SearchComponent,
     StoreComponent,
+    FormComponent,
+    StepOnePersonalInfoComponent,
+    StepTwoPlanDetailsComponent,
+    StepThreeAddOnsComponent,
+    StepFourSummaryComponent,
+    StepFiveConfimComponent,
+    StepTrackerIconsComponent,
+    ProgressionButtonsComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,7 +80,9 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatGridListModule,
     CarouselModule,
     VideoPlayerModule,
-    MatStepperModule
+    MatStepperModule,
+    ReactiveFormsModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

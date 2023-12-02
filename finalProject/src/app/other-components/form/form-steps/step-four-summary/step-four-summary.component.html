@@ -1,0 +1,60 @@
+<mat-card class="step-four">
+    <mat-card-header>
+      <mat-card-title-group class="title">
+        <mat-card-title role="heading"
+                        aria-level="1">Finishing up</mat-card-title>
+        <mat-card-subtitle role="heading"
+                           aria-level="2">Double-check everything looks OK before confirming.</mat-card-subtitle>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <table>
+        <th>
+          <tr>
+            <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.duration | titlecase}})
+              <button mat-button class="btn-change"
+                      (click)="changePlan()">Change</button>
+  
+            </div>
+            <div class="cost">${{planDetails.planCost}}/{{planDetails.duration === 'monthly' ? 'mo' : 'yr'}}</div>
+          </tr>
+  
+        </th>
+        <mat-divider></mat-divider>
+        <ng-container *ngIf="addOnDetails.service">
+          <tr>
+            <div class="service">Online Service </div>
+            <div class="service_cost"> +${{addOnDetails.serviceCost }}/{{planDetails.duration === 'monthly' ? 'mo' :
+              'yr'}}</div>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="addOnDetails.storage">
+          <tr>
+            <div class="service">
+              Larger Storage </div>
+            <div class="service_cost"> +${{addOnDetails.storageCost}}/{{planDetails.duration === 'monthly' ? 'mo' :
+              'yr'}}</div>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="addOnDetails.customization">
+          <tr>
+            <div class="service">
+              Customizable Profile </div>
+            <div class="service_cost"> +${{addOnDetails.customizationCost}}/{{planDetails.duration === 'monthly' ? 'mo' :
+              'yr'}}</div>
+          </tr>
+        </ng-container>
+  
+  
+      </table>
+  
+      <div class="total">
+        <div>Total (per {{planDetails.duration === 'monthly' ? 'month' :
+          'year'}})</div>
+        <div class="cost">${{planDetails.totalCost }}/{{planDetails.duration === 'monthly' ? 'mo' :
+          'yr'}}</div>
+      </div>
+  
+  
+    </mat-card-content>
+  </mat-card>

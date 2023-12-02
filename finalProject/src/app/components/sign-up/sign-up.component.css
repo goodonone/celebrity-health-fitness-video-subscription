@@ -114,31 +114,88 @@
     position: absolute;
     top: 45%;
     bottom: 100%;
-    left: 1%;
+    left: 1.5%;
     z-index: 1;
     width: 35vw;
 }
 
 .card {
     position: absolute;
-    background-color: white;
+    background-color: #C7FF20;
     /* opacity: 93%; */
-    opacity: 80%;
+    /* opacity: 75%; */
     left: 40%;
     /* right: 190px; */
     top: 18%;
     height: 700px;
     width: 900px;
     border-radius: 8px;
+    /* -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px); */
+    opacity: 85%;
+    /* animation: fade-in 2s linear;
+    animation-delay: 8s;
+    opacity: 0;
+    animation-fill-mode:none; */
 }
 
-.state{
-    display:flex;
-    height: 670px;
-    width: 300px;
-    background-color: black;
-    opacity:initial;
+/* .card::after{
+    opacity: 0.5;
+} */
+
+.innerCardContainer{
+    display: flex;
+    justify-content: space-between;
+    
 }
+
+
+
+.innerCardOne{
+    display:flex;
+    justify-content: space-between;
+    height: 670px;
+    width: 250px;
+    background-color: black;
+    /* opacity: 93%; */
+    /* padding: 0;/ */
+    /* margin-left:-15.7px;
+    margin-top: -15.7px; */
+    /* top: 19.6%;
+    left: 40.9%; */
+    /* padding-right: 30px;/ */
+    /* /* opacity:100%; */
+     /* background:rgba(22, 22, 22, 0.6); */
+}
+
+.innerCardTwo{
+    display:flex;
+    position: relative;
+    justify-content: space-between;
+    height: 670px;
+    width: 603px;
+    /* background-color: rgb(47, 45, 45); */
+    background-color: white;
+    opacity: 100%;
+    /* top: 19.6%;
+    left: 40.9%; */
+    /* padding-right: 30px;/ */
+    /* /* opacity:100%; */
+     /* background:rgba(22, 22, 22, 0.6); */
+
+}
+
+/* .stateTwo{
+        display:absolute;
+        height: 670px;
+        width: 500px;
+        background-color: #C7FF20;;
+        top: 19.6%;
+        left: 45.9%;
+} */
 
 /* mat-stepper {
     background-color: black;
@@ -146,4 +203,45 @@
 
 mat-step-icon-state-number {
     color: none;
+} */
+
+
+/* .cardContainer{
+    display: flex;
+    /* justify-content: space-around; */
+    
+/* } */
+
+.alreadyMemberText{
+   position: absolute;
+   top:88%;
+   left:33%;
+   right: 0;
+   /* bottom: 5%; */
+   /* color: white; */
+   cursor: pointer;
+   /* z-index: 2; */
+   padding: 0;
+   z-index: 100;
+}
+
+.alreadyMemberText p{
+    color: black;
+}
+
+.highlight{
+    font-weight: bold;
+    color:black;
+}
+
+/* .opaqueCard{
+    display:flex;
+    position: absolute;
+    justify-content: right;
+    height: 670px;
+    width: 603px;
+    background-color: rgb(47, 45, 45);
+    opacity: 100%;
+    left: 56.4%;
+    top: 19.5%;
 } */
