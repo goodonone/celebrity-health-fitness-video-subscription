@@ -1,4 +1,10 @@
-<div *ngFor="let video of videos" >
+
+
+
+
+<div>
+  <h1>Interested</h1>
+<div *ngFor="let video of iVideos" >
     <div >
       <div >
         <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -10,3 +16,38 @@
       </div>
     </div>
   </div>
+</div>  
+
+<div>
+  <h1>Motivated</h1>
+<div *ngFor="let video of mVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a [href]="'https://www.youtube.com/watch?v=' + video.id.videoId" target="_blank">{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div>
+  <h1>All In</h1>
+<div *ngFor="let video of aVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a [href]="'https://www.youtube.com/watch?v=' + video.id.videoId" target="_blank">{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>  
+
+
