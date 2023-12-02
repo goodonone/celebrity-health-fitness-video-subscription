@@ -15,7 +15,6 @@ import { CreateProfileComponent } from './components/create-profile/create-profi
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
-import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,6 +27,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './Carousel and Video Player etc./carousel/carousel.module';
 import { VideoPlayerModule } from './Carousel and Video Player etc./video-player/video-player.module';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({
@@ -42,7 +42,6 @@ import { VideoPlayerModule } from './Carousel and Video Player etc./video-player
     EditProfileComponent,
     NotFoundComponent,
     SignInComponent,
-    SignUpComponent,
     SearchComponent,
     StoreComponent,
   ],
@@ -62,6 +61,7 @@ import { VideoPlayerModule } from './Carousel and Video Player etc./video-player
     MatGridListModule,
     CarouselModule,
     VideoPlayerModule,
+    MatStepperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

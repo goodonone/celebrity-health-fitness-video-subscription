@@ -1,3 +1,149 @@
-.test{
+.background {
+    position: relative;
+    margin-top: -80px;
+    width: 100%;
     height: 100vh;
+    overflow: hidden;
 }
+
+.videoBackground {
+    /* transform: scale(130%, 130%); */
+    position: absolute;
+    /* overflow: hidden; */
+    object-fit: fill;
+    z-index: 0;
+    /* background-size: 100% 100%; */
+    background-size: cover;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    margin-bottom: 5%;
+}
+
+/* p{
+    color: white;
+} */
+
+/* .video{
+    position: absolute;
+    z-index: 1; */
+/* background: url("src/assets/Videos/AdobeStock_167036386_Video_HD_Preview.mp4") no-repeat; */
+/* background-size: 100% 100%;
+    top: 0px;
+    left: 0px; fixed to left. Replace it by right if you want.
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+} */
+
+
+.overlay {
+    position: absolute;
+    top: 30%;
+    bottom: 45%;
+    left: 15%;
+    right: 0;
+    margin: auto;
+    z-index: 1;
+}
+
+
+.textContainer {
+    display: inline-flex;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.welcome {
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    font-size: 5vw;
+    margin: 0;
+    padding: 0;
+    animation: fade-in 2s linear;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 100;
+    }
+
+    /* to{
+            opacity: 0;
+        } */
+}
+
+.otherText {
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    margin: auto;
+    justify-content: center;
+    color: white;
+    font-size: 5vw;
+    margin: 0 0 0 -5px;
+    padding: 0;
+    animation: zoomIn 0.25s;
+    animation-iteration-count: infinite;
+    line-height: 5vw;
+    animation: fade-in-two 2s linear;
+    animation-delay: 3s;
+    opacity: 0;
+    animation-fill-mode: both;
+}
+
+@keyframes fade-in-two {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.overlayTwo {
+    position: absolute;
+    top: 45%;
+    bottom: 100%;
+    left: 1%;
+    z-index: 1;
+    width: 35vw;
+}
+
+.card {
+    position: absolute;
+    background-color: white;
+    /* opacity: 93%; */
+    opacity: 80%;
+    left: 40%;
+    /* right: 190px; */
+    top: 18%;
+    height: 700px;
+    width: 900px;
+    border-radius: 8px;
+}
+
+.state{
+    display:flex;
+    height: 670px;
+    width: 300px;
+    background-color: black;
+    opacity:initial;
+}
+
+/* mat-stepper {
+    background-color: black;
+}
+
+mat-step-icon-state-number {
+    color: none;
+} */
