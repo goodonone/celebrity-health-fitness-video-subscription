@@ -18,7 +18,7 @@
   </div>
 </div>  
 
-<div>
+<div *ngIf="currentUser?.tier === 'motivated' || currentUser?.tier === 'allin'">
   <h1>Motivated</h1>
 <div *ngFor="let video of mVideos" >
     <div >
@@ -34,7 +34,7 @@
   </div>
 </div>  
 
-<div>
+<div *ngIf="currentUser?.tier === 'allin'">
   <h1>All In</h1>
 <div *ngFor="let video of aVideos" >
     <div >

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { YoutubeService } from 'src/app/services/youtube.service';
 import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-content',
@@ -15,13 +16,23 @@ export class ContentComponent implements OnInit{
   mVideos: any[] = [];
   aVideos: any[] = [];
   currentUser: User = new User;
+  userId: string = "";
 
-  constructor(private youTubeService: YoutubeService, private router: Router, private _sanitizer: DomSanitizer) { }
+  constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit() { 
+    const routeId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+     
+    this.userId = routeId;
+
+    this.userService.getUser(this.userId).subscribe( user => {
+      this.currentUser = user
+    });
+
     this.listOfInterested();
     this.listOfMotivated();
     this.listOfAllIn();
+
   }
 
   listOfInterested() {
