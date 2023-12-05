@@ -1,18 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { YoutubeService } from 'src/app/services/youtube.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.css']
 })
-export class ContentComponent {
+export class ContentComponent implements OnInit{
 
   iVideos: any[] = [];
   mVideos: any[] = [];
   aVideos: any[] = [];
+  currentUser: User = new User;
 
   constructor(private youTubeService: YoutubeService, private router: Router, private _sanitizer: DomSanitizer) { }
 
@@ -45,7 +47,7 @@ export class ContentComponent {
     console.log('Calling listOfMotivated');
     this.mVideos = [];
     this.youTubeService
-      .mgetVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "4")
+      .mgetVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
       .subscribe((mlist: any) => {
         for (const melement of mlist.items) {
           const mvideoURL = 'https://www.youtube.com/embed/' + melement.id.videoId;
