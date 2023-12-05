@@ -6,7 +6,7 @@
                           aria-level="1"
                           class="select">Select your plan</mat-card-title>
           <mat-card-subtitle role="heading"
-                             aria-level="2">You have the option of monthly or yearly billing.</mat-card-subtitle>
+                             aria-level="2">Choose between Monthly & Yearly Plans</mat-card-subtitle>
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content>
@@ -19,7 +19,7 @@
           <mat-button-toggle *ngFor="let plan of planOptions"
                              [value]="plan.plan"
                              [checked]="plan.plan === planType"
-                             (click)="updatePlanType(plan.plan, plan.duration[timeFrame].addToTotal)">
+                             (click)="updatePlanType(plan.plan, plan.billing[billing].addToTotal)">
   
             <div class="plan">
               <img mat-card-image
@@ -27,8 +27,8 @@
                    alt="plan-icon" />
               <div class="details">
                 <span class="plan_title">{{plan.plan | titlecase}}</span>
-                <span class="price">{{ plan.duration[timeFrame].price }}</span>
-                <span class="promo">{{ plan.duration[timeFrame].promo }}</span>
+                <span class="price">{{ plan.billing[price] }}</span>
+                <span class="promo">{{ plan.billing[billing].promo }}</span>
               </div>
             </div>
           </mat-button-toggle>
@@ -45,4 +45,4 @@
         </div>
       </mat-card-content>
     </mat-card>
-  </ng-container>
+</ng-container>

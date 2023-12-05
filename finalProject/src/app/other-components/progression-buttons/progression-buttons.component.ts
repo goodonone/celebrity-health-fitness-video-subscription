@@ -9,7 +9,7 @@ import { FormService } from '../form/form.service';
 })
 export class ProgressionButtonsComponent implements OnInit {
   stepForm!: FormGroup;
-  activeStep$: number | undefined;
+  activeStep$: number = 0;
 
   constructor(private formService: FormService) { }
 
@@ -29,7 +29,6 @@ export class ProgressionButtonsComponent implements OnInit {
     } else {
       this.formService.goToNextStep(this.activeStep$);
     }
-
 
 
   }

@@ -19,10 +19,10 @@ export class FormService {
 
     }),
     planDetails: this.fb.group({
-      plan: ['arcade', [Validators.required]],
-      duration: ['monthly', [Validators.required]],
-      planCost: [9],
-      totalCost: [9]
+      plan: ['Just Looking', [Validators.required]],
+      duration: ['', [Validators.required]],
+      planCost: [],
+      totalCost: []
     }),
     addOnDetails: this.fb.group({
       service: [false],

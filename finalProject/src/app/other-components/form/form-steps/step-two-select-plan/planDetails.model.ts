@@ -1,42 +1,69 @@
+// interface Plan2{
+//   plan: string;
+//   icon: string;
+//   duration: string;
+//   price: string;
+//   addToTotal: number;
+//   promo: string;
+// }
+
+// export const planOptions2: Plan2[] = [
+//   {
+//     plan: 'monthly',
+//     icon: '/assets/images/icon-arcade.svg',
+//     duration: 'monthly',
+//     price: '$9/mo',
+//     addToTotal: 9,
+//     promo: '',
+//   },
+//   {
+//     plan: 'yearly',
+//     icon: '/assets/images/icon-arcade.svg',
+//     duration: 'yearly',
+//     price: '$90/yr',
+//     addToTotal: 90,
+//     promo: '2 months free',
+//   },
+// ];
+
 class Plan {
-    plan: string;
-    icon: string;
-    duration: {
+    plan: string = "";
+    icon: string = "";
+    billing: {
       monthly: {
         price: string;
         addToTotal: number;
         promo: string;
-      }
+      };
       yearly: {
         price: string;
         addToTotal: number;
         promo: string;
-      },
-    }
-  
+      };
+    } | undefined
   }
   
   export const planOptions: Plan[] = [
     {
-      plan: 'arcade',
+      plan: 'Just Looking',
       icon: '/assets/images/icon-arcade.svg',
-      duration: {
+      billing: {
         monthly: {
-          price: '$9/mo',
-          addToTotal: 9,
+          price: 'Free',
+          addToTotal: 0,
           promo: '',
         },
         yearly: {
-          price: '$90/yr',
-          addToTotal: 90,
-          promo: '2 months free',
+          price: '0',
+          addToTotal: 0,
+          promo: '',
         },
-      },
+      } ,
     },
     {
-      plan: 'advanced',
+      plan: 'Motivated',
       icon: '/assets/images/icon-advanced.svg',
-      duration: {
+      billing: {
         monthly: {
           price: '$12/mo',
           addToTotal: 12,
@@ -50,19 +77,20 @@ class Plan {
       },
     },
     {
-      plan: 'pro',
+      plan: 'All In!',
       icon: '/assets/images/icon-pro.svg',
-      duration: {
+      billing: {
         monthly: {
-          price: '$15/mo',
-          addToTotal: 15,
+          price: '$20/mo',
+          addToTotal: 20,
           promo: '',
         },
         yearly: {
-          price: '$150/yr',
-          addToTotal: 150,
+          price: '$200/yr',
+          addToTotal: 200,
           promo: '2 months free',
         },
       },
     },
   ];
+

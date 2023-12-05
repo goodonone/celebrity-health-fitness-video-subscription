@@ -11,8 +11,8 @@ import { planOptions } from './planDetails.model';
 export class StepTwoPlanDetailsComponent implements OnInit {
 
   stepForm!: FormGroup;
-  planType: string = 'arcade' || 'advanced' || 'pro';
-  timeFrame: string = 'monthly' || 'yearly';
+  planType: string = 'Just Looking' || 'Motivated' || 'All In!';
+  billing: string = 'monthly' || 'yearly';
   totalCost: number = 0;
   checked = false;
   planOptions = planOptions;
@@ -21,18 +21,18 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
-    this.timeFrame = this.stepForm.controls['duration'].value || 'monthly';
-    this.checked = this.timeFrame === 'monthly' ? false : true;
-    this.planType = this.planType || 'arcade';
+    this.billing = this.stepForm.controls['duration'].value || 'monthly';
+    this.checked = this.billing === 'monthly' ? false : true;
+    this.planType = this.planType || 'Just Looking';
   }
 
   public onPlanChange(plan: string) {
     this.planType = plan;
   }
 
-  updatePlanType(plan: string, cost?: number) {
-    this.planType = plan;
-    this.totalCost = cost
+  updatePlanType(plan: string, cost: number) {
+    this.planType = plan;``
+    this.totalCost = cost;
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,
@@ -41,21 +41,21 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   }
 
   updateDuration() {
-    const planDetails = this.planOptions[this.planOptions.findIndex(p => p.plan == this.planType)].duration[this.timeFrame];
+    const planDetails = this.planOptions?[this.planOptions.findIndex(p => p.plan == this.planType)].billing[this.billing]: undefined;
+    // const planDetails = this.planOptions.plan.billing[this.billing];
     this.stepForm.patchValue({
       plan: this.planType
     })
     if (this.checked === false) {
       this.stepForm.patchValue({
-        duration: 'monthly',
+        billing: 'monthly',
         planCost: planDetails.addToTotal,
         totalCost: planDetails.addToTotal
       })
 
-
     } if (this.checked === true) {
       this.stepForm.patchValue({
-        duration: 'yearly',
+        billing: 'yearly',
         planCost: planDetails.addToTotal,
         totalCost: planDetails.addToTotal
       })
@@ -65,11 +65,11 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   toggleDuration() {
     this.checked = !this.checked;
     if (this.checked === false) {
-      this.timeFrame = 'monthly'
+      this.billing = 'monthly'
       this.updateDuration();
     }
     if (this.checked === true) {
-      this.timeFrame = 'yearly';
+      this.billing = 'yearly';
       this.updateDuration();
     }
   }
