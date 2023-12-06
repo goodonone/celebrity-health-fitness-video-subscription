@@ -21,11 +21,11 @@ export class ContentComponent implements OnInit{
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit() { 
-    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userService.getUser(userId).subscribe(user => {
-      this.currentUser = user;
-      console.log(user);
-    });
+    // const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    // this.userService.getUser(userId).subscribe(user => {
+    //   this.currentUser = user;
+    //   console.log(user);
+    // });
 
     this.listOfInterested();
     this.listOfMotivated();
@@ -33,63 +33,97 @@ export class ContentComponent implements OnInit{
 
   }
 
-  listOfInterested() {
-    this.iVideos = [];
+  getVideos(channelId: string, maxResult: string, videoArray: any[]): void {
+    videoArray.length = 0;
+
     this.youTubeService
-      .getVideosForChanel('UCiP6wD_tYlYLYh3agzbByWQ', "1")
-      .subscribe((list: any) => {
-        for (const element of list.items) {
-          const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
-          const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-          element.sanitizedURL = sanitizedURL;
-          this.iVideos.push(element);
-        }
-      },
-      error => {
-        console.log('Error: ', error)
-        if (error.status === 404 || error.status === 402) 
-        this.router.navigate(['notfound']);
-      });
+    .getVideosForChanel(channelId, maxResult)
+    .subscribe((list: any) => {
+      for (const element of list.items) {
+        const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
+        const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+        element.sanitizedURL = sanitizedURL;
+        videoArray.push(element);
+      }
+    },
+    error => {
+      console.log('Error: ', error)
+      if (error.status === 404 || error.status === 402) 
+      this.router.navigate(['notfound']);
+    });
+
+  }
+
+  listOfInterested() {
+    this.getVideos('UCiP6wD_tYlYLYh3agzbByWQ', "10" , this.iVideos);
   }
 
   listOfMotivated() {
-    console.log('Calling listOfMotivated');
-    this.mVideos = [];
-    this.youTubeService
-      .mgetVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
-      .subscribe((mlist: any) => {
-        for (const melement of mlist.items) {
-          const mvideoURL = 'https://www.youtube.com/embed/' + melement.id.videoId;
-          const msanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(mvideoURL);
-          melement.sanitizedURL = msanitizedURL;
-          this.mVideos.push(melement);
-        }
-      },
-      error => {
-        console.log('Error: ', error)
-        if (error.status === 404 || error.status === 402) 
-        this.router.navigate(['notfound']);
-      });
+    this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "1", this.mVideos);
   }
 
   listOfAllIn() {
-    this.aVideos = [];
-    this.youTubeService
-      .getVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
-      .subscribe((list: any) => {
-        for (const element of list.items) {
-          const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
-          const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-          element.sanitizedURL = sanitizedURL;
-          this.aVideos.push(element);
-        }
-      },
-      error => {
-        console.log('Error: ', error)
-        if (error.status === 404 || error.status === 402) 
-        this.router.navigate(['notfound']);
-      });
+    this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "1", this.aVideos);
   }
+
+
+  // listOfInterested() {
+  //   this.iVideos = [];
+  //   this.youTubeService
+  //     .getVideosForChanel('UCiP6wD_tYlYLYh3agzbByWQ', "1")
+  //     .subscribe((list: any) => {
+  //       for (const element of list.items) {
+  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
+  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+  //         element.sanitizedURL = sanitizedURL;
+  //         this.iVideos.push(element);
+  //       }
+  //     },
+  //     error => {
+  //       console.log('Error: ', error)
+  //       if (error.status === 404 || error.status === 402) 
+  //       this.router.navigate(['notfound']);
+  //     });
+  // }
+
+  // listOfMotivated() {
+  //   console.log('Calling listOfMotivated');
+  //   this.mVideos = [];
+  //   this.youTubeService
+  //     .getVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
+  //     .subscribe((list: any) => {
+  //       for (const element of list.items) {
+  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
+  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+  //         element.sanitizedURL = sanitizedURL;
+  //         this.mVideos.push(element);
+  //       }
+  //     },
+  //     error => {
+  //       console.log('Error: ', error)
+  //       if (error.status === 404 || error.status === 402) 
+  //       this.router.navigate(['notfound']);
+  //     });
+  // }
+
+  // listOfAllIn() {
+  //   this.aVideos = [];
+  //   this.youTubeService
+  //     .getVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
+  //     .subscribe((list: any) => {
+  //       for (const element of list.items) {
+  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
+  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+  //         element.sanitizedURL = sanitizedURL;
+  //         this.aVideos.push(element);
+  //       }
+  //     },
+  //     error => {
+  //       console.log('Error: ', error)
+  //       if (error.status === 404 || error.status === 402) 
+  //       this.router.navigate(['notfound']);
+  //     });
+  // }
 
   
 

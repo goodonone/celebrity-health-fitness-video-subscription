@@ -28,7 +28,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
-import { PaymentComponent } from './models/payment/payment.component';
+import { PaymentComponent } from './components/payment/payment.component';
 
 
 
