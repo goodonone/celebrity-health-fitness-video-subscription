@@ -16,17 +16,15 @@ export class ContentComponent implements OnInit{
   mVideos: any[] = [];
   aVideos: any[] = [];
   currentUser: User = new User;
-  userId: string = "";
+  
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit() { 
-    const routeId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-     
-    this.userId = routeId;
-
-    this.userService.getUser(this.userId).subscribe( user => {
-      this.currentUser = user
+    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userService.getUser(userId).subscribe(user => {
+      this.currentUser = user;
+      console.log(user);
     });
 
     this.listOfInterested();
