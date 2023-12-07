@@ -5,7 +5,7 @@ import { FormService } from '../form/form.service';
 @Component({
   selector: 'app-progression-buttons',
   templateUrl: './progression-buttons.component.html',
-  styleUrls: ['./progression-buttons.component.scss']
+  styleUrls: ['./progression-buttons.component.css']
 })
 export class ProgressionButtonsComponent implements OnInit {
   stepForm!: FormGroup;

@@ -36,7 +36,6 @@ import { MaterialModule } from './material.module';
 import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
 import { StepFourSummaryComponent } from './other-components/form/form-steps/step-four-summary/step-four-summary.component';
 import { StepOnePersonalInfoComponent } from './other-components/form/form-steps/step-one-personal-info/step-one-personal-info.component';
-import { StepThreeAddOnsComponent } from './other-components/form/form-steps/step-three-add-ons/step-three-add-one.component';
 import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
 import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
@@ -58,7 +57,6 @@ import { ProgressionButtonsComponent } from './other-components/progression-butt
     FormComponent,
     StepOnePersonalInfoComponent,
     StepTwoPlanDetailsComponent,
-    StepThreeAddOnsComponent,
     StepFourSummaryComponent,
     StepFiveConfimComponent,
     StepTrackerIconsComponent,

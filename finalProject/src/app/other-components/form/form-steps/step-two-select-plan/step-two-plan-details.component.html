@@ -19,16 +19,15 @@
           <mat-button-toggle *ngFor="let plan of planOptions"
                              [value]="plan.plan"
                              [checked]="plan.plan === planType"
-                             (click)="updatePlanType(plan.plan, plan.billing[billing].addToTotal)">
-  
+                             (click)="updatePlanType(plan.plan, plan.billing[typeOfBilling].addToTotal)">
             <div class="plan">
               <img mat-card-image
                    src="{{ plan.icon }}"
                    alt="plan-icon" />
               <div class="details">
                 <span class="plan_title">{{plan.plan | titlecase}}</span>
-                <span class="price">{{ plan.billing[price] }}</span>
-                <span class="promo">{{ plan.billing[billing].promo }}</span>
+                <span class="price">{{ plan.billing[typeOfBilling].price }}</span>
+                <span class="promo">{{ plan.billing[typeOfBilling].promo }}</span>
               </div>
             </div>
           </mat-button-toggle>
