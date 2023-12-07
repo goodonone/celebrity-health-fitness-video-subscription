@@ -25,3 +25,14 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
+Youtube Api Key: AIzaSyC8HgZeANMbvGWteITQtnQFocK4Qbfa1rk
+
+Youtube channel ID: UCiP6wD_tYlYLYh3agzbByWQ
+
+Youtube Uploads: UUiP6wD_tYlYLYh3agzbByWQ
+
+url https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=20&playlistId=UUiP6wD_tYlYLYh3agzbByWQ&key=AIzaSyC8HgZeANMbvGWteITQtnQFocK4Qbfa1rk
+
+

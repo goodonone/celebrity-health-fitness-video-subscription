@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
+
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormComponent } from './other-components/form/form.component';
