@@ -1,5 +1,16 @@
-<div class="test">
-<p>test</p>
-</div>
-
-<p>sign-up works!</p>
+<form (ngSubmit)="signUp()">
+    <h1>REGISTER</h1>
+    
+    <span>Name  </span>
+    <input placeholder="Enter Last Name" type="text" name="name" [(ngModel)]="newUser.name"><br><br>
+    <span>Email  </span>
+    <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="newUser.email"><br><br>
+    <span>Password  </span>
+    <input placeholder="Enter Password" type="text" name="password" [(ngModel)]="newUser.password"><br><br>
+    <span>Tier  </span>
+    <input placeholder="Enter Tier" type="text" name="tier" [(ngModel)]="newUser.tier"><br><br>
+    
+    <button>
+      Sign Up
+    </button>
+</form>

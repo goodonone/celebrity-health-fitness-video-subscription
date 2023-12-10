@@ -9,23 +9,23 @@ import { Observable, tap } from 'rxjs';
 })
 export class UserService {
 
-  baseURL: string = "https://localhost:7025"
+  baseURL: string = "http://localhost:3000/api/users"
   tokenKey: string = "myVideoToken";
 
   constructor(private http: HttpClient) { }
 
   signUp(newUser: User) {
-    return this.http.post(`${this.baseURL}/register`, newUser)
+    return this.http.post(`${this.baseURL}/`, newUser)
 }
 
-login(email: string, password: string) {
-  let queryParams = new HttpParams();
-  queryParams = queryParams.append('email', email);
-  queryParams = queryParams.append('password', password);
 
-  return this.http.get(`${this.baseURL}/login`,  { params: queryParams, responseType: 'text' })
+
+login(email: string, password: string){
+  let request = { email, password };
+
+  return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
-      localStorage.setItem(this.tokenKey, response);
+      localStorage.setItem(this.tokenKey, response.token);
     }));
 }
 

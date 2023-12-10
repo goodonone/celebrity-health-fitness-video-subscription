@@ -1,1 +1,15 @@
-<p>sign-in works!</p>
+<form (ngSubmit)="signin()">
+    <h1>LOGIN</h1>
+    <span>Email  </span>
+    <br><br>
+    <input placeholder="Enter email" type="text" name="email" [(ngModel)]="email">
+    <br><br>
+    <span>Password  </span>
+    <br><br>
+    <input placeholder="Enter password" type="password" name="password" [(ngModel)]="password">
+    <br><br>
+    
+    <button>
+      Sign In
+    </button>
+</form>
