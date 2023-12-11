@@ -27,11 +27,8 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
-
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormComponent } from './other-components/form/form.component';
-
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MaterialModule } from './material.module';
 import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
@@ -40,6 +37,9 @@ import { StepOnePersonalInfoComponent } from './other-components/form/form-steps
 import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
 import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -56,12 +56,13 @@ import { ProgressionButtonsComponent } from './other-components/progression-butt
     SearchComponent,
     StoreComponent,
     FormComponent,
+    ProgressionButtonsComponent,
+    SignUpComponent,
+    StepTrackerIconsComponent,
     StepOnePersonalInfoComponent,
     StepTwoPlanDetailsComponent,
     StepFourSummaryComponent,
     StepFiveConfimComponent,
-    StepTrackerIconsComponent,
-    ProgressionButtonsComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,9 +82,10 @@ import { ProgressionButtonsComponent } from './other-components/progression-butt
     VideoPlayerModule,
     MatStepperModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    
   ],
-  providers: [],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

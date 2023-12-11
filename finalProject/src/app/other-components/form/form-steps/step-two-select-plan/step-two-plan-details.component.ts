@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { planOptions } from './planDetails.model';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-step-two-plan-details',
   templateUrl: './step-two-plan-details.component.html',
-  styleUrls: ['./step-two-plan-details.component.css']
+  styleUrls: ['./step-two-plan-details.component.css'],
 })
 
 export class StepTwoPlanDetailsComponent implements OnInit {
@@ -15,7 +16,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   typeOfBilling: string = 'monthly' || 'yearly';
   totalCost: number = 0;
   checked = false;
-  planOptions = planOptions;
+  planOptions: any[] = planOptions;
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -44,7 +45,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     const planIndex = this.planOptions.findIndex(p => p.plan == this.planType);
     console.log(planIndex);
     // return;
-    const planDetails:  any   = this.planOptions?[planIndex]: undefined;
+    const planDetails:  any  = this.planOptions?[planIndex]: undefined;
     const planDetailsBilling = planDetails.billing[this.typeOfBilling];
     // const planDetails = this.planOptions.plan.billing[this.billing];
     this.stepForm.patchValue({

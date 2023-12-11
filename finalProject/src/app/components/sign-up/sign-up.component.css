@@ -121,7 +121,7 @@
 
 .card {
     position: absolute;
-    background-color: #C7FF20;
+    background-color: #000000;
     /* opacity: 93%; */
     /* opacity: 75%; */
     left: 40%;
@@ -135,7 +135,7 @@
     -o-filter: blur(2px);
     -ms-filter: blur(2px);
     filter: blur(2px); */
-    opacity: 85%;
+    opacity: 90%;
     /* animation: fade-in 2s linear;
     animation-delay: 8s;
     opacity: 0;
@@ -159,7 +159,7 @@
     justify-content: space-between;
     height: 670px;
     width: 250px;
-    background-color: black;
+    background-color: #C7FF20;
     /* opacity: 93%; */
     /* padding: 0;/ */
     /* margin-left:-15.7px;
@@ -178,7 +178,7 @@
     height: 670px;
     width: 603px;
     /* background-color: rgb(47, 45, 45); */
-    background-color: white;
+    background-color: rgb(58, 58, 58);
     opacity: 100%;
     /* top: 19.6%;
     left: 40.9%; */
@@ -231,7 +231,7 @@ mat-step-icon-state-number {
 
 .highlight{
     font-weight: bold;
-    color:black;
+    color:#C7FF20;
 }
 
 /* .opaqueCard{

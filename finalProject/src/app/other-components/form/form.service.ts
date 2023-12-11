@@ -15,23 +15,13 @@ export class FormService {
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.minLength(10)]],
-
     }),
     planDetails: this.fb.group({
       plan: ['Just Looking', [Validators.required]],
-      duration: ['', [Validators.required]],
+      billing: ['', [Validators.required]],
       planCost: [],
       totalCost: []
     }),
-    addOnDetails: this.fb.group({
-      service: [false],
-      serviceCost: [0],
-      storage: [false],
-      storageCost: [0],
-      customization: [false],
-      customizationCost: [0],
-    })
   })
 
   get stepForm(): FormGroup {
@@ -47,6 +37,7 @@ export class FormService {
   goBackToPreviousStep(number: number) {
     this.activeStepSubject.next(number - 1);
   }
+
   submit() {
     //TO-DO => validate form
     this.goToNextStep(4);

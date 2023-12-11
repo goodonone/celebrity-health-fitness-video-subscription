@@ -44,12 +44,8 @@
     font-size: 5vw;
     margin: 0 0 0 -5px;
     padding: 0;
-<<<<<<< HEAD
-
-=======
-    animation: zoomIn 0.25s;
-    animation-iteration-count: infinite;
->>>>>>> test
+    /* animation: zoomIn 0.25s;
+    animation-iteration-count: infinite; */
 }
 
 @keyframes zoomIn {

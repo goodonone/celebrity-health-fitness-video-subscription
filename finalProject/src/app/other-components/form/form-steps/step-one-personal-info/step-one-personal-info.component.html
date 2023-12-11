@@ -7,7 +7,7 @@
           <mat-card-subtitle role="heading"
                              aria-level="2"
                              role="heading"
-                             aria-level="2">Please provide your name, email address, and phone number.</mat-card-subtitle>
+                             aria-level="2">Please provide your name and email address, and phone number.</mat-card-subtitle>
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content class="form-controls">
@@ -20,10 +20,12 @@
                  class="error-alert">Name is required</label>
         </div>
         <input type="text"
-               matInput
+        matInput
+               name="name"
                id="name"
+               placeholder="Example: Hugh Jackedman" 
                formControlName="name"
-               placeholder="e.g. Stephen King" />
+               required>
         <!-- email input -->
         <div class="input-details">
           <label for="email">Email Address</label>
@@ -32,23 +34,11 @@
                  class="error-alert">Email is required</label>
         </div>
         <input type="text"
+        matInput
                name="email"
                id="email"
-               placeholder="e.g. stephenking@lorem.com"
+               placeholder="Example: H.Jackedman@lorem.com"
                formControlName="email"
-               required>
-        <!-- phone number input -->
-        <div class="input-details">
-          <label for="phone">Phone Number</label>
-          <label for="error"
-                 *ngIf="this.stepForm.controls['phone'].invalid && this.stepForm.controls['phone'].touched"
-                 class="error-alert">Phone number is required</label>
-        </div>
-        <input type="text"
-               name="phone"
-               id="phone"
-               placeholder="e.g. +1 234 567 890"
-               formControlName="phone"
                required>
       </mat-card-content>
     </mat-card>

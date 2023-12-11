@@ -11,12 +11,12 @@
       <table>
         <th>
           <tr>
-            <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.duration | titlecase}})
+            <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.billing | titlecase}})
               <button mat-button class="btn-change"
                       (click)="changePlan()">Change</button>
   
             </div>
-            <div class="cost">${{planDetails.planCost}}/{{planDetails.duration === 'monthly' ? 'mo' : 'yr'}}</div>
+            <div class="cost">${{planDetails.planCost}}/{{planDetails.billing === 'monthly' ? 'mo' : 'yr'}}</div>
           </tr>
   
         </th>
@@ -49,9 +49,9 @@
       </table>
   
       <div class="total">
-        <div>Total (per {{planDetails.duration === 'monthly' ? 'month' :
+        <div>Total (per {{planDetails.billing === 'monthly' ? 'month' :
           'year'}})</div>
-        <div class="cost">${{planDetails.totalCost }}/{{planDetails.duration === 'monthly' ? 'mo' :
+        <div class="cost">${{planDetails.totalCost }}/{{planDetails.billing === 'monthly' ? 'mo' :
           'yr'}}</div>
       </div>
   
