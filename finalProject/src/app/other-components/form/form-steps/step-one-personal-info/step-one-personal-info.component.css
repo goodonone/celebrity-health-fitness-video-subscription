@@ -4,6 +4,10 @@
   /* @include variables.body-secondary-s; */
 /* } */
 
+/* .step-one{
+  width: 10%;
+} */
+
 input {
   /* @include variables.body-primary-xs; */
   display: inline-block;

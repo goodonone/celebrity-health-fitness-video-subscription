@@ -121,14 +121,14 @@
 
 .card {
     position: absolute;
-    background-color: #000000;
+    /* background-color: #000000; */
     /* opacity: 93%; */
     /* opacity: 75%; */
     left: 40%;
     /* right: 190px; */
     top: 18%;
-    height: 700px;
-    width: 900px;
+    height: 39.5rem;
+    width: 52rem;
     border-radius: 8px;
     /* -webkit-filter: blur(2px);
     -moz-filter: blur(2px);
@@ -153,13 +153,14 @@
 }
 
 
-
+/* 
 .innerCardOne{
     display:flex;
     justify-content: space-between;
     height: 670px;
     width: 250px;
-    background-color: #C7FF20;
+    background-color: #C7FF20; */
+
     /* opacity: 93%; */
     /* padding: 0;/ */
     /* margin-left:-15.7px;
@@ -169,7 +170,8 @@
     /* padding-right: 30px;/ */
     /* /* opacity:100%; */
      /* background:rgba(22, 22, 22, 0.6); */
-}
+
+/* } */
 
 .innerCardTwo{
     display:flex;

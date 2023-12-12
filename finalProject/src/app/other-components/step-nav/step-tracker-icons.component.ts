@@ -5,7 +5,6 @@ import { FormService } from '../form/form.service';
   selector: 'app-step-tracker-icons',
   templateUrl: './step-tracker-icons.component.html',
   styleUrls: ['./step-tracker-icons.component.css'],
-  // standalone: true,
 })
 export class StepTrackerIconsComponent implements OnInit {
 
