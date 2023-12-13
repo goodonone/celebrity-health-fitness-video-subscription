@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: "home", component: HomeComponent },
   { path: "about", component: AboutComponent },
   { path: "contact", component: ContactComponent },
-  { path: "content", component: ContentComponent },
+  { path: "content/:id", component: ContentComponent },
   { path: "create-profile", component: CreateProfileComponent },
   { path: "edit-profile/:id", component: EditProfileComponent },
   { path: "profile/:id", component: ProfileComponent },

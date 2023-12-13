@@ -21,11 +21,11 @@ export class ContentComponent implements OnInit{
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit() { 
-    // const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    // this.userService.getUser(userId).subscribe(user => {
-    //   this.currentUser = user;
-    //   console.log(user);
-    // });
+    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userService.getUser(userId).subscribe(user => {
+      this.currentUser = user;
+      console.log(user);
+    });
 
     this.listOfInterested();
     this.listOfMotivated();

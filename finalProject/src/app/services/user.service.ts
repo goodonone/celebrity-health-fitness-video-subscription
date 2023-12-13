@@ -26,27 +26,39 @@ login(email: string, password: string){
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
       localStorage.setItem(this.tokenKey, response.token);
+      localStorage.setItem('userSignedIn' , response.userId);
     }));
 }
 
-loggedIn() {
-  return !!localStorage.getItem(this.tokenKey)
+isloggedIn() {
+  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem('userSignedIn')
 }
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey)
 }
 
+getUserId() {
+  if (this.isloggedIn()) {
+    return localStorage.getItem('userSignedIn') ?? "";
+
+  }
+  return "undefined";
+}
+
 updateUser(updatedUser: User): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
-    return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser);
+    return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
 
 getUser(userId: string): Observable<User> {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+  }
   console.log(this.baseURL + "/" + userId);
-  return this.http.get<User>(this.baseURL + "/" + userId);
+  return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   
 deleteUser(userId: string) : Observable<any> {
@@ -56,13 +68,5 @@ deleteUser(userId: string) : Observable<any> {
   return this.http.delete<any>(this.baseURL + "/" + userId, {headers: reqHeaders});
 }
 
-// getTier(userId: string): Observable<string> {
-//   let reqHeaders = {
-//     Authorization: `Bearer ${localStorage.getItem('myVideoToken')}`
-//   };
-
-//   return this.http.get<string>(this.baseURL + "/" + "getUserTier" + userId, {headers: reqHeaders});
-
-// }
 }
 
