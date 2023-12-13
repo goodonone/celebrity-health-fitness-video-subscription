@@ -121,25 +121,26 @@
 
 .card {
     position: absolute;
-    /* background-color: #000000; */
+    background-color: #000000;
     /* opacity: 93%; */
     /* opacity: 75%; */
     left: 40%;
     /* right: 190px; */
     top: 18%;
-    height: 39.5rem;
-    width: 52rem;
-    border-radius: 8px;
+    height: 41.5rem;
+    width: 55rem;
+    border-radius: 1.4rem;
     /* -webkit-filter: blur(2px);
     -moz-filter: blur(2px);
     -o-filter: blur(2px);
     -ms-filter: blur(2px);
     filter: blur(2px); */
-    opacity: 90%;
+    opacity: 100%;
     /* animation: fade-in 2s linear;
     animation-delay: 8s;
     opacity: 0;
     animation-fill-mode:none; */
+    z-index: 3;
 }
 
 /* .card::after{
@@ -147,9 +148,8 @@
 } */
 
 .innerCardContainer{
-    display: flex;
-    justify-content: space-between;
-    
+    /* display: flex; */
+    /* justify-content: space-between; */
 }
 
 
@@ -174,13 +174,13 @@
 /* } */
 
 .innerCardTwo{
-    display:flex;
-    position: relative;
+    /* display:flex; */
+    /* position: relative; */
     justify-content: space-between;
-    height: 670px;
-    width: 603px;
+    height: 600px;
+    width: 800px;
     /* background-color: rgb(47, 45, 45); */
-    background-color: rgb(58, 58, 58);
+    background-color: rgb(0, 0, 0);
     opacity: 100%;
     /* top: 19.6%;
     left: 40.9%; */
@@ -216,8 +216,8 @@ mat-step-icon-state-number {
 
 .alreadyMemberText{
    position: absolute;
-   top:88%;
-   left:33%;
+   top:90%;
+   left:57%;
    right: 0;
    /* bottom: 5%; */
    /* color: white; */

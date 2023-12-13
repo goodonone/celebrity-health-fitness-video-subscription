@@ -1,39 +1,74 @@
-
-
 :host {
-  width: 100%;
+  /* width: 100%; */
   position: fixed;
-  bottom: 0;
-  background-color: grey;
+  bottom: 30%;
+  left: 45%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0.5rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
 }
 
 .container {
-  width: 100%;
+  /* width: 100%; */
   height: 72px;
-  width: 21.5rem;
+  width: 28.5rem;
   /* @include variables.flexSpaceBetween(row); */
-  padding: 0;
+  padding: 2rem;
+  /* padding-left: 10rem; */
+}
+
+.btn {
+  /* position: fixed;
+top: 50%; */
+  padding: 0.3rem;
+  border-radius: 6px;
 }
 
 .btn-next,
 .btn-confirm {
+  /* position: fixed;
+  top: 60%; */
   margin: 1rem 0 1rem auto;
+  /* margin: 0 0 0 260px; */
 }
 
 .btn-confirm {
-  background-color: blueviolet;
+  background-color: #C7FF20;
+  color: black;
 }
 
+a {
+  /* padding-top: 8rem; */
+  position: absolute;
+    top: 20%;
+    right: 84%;
+  padding: 0.2rem;
+  cursor: pointer;
+}
 
-.btn-next:disabled, .btn-confirm:disabled{
-  background-color: blue
+a:hover {
+  /* position: absolute;
+    top: 20%;
+    right: 84%; */
+  /* background-color: rgb(185, 185, 185);
+  border-color: rgb(105, 105, 105);
+  padding: 5px;
+  border-radius: 6px;*/
+    text-shadow: 0 0 7px #71BBF5;
+  }
+
+.btn-next:disabled,
+.btn-confirm:disabled {
+  background-color: rgb(174, 174, 174);
+  border-color: rgb(174, 174, 174);
+  color: rgb(113, 113, 113);
 }
 
 @media (min-width: 37.5em) {
   :host {
     width: 28.125em;
     position: relative;
-
   }
 
   .container {
@@ -43,6 +78,14 @@
 
   .btn-next,
   .btn-confirm {
-    margin: 0 0 0 auto;
+    position: absolute;
+    top: 0%;
+    right: 12%;
+    /* margin: 0 0 0 20rem; */
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
   }
+
+
 }

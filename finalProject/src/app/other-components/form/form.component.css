@@ -3,11 +3,15 @@
     background: rgb(255, 255, 255);
     /* box-shadow: 0 1.5rem 2.5rem -1.25rem rgba(0, 0, 0, 0.0951141); */
     border-radius: 1rem;
-    padding: 1rem;
+    /* padding: 1rem; */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
     /* margin: auto auto; */
     /* @include variables.flexSpaceBetween(row); */
-    height: 39.5rem;
+    height: 37.5rem;
     width: 52rem;
+    margin-right: 5px;
     /* margin-right: 50%; */
   }
 
@@ -18,9 +22,17 @@
 
   .row {
     /* @include variables.flexSpaceBetween(row); */
-    width: 100%;
+    width: 20rem;
     height: 37.5rem;
-    /* padding-right: 500px; */
+    background: url("src/assets/Images/alonso-reyes-0HlI76m4jxU-unsplash.jpg");
+    border-radius: 8px;
+    background-size: cover;
+    background-position: 55% 50%;
+    /* 
+    border-color: none;
+    /* zoom: 110%; */
+    /* object-fit:none;
+    background-repeat: no-repeat;  */
   }
 
   .column {
@@ -43,6 +55,7 @@
     display: none;
   }
 
-  app-progress-nav {
+  /* app-progress-nav {
     position: relative;
-  }
+  } */
+

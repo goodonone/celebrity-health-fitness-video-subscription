@@ -28,7 +28,7 @@
 
 class Plan {
     plan: string = "";
-    // icon: string = "";
+    color: string = "";
     billing: {
       monthly: {
         price: string;
@@ -46,7 +46,7 @@ class Plan {
   export const planOptions: Plan[] = [
     {
       plan: 'Just Looking',
-      // icon: '/assets/images/icon-arcade.svg',
+      color: '/assets/images/icon-arcade.svg',
       billing: {
         monthly: {
           price: 'Free',
@@ -62,7 +62,7 @@ class Plan {
     },
     {
       plan: 'Motivated',
-      // icon: '/assets/images/icon-advanced.svg',
+      color: '/assets/images/icon-advanced.svg',
       billing: {
         monthly: {
           price: '$12/mo',
@@ -78,7 +78,7 @@ class Plan {
     },
     {
       plan: 'All In!',
-      // icon: '/assets/images/icon-pro.svg',
+      color: '/assets/images/icon-pro.svg',
       billing: {
         monthly: {
           price: '$20/mo',
