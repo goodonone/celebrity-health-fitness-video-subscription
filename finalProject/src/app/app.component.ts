@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   UserId : string = "";
 
 
-  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService, private changeDetectorRef: ChangeDetectorRef) { 
+  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService) { 
     this.router.events.subscribe((event) =>{
       if(event instanceof NavigationEnd) {
         this.UpdateStatus();
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
     if (this.userIsLoggedIn) {
       this.UserId = this.userService.getUserId() ?? "";
     }
-    this.changeDetectorRef.detectChanges();
+    
   }
 
   logOut() {
