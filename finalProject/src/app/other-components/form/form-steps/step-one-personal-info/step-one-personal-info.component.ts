@@ -5,7 +5,6 @@ import { FormGroup, FormGroupDirective } from '@angular/forms';
   selector: 'app-step-one-personal-info',
   templateUrl: './step-one-personal-info.component.html',
   styleUrls: ['./step-one-personal-info.component.css'],
-  // standalone: true,
 })
 
 export class StepOnePersonalInfoComponent implements OnInit {
@@ -17,7 +16,6 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-
   }
 
 

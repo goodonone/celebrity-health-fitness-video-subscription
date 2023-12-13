@@ -10,14 +10,13 @@ export class FormService {
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
-
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
     }),
     planDetails: this.fb.group({
-      plan: ['Just Looking', [Validators.required]],
+      plan: ['', [Validators.required]],
       billing: ['', [Validators.required]],
       planCost: [],
       totalCost: []
@@ -44,7 +43,6 @@ export class FormService {
     setTimeout(() => {
       this.activeStepSubject.next(1);
     }, 8000);
-
   }
 
 
