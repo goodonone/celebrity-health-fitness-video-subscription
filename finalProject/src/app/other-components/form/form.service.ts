@@ -1,15 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
-
-  // change plan to tier everywhere
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
@@ -35,13 +34,11 @@ export class FormService {
     }),
   })
 
-// Change plan to tier
-
   get stepForm(): FormGroup {
     return this.multiStepForm;
   }
 
-  constructor(private fb: FormBuilder, private user: UserService) { }
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router) { }
 
   goToNextStep(number: number) {
     this.activeStepSubject.next(number + 1);
@@ -52,11 +49,34 @@ export class FormService {
   }
 
   submit() {
+    console.log(this.multiStepForm.value);
+    const userInfo = this.multiStepForm.get('personalDetails')?.value;
+    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
+    const planInfo = this.multiStepForm.get('planDetails')?.value;
+    console.log("planDetails" + planInfo.billing + planInfo.plan + planInfo.totalCost);
 
-    const userdata = {}
-    this.user.signUp(userdata);
+    const userData = {
+      name:userInfo.name,
+      password:userInfo.password,
+      email:userInfo.email,
+      tier: planInfo.plan
+    }
 
+    this.user.signUp(userData).subscribe(() => {
+      window.alert("User Registered Successfully");
+      this.router.navigate(['signin']);
+  }, error => {
+      window.alert("User Registration Error");
+      console.log('Error: ', error)
+  });
 
+    const planData = {
+      tier: planInfo.plan,
+      frequency: planInfo.billing,
+      price: planInfo.totalCost
+    }
+
+    // function to send payment to backend;
 
     //TO-DO => validate form
     this.goToNextStep(4);

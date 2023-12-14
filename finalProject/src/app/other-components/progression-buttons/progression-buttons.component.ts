@@ -39,6 +39,5 @@ export class ProgressionButtonsComponent implements OnInit {
 
   confirmAndSubmitForm() {
     this.formService.submit();
-
   }
 }

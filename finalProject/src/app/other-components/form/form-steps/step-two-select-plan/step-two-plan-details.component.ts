@@ -50,7 +50,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     // console.log(planDetailsBilling);
     // const planDetails = this.planOptions.plan.billing[this.billing];
     this.stepForm.patchValue({
-      plan: this.planType
+      plan: this.planType 
     })
     if (this.checked === false) {
       this.stepForm.patchValue({

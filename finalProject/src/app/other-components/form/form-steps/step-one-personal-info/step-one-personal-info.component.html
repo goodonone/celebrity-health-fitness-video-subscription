@@ -42,13 +42,13 @@
                required>
       <!-- password input -->
         <div class="input-details">
-          <label for="email">Password</label>
+          <label for="password">Password</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched"
                  class="error-alert">Enter a Password</label>
         </div>
         <input type="text"
-              matInput
+               matInput
                name="password"
                id="password"
                formControlName="password"

@@ -1,4 +1,4 @@
-<mat-card class="step-four">
+<mat-card class="step-three">
     <mat-card-header>
       <mat-card-title-group class="title">
         <mat-card-title role="heading"
@@ -14,7 +14,6 @@
             <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.billing === 'monthly' ? 'monthly' : 'yearly' | titlecase}})
               <button mat-button class="btn-change"
                       (click)="changePlan()">Change</button>
-  
             </div>
             <div class="cost">${{planDetails.planCost}}/{{planDetails.billing === 'monthly' ? 'mo' : 'yr'}}</div>
           </tr>
@@ -49,8 +48,7 @@
       </table>
   
       <div class="total">
-        <div>Total (per {{planDetails.billing === 'monthly' ? 'month' :
-          'year'}})</div>
+        <div>Total (per {{planDetails.billing === 'monthly' ? 'month' : 'year'}})</div>
         <div class="cost">${{planDetails.totalCost }}/{{planDetails.billing === 'monthly' ? 'mo' :
           'yr'}}</div>
       </div>

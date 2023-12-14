@@ -22,7 +22,7 @@
                              (click)="updatePlanType(plan.plan, plan.billing[typeOfBilling].addToTotal)">
             <div class="plan" id="{{'card' + (i+1)}}" >
               <div class="details">
-                <span class="plan_title">{{plan.plan | titlecase}}</span>
+                <span class="plan_title">{{ plan.plan | titlecase}}</span>
                 <span class="price">{{ plan.billing[typeOfBilling].price }}</span>
                 <span class="promo">{{ plan.billing[typeOfBilling].promo }}</span>
                 <span class="description">{{plan.description}}</span>
