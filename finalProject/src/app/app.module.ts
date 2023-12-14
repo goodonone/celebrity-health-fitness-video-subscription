@@ -40,6 +40,7 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 // import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { StepThreeSummaryComponent } from './other-components/form/form-steps/step-three-summary/step-three-summary.component';
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
+import { UpgradeComponent } from './components/upgrade/upgrade.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { StepFourPaymentComponent } from './other-components/form/form-steps/ste
     StepTwoPlanDetailsComponent,
     StepFiveConfimComponent,
     StepThreeSummaryComponent,
-    StepFourPaymentComponent
+    StepFourPaymentComponent,
+    UpgradeComponent,
   ],
   imports: [
     BrowserModule,

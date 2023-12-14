@@ -13,8 +13,6 @@ export class StepThreeSummaryComponent implements OnInit {
   personalDetails = this.rootFormGroup.form.get('personalDetails') ?.value;
   planDetails = this.rootFormGroup.form.get('planDetails') ?.value;
 // typeOfBilling: any;
-
-
   // addOnDetails = this.rootFormGroup.form.get('addOnDetails').value;
 
   constructor(private rootFormGroup: FormGroupDirective, private formService: FormService) { }

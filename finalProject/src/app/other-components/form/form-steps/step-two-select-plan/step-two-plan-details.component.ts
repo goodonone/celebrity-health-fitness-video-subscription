@@ -15,7 +15,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   planType: string = 'Just Looking' || 'Motivated' || 'All In!';
   typeOfBilling: string = 'monthly' || 'yearly';
   totalCost: number = 0;
-  checked = true;
+  checked: boolean = false;
   planOptions: any[] = planOptions;
 
   constructor(private rootFormGroup: FormGroupDirective) { }
@@ -47,6 +47,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     // return;
     const planDetails:  any  = this.planOptions?[planIndex]: undefined;
     const planDetailsBilling = planDetails.billing[this.typeOfBilling];
+    // console.log(planDetailsBilling);
     // const planDetails = this.planOptions.plan.billing[this.billing];
     this.stepForm.patchValue({
       plan: this.planType

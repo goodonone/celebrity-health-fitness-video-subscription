@@ -79,14 +79,15 @@ background-size: cover;
 
 .plan_title {
   font-size: 1.3rem;
+  font-weight: 700;
   color: black;
   /* @include variables.body-primary-xs; */
 }
 
 .price {
   /* @include variables.body-primary-l; */
-  font-size: .875rem;
-  font-weight: 800;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .promo {
