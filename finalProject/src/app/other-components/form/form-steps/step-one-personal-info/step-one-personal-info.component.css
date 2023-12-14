@@ -18,15 +18,16 @@ input {
   margin-bottom: 1rem;
   padding: 0.5rem 0 0.5rem 1rem;
   color: black;
+  /* background-color: black; */
 }
 
 input:focus,
 input:valid {
-  color: blueviolet;
+  color: rgb(0, 0, 0);
+  background-color: white;
 }
 
 .input-details {
-  /* @include variables.flexSpaceBetween(row); */
   width: 18.437rem;
 }
 

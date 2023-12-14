@@ -1,9 +1,8 @@
-
 .mat-button-toggle-group {
   /* @include variables.flexCenter(column); */
   flex-direction: column !important;
   border: none;
-  width: 18.4rem;
+  width: 20.4rem;
   margin: 0 0 1rem 0;
 }
 
@@ -11,24 +10,24 @@ mat-button-toggle {
   width: 100%;
   height: 4.8rem;
   border-radius: 0.625rem;
-  border: 0.063rem solid greenyellow;
-  /* @include variables.flexCenter(row); */
+  border: 0.063rem solid white;
   margin: 0.5rem 0;
 }
 
 .mat-button-toggle-checked {
-  border: 0.063rem solid blue;
-  background-color: blueviolet;
+  border: 0.063rem solid #C7FF20;
+  background-color: rgb(219, 214, 224);
 }
 
 button .mat-button-toggle-button,
 .plan {
   height: 4.8rem;
-  /* @include variables.flexCenter(row); */
 }
+
 .mat-button-toggle-label-content{
   padding: 0 !important;
 }
+
 .plan {
   padding: 1rem 0;
   width: 100%;
@@ -40,40 +39,66 @@ img {
   margin: auto 1rem auto 0;
 }
 
+#card0{
+background: url('src/assets/Images/JustLooking.svg');
+background-size: cover;
+}
+
+#card1{
+  background: url('src/assets/Images/Motivated.svg');
+  background-size:cover;
+  color: white;
+}
+
+#card1 .plan_title{
+  font-size: 1.3rem;
+  color: white;
+}
+
+#card1 .promo{
+  color: white;
+}
+
+#card2{
+  background: url('src/assets/Images/AllIn.svg');
+  background-size: cover;
+}
+
 .details {
-  height: 4.25rem;
+  height: 8.25rem;
   padding-top: .5rem;
   text-align: left;
-  /* @include variables.flexCenter(column); */
   align-items: flex-start;
   justify-content: flex-start;
   width: 11.5rem;
 }
 
 .details * {
-  display: inline-block;
+  display: block;
 }
 
 .plan_title {
-  color: blue;
+  font-size: 1.3rem;
+  color: black;
   /* @include variables.body-primary-xs; */
 }
 
 .price {
   /* @include variables.body-primary-l; */
   font-size: .875rem;
+  font-weight: 800;
 }
 
 .promo {
   /* @include variables.body-secondary-s; */
-  color: yellow;
+  color: rgb(0, 0, 0);
 }
 
 .toggle-area {
   height: 3rem;
   border-radius: .5rem;
   border-radius: 0.625rem;
-  background-color: yellowgreen;
+  background-color: rgb(214, 214, 214);
   /* @include variables.flexCenter(row); */
 }
 
@@ -86,15 +111,26 @@ img {
 label {
   height: 1rem;
   width: 3.4rem;
-  color: burlywood;
+  color: #C7FF20;
   /* @include variables.body-primary-xs; */
   font-size: .875rem;
 }
 
 .checked {
-  color: goldenrod;
+  color: black;
 }
 
+.mat-button-toggle{
+  color:black;
+}
+
+.mat-slide-toggle-checked{
+  color:#C7FF20;
+}
+
+md-slide-toggle{
+  color:#C7FF20;
+}
 
 @media (min-width: 37.5em) {
 
@@ -102,13 +138,12 @@ label {
     border: none;
     width: 28.125em;
     margin: 1rem 0 2rem 0;
-    /* @include variables.flexSpaceBetween(row); */
     flex-direction: row !important;
   }
 
   mat-button-toggle {
-    width: 8.625rem;
-    height: 10rem;
+    width: 9.625rem;
+    height: 12rem;
     margin-right: 1.125rem;
     /* @include variables.flexSpaceBetween(column); */
     align-items: baseline;

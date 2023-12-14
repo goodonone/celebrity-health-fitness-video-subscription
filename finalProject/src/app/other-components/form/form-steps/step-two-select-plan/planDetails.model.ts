@@ -28,7 +28,7 @@
 
 class Plan {
     plan: string = "";
-    color: string = "";
+    description: string = "";
     billing: {
       monthly: {
         price: string;
@@ -46,7 +46,7 @@ class Plan {
   export const planOptions: Plan[] = [
     {
       plan: 'Just Looking',
-      color: '/assets/images/icon-arcade.svg',
+      description: 'Workouts to get you started',
       billing: {
         monthly: {
           price: 'Free',
@@ -54,7 +54,7 @@ class Plan {
           promo: '',
         },
         yearly: {
-          price: '0',
+          price: 'Free',
           addToTotal: 0,
           promo: '',
         },
@@ -62,7 +62,7 @@ class Plan {
     },
     {
       plan: 'Motivated',
-      color: '/assets/images/icon-advanced.svg',
+      description: 'New Videos Every Week' + 'Recipes to Keep You Going',
       billing: {
         monthly: {
           price: '$12/mo',
@@ -77,8 +77,8 @@ class Plan {
       },
     },
     {
-      plan: 'All In!',
-      color: '/assets/images/icon-pro.svg',
+      plan: 'All In',
+      description: 'Live One-On-Ones' + 'Everything From The Motivated Plan',
       billing: {
         monthly: {
           price: '$20/mo',

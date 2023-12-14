@@ -10,12 +10,8 @@ import { FormService } from '../../form.service';
 export class StepFourSummaryComponent implements OnInit {
   @Input() stepForm!: FormGroup;
 
-  
-
   personalDetails = this.rootFormGroup.form.get('personalDetails') ?.value;
   planDetails = this.rootFormGroup.form.get('planDetails') ?.value;
-
-  
 
   // addOnDetails = this.rootFormGroup.form.get('addOnDetails').value;
 

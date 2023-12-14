@@ -44,7 +44,7 @@ a {
     top: 20%;
     right: 84%;
   padding: 0.2rem;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 a:hover {
@@ -56,6 +56,7 @@ a:hover {
   padding: 5px;
   border-radius: 6px;*/
     text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
   }
 
 .btn-next:disabled,

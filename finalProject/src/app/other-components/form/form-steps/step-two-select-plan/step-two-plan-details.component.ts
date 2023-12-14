@@ -17,6 +17,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   totalCost: number = 0;
   checked = false;
   planOptions: any[] = planOptions;
+  // i?:number;
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -79,5 +80,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     }
   }
 
+  
 
 }

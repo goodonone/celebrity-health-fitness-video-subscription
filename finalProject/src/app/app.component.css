@@ -52,6 +52,7 @@ mat-icon {
 
 h6:hover {
   text-shadow: 0 0 7px #71BBF5;
+  cursor: pointer;
 }
 
 mat-icon:hover {
@@ -67,9 +68,10 @@ mat-icon:hover {
   /* margin-top: 20px; */
   margin-right: 2px;
   border-color: black;
-  background-color: #CBFF4C;
+  background-color: #C7FF20;
   padding-top: 3px;
   margin-bottom: 2px;
+  cursor: pointer;
 }
 
 .formSearch {
