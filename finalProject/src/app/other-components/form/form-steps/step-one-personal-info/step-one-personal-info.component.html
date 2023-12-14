@@ -23,7 +23,7 @@
                matInput
                name="name"
                id="name"
-               placeholder="Example: Hugh Jackedman" 
+               placeholder="Hugh Jackedman" 
                formControlName="name"
                required>
         <!-- email input -->
@@ -37,8 +37,21 @@
               matInput
                name="email"
                id="email"
-               placeholder="Example: H.Jackedman@superlativefitness.com"
+               placeholder="H.Jackedman@superlativefitness.com"
                formControlName="email"
+               required>
+      <!-- password input -->
+        <div class="input-details">
+          <label for="email">Password</label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched"
+                 class="error-alert">Enter a Password</label>
+        </div>
+        <input type="text"
+              matInput
+               name="password"
+               id="password"
+               formControlName="password"
                required>
       </mat-card-content>
     </mat-card>

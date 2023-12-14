@@ -77,7 +77,7 @@ class Plan {
       },
     },
     {
-      plan: 'All In',
+      plan: 'All In!',
       description: 'Live One-On-Ones' + 'Everything From The Motivated Plan',
       billing: {
         monthly: {

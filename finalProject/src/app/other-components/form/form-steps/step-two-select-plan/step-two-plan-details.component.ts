@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { planOptions } from './planDetails.model';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+// import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-step-two-plan-details',
@@ -15,9 +15,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   planType: string = 'Just Looking' || 'Motivated' || 'All In!';
   typeOfBilling: string = 'monthly' || 'yearly';
   totalCost: number = 0;
-  checked = false;
+  checked = true;
   planOptions: any[] = planOptions;
-  // i?:number;
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -42,7 +41,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     })
   }
 
-  updateDuration() {
+  updateBilling() {
     const planIndex = this.planOptions.findIndex(p => p.plan == this.planType);
     console.log(planIndex);
     // return;
@@ -68,18 +67,17 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     }
   }
 
-  toggleDuration() {
+  toggleBilling() {
     this.checked = !this.checked;
     if (this.checked === false) {
       this.typeOfBilling = 'monthly'
-      this.updateDuration();
+      this.updateBilling();
     }
     if (this.checked === true) {
       this.typeOfBilling = 'yearly';
-      this.updateDuration();
+      this.updateBilling();
     }
   }
 
-  
 
 }

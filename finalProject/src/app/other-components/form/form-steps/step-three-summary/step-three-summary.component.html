@@ -11,7 +11,7 @@
       <table>
         <th>
           <tr>
-            <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.billing | titlecase}})
+            <div class="type">{{planDetails.plan | titlecase}} ({{planDetails.billing === 'monthly' ? 'monthly' : 'yearly' | titlecase}})
               <button mat-button class="btn-change"
                       (click)="changePlan()">Change</button>
   

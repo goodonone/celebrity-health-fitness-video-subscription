@@ -39,27 +39,27 @@ img {
   margin: auto 1rem auto 0;
 }
 
-#card0{
+#card1{
 background: url('src/assets/Images/JustLooking.svg');
 background-size: cover;
 }
 
-#card1{
+#card2{
   background: url('src/assets/Images/Motivated.svg');
   background-size:cover;
   color: white;
 }
 
-#card1 .plan_title{
+#card2 .plan_title{
   font-size: 1.3rem;
   color: white;
 }
 
-#card1 .promo{
+#card2 .promo{
   color: white;
 }
 
-#card2{
+#card3{
   background: url('src/assets/Images/AllIn.svg');
   background-size: cover;
 }

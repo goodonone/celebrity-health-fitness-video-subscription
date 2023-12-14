@@ -8,11 +8,12 @@ import { FormService } from '../form/form.service';
 })
 export class StepTrackerIconsComponent implements OnInit {
 
-  stepDetails: { step: number; description: string;}[] = [
+  stepDetails: { step: number; description: string; }[] = [
     { step: 1, description: 'Your info' },
     { step: 2, description: 'Select plan' },
     { step: 3, description: 'Summary' },
     { step: 4, description: 'Payment' },
+    { step: 5, description: 'Confirmation' }
   ]
   activeStep$?: number;
 
@@ -22,5 +23,4 @@ export class StepTrackerIconsComponent implements OnInit {
     this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
   }
-
 }

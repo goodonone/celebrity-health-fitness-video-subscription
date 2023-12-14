@@ -12,12 +12,13 @@
                                            formGroupName="personalDetails"></app-step-one-personal-info>
             <app-step-two-plan-details *ngIf="activeStep$ == 2"
                                        formGroupName="planDetails"></app-step-two-plan-details>
-            <app-step-four-summary *ngIf="activeStep$ == 3"
-                                   [stepForm]="stepForm"></app-step-four-summary>
+            <app-step-three-summary *ngIf="activeStep$ == 3"
+                                   [stepForm]="stepForm"></app-step-three-summary>
 
             <!-- Maybe add a component to accept dummy payment to make the whole process seem more legitimate -->
-  
-            <app-step-five-confim *ngIf="activeStep$ == 4"></app-step-five-confim>
+            <app-step-four-payment *ngIf="activeStep$ == 4" formGroupName="paymentDetails"></app-step-four-payment>
+            <app-step-five-confim *ngIf="activeStep$ == 5"></app-step-five-confim>
+            
           </ng-container>
   
         </form>

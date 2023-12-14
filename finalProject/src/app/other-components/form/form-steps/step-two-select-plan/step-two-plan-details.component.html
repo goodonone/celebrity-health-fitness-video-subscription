@@ -20,7 +20,7 @@
                              [value]="plan.plan"
                              [checked]="plan.plan === planType"
                              (click)="updatePlanType(plan.plan, plan.billing[typeOfBilling].addToTotal)">
-            <div class="plan" id="{{'card' + i}}">
+            <div class="plan" id="{{'card' + (i+1)}}" >
               <div class="details">
                 <span class="plan_title">{{plan.plan | titlecase}}</span>
                 <span class="price">{{ plan.billing[typeOfBilling].price }}</span>
@@ -33,11 +33,11 @@
   
         <div class="toggle-area">
           <div class="toggle">
-            <label [ngClass]="{'checked':checked}">Monthly</label>
+            <label [ngClass]="{'checked':!checked}">Monthly</label>
             <mat-slide-toggle [checked]="checked"
-                              (change)="toggleDuration()" color="primary">
+                              (change)="toggleBilling()" color="primary">
             </mat-slide-toggle>
-            <label [ngClass]="{'checked':!checked}">Yearly</label>
+            <label [ngClass]="{'checked':checked}">Yearly</label>
           </div>
         </div>
       </mat-card-content>

@@ -32,14 +32,14 @@ import { FormComponent } from './other-components/form/form.component';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MaterialModule } from './material.module';
 import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
-import { StepFourSummaryComponent } from './other-components/form/form-steps/step-four-summary/step-four-summary.component';
 import { StepOnePersonalInfoComponent } from './other-components/form/form-steps/step-one-personal-info/step-one-personal-info.component';
 import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
 import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
-
+// import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { StepThreeSummaryComponent } from './other-components/form/form-steps/step-three-summary/step-three-summary.component';
+import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 
 @NgModule({
   declarations: [
@@ -61,8 +61,9 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
     StepTrackerIconsComponent,
     StepOnePersonalInfoComponent,
     StepTwoPlanDetailsComponent,
-    StepFourSummaryComponent,
     StepFiveConfimComponent,
+    StepThreeSummaryComponent,
+    StepFourPaymentComponent
   ],
   imports: [
     BrowserModule,
