@@ -29,7 +29,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   public onPlanChange(plan: string) {
     this.planType = plan;
-    console.log("#1" + plan);
   }
 
   updatePlanType(plan: string, cost: number) {
@@ -39,17 +38,15 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       plan: plan,
       planCost: cost,
       totalCost: cost,
+      
     })
-    console.log("#2" + plan + cost);
+    console.log(plan + cost);
   }
 
   updateBilling() {
     const planIndex = this.planOptions.findIndex(p => p.plan == this.planType);
-    console.log(planIndex);
-   
-    const planDetails:  any | undefined = this.planOptions[planIndex];
+    const planDetails:  any = this.planOptions[planIndex];
     const planDetailsBilling = planDetails.billing[this.typeOfBilling];
-    console.log("#3" + planDetailsBilling)
     this.stepForm.patchValue({
       plan: this.planType, 
     })
@@ -68,7 +65,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
         totalCost: planDetailsBilling.addToTotal
       })
     }
-  
   }
 
   toggleBilling() {

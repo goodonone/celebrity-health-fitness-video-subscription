@@ -19,8 +19,8 @@
           <mat-button-toggle *ngFor="let plan of planOptions; let i=index"
                              [value]="plan.plan"
                              [checked]="plan.plan === planType"
-                             (click)="updatePlanType(plan.plan, plan.billing[typeOfBilling].addToTotal)" class="buttonToggle">
-            <div class="plan" id="{{'card' + (i+1)}}" >
+                             (click)="updatePlanType(plan.plan, plan.billing[typeOfBilling].addToTotal)" class="{{'buttonToggle' + (i+1)}}" >
+            <div class="plan">
               <div class="details">
                 <span class="plan_title">{{ plan.plan | titlecase}}</span>
                 <span class="price">{{ plan.billing[typeOfBilling].price }}</span>

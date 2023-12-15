@@ -6,6 +6,15 @@ mat-card-subtitle{
   font-family: 'Outfit', sans-serif;
 }
 
+div.plan{
+  padding-top: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+
+span.mat-button-toggle-label-content{
+  width: 8.625rem;
+}
+
 .mat-button-toggle-group {
   /* @include variables.flexCenter(column); */
   flex-direction: column !important;
@@ -20,11 +29,25 @@ mat-button-toggle {
   border-radius: 0.625rem;
   border: 0.063rem solid white;
   margin: 0.5rem 0;
+  padding-right: 0.2rem;
+  /* background-color: blue; */
 }
 
+/* mat-button-toggle #card1{
+  background-color: #aeaeae;
+} */
+
 .mat-button-toggle-checked {
-  border: 0.08rem solid #C7FF20;
+  border: 0.1rem solid #C7FF20;
   /* background-color: rgb(219, 214, 224); */
+}
+
+#mat-button-toggle-2.mat-button-toggle-checked  {
+  border: 0.08rem solid rgb(194, 194, 194);
+}
+
+#mat-button-toggle-3.mat-button-toggle-checked  {
+  border: 0.08rem solid #000000;
 }
 
 button .mat-button-toggle-button,
@@ -33,7 +56,7 @@ button .mat-button-toggle-button,
 }
 
 mat-button-toggle-label-content{
-  padding: 0 ;
+  padding: 0;
 }
 
 mat-button-toggle-label-content{
@@ -51,30 +74,34 @@ mat-button-toggle-label-content{
   margin: auto 1rem auto 0;
 } */
 
-mat-button-toggle #card1 {
-/* background: url('src/assets/Images/JustLooking.svg'); */
-background-image: url('src/assets/Images/JustLooking.svg');;
-background-size: cover;
-object-fit: contain;
-}
+#mat-button-toggle-1  {
 
- mat-button-toggle #card2 {
+/* background: url('src/assets/Images/JustLooking.svg'); */
+/* background-image: url('src/assets/Images/JustLooking.svg');; */
+
+background-color: rgb(194, 194, 194);
+/* background-size: cover; */
+/* object-fit: contain; */
+} 
+
+#mat-button-toggle-2 {
   background: url('src/assets/Images/Motivated.svg');
-  background-size:contain;
+  /* background-size:contain; */
   color: white;
 }
 
-#card2 .plan_title{
+#mat-button-toggle-2 .plan_title{
   font-size: 1.3rem;
   color: white;
 }
 
-#card2 .promo{
+#mat-button-toggle-2 .promo{
   color: white;
 }
 
-mat-button-toggle #card3 {
+#mat-button-toggle-3 {
   background: url('src/assets/Images/AllIn.svg');
+  background-color: #C7FF20;
   background-size: cover;
 }
 
@@ -107,10 +134,20 @@ mat-button-toggle #card3 {
   font-weight: 600;
 }
 
+span.price{
+  height:2rem;
+}
+
 .promo {
   font-family: 'Outfit', sans-serif;;
   /* @include variables.body-secondary-s; */
   color: rgb(0, 0, 0);
+}
+
+span.promo{
+  margin-top: -0.35rem;
+  margin-bottom: 1.5rem;
+  height: 1rem;
 }
 
 .description{
@@ -119,21 +156,32 @@ mat-button-toggle #card3 {
   line-height: 0.8rem;
 }
 
+span.description{
+  margin-top: 0.6rem;
+  /* height: 3rem; */
+  width: 8.625rem;
+}
+
 .toggle-area {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
   height: 3rem;
   border-radius: .5rem;
   border-radius: 0.625rem;
-  background-color: rgb(214, 214, 214);
+  background-color: rgb(255, 255, 255);
   /* @include variables.flexCenter(row); */
 }
 
 .toggle {
+  padding-left: 1.8rem;
   width: 100%;
   width: 11.4rem;
   /* @include variables.flexSpaceBetween(row); */
 }
 
 label {
+  margin: 0 0.3rem 0 0.5rem;
   height: 1rem;
   width: 3.4rem;
   color: #aeaeae;
