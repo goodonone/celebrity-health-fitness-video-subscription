@@ -89,7 +89,6 @@ export class ContentComponent implements OnInit{
   }
 
   listOfMotivated() {
-    // this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "5", this.mVideos);
     this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "3" , this.maVideos);
     this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "3" , this.mfbVideos);
     this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "3" , this.mlbVideos);
