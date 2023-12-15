@@ -12,8 +12,12 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ContentComponent implements OnInit{
 
-  iVideos: any[] = [];
-  mVideos: any[] = [];
+  iaVideos: any[] = [];
+  ifbVideos: any[] = [];
+  ilbVideos: any[] = [];
+  maVideos: any[] = [];
+  mfbVideos: any[] = [];
+  mlbVideos: any[] = [];
   aVideos: any[] = [];
   currentUser: User = new User;
   
@@ -33,14 +37,14 @@ export class ContentComponent implements OnInit{
 
   }
 
-  getVideos(channelId: string, maxResult: string, videoArray: any[]): void {
+  getVideos(videoId: string, videoArray: any[]): void {
     videoArray.length = 0;
 
     this.youTubeService
-    .getVideosForChanel(channelId, maxResult)
+    .getVideosById(videoId)
     .subscribe((list: any) => {
       for (const element of list.items) {
-        const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
+        const videoURL = 'https://www.youtube.com/embed/' + element.id;
         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
         element.sanitizedURL = sanitizedURL;
         videoArray.push(element);
@@ -54,17 +58,79 @@ export class ContentComponent implements OnInit{
 
   }
 
+  getVideosFromPlaylist(playlistId: string, maxResults: string, videoArray: any[]): void {
+    videoArray.length = 0;
+
+    this.youTubeService
+        .getVideosFromPlaylist(playlistId, maxResults)
+        .subscribe(
+            (list: any) => {
+                for (const element of list.items) {
+                    const videoURL = 'https://www.youtube.com/embed/' + element.snippet.resourceId.videoId;
+                    const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+                    element.sanitizedURL = sanitizedURL;
+                    videoArray.push(element);
+                }
+            },
+            error => {
+                console.error('Error: ', error);
+                if (error.status === 404 || error.status === 402) {
+                    this.router.navigate(['notfound']);
+                }
+            });
+}
+
   listOfInterested() {
-    this.getVideos('UCiP6wD_tYlYLYh3agzbByWQ', "10" , this.iVideos);
+  
+    this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "1" , this.iaVideos);
+    this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "1" , this.ifbVideos);
+    this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "1" , this.ilbVideos);
+
   }
 
   listOfMotivated() {
-    this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "1", this.mVideos);
+    // this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "5", this.mVideos);
+    this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "3" , this.maVideos);
+    this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "3" , this.mfbVideos);
+    this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "3" , this.mlbVideos);
   }
 
   listOfAllIn() {
-    this.getVideos('UCXtE168z7GAxYKAIHFOgm8w', "1", this.aVideos);
+    this.getVideos('uBBDMqZKagY', this.aVideos);
   }
+
+ 
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   // listOfInterested() {
@@ -127,4 +193,5 @@ export class ContentComponent implements OnInit{
 
   
 
-}
+
+

@@ -1,10 +1,7 @@
-h1 {
+h1,h3,a {
     color: white;
 }
 
 div { text-align: center;}
 
-a {
-    color:#C7FF20 ;  
-    font-size: larger;
-}
+
