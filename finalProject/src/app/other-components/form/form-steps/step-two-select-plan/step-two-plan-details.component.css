@@ -1,3 +1,11 @@
+mat-card-title{
+font-family: 'Outfit', sans-serif;
+}
+
+mat-card-subtitle{
+  font-family: 'Outfit', sans-serif;
+}
+
 .mat-button-toggle-group {
   /* @include variables.flexCenter(column); */
   flex-direction: column !important;
@@ -15,8 +23,8 @@ mat-button-toggle {
 }
 
 .mat-button-toggle-checked {
-  border: 0.063rem solid #C7FF20;
-  background-color: rgb(219, 214, 224);
+  border: 0.08rem solid #C7FF20;
+  /* background-color: rgb(219, 214, 224); */
 }
 
 button .mat-button-toggle-button,
@@ -24,8 +32,12 @@ button .mat-button-toggle-button,
   height: 4.8rem;
 }
 
-.mat-button-toggle-label-content{
-  padding: 0 !important;
+mat-button-toggle-label-content{
+  padding: 0 ;
+}
+
+mat-button-toggle-label-content{
+  width: 7rem;
 }
 
 .plan {
@@ -33,20 +45,22 @@ button .mat-button-toggle-button,
   width: 100%;
 }
 
-img {
+/* img {
   width: 2.5rem;
   height: 2.5rem;
   margin: auto 1rem auto 0;
-}
+} */
 
-#card1{
-background: url('src/assets/Images/JustLooking.svg');
+mat-button-toggle #card1 {
+/* background: url('src/assets/Images/JustLooking.svg'); */
+background-image: url('src/assets/Images/JustLooking.svg');;
 background-size: cover;
+object-fit: contain;
 }
 
-#card2{
+ mat-button-toggle #card2 {
   background: url('src/assets/Images/Motivated.svg');
-  background-size:cover;
+  background-size:contain;
   color: white;
 }
 
@@ -59,18 +73,19 @@ background-size: cover;
   color: white;
 }
 
-#card3{
+mat-button-toggle #card3 {
   background: url('src/assets/Images/AllIn.svg');
   background-size: cover;
 }
 
 .details {
+  font-family: 'Outfit', sans-serif;;
   height: 8.25rem;
-  padding-top: .5rem;
+  padding-top: .1rem;
   text-align: left;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 11.5rem;
+  width: 9.5rem;
 }
 
 .details * {
@@ -78,6 +93,7 @@ background-size: cover;
 }
 
 .plan_title {
+  font-family: 'Outfit', sans-serif;;
   font-size: 1.3rem;
   font-weight: 700;
   color: black;
@@ -85,14 +101,22 @@ background-size: cover;
 }
 
 .price {
+  font-family: 'Outfit', sans-serif;;
   /* @include variables.body-primary-l; */
   font-size: 1rem;
   font-weight: 600;
 }
 
 .promo {
+  font-family: 'Outfit', sans-serif;;
   /* @include variables.body-secondary-s; */
   color: rgb(0, 0, 0);
+}
+
+.description{
+  font-family: 'Outfit', sans-serif;;
+  text-wrap: wrap;
+  line-height: 0.8rem;
 }
 
 .toggle-area {
@@ -112,7 +136,7 @@ background-size: cover;
 label {
   height: 1rem;
   width: 3.4rem;
-  color: #C7FF20;
+  color: #aeaeae;
   /* @include variables.body-primary-xs; */
   font-size: .875rem;
 }
@@ -129,15 +153,17 @@ label {
   color:#C7FF20;
 }
 
-md-slide-toggle{
+/* md-slide-toggle{
   color:#C7FF20;
-}
+} */
 
 @media (min-width: 37.5em) {
 
   .mat-button-toggle-group {
+    display: flex;
+    justify-content: space-between;
     border: none;
-    width: 28.125em;
+    width: 35.125em;
     margin: 1rem 0 2rem 0;
     flex-direction: row !important;
   }
@@ -145,11 +171,13 @@ md-slide-toggle{
   mat-button-toggle {
     width: 9.625rem;
     height: 12rem;
-    margin-right: 1.125rem;
-    /* @include variables.flexSpaceBetween(column); */
+    /* margin-right: 1.125rem; */
+
+
     align-items: baseline;
     text-align: left;
-    margin: 0;
+    /* background-size: cover; */
+    /* margin: 0; */
   }
 
   .plan {
@@ -158,9 +186,9 @@ md-slide-toggle{
     align-items: baseline;
   }
 
-  img {
+  /* img {
     margin-top: 0;
-  }
+  } */
 
   .details {
     height: 4.25rem;

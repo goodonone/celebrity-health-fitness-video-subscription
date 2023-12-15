@@ -29,6 +29,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   public onPlanChange(plan: string) {
     this.planType = plan;
+    console.log("#1" + plan);
   }
 
   updatePlanType(plan: string, cost: number) {
@@ -37,35 +38,37 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,
-      totalCost: cost
+      totalCost: cost,
     })
+    console.log("#2" + plan + cost);
   }
 
   updateBilling() {
     const planIndex = this.planOptions.findIndex(p => p.plan == this.planType);
     console.log(planIndex);
-    // return;
-    const planDetails:  any  = this.planOptions?[planIndex]: undefined;
+   
+    const planDetails:  any | undefined = this.planOptions[planIndex];
     const planDetailsBilling = planDetails.billing[this.typeOfBilling];
-    // console.log(planDetailsBilling);
-    // const planDetails = this.planOptions.plan.billing[this.billing];
+    console.log("#3" + planDetailsBilling)
     this.stepForm.patchValue({
-      plan: this.planType 
+      plan: this.planType, 
     })
     if (this.checked === false) {
       this.stepForm.patchValue({
         billing: 'monthly',
         planCost: planDetailsBilling.addToTotal,
-        totalCost: planDetailsBilling.addToTotal
+        totalCost: planDetailsBilling.addToTotal,
       })
-
-    } if (this.checked === true) {
+      
+    } 
+    if (this.checked === true) {
       this.stepForm.patchValue({
         billing: 'yearly',
         planCost: planDetailsBilling.addToTotal,
         totalCost: planDetailsBilling.addToTotal
       })
     }
+  
   }
 
   toggleBilling() {
@@ -80,5 +83,5 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     }
   }
 
-
+  
 }

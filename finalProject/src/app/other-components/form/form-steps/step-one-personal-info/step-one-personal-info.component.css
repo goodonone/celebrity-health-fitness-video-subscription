@@ -1,12 +1,10 @@
-/* @use "/src/variables"; */
-
-/* label {
-  /* @include variables.body-secondary-s; */
-/* } */
-
-/* .step-one{
-  width: 10%;
-} */
+* {
+  font-family: 'Outfit', sans-serif;
+  }
+  
+  /* mat-card-subtitle{
+    font-family: 'Outfit', sans-serif;
+  } */
 
 input {
   /* @include variables.body-primary-xs; */
@@ -21,6 +19,15 @@ input {
   background-color: white;
 }
 
+mat-card-header{
+  margin-bottom: 0.4rem;
+  /* margin-top: -0.2rem; */
+}
+
+mat-card-title{
+  font-size: large;
+}
+
 input:focus,
 input:valid {
   color: rgb(0, 0, 0);
@@ -28,32 +35,35 @@ input:valid {
 }
 
 .input-details {
-  width: 18.437rem;
+  display: flex;
+  justify-content: space-between;
+  width: 15.437rem;
 }
 
 .error-alert {
   color: red;
   text-align: right;
   font-size: 0.875rem;
-  line-height: 1rem;
+  line-height: 1.3rem;
 }
 
 @media (min-width: 37.5em) {
   label {
     /* @include variables.body-primary-m; */
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.0rem;
   }
 
   input {
     height: 3rem;
     margin-bottom: 1.5rem;
+    width: 20.125rem;
   }
 
   .input-details {
-    width: 28.125rem;
+    width: 21.125rem;
   }
 
   .error-alert {
-    font-weight: 700;
+    font-weight: 500;
   }
 }

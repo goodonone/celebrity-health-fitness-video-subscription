@@ -62,7 +62,7 @@ class Plan {
     },
     {
       plan: 'Motivated',
-      description: 'New Videos Every Week' + 'Recipes to Keep You Going',
+      description: 'New Videos Every Week & Recipes to Keep You Going',
       billing: {
         monthly: {
           price: '$12/mo',
@@ -77,8 +77,8 @@ class Plan {
       },
     },
     {
-      plan: 'All In!',
-      description: 'Live One-On-Ones' + 'Everything From The Motivated Plan',
+      plan: 'All In',
+      description: 'Live One-On-Ones & Everything From The Motivated Plan',
       billing: {
         monthly: {
           price: '$20/mo',

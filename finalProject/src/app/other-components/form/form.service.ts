@@ -64,7 +64,7 @@ export class FormService {
 
     this.user.signUp(userData).subscribe(() => {
       window.alert("User Registered Successfully");
-      this.router.navigate(['signin']);
+      this.router.navigate(['login']);
   }, error => {
       window.alert("User Registration Error");
       console.log('Error: ', error)
@@ -72,7 +72,7 @@ export class FormService {
 
     const planData = {
       tier: planInfo.plan,
-      frequency: planInfo.billing,
+      paymentFrequency: planInfo.billing,
       price: planInfo.totalCost
     }
 
@@ -84,7 +84,6 @@ export class FormService {
       this.activeStepSubject.next(1);
     }, 8000);
   }
-
 
 
 }
