@@ -1,1 +1,22 @@
-<p>profile works!</p>
+<h1>Profile</h1>
+<p>{{currentUser.email}}</p>
+<p>{{currentUser.name}}</p>
+<!-- <p class="bio">{{currentUser.bio}}</p> -->
+<!-- <button *ngIf="emailVerification(currentUser.email)"[routerLink]="['/profile-edit']">Edit Profile</button> -->
+<hr>
+
+<!-- <p>Posts</p>
+<button *ngIf="emailVerification(currentUser.email)" [routerLink]="['/post/new']">Create New Post</button>
+<div  *ngIf="postList">
+    <div class="post" *ngFor="let post of postList">
+        <h2>{{post.description}} - {{post.publishedOn|date:'shortDate'}} - <a [routerLink]="['/profile', post.email]">{{post.email}}</a></h2>
+        
+        <br>
+        <div *ngIf="emailVerification(post.email)">
+        <button [routerLink]="['/edit' , post.postId]">edit</button>
+        <span> | </span>
+        <button *ngIf="post.postId" (click)="onDelete(post.postId)">Delete</button>
+        </div>
+        <hr>
+    </div>
+</div> -->
