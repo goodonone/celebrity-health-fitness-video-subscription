@@ -18,6 +18,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   checked: boolean = false;
   planOptions: any[] = planOptions;
   billing!: string;
+  cardCounter: number[] = [1,2,3];
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -26,6 +27,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     this.typeOfBilling = this.stepForm.controls['billing'].value || 'monthly';
     this.checked = this.typeOfBilling === 'monthly' ? false : true;
     this.planType = this.planType || 'Just Looking';
+    this.updateBilling();
   }
 
   public onPlanChange(plan: string) {

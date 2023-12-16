@@ -62,6 +62,12 @@ export class FormService {
       tier: planInfo.plan
     }
 
+    const planData = {
+      tier: planInfo.plan,
+      paymentFrequency: planInfo.billing,
+      price: planInfo.totalCost
+    }
+
     this.user.signUp(userData).subscribe(() => {
       window.alert("User Registered Successfully");
       this.router.navigate(['login']);
@@ -70,12 +76,7 @@ export class FormService {
       console.log('Error: ', error)
   });
 
-    const planData = {
-      tier: planInfo.plan,
-      paymentFrequency: planInfo.billing,
-      price: planInfo.totalCost
-    }
-
+   
     // function to send payment to backend;
 
     //TO-DO => validate form
