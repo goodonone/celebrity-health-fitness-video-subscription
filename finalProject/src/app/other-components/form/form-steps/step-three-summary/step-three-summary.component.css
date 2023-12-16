@@ -1,0 +1,134 @@
+span {
+  display: contents;
+  color: blue;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: 0;
+
+}
+mat-card-content{
+  height: 16rem;
+  /* @include variables.flexSpaceBetween(column); */
+}
+
+table {
+  height: fit-content;
+  margin: 2rem auto 1.5rem auto;
+  padding: 1rem;
+  width: 18.4rem;
+  background-color: blueviolet;
+  border-radius: .5rem;
+}
+
+mat-divider {
+  color: blueviolet;
+  height: 0.125rem;
+  width: 100%;
+  border-radius: 0;
+  opacity: .2;
+
+}
+
+.mat-card-content {
+  height: fit-content;
+}
+
+th {
+  /* @include variables.flexCenter(column); */
+  height: 3rem;
+  width: 100%;
+}
+
+tr {
+  /* @include variables.flexSpaceBetween(row); */
+  align-items: flex-start;
+  height: 100%;
+  width: 100%;
+}
+
+.type {
+  /* @include variables.flexSpaceBetween(column); */
+  align-items: flex-start;
+  height: 2.438rem;
+  /* @include variables.body-primary-xs; */
+  letter-spacing: 0;
+  color: green;
+
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  color: red;
+  text-decoration-line: underline;
+  /* @include variables.body-primary-s; */
+  letter-spacing: 0;
+  padding-left: 0;
+}
+
+.btn-change:hover {
+  color: pink;
+}
+
+.cost {
+  /* @include variables.heading-m; */
+  font-size: 0.875rem;
+}
+
+.service,
+.service_cost {
+  margin-top: 0.75rem;
+  color: yellow;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  letter-spacing: 0;
+}
+
+.service_cost {
+  color: yellow;
+}
+
+.total {
+  width: 100%;
+  padding: 0 1.5rem;
+  /* @include variables.flexSpaceBetween(row); */
+  color: purple;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+}
+
+.total .cost {
+  color: blue;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.25rem;
+}
+
+@media (min-width: 37.5em) {
+
+  table {
+    width: 28.125rem;
+  }
+
+  th {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .type {
+    height: auto;
+  }
+
+  button {
+    margin-top: .5rem;
+    padding-left: 0;
+  }
+
+  tr {
+    padding-bottom: 0;
+  }
+
+}

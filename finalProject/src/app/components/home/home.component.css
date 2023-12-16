@@ -11,15 +11,10 @@
     position: absolute;
     top: 45%;
     bottom: 45%;
-    left: 35%;
+    left: 38%;
     right: 0;
     margin: auto;
     z-index: 1;
-}
-
-.videoBackground {
-    transform: scale(100%, 102%);
-    overflow:hidden;
 }
 
 .textContainer {
@@ -49,20 +44,44 @@
     font-size: 5vw;
     margin: 0 0 0 -5px;
     padding: 0;
-    animation: zoomIn 0.25s;
-    animation-iteration-count: infinite;
+    /* animation: zoomIn 0.25s;
+    animation-iteration-count: infinite; */
 }
 
-@keyframes zoomIn{
+@keyframes zoomIn {
     from {
         font-weight: 300;
     }
+
     to {
         font-weight: 600;
     }
 }
 
-.headingContd:hover {
+
+.overlayTwo {
+    position: absolute;
+    top: 80%;
+    bottom: 100%;
+    left: 13%;
+    z-index: 1;
+}
+
+.startHere {
+    display: inline;
+    font-family: 'Outfit', sans-serif;
+    margin-top: -2vw;
+    color: white;
+    font-size: 1.2vw;
+    border: solid;
+    border-radius: .2vw;
+    width: 7vw;
+    padding: .3vw .3vw .5vw .3vw;
+    animation: zoomIn 0.25s;
+    animation-iteration-count: infinite;
+}
+
+.startHere:hover {
     color: #C7FF20;
     border-color: #C7FF20;
     cursor: pointer;
@@ -96,7 +115,6 @@
         height: 100vh;
         width: 100%;
         overflow: hidden;
-        /* object-fit: contain; */
     }
 
 
@@ -110,12 +128,30 @@
         position: absolute;
         top: 45%;
         bottom: 45%;
-        left: 25%;
+        left: 24%;
         right: 0;
         margin: auto;
         z-index: 1;
     }
-    
+
+    .overlayTwo {
+        position: absolute;
+        top: 49%;
+        bottom: 120%;
+        left: 25%;
+        z-index: 1;
+    }
+
+    .startHere {
+        display: inline;
+        font-family: 'Outfit', sans-serif;
+        color: white;
+        font-size: 2.4vw;
+        border: solid;
+        border-radius: .4vw;
+        width: 15vw;
+        padding: .3vw .3vw .5vw .3vw;
+    }
 
 
     .bannerTwo {
@@ -131,12 +167,6 @@
 
     .headingContd {
         font-size: 10vw;
-    }
-
-    .headingContd:hover {
-        color: #C7FF20;
-        border-color: #C7FF20;
-        cursor: pointer;
     }
 
     .textOverlay {
@@ -343,7 +373,7 @@ label {
 
 @media screen and (min-width: 500px) and (max-width: 717px) {
 
-    .bannerFive{
+    .bannerFive {
         height: 102vh;
     }
 

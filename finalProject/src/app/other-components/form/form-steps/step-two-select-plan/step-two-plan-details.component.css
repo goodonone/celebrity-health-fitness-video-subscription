@@ -1,0 +1,256 @@
+mat-card-title{
+font-family: 'Outfit', sans-serif;
+}
+
+mat-card-subtitle{
+  font-family: 'Outfit', sans-serif;
+}
+
+div.plan{
+  padding-top: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+
+span.mat-button-toggle-label-content{
+  width: 8.625rem;
+}
+
+.mat-button-toggle-group {
+  /* @include variables.flexCenter(column); */
+  flex-direction: column !important;
+  border: none;
+  width: 20.4rem;
+  margin: 0 0 1rem 0;
+}
+
+mat-button-toggle {
+  width: 100%;
+  height: 4.8rem;
+  border-radius: 0.625rem;
+  border: 0.063rem solid white;
+  margin: 0.5rem 0;
+  padding-right: 0.2rem;
+  /* background-color: blue; */
+}
+
+/* mat-button-toggle #card1{
+  background-color: #aeaeae;
+} */
+
+.mat-button-toggle-checked {
+  border: 0.1rem solid #C7FF20;
+  /* background-color: rgb(219, 214, 224); */
+}
+
+#mat-button-toggle-2.mat-button-toggle-checked  {
+  border: 0.08rem solid rgb(194, 194, 194);
+}
+
+#mat-button-toggle-3.mat-button-toggle-checked  {
+  border: 0.08rem solid #000000;
+}
+
+button .mat-button-toggle-button,
+.plan {
+  height: 4.8rem;
+}
+
+mat-button-toggle-label-content{
+  padding: 0;
+}
+
+mat-button-toggle-label-content{
+  width: 7rem;
+}
+
+.plan {
+  padding: 1rem 0;
+  width: 100%;
+}
+
+/* img {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: auto 1rem auto 0;
+} */
+
+#mat-button-toggle-1  {
+
+/* background: url('src/assets/Images/JustLooking.svg'); */
+/* background-image: url('src/assets/Images/JustLooking.svg');; */
+
+background-color: rgb(194, 194, 194);
+/* background-size: cover; */
+/* object-fit: contain; */
+} 
+
+#mat-button-toggle-2 {
+  background: url('src/assets/Images/Motivated.svg');
+  /* background-size:contain; */
+  color: white;
+}
+
+#mat-button-toggle-2 .plan_title{
+  font-size: 1.3rem;
+  color: white;
+}
+
+#mat-button-toggle-2 .promo{
+  color: white;
+}
+
+#mat-button-toggle-3 {
+  background: url('src/assets/Images/AllIn.svg');
+  background-color: #C7FF20;
+  background-size: cover;
+}
+
+.details {
+  font-family: 'Outfit', sans-serif;;
+  height: 8.25rem;
+  padding-top: .1rem;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 9.5rem;
+}
+
+.details * {
+  display: block;
+}
+
+.plan_title {
+  font-family: 'Outfit', sans-serif;;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: black;
+  /* @include variables.body-primary-xs; */
+}
+
+.price {
+  font-family: 'Outfit', sans-serif;;
+  /* @include variables.body-primary-l; */
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+span.price{
+  height:2rem;
+}
+
+.promo {
+  font-family: 'Outfit', sans-serif;;
+  /* @include variables.body-secondary-s; */
+  color: rgb(0, 0, 0);
+}
+
+span.promo{
+  margin-top: -0.35rem;
+  margin-bottom: 1.5rem;
+  height: 1rem;
+}
+
+.description{
+  font-family: 'Outfit', sans-serif;;
+  text-wrap: wrap;
+  line-height: 0.8rem;
+}
+
+span.description{
+  margin-top: 0.6rem;
+  /* height: 3rem; */
+  width: 8.625rem;
+}
+
+.toggle-area {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  height: 3rem;
+  border-radius: .5rem;
+  border-radius: 0.625rem;
+  background-color: rgb(255, 255, 255);
+  /* @include variables.flexCenter(row); */
+}
+
+.toggle {
+  padding-left: 1.8rem;
+  width: 100%;
+  width: 11.4rem;
+  /* @include variables.flexSpaceBetween(row); */
+}
+
+label {
+  margin: 0 0.3rem 0 0.5rem;
+  height: 1rem;
+  width: 3.4rem;
+  color: #aeaeae;
+  /* @include variables.body-primary-xs; */
+  font-size: .875rem;
+}
+
+.checked {
+  color: black;
+}
+
+.mat-button-toggle{
+  color:black;
+}
+
+.mat-slide-toggle-checked{
+  color:#C7FF20;
+}
+
+/* md-slide-toggle{
+  color:#C7FF20;
+} */
+
+@media (min-width: 37.5em) {
+
+  .mat-button-toggle-group {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    width: 35.125em;
+    margin: 1rem 0 2rem 0;
+    flex-direction: row !important;
+  }
+
+  mat-button-toggle {
+    width: 9.625rem;
+    height: 12rem;
+    /* margin-right: 1.125rem; */
+
+
+    align-items: baseline;
+    text-align: left;
+    /* background-size: cover; */
+    /* margin: 0; */
+  }
+
+  .plan {
+    height: 10rem;
+    /* @include variables.flexSpaceBetween(column); */
+    align-items: baseline;
+  }
+
+  /* img {
+    margin-top: 0;
+  } */
+
+  .details {
+    height: 4.25rem;
+  }
+
+  .toggle {
+    height: 100%;
+  }
+
+  label {
+    width: 3.4rem;
+  }
+
+  mat-slide-toggle {
+    width: 2rem;
+  }
+}

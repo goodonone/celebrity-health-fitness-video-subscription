@@ -9,10 +9,15 @@
 
       <!--Make these buttons The profile name of the person with a drop down with Sign out when signed in-->
 
-      <!-- <div *ngIf="!userIsLoggedIn"> -->
+
+     
+      <h6 class="navBarText" routerLink="/login">Log In</h6>
+
+      
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup">Sign Up</h6>
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signin">Sign In</h6>
-      <!-- </div> -->
+
+      
       
       <!-- <div *ngIf="userIsLoggedIn"> -->
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]">Profile</h6>
@@ -56,3 +61,4 @@
     <p class="footer">Privacy Policy | Careers | Terms Of Use </p>
   </footer>
 </div>
+
