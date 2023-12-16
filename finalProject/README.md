@@ -33,6 +33,7 @@ Youtube channel ID: UCiP6wD_tYlYLYh3agzbByWQ
 
 Youtube Uploads: UUiP6wD_tYlYLYh3agzbByWQ
 
-url https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=20&playlistId=UUiP6wD_tYlYLYh3agzbByWQ&key=AIzaSyC8HgZeANMbvGWteITQtnQFocK4Qbfa1rk
+youtube playlistId: PL2NpXBzdtNam-M_8y6FFypSf7ae8Ph4_6
+
 
 

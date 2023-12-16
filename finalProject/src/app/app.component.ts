@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { UserService } from './services/user.service';
 
 // Insert Service/Area where the search can Search and model here
 
@@ -16,12 +17,22 @@ export class AppComponent implements OnInit {
 
   viewSearchBar: boolean = false;
 
+  userIsLoggedIn : boolean = false;
 
-  constructor(private actRoute: ActivatedRoute, private router: Router) { }
+  UserId : string = "";
+
+
+  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService) { 
+    this.router.events.subscribe((event) =>{
+      if(event instanceof NavigationEnd) {
+        this.UpdateStatus();
+      }
+    });
+  }
 
 
   ngOnInit(): void {
-
+    this.UpdateStatus();
   }
 
 // Toggles the visiblity of the search input field
@@ -50,6 +61,18 @@ export class AppComponent implements OnInit {
       this.viewSearchBar = false;
     }
 
+  }
+  UpdateStatus() {
+    this.userIsLoggedIn = this.userService.isloggedIn();
+    if (this.userIsLoggedIn) {
+      this.UserId = this.userService.getUserId() ?? "";
+    }
+    
+  }
+
+  logOut() {
+    this.userService.logoutUser();
+    this.UpdateStatus();
   }
 
 
