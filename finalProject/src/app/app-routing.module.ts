@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: "edit-profile/:id", component: EditProfileComponent },
   { path: "profile/:id", component: ProfileComponent },
   { path: "signup", component: SignUpComponent },
-  { path: "signin", component: SignInComponent },
+  { path: "login", component: SignInComponent },
   // correctly implement search with the right syntax ?q or something
   { path: "search", component: SearchComponent},
   { path: "Store", component: StoreComponent},

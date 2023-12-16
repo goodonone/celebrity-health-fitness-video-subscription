@@ -10,11 +10,8 @@ export class User {
     tier?: string;
     dateOfBirth?: Date;
 
-    
-    
-    
 
-    constructor(
+constructor(
         userId?: number, 
         email?: string, 
         password?: string, 

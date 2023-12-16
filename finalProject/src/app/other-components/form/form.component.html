@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="row">
+      <app-step-tracker-icons class="nav"> </app-step-tracker-icons>
+    </div>
+      <div class="column">
+        <form>
+          <ng-container [formGroup]="stepForm"
+                        name="stepForm"
+                        (submit)="confirmAndSubmitForm()">
+  
+            <app-step-one-personal-info *ngIf="activeStep$ == 1"
+                                           formGroupName="personalDetails"></app-step-one-personal-info>
+            <app-step-two-plan-details *ngIf="activeStep$ == 2"
+                                       formGroupName="planDetails"></app-step-two-plan-details>
+            <app-step-three-summary *ngIf="activeStep$ == 3"
+                                   [stepForm]="stepForm"></app-step-three-summary>
+            <app-step-four-payment *ngIf="activeStep$ == 4" 
+                                    formGroupName="paymentDetails"></app-step-four-payment>
+            <app-step-five-confim *ngIf="activeStep$ == 5"></app-step-five-confim>
+            
+          </ng-container>
+  
+        </form>
+        <app-progression-buttons class="progress"></app-progression-buttons>
+      </div>
+    
+  
+</div>
