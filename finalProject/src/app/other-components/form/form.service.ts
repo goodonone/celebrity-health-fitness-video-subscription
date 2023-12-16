@@ -52,7 +52,7 @@ export class FormService {
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
     const generatedUserId: string = Math.random().toString(18).slice(2);
-    
+
     console.log(this.multiStepForm.value);
     console.log(generatedUserId);
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
@@ -65,6 +65,8 @@ export class FormService {
       email:userInfo.email,
       tier: planInfo.plan
     }
+
+    console.log("userData"+userData.tier)
 
     const planData = {
       userId: generatedUserId,
@@ -81,7 +83,6 @@ export class FormService {
       console.log('Error: ', error)
   });
 
-   
     // function to send payment to backend;
 
     //TO-DO => validate form
