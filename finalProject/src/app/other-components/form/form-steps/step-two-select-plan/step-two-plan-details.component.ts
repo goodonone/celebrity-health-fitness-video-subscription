@@ -17,6 +17,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   totalCost: number = 0;
   checked: boolean = false;
   planOptions: any[] = planOptions;
+  billing!: string;
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -34,11 +35,12 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   updatePlanType(plan: string, cost: number) {
     this.planType = plan;
     this.totalCost = cost;
+    // this.billing = billing;
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,
       totalCost: cost,
-      
+      // billing: billing
     })
     console.log(plan + cost);
   }

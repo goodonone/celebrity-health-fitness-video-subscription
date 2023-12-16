@@ -43,7 +43,7 @@ mat-button-toggle {
 }
 
 #mat-button-toggle-2.mat-button-toggle-checked  {
-  border: 0.08rem solid rgb(194, 194, 194);
+  border: 0.08rem solid #C7FF20;
 }
 
 #mat-button-toggle-3.mat-button-toggle-checked  {

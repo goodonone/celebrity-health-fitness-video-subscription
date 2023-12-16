@@ -53,7 +53,7 @@ export class FormService {
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    console.log("planDetails" + planInfo.billing + planInfo.plan + planInfo.totalCost);
+    console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
     const userData = {
       name:userInfo.name,
