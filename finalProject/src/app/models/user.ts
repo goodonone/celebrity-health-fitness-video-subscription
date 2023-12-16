@@ -9,6 +9,9 @@ export class User {
     goals?: string; 
     tier?: string;
     dateOfBirth?: Date;
+    imgUrl?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 
     
     
@@ -25,6 +28,9 @@ export class User {
         goals?: string, 
         tier?: string, 
         dateOfBirth?: Date,
+        imgUrl?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
         )
     {
         this.userId = userId;
@@ -37,6 +43,9 @@ export class User {
         this.goals = goals;
         this.tier = tier;
         this.dateOfBirth = dateOfBirth;
+        this.imgUrl = imgUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
     
 }

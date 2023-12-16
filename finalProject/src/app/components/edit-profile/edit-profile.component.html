@@ -1,1 +1,36 @@
-<p>wfwsef</p>
+<form (ngSubmit)="editProfile()">
+    <h1>Edit Profile</h1>
+    <span>Name  </span>
+    <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"><br><br>
+    <span>Image  </span>
+    <input placeholder="Enter Weight" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br>
+    <span>Email  </span>
+    <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"><br><br>
+    <span>Date of Birth  </span>
+    <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"><br><br>
+
+    <!-- <span>Gender  </span>
+    <input placeholder="Enter Gender" type="text" name="gender" [(ngModel)]="currentUser.gender"><br><br> -->
+    
+    <span>Weight  </span>
+    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
+    <span>Height  </span>
+    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
+
+    
+
+    <!-- <span>Goals  </span>
+    <input placeholder="Enter Goals" type="text" name="goals" [(ngModel)]="currentUser.goals"><br><br> -->
+
+    <!-- <span>Tier  </span>
+    <input placeholder="Enter tier" type="text" name="tier" [(ngModel)]="currentUser.tier"><br><br> -->
+
+    
+    
+    
+    
+
+    <button>
+      Edit Profile
+    </button>
+</form>
