@@ -1,9 +1,5 @@
-mat-card-title{
+* {
   font-family: 'Outfit', sans-serif;
-  }
-  
-  mat-card-subtitle{
-    font-family: 'Outfit', sans-serif;
   }
 
 span {
@@ -16,9 +12,7 @@ span {
 
 }
 mat-card-content{
-
   height: 16rem;
-  /* @include variables.flexSpaceBetween(column); */
 }
 
 table {
@@ -72,7 +66,6 @@ button {
   background-color: transparent;
   text-decoration-line: underline;
   letter-spacing: 0;
-  /* padding: 1rem; */
 }
 
 .btn-change:hover {
@@ -87,24 +80,9 @@ div.cost{
   width: 9.3rem;
 }
 
-/* .service,
-.service_cost {
-  margin-top: 0.75rem;
-  color: yellow;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.25rem;
-  letter-spacing: 0;
-} */
-
-/* .service_cost {
-  color: yellow;
-} */
-
 .total {
   width: 100%;
   padding: 0 0 2rem 0.5rem;
-  /* @include variables.flexSpaceBetween(row); */
   color: rgb(0, 0, 0);
   font-size: 0.875rem;
   font-weight: 400;

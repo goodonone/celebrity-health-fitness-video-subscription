@@ -1,9 +1,5 @@
-mat-card-title{
+* {
 font-family: 'Outfit', sans-serif;
-}
-
-mat-card-subtitle{
-  font-family: 'Outfit', sans-serif;
 }
 
 div.plan{
