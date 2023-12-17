@@ -30,9 +30,8 @@ export class ProgressionButtonsComponent implements OnInit {
     } else {
       this.formService.goToNextStep(this.activeStep$);
     }
-
-
   }
+
   goBack() {
     this.formService.goBackToPreviousStep(this.activeStep$);
   }
@@ -40,4 +39,15 @@ export class ProgressionButtonsComponent implements OnInit {
   confirmAndSubmitForm() {
     this.formService.submit();
   }
+
+//  planDetails = this.stepForm.controls['personalDetails']
+// if (planDetails){
+  
+// }
+
+// value = this.stepForm.controls['personalDetails.plan'] === 'Just Looking';
+
+// stepForm.valid = true;
+
+
 }

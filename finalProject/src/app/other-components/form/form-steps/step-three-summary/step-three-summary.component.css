@@ -4,12 +4,11 @@
 
 span {
   display: contents;
-  color: blue;
+  color: rgb(0, 0, 0);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.25rem;
   letter-spacing: 0;
-
 }
 mat-card-content{
   height: 16rem;
@@ -25,12 +24,11 @@ table {
 }
 
 mat-divider {
-  color: blueviolet;
+  color: rgb(0, 0, 0);
   height: 0.125rem;
   width: 100%;
   border-radius: 0;
   opacity: .2;
-
 }
 
 .mat-card-content {
@@ -66,10 +64,12 @@ button {
   background-color: transparent;
   text-decoration-line: underline;
   letter-spacing: 0;
+  border-radius: 6px;
 }
 
 .btn-change:hover {
-  color: black;
+  color: rgb(0, 0, 0);
+  /* background-color: #000000; */
 }
 
 .cost {

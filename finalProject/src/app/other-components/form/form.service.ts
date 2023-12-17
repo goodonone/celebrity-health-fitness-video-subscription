@@ -20,8 +20,8 @@ export class FormService {
       password: ['', [Validators.required]]
     }),
     planDetails: this.fb.group({
-      plan: ['', [Validators.required]],
-      billing: ['', [Validators.required]],
+      plan: ['Just Looking', [Validators.required]],
+      billing: ['monthly', [Validators.required]],
       planCost: [],
       totalCost: []
     }),
@@ -66,30 +66,26 @@ export class FormService {
       tier: planInfo.plan
     }
 
-    console.log("userData"+userData.tier)
-
     const planData = {
-      userId: generatedUserId,
       tier: planInfo.plan,
       paymentFrequency: planInfo.billing,
       price: planInfo.totalCost
     }
 
     this.user.signUp(userData).subscribe(() => {
-      window.alert("User Registered Successfully");
+      // window.alert("User Registered Successfully");
       this.router.navigate(['login']);
-  }, error => {
-      window.alert("User Registration Error");
-      console.log('Error: ', error)
+  // }, error => {
+  //     window.alert("User Registration Error");
+  //     console.log('Error: ', error)
   });
 
     // function to send payment to backend;
 
-    //TO-DO => validate form
     this.goToNextStep(4);
-    setTimeout(() => {
-      this.activeStepSubject.next(1);
-    }, 8000);
+    // setTimeout(() => {
+    //   this.activeStepSubject.next(1);
+    // }, 8000);
   }
 
 
