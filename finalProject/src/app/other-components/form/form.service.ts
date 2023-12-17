@@ -49,17 +49,30 @@ export class FormService {
   }
 
   submit() {
-    console.log(this.multiStepForm.value);
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
-    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    console.log("planDetails" + planInfo.billing + planInfo.plan + planInfo.totalCost);
+    const generatedUserId: string = Math.random().toString(18).slice(2);
+
+    console.log(this.multiStepForm.value);
+    console.log(generatedUserId);
+    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
+    console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
     const userData = {
+      userId: generatedUserId,
       name:userInfo.name,
       password:userInfo.password,
       email:userInfo.email,
       tier: planInfo.plan
+    }
+
+    console.log("userData"+userData.tier)
+
+    const planData = {
+      userId: generatedUserId,
+      tier: planInfo.plan,
+      paymentFrequency: planInfo.billing,
+      price: planInfo.totalCost
     }
 
     this.user.signUp(userData).subscribe(() => {
@@ -69,12 +82,6 @@ export class FormService {
       window.alert("User Registration Error");
       console.log('Error: ', error)
   });
-
-    const planData = {
-      tier: planInfo.plan,
-      paymentFrequency: planInfo.billing,
-      price: planInfo.totalCost
-    }
 
     // function to send payment to backend;
 
