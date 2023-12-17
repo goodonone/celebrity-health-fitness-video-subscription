@@ -1,23 +1,27 @@
 <h1>Profile</h1>
-<p>{{currentUser.email}}</p>
+<div *ngIf="currentUser.imgUrl">
+    <img [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
+</div>
+
+<div *ngIf="!currentUser.imgUrl">
+    <img src="assets\Images\user generic.webp" alt="Add photo" width="200" height="250" />
+</div>
+
 <p>{{currentUser.name}}</p>
-<p>{{currentUser.tier}}</p>
-<!-- <p class="bio">{{currentUser.bio}}</p> -->
-<!-- <button *ngIf="emailVerification(currentUser.email)"[routerLink]="['/profile-edit']">Edit Profile</button> -->
+
+<p>{{currentUser.dateOfBirth}}</p>
+
+
+<p>{{currentUser.gender}}</p>
+<p>You are {{currentUser.tier}}</p>
+<p>{{currentUser.height}} ft</p>
+<p>{{currentUser.weight}} lb</p>
+<p>Goal: {{currentUser.goals}}</p>
+
+<button [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+
+
+
 <hr>
 
-<!-- <p>Posts</p>
-<button *ngIf="emailVerification(currentUser.email)" [routerLink]="['/post/new']">Create New Post</button>
-<div  *ngIf="postList">
-    <div class="post" *ngFor="let post of postList">
-        <h2>{{post.description}} - {{post.publishedOn|date:'shortDate'}} - <a [routerLink]="['/profile', post.email]">{{post.email}}</a></h2>
-        
-        <br>
-        <div *ngIf="emailVerification(post.email)">
-        <button [routerLink]="['/edit' , post.postId]">edit</button>
-        <span> | </span>
-        <button *ngIf="post.postId" (click)="onDelete(post.postId)">Delete</button>
-        </div>
-        <hr>
-    </div>
-</div> -->
+
