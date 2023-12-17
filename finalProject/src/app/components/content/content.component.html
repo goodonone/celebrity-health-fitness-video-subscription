@@ -2,7 +2,7 @@
 
 
 
-<div *ngIf="currentUser?.tier === 'interested'">
+<div *ngIf="currentUser?.tier === 'Just Looking'">
   <h1>Workouts</h1>
   <h3>Abs</h3>
 <div *ngFor="let video of iaVideos" >
@@ -48,7 +48,7 @@
   </h1>
 </div>  
 
-<div *ngIf="currentUser?.tier === 'motivated' || currentUser?.tier === 'allin'">
+<div *ngIf="currentUser?.tier === 'Motivated' || currentUser?.tier === 'All In'">
   <h1>Workouts</h1>
   <h3>Abs</h3>
 <div *ngFor="let video of maVideos" >
@@ -89,12 +89,12 @@
       </div>
     </div>
   </div>
-  <h1 *ngIf="currentUser?.tier === 'motivated'">
+  <h1 *ngIf="currentUser?.tier === 'Motivated'">
     Upgrade to All In to unlock live streams
   </h1>
 </div>  
 
-<div *ngIf="currentUser?.tier === 'allin'">
+<div *ngIf="currentUser?.tier === 'All In'">
   <h1>Live Stream</h1>
 <div *ngFor="let video of aVideos" >
     <div >

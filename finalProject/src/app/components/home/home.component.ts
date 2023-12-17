@@ -16,7 +16,10 @@ export class HomeComponent implements OnInit {
     { videoSrc: "/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" },
     { videoSrc: "/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4" }
   ];
+  
+ 
 
+   
 
   images = [
     { imageSrc: '/assets/Images/1.jpg', imageAlt: 'man 1', manName: 'Patrick 33, North Carolina', imageText: '"I needed some desperate help and I got it and so much more!"' },

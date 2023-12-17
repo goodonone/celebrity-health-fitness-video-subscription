@@ -13,11 +13,8 @@ export class User {
     createdAt?: Date;
     updatedAt?: Date;
 
-    
-    
-    
 
-    constructor(
+constructor(
         userId?: number, 
         email?: string, 
         password?: string, 

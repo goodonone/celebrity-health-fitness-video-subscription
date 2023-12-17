@@ -1,4 +1,61 @@
-<form (ngSubmit)="signUp()">
+
+<div class="background">
+        <div class="overlay">
+            <div class="textContainer">
+                <h1 class="welcome">Welcome</h1>
+            </div>
+            <div class="overlayTwo">
+                <div class="textContainer">
+                    <h1 class="otherText">You're in <br> the <br> right <br> place.</h1>
+                </div>
+            </div>
+        </div>
+            <video class="videoBackground" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
+            loop playsinline>
+            <source src="assets/Videos/AdobeStock_167036386_Video_HD_Preview.mp4" type="video/mp4"> 
+            Your browser does not support the video tag.
+            [autoPlay]="true";
+        </video>
+    </div>
+
+        <mat-card class="card">
+            <mat-card-content class="cardContent">
+                <div class="innerCardContainer">
+                    <!-- <mat-card class="innerCardOne">
+                        
+                    </mat-card> -->
+                    <mat-card class="innerCardTwo">
+                        <app-form></app-form>
+                        <app-progression-buttons></app-progression-buttons>
+                    <p class="alreadyMemberText">Already a Member?<span class="highlight" routerLink="/signin"> Log-in</span> here.</p>
+                    </mat-card>
+                </div>
+           </mat-card-content> 
+    </mat-card>  
+
+    <!-- <mat-card class="card">
+        <mat-card-content class="cardContent">
+            <div class="innerCardContainer">
+                <mat-card class="innerCardOne">
+                    
+                </mat-card>
+                <mat-card class="innerCardTwo">
+                    <app-form></app-form>
+                    <app-progression-buttons></app-progression-buttons>
+                <p class="alreadyMemberText">Already a Member?<span class="highlight" routerLink="/login"> Log-in</span> here.</p>
+                </mat-card>
+            </div>
+       </mat-card-content> 
+</mat-card>   -->
+
+
+
+
+
+   
+
+
+<!--<form (ngSubmit)="signUp()">
     <h1>REGISTER</h1>
     
     <span>Name  </span>
@@ -13,4 +70,5 @@
     <button>
       Sign Up
     </button>
-</form>
+</form> -->
+
