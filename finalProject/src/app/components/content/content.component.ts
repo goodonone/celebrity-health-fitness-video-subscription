@@ -44,7 +44,7 @@ export class ContentComponent implements OnInit{
     .getVideosById(videoId)
     .subscribe((list: any) => {
       for (const element of list.items) {
-        const videoURL = 'https://www.youtube.com/embed/' + element.id;
+        const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.id + '?autohide=1&rel=0';
         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
         element.sanitizedURL = sanitizedURL;
         videoArray.push(element);
@@ -66,7 +66,7 @@ export class ContentComponent implements OnInit{
         .subscribe(
             (list: any) => {
                 for (const element of list.items) {
-                    const videoURL = 'https://www.youtube.com/embed/' + element.snippet.resourceId.videoId;
+                    const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
                     const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
                     element.sanitizedURL = sanitizedURL;
                     videoArray.push(element);
