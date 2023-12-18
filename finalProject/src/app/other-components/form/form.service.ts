@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
+import { PaymentService } from 'src/app/services/payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class FormService {
     return this.multiStepForm;
   }
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router) { }
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { }
 
   goToNextStep(number: number) {
     this.activeStepSubject.next(number + 1);
@@ -73,19 +74,19 @@ export class FormService {
     }
 
     this.user.signUp(userData).subscribe(() => {
-      // window.alert("User Registered Successfully");
-      this.router.navigate(['signin']);
-  // }, error => {
-  //     window.alert("User Registration Error");
-  //     console.log('Error: ', error)
-  });
+   });
+
+  this.payment.newPayment(planData).subscribe(()=>{
+    this.router.navigate(['signin']);
+  })
 
     // function to send payment to backend;
 
+
     this.goToNextStep(4);
-    // setTimeout(() => {
-    //   this.activeStepSubject.next(1);
-    // }, 8000);
+    setTimeout(() => {
+      this.activeStepSubject.next(1); location.reload();
+    }, 4000);
   }
 
 

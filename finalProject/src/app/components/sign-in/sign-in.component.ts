@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,8 @@ export class SignInComponent implements OnInit {
  email: string = '';
  password: string = '';
 
- 
+ errorMessage = false;
+
  constructor(private userService: UserService, private router: Router) { }
 
  ngOnInit(): void {
@@ -24,8 +25,12 @@ export class SignInComponent implements OnInit {
        this.router.navigateByUrl(`/profile/${userId}`);
    }, error => {
        console.log('Error: ', error);
-       window.alert('Unsuccessful Login');
+       this.errorMessage = true;
        this.router.navigateByUrl('/signin');
    });
  }
+
+
+
+
 }

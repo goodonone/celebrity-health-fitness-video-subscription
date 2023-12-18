@@ -2,32 +2,35 @@
     <div class="overlay">
         <mat-card>
             <mat-card-content>
+                <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
+                <form (ngSubmit)="signin()" #loginForm="ngForm">
         <!-- User Name input -->
         <div class="input-details">
             <label for="email">User Name</label>
-            <!--  <Do an ngIf to see if the username/password exists/invalid> -->
-            <label for="error"
-                   class="error-alert">Invalid User Name</label>
           </div>
           <input type="text"
                  matInput
                  name="email"
                  id="email"
-                 placeholder="Enter your email id here"
+                 placeholder="Enter your email"
+                 [(ngModel)]="email"
                  required>
         <!-- password input -->
           <div class="input-details">
             <label for="password">Password</label>
-            <!--  <Do an ngIf to see if password exists/invalid> -->
-            <label for="error"
-                   class="error-alert">Invalid Password</label>
           </div>
           <input type="text"
                  matInput
                  name="password"
                  id="password"
-                 placeholder="Enter your password here"
+                 placeholder="Enter your password"
+                 [(ngModel)]="password"
                  required>
+                <p *ngIf="errorMessage">Invalid Username or Password! Try again.</p>
+                 <button class="btn btn-submit"
+                 [disabled]="loginForm.form.invalid"
+                 (click)="signin()">Sign-In</button>
+                </form>
             </mat-card-content>
         </mat-card>
     </div>
@@ -35,7 +38,7 @@
 
   
 
-<form (ngSubmit)="signin()">
+<!-- <form (ngSubmit)="signin()">
     <h1>LOGIN</h1>
     <span>Email  </span>
     <br><br>
@@ -50,4 +53,4 @@
       Sign In
     </button>
 </form>
-
+ -->
