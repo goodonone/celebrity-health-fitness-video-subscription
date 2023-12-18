@@ -1,0 +1,35 @@
+.bannerFirstAndSecondTiers {
+    background-color: white;
+    color: black;
+    height: 10rem;
+    width: 100%;
+    padding-top: 50rem;
+}
+
+.bannerThirdTier {
+    background-color: white;
+    color: black;
+    height: 10rem;
+    width: 100%;
+    padding-top: 50rem;
+}
+
+div.cardFirstTier {
+}
+
+div.cardSecondAndThirdTiers {
+}
+
+.cardOne{
+    height: 100rem;
+    width: 80%;
+    background-color: rgb(35, 34, 34);
+}
+
+.cardTwo{
+    height: fit-content;
+    width: 80%;
+    background-color: rgb(35, 34, 34);
+}
+
+

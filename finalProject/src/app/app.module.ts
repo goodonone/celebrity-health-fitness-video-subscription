@@ -43,6 +43,7 @@ import { StepThreeSummaryComponent } from './other-components/form/form-steps/st
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 
 
 
@@ -61,7 +62,6 @@ import { PaymentComponent } from './components/payment/payment.component';
     SignInComponent,
     SearchComponent,
     StoreComponent,
-
     FormComponent,
     ProgressionButtonsComponent,
     SignUpComponent,
@@ -72,9 +72,8 @@ import { PaymentComponent } from './components/payment/payment.component';
     StepThreeSummaryComponent,
     StepFourPaymentComponent,
     UpgradeComponent,
-
     PaymentComponent,
-
+    ContentStyledComponent
   ],
   imports: [
     BrowserModule,

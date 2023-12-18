@@ -14,6 +14,7 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
+import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 
 
 const routes: Routes = [
@@ -29,8 +30,9 @@ const routes: Routes = [
   { path: "signin", component: SignInComponent },
   // correctly implement search with the right syntax ?q or something
   { path: "search", component: SearchComponent},
-  { path: "Store", component: StoreComponent},
-  { path: "**", component: NotFoundComponent }
+  { path: "store", component: StoreComponent},
+  { path: "test", component: ContentStyledComponent},
+  { path: "**", component: NotFoundComponent },
 ];
 
 @NgModule({

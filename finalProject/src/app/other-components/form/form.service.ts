@@ -77,7 +77,6 @@ export class FormService {
    });
 
   this.payment.newPayment(planData).subscribe(()=>{
-    this.router.navigate(['signin']);
   })
 
     // function to send payment to backend;
@@ -85,7 +84,7 @@ export class FormService {
 
     this.goToNextStep(4);
     setTimeout(() => {
-      this.activeStepSubject.next(1); location.reload();
+      this.activeStepSubject.next(1); this.router.navigate(['signin']);
     }, 4000);
   }
 
