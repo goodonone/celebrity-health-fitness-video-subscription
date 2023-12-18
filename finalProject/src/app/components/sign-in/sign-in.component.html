@@ -1,3 +1,39 @@
+<div class="background">
+    <div class="overlay">
+        <mat-card>
+            <mat-card-content>
+        <!-- User Name input -->
+        <div class="input-details">
+            <label for="email">User Name</label>
+            <!--  <Do an ngIf to see if the username/password exists/invalid> -->
+            <label for="error"
+                   class="error-alert">Invalid User Name</label>
+          </div>
+          <input type="text"
+                 matInput
+                 name="email"
+                 id="email"
+                 placeholder="Enter your email id here"
+                 required>
+        <!-- password input -->
+          <div class="input-details">
+            <label for="password">Password</label>
+            <!--  <Do an ngIf to see if password exists/invalid> -->
+            <label for="error"
+                   class="error-alert">Invalid Password</label>
+          </div>
+          <input type="text"
+                 matInput
+                 name="password"
+                 id="password"
+                 placeholder="Enter your password here"
+                 required>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+
+  
 
 <form (ngSubmit)="signin()">
     <h1>LOGIN</h1>
