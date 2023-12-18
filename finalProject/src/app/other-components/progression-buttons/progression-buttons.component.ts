@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { FormGroup, FormGroupDirective } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
 
 
@@ -14,7 +14,8 @@ export class ProgressionButtonsComponent implements OnInit {
   activeStep$: number = 0;
   
 
-  constructor(private formService: FormService, private rootFormGroup: FormGroupDirective) { }
+
+  constructor(private formService: FormService) { }
 
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
@@ -27,7 +28,7 @@ export class ProgressionButtonsComponent implements OnInit {
     if ((this.activeStep$ == 1) && (this.stepForm.controls['personalDetails'].pristine) && (!this.stepForm.controls['personalDetails'].touched)) {
       // TO-DO => display error message if step 1 is skipped
 
-      console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
+      // console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
 
     } else {
       this.formService.goToNextStep(this.activeStep$);
@@ -51,5 +52,6 @@ export class ProgressionButtonsComponent implements OnInit {
 
 // stepForm.valid = true;
 
-// planDetails = this.rootFormGroup.form.get('planDetails') ?.value;
+
+
 }

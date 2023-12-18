@@ -53,7 +53,7 @@ export class FormService {
     const generatedUserId: string = Math.random().toString(18).slice(2);
 
     console.log(this.multiStepForm.value);
-    console.log(generatedUserId);
+    // console.log(generatedUserId);
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
