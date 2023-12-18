@@ -1,1 +1,27 @@
-<p>profile works!</p>
+<h1>Profile</h1>
+<div *ngIf="currentUser.imgUrl">
+    <img [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
+</div>
+
+<div *ngIf="!currentUser.imgUrl">
+    <img src="assets\Images\user generic.webp" alt="Add photo" width="200" height="250" />
+</div>
+
+<p>{{currentUser.name}}</p>
+
+<p>{{currentUser.dateOfBirth}}</p>
+
+
+<p>{{currentUser.gender}}</p>
+<p>You are {{currentUser.tier}}</p>
+<p>{{currentUser.height}} ft</p>
+<p>{{currentUser.weight}} lb</p>
+<p>Goal: {{currentUser.goals}}</p>
+
+<button [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+
+
+
+<hr>
+
+

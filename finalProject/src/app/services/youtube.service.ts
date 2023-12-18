@@ -8,15 +8,27 @@ import { Observable, map } from 'rxjs';
 })
 export class YoutubeService {
 
-  apiKey : string = "AIzaSyC8HgZeANMbvGWteITQtnQFocK4Qbfa1rk";
+  apiKey : string = "AIzaSyBp8YWYpjuQCBHe4oT0G7tky8giCQXNMEQ";
+  // apiKey : string = "AIzaSyC5ec7xPUuyfS4_wuo9IupwKwMhQ0vJ3Oc";
 
   constructor(public http: HttpClient) { }
 
-    getVideosForChanel(channel: string, maxResults: string): Observable<Object> {
-    let url = 'https://www.googleapis.com/youtube/v3/search?key=' + this.apiKey + '&channelId=' + channel + '&order=date&part=snippet &type=video,id&maxResults=' + maxResults
-    return this.http.get(url)
+    getVideosById(video: string): Observable<Object> {
+    let url = 'https://www.googleapis.com/youtube/v3/videos?key=' + this.apiKey + '&id=' + video + '&order=date&part=snippet&type=video';
+    
+ return this.http.get(url)
       .pipe(map((res) => {
         return res;
       }))
   }
+
+  getVideosFromPlaylist(playlist: string, maxResults: string): Observable<Object> {
+    let url ='https://www.googleapis.com/youtube/v3/playlistItems?key=' + this.apiKey + '&playlistId=' + playlist + '&part=snippet,contentDetails&maxResults=' + maxResults;
+ return this.http.get(url)
+      .pipe(map((res) => {
+        return res;
+      }))
+  }
+  
+  
 }

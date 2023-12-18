@@ -66,6 +66,7 @@ export class FormService {
       tier: planInfo.plan
     }
 
+
     const planData = {
       tier: planInfo.plan,
       paymentFrequency: planInfo.billing,
@@ -74,7 +75,7 @@ export class FormService {
 
     this.user.signUp(userData).subscribe(() => {
       // window.alert("User Registered Successfully");
-      this.router.navigate(['login']);
+      this.router.navigate(['signin']);
   // }, error => {
   //     window.alert("User Registration Error");
   //     console.log('Error: ', error)

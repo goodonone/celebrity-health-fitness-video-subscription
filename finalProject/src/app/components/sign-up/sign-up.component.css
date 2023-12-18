@@ -3,6 +3,7 @@
     margin-top: -80px;
     width: 100%;
     height: 100vh;
+
     overflow: hidden;
 }
 
@@ -247,3 +248,4 @@ mat-step-icon-state-number {
     left: 56.4%;
     top: 19.5%;
 } */
+

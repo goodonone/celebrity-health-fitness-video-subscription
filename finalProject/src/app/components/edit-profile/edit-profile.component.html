@@ -1,0 +1,45 @@
+<form (ngSubmit)="editProfile()">
+    <h1>Edit Profile</h1>
+
+    <span>Name  </span>
+    <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"><br><br>
+
+    <span>Image  </span>
+    <input placeholder="Insert Picture " type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br>
+
+    <span>Email  </span>
+    <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"><br><br>
+
+    <span>Date of Birth  </span>
+    <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"><br><br>
+
+    <mat-form-field appearance="fill"> 
+      <mat-label>Gender</mat-label> 
+      <mat-select placeholder="Select Gender"  name="gender" [(ngModel)]="currentUser.gender"> 
+        <mat-option value="male" >Male</mat-option> 
+        <mat-option value="female">Female</mat-option> 
+      </mat-select> 
+    </mat-form-field>
+
+    <br>
+    
+    <span>Weight  </span>
+    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
+
+    <span>Height  </span>
+    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
+
+    <mat-form-field appearance="fill"> 
+      <mat-label>Goals</mat-label> 
+      <mat-select placeholder="Select Goals" name="goals" [(ngModel)]="currentUser.goals"> 
+        <mat-option value="Maintain Weight" >Maintain Weight</mat-option>
+        <mat-option value="Lose Fat">Lose Fat</mat-option>  
+        <mat-option value="Build Muscle">Build Muscle</mat-option> 
+      </mat-select> 
+    </mat-form-field>
+
+<br>
+    <button>
+      Edit Profile
+    </button>
+</form>

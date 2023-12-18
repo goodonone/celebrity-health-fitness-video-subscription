@@ -10,16 +10,36 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class ProfileComponent implements OnInit {
   currentUser: User = new User();
+  UserId: string = "";
 
-  userEmail: string = "";
+  
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
+  // ngOnInit(): void {
+  //   const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+  //   this.userService.getUser(userId).subscribe(user => {
+  //     this.currentUser = user;
+  //     console.log(user);
+  //   });
+  // }
+
   ngOnInit(): void {
-    const email = this.actRoute.snapshot.paramMap.get("email") ?? "";
-    this.userService.getUser(email).subscribe(user => {
-      this.currentUser = user;
-      console.log(user);
+    this.loadUserProfile();
+    console.log('UserId:', this.UserId);
+    
+     
+}
+
+loadUserProfile() {
+  const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+
+    this.userService.getUser(UserId).subscribe(user => {
+        this.currentUser = user;
+        console.log(user);
     });
-  }
+};
+
+
+
 }

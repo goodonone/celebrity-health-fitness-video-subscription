@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
+
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormComponent } from './other-components/form/form.component';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
@@ -41,6 +42,10 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { StepThreeSummaryComponent } from './other-components/form/form-steps/step-three-summary/step-three-summary.component';
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
+import { PaymentComponent } from './components/payment/payment.component';
+
+
+
 
 @NgModule({
   declarations: [
@@ -56,6 +61,7 @@ import { UpgradeComponent } from './components/upgrade/upgrade.component';
     SignInComponent,
     SearchComponent,
     StoreComponent,
+
     FormComponent,
     ProgressionButtonsComponent,
     SignUpComponent,
@@ -66,6 +72,9 @@ import { UpgradeComponent } from './components/upgrade/upgrade.component';
     StepThreeSummaryComponent,
     StepFourPaymentComponent,
     UpgradeComponent,
+
+    PaymentComponent,
+
   ],
   imports: [
     BrowserModule,
