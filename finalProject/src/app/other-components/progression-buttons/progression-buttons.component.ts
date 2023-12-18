@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit} from '@angular/core';
+import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { FormService } from '../form/form.service';
+
 
 @Component({
   selector: 'app-progression-buttons',
@@ -11,8 +12,9 @@ import { FormService } from '../form/form.service';
 export class ProgressionButtonsComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$: number = 0;
+  
 
-  constructor(private formService: FormService) { }
+  constructor(private formService: FormService, private rootFormGroup: FormGroupDirective) { }
 
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
@@ -49,5 +51,5 @@ export class ProgressionButtonsComponent implements OnInit {
 
 // stepForm.valid = true;
 
-
+// planDetails = this.rootFormGroup.form.get('planDetails') ?.value;
 }
