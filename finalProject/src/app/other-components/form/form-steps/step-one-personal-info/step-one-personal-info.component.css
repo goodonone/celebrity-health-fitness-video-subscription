@@ -49,10 +49,6 @@ input:valid {
 }
 
 @media (min-width: 37.5em) {
-  label {
-    /* @include variables.body-primary-m; */
-    /* margin-bottom: 0.0rem; */
-  }
 
   input {
     height: 2rem;
