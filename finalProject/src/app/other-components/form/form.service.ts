@@ -20,8 +20,8 @@ export class FormService {
       password: ['', [Validators.required]]
     }),
     planDetails: this.fb.group({
-      plan: ['', [Validators.required]],
-      billing: ['', [Validators.required]],
+      plan: ['Just Looking', [Validators.required]],
+      billing: ['monthly', [Validators.required]],
       planCost: [],
       totalCost: []
     }),
@@ -49,26 +49,23 @@ export class FormService {
   }
 
   submit() {
-    console.log(this.multiStepForm.value);
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
-    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    console.log("planDetails" + planInfo.billing + planInfo.plan + planInfo.totalCost);
+    const generatedUserId: string = Math.random().toString(18).slice(2);
+
+    console.log(this.multiStepForm.value);
+    console.log(generatedUserId);
+    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
+    console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
     const userData = {
+      userId: generatedUserId,
       name:userInfo.name,
       password:userInfo.password,
       email:userInfo.email,
       tier: planInfo.plan
     }
 
-    this.user.signUp(userData).subscribe(() => {
-      window.alert("User Registered Successfully");
-      this.router.navigate(['signin']);
-  }, error => {
-      window.alert("User Registration Error");
-      console.log('Error: ', error)
-  });
 
     const planData = {
       tier: planInfo.plan,
@@ -76,13 +73,20 @@ export class FormService {
       price: planInfo.totalCost
     }
 
+    this.user.signUp(userData).subscribe(() => {
+      // window.alert("User Registered Successfully");
+      this.router.navigate(['signin']);
+  // }, error => {
+  //     window.alert("User Registration Error");
+  //     console.log('Error: ', error)
+  });
+
     // function to send payment to backend;
 
-    //TO-DO => validate form
     this.goToNextStep(4);
-    setTimeout(() => {
-      this.activeStepSubject.next(1);
-    }, 8000);
+    // setTimeout(() => {
+    //   this.activeStepSubject.next(1);
+    // }, 8000);
   }
 
 

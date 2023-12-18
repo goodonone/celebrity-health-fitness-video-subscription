@@ -1,11 +1,12 @@
 * {
   font-family: 'Outfit', sans-serif;
   }
-  
-  /* mat-card-subtitle{
-    font-family: 'Outfit', sans-serif;
-  } */
 
+mat-card{
+  width: 32.8rem;
+  margin-left: 0.2rem;
+}
+  
 input {
   /* @include variables.body-primary-xs; */
   display: inline-block;
@@ -50,17 +51,17 @@ input:valid {
 @media (min-width: 37.5em) {
   label {
     /* @include variables.body-primary-m; */
-    margin-bottom: 0.0rem;
+    /* margin-bottom: 0.0rem; */
   }
 
   input {
-    height: 3rem;
+    height: 2rem;
     margin-bottom: 1.5rem;
-    width: 20.125rem;
+    width: 29.6rem;
   }
 
   .input-details {
-    width: 21.125rem;
+    width: 30.125rem;
   }
 
   .error-alert {

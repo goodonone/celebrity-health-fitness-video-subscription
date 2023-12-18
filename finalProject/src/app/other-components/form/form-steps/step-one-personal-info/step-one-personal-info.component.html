@@ -45,7 +45,7 @@
           <label for="password">Password</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched"
-                 class="error-alert">Enter a Password</label>
+                 class="error-alert">Password is required</label>
         </div>
         <input type="text"
                matInput

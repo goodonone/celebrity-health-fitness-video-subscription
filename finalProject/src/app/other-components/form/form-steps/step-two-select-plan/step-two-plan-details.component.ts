@@ -17,6 +17,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   totalCost: number = 0;
   checked: boolean = false;
   planOptions: any[] = planOptions;
+  billing!: string;
+  cardCounter: number[] = [1,2,3];
 
   constructor(private rootFormGroup: FormGroupDirective) { }
 
@@ -25,6 +27,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     this.typeOfBilling = this.stepForm.controls['billing'].value || 'monthly';
     this.checked = this.typeOfBilling === 'monthly' ? false : true;
     this.planType = this.planType || 'Just Looking';
+    this.updateBilling();
   }
 
   public onPlanChange(plan: string) {
@@ -34,11 +37,12 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   updatePlanType(plan: string, cost: number) {
     this.planType = plan;
     this.totalCost = cost;
+    // this.billing = billing;
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,
       totalCost: cost,
-      
+      // billing: billing
     })
     console.log(plan + cost);
   }
@@ -78,6 +82,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       this.updateBilling();
     }
   }
+
 
   
 }

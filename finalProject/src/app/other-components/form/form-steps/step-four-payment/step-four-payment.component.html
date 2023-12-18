@@ -11,41 +11,49 @@
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content class="form-controls">
+      <div class="nameCredit">
         <!-- name on card input -->
+        <div>
+          <div class="input-details">
+            <label for="name">Name on Card</label>
+            <label for="error"
+                   id="error"
+                   *ngIf="this.stepForm.controls['nameOnCard'].invalid && this.stepForm.controls['nameOnCard'].touched"
+                   class="error-alert">Invalid</label>
+          </div>
+          <input type="text"
+                 matInput
+                 name="nameOnCard"
+                 id="nameOnCard"
+                 placeholder="Example: Aye Wantobejacked" 
+                 formControlName="nameOnCard"
+                 required>
+        </div>
+        <!-- credit card number input -->
+        <div>
         <div class="input-details">
-          <label for="name">Name on Card</label>
+          <label for="ccNumber">Credit Card Number</label>
           <label for="error"
-                 id="error"
-                 *ngIf="this.stepForm.controls['nameOnCard'].invalid && this.stepForm.controls['nameOnCard'].touched"
-                 class="error-alert">Enter Name On Card</label>
+                 *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
+                 class="error-alert">Invalid</label>
         </div>
         <input type="text"
                matInput
-               name="nameOnCard"
-               id="nameOnCard"
-               placeholder="Example: Aye Wantobejacked" 
-               formControlName="nameOnCard"
-               required>
-        <!-- credit card input -->
-        <div class="input-details">
-          <label for="email">Credit or Debit Card Number</label>
-          <label for="error"
-                 *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
-                 class="error-alert">Enter Valid Credit/Debit Card Number</label>
-        </div>
-        <input type="text"
-              matInput
                name="ccNumber"
                id="ccNumber"
                placeholder="1234567891011121" 
                formControlName="ccNumber"
                required>
+        </div>
+      </div>
+      <div class="expCvvZip">
       <!-- expiration date input -->
+        <div>
         <div class="input-details">
-          <label for="email">Exp. Date</label>
+          <label for="expiration">Exp.</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
-                 class="error-alert">Enter Valid Expiration Date</label>
+                 class="error-alert">Invalid</label>
         </div>
         <input type="text"
               matInput
@@ -54,12 +62,14 @@
                placeholder="01/25" 
                formControlName="expDate"
                required>
+       </div>
        <!-- cvv number input -->
+       <div>
         <div class="input-details">
-          <label for="email">CVV</label>
+          <label for="cvv">CVV</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['cvv'].invalid && this.stepForm.controls['cvv'].touched"
-                 class="error-alert">CVV Number Invalid</label>
+                 class="error-alert">Invalid</label>
         </div>
         <input type="text"
               matInput
@@ -68,20 +78,24 @@
                placeholder="025"
                formControlName="cvv"
                required>
+        </div>
       <!-- zipcode input -->
+      <div>
         <div class="input-details">
-          <label for="email">Zipcode</label>
+          <label for="zipcode">Zipcode</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['zipCode'].invalid && this.stepForm.controls['zipCode'].touched"
-                 class="error-alert">Enter Valid Zipcode</label>
+                 class="error-alert">Invalid</label>
         </div>
         <input type="text"
                matInput
                name="zipcode"
-               id="zipcode"
+               id="zipCode"
                placeholder="90210"
                formControlName="zipCode"
                required>
+      </div>
+    </div>
       </mat-card-content>
     </mat-card>
   </ng-container>
