@@ -1,26 +1,40 @@
-<div class="bannerFirstAndSecondTiers" *ngIf="">
-    <h1>Next Live Session in: Upgrade For Access!</h1>
-</div>
-
-<div class="bannerThirdTier" *ngIf="">
-    <h1>Next Live Session in: Upgrade For Access!</h1>
-</div>
-
-<div class="cardFirstTier" *ngIf="">
-    <mat-card class="cardOne">
-        <mat-card-content>
-
-        </mat-card-content>
-    </mat-card>
-</div>
-
-<div class="cardSecondAndThirdTiers" *ngIf="">
-    <mat-card class="cardTwo">
-        <mat-card-content>
-
-        </mat-card-content>
-    </mat-card>
-</div>
-
-
+<div class="background">
+    <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="false">
+        <!-- <h1>Next Live Session in: Upgrade For Access!</h1> -->
+    </div>
     
+    <div class="bannerThirdTier" id="timerTierThree" *ngIf="tierThree">
+        <!-- <h1>Next Live Session in:</h1> -->
+    </div>
+    
+    
+    <div class="cardFirstTier" *ngIf="tierOne">
+        <mat-card class="cardContainer">
+            <mat-card-header>
+                <h1 class="tierOneHeader">
+                    Workouts To Get You Started
+                </h1>
+            </mat-card-header>
+            <mat-card-content>
+                <!-- <div class="tierOneVideos"> -->
+                    <div class="cardVideos">
+                        <mat-card *ngFor="let card of testCards" class="cardVideosFirst">
+                            {{card}}
+                        </mat-card>
+                    </div>
+    
+                <!-- </div> -->
+            </mat-card-content>
+        </mat-card>
+    </div>
+    
+    <!-- Add year for next tiers and an upgrade section for other videos-->
+    
+    <div class="cardSecondAndThirdTiers" *ngIf="tierTwoThree">
+        <mat-card class="cardTwo">
+            <mat-card-content>
+    
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
