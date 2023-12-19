@@ -1,6 +1,6 @@
 export class Payment {
     paymentId?: number;
-    userId?: number;
+    userId?: string;
     tier?: string;
     paymentStatus?: string;
     membershipStatus?: string;
@@ -11,7 +11,7 @@ export class Payment {
 
 constructor(
         paymentId?: number,
-        userId?: number,
+        userId?: string,
         tier?: string,
         paymentStatus?: string,
         membershipStatus?: string,
