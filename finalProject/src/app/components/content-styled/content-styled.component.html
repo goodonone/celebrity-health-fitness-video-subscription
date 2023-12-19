@@ -1,12 +1,16 @@
 <div class="background">
-    <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="false">
+<div class="upgradeButtonContainer">
+    <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
+</div>
+
+    <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="tierOneTwo">
         <!-- <h1>Next Live Session in: Upgrade For Access!</h1> -->
     </div>
     
     <div class="bannerThirdTier" id="timerTierThree" *ngIf="tierThree">
         <!-- <h1>Next Live Session in:</h1> -->
     </div>
-    
+
     
     <div class="cardFirstTier" *ngIf="tierOne">
         <mat-card class="cardContainer">
@@ -22,16 +26,19 @@
                             {{card}}
                         </mat-card>
                     </div>
-    
                 <!-- </div> -->
             </mat-card-content>
         </mat-card>
     </div>
+    </div>
+
     
     <!-- Add year for next tiers and an upgrade section for other videos-->
     
     <div class="cardSecondAndThirdTiers" *ngIf="tierTwoThree">
-        <mat-card class="cardTwo">
+        <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
+        <div class="payWall">
+        <mat-card class="cardContainerTwo">
             <mat-card-content>
     
             </mat-card-content>

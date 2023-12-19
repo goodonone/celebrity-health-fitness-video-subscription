@@ -40,7 +40,7 @@ export class ContentStyledComponent implements OnInit {
 
       // Display the result in the element with id="demo"
       document.getElementById("timer")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
-        + minutes + "m " + seconds + "s. " + "Upgrade For Live Access!";
+        + minutes + "m " + seconds + "s. " + "Upgrade For Live Access!"
 
       // If the count down is finished, write some text
       if (distance < 0) {
