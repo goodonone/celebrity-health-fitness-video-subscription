@@ -7,7 +7,6 @@
           <ng-container [formGroup]="stepForm"
                         name="stepForm"
                         (submit)="confirmAndSubmitForm()">
-  
             <app-step-one-personal-info *ngIf="activeStep$ == 1"
                                            formGroupName="personalDetails"></app-step-one-personal-info>
             <app-step-two-plan-details *ngIf="activeStep$ == 2"

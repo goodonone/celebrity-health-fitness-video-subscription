@@ -22,6 +22,8 @@ export class SignInComponent implements OnInit {
  signin(){
    this.userService.login(this.email, this.password).subscribe((response:any) => {
     const userId = response.userId;
+    localStorage.setItem('tier', response.tier);
+    localStorage.setItem('token', response.token);
        this.router.navigateByUrl(`/profile/${userId}`);
    }, error => {
        console.log('Error: ', error);
@@ -29,6 +31,9 @@ export class SignInComponent implements OnInit {
        this.router.navigateByUrl('/signin');
    });
  }
+
+
+  
 
 
 

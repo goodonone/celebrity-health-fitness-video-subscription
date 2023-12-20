@@ -6,6 +6,7 @@ export class Payment {
     membershipStatus?: string;
     paymentFrequency?: string;
     membershipDate?: Date;
+    purchaseType?: string;
     updatedAt?: Date;
 
 

@@ -18,6 +18,7 @@ export class ContentStyledComponent implements OnInit {
   tierThree: boolean = true;
 
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
+  testCardsTwo: number[] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23,24,25]
 
 
   startCountDownTierOneTwo() {
@@ -82,6 +83,9 @@ export class ContentStyledComponent implements OnInit {
     }, 1000);
   }
 
+  // Condition to display various items on page
+  // localStorage.getItem('tier') === 'Just Looking';
+ 
 
 
 }
