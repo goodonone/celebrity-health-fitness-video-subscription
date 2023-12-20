@@ -26,10 +26,12 @@
                  placeholder="Enter your password"
                  [(ngModel)]="password"
                  required>
-                <p *ngIf="errorMessage">Invalid Username or Password! Try again.</p>
-                 <button class="btn btn-submit"
-                 [disabled]="loginForm.form.invalid"
-                 (click)="signin()">Sign-In</button>
+                <span class="errorSpan"><p *ngIf="errorMessage">Invalid Username or Password! Try again.</p></span>
+                 <span class="buttonSpan">
+                  <button class="btn btn-submit"
+                  [disabled]="loginForm.form.invalid"
+                  (click)="signin()">Sign-In</button>
+                 </span>
                 </form>
             </mat-card-content>
         </mat-card>

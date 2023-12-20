@@ -107,7 +107,7 @@ mat-button-toggle-label-content{
 }
 
 .details {
-  font-family: 'Outfit', sans-serif;;
+  /* font-family: 'Outfit', sans-serif;; */
   height: 8.25rem;
   padding-top: .1rem;
   text-align: left;
@@ -121,7 +121,7 @@ mat-button-toggle-label-content{
 }
 
 .plan_title {
-  font-family: 'Outfit', sans-serif;;
+  /* font-family: 'Outfit', sans-serif; */
   font-size: 1.3rem;
   font-weight: 700;
   color: black;
@@ -129,7 +129,7 @@ mat-button-toggle-label-content{
 }
 
 .price {
-  font-family: 'Outfit', sans-serif;;
+  /* font-family: 'Outfit', sans-serif; */
   /* @include variables.body-primary-l; */
   font-size: 1rem;
   font-weight: 600;
@@ -140,7 +140,7 @@ span.price{
 }
 
 .promo {
-  font-family: 'Outfit', sans-serif;;
+  /* font-family: 'Outfit', sans-serif;; */
   /* @include variables.body-secondary-s; */
   color: rgb(0, 0, 0);
 }
@@ -152,7 +152,7 @@ span.promo{
 }
 
 .description{
-  font-family: 'Outfit', sans-serif;;
+  /* font-family: 'Outfit', sans-serif;; */
   text-wrap: wrap;
   line-height: 0.8rem;
 }

@@ -1,17 +1,27 @@
 <div class="background">
-<div class="upgradeButtonContainer">
-    <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
-</div>
+    <div class="upgradeButtonContainer">
+        <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
+    </div>
 
+    <!-- Countdown timer for free and second tiers -->
     <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="tierOneTwo">
-        <!-- <h1>Next Live Session in: Upgrade For Access!</h1> -->
-    </div>
-    
-    <div class="bannerThirdTier" id="timerTierThree" *ngIf="tierThree">
-        <!-- <h1>Next Live Session in:</h1> -->
     </div>
 
-    
+    <!-- Countdown timer for third tier -->
+    <div class="bannerThirdTier" id="timerTierThree" *ngIf="tierThree">
+    </div>
+
+    <!-- Live Video Div -->
+    <div class="liveVideo" *ngIf="showLiveVideo">
+        <mat-card class="liveVideoContainer">
+            <mat-card-content>
+
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Free Tier Videos -->
+
     <div class="cardFirstTier" *ngIf="tierOne">
         <mat-card class="cardContainer">
             <mat-card-header>
@@ -20,28 +30,68 @@
                 </h1>
             </mat-card-header>
             <mat-card-content>
-                <!-- <div class="tierOneVideos"> -->
-                    <div class="cardVideos">
-                        <mat-card *ngFor="let card of testCards" class="cardVideosFirst">
-                            {{card}}
-                        </mat-card>
-                    </div>
-                <!-- </div> -->
+                <div class="cardVideos">
+                    <mat-card *ngFor="let card of testCards" class="cardVideosFirst">
+                        {{card}}
+                    </mat-card>
+                </div>
             </mat-card-content>
         </mat-card>
     </div>
-    </div>
+</div>
 
-    
-    <!-- Add year for next tiers and an upgrade section for other videos-->
-    
-    <div class="cardSecondAndThirdTiers" *ngIf="tierTwoThree">
-        <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
-        <div class="payWall">
-        <mat-card class="cardContainerTwo">
-            <mat-card-content>
-    
-            </mat-card-content>
-        </mat-card>
+
+<!-- Add year for next tiers and an upgrade section for other videos-->
+
+<div class="cardSecondAndThirdTiers">
+    <div class="upgradeContainer" *ngIf="tierTwoThree">
+        <h2 class="upgradeTierText">Upgrade for New Videos Weekly!</h2>
+        <button class="btn btn-upgradeTierButton" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
     </div>
+    <!-- <div class="payWall" *ngIf="tierTwoThree"> -->
+    <mat-card class="cardContainerTwo">
+        <mat-card-header>
+            <h1 class="tierName">Motivated</h1>
+            <!-- <h1 id="tierName">{{tierName}}</h1> -->
+        </mat-card-header>
+        <mat-card-content>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeaderYear">2023</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardTwo flexCards">
+                <h1 class="cardHeaderYear">2022</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardThree flexCards">
+                <h1 class="cardHeaderYear">2021</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardFour flexCards">
+                <h1 class="cardHeaderYear">2020</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardFive flexCards">
+                <h1 class="cardHeaderYear">2019</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardSix flexCards">
+                <h1 class="cardHeaderYear">2018</h1>
+                <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+        </mat-card-content>
+    </mat-card>
+    <!-- </div> -->
 </div>
