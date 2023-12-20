@@ -66,7 +66,6 @@ export class FormService {
       tier: planInfo.plan
     }
 
-
     const planData = {
       tier: planInfo.plan,
       paymentFrequency: planInfo.billing,
