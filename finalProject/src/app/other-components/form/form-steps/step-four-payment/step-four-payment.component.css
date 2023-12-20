@@ -63,12 +63,13 @@ input:valid {
 } */
 
 #nameOnCard{
-  width: 14rem;
+  width: 14.4rem;
 }
 
 #ccNumber{
-  width: 14rem;
+  width: 14.4rem;
 }
+
 
 #cvv{
   width: 9.2rem;
@@ -95,6 +96,7 @@ input:valid {
 .nameCredit{
 display: flex;
 flex-direction:row;
+justify-content:space-between;
 margin-top: 1rem;
 width: 100%;
 /* padding-right: 3rem; */

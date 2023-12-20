@@ -5,7 +5,15 @@
             *ngIf="activeStep$ < 4" [disabled]="stepForm.controls['personalDetails'].valid === false"
             (click)="nextStep()">Next Step</button>
     <button class="btn btn-confirm"
-            *ngIf="activeStep$ === 4"[disabled]="!stepForm.valid"
+            *ngIf="activeStep$ === 4" [disabled]="stepForm.controls['paymentDetails'].valid === false " 
             (click)="confirmAndSubmitForm()"type="button"
              >Confirm</button>
   </div>
+
+  <!-- || activeStep$ === 3 && stepForm.controls['planDetails'].value !== 'Just Looking' -->
+
+  <!-- | activeStep$ === 3 && planDetails.plan === 'Just Looking' -->
+
+  <!-- || stepForm.controls['paymentDetails'].valid === false -->
+
+  <!-- || activeStep$ === 3 && stepForm.controls['personalDetails'].value === 'Just Looking' -->

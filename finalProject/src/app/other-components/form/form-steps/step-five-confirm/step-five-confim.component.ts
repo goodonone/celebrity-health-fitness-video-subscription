@@ -10,6 +10,8 @@ export class StepFiveConfimComponent implements OnInit {
 loading = true;
 
 ngOnInit() : void{
-  setTimeout(()=> {this.loading = false}, 3000)
+//   setTimeout(()=> {this.loading = false}, 3000)
+// }
+// }
 }
 }

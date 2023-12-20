@@ -2,6 +2,11 @@
 font-family: 'Outfit', sans-serif;
 }
 
+mat-card{
+  width: 32.8rem;
+  margin-left: 0.2rem;
+}
+
 div.plan{
   padding-top: 0.5rem;
   padding-bottom: 0.2rem;
