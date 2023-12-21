@@ -47,7 +47,6 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
 
 
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -73,7 +72,7 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
     StepFourPaymentComponent,
     UpgradeComponent,
     PaymentComponent,
-    ContentStyledComponent
+    ContentStyledComponent,
   ],
   imports: [
     BrowserModule,
@@ -94,7 +93,6 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
     MatStepperModule,
     ReactiveFormsModule,
     MaterialModule,
-    
   ],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent]

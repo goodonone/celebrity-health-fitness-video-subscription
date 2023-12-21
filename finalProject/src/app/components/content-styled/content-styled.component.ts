@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import * as $ from 'jquery';
+
+interface JQuery {
+  chosen(options?:any):JQuery;
+}
 
 @Component({
   selector: 'app-content-styled',
@@ -7,6 +12,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ContentStyledComponent implements OnInit {
   // count: any;
+  
 
   ngOnInit(): void {
     this.startCountDownTierOneTwo();
@@ -21,6 +27,34 @@ export class ContentStyledComponent implements OnInit {
     // const yearSpan = document.getElementById('#currentYear');
     // const currentYear = new Date();
     // yearSpan!.innerText = currentYear.getFullYear();
+
+  
+
+    var $ = require( "jquery" );
+    var windw = this;
+
+    $.fn.followTo = function ( pos: number ) {
+        var $this = this,
+            $window = $(windw);
+        
+        $window.scroll(function(e:any){
+            if ($window.scrollTop() > pos) {
+                $this.css({
+                    position: 'absolute',
+                    top: pos
+                });
+            } else {
+                $this.css({
+                    position: 'fixed',
+                    top: 0
+                });
+            }
+        });
+    };
+    
+    $('#fixed').followTo(5000);
+
+
 
   }
 
@@ -107,6 +141,11 @@ testCardsThree : number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
   toggleBilling() {
     this.checked = !this.checked;
   }
+
+  // Upgrade Follow scroll 
+
+  
+
 
 }
 

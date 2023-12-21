@@ -1,4 +1,4 @@
-<div class="background">
+<div class="pageContainer">
     <div class="upgradeButtonContainer">
         <button class="btn btn-upgrade" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
     </div>
@@ -45,15 +45,15 @@
 
 
 <div class="cardSecondAndThirdTiers">
-    <div class="upgradeContainer" *ngIf="tierTwoThree">
-        <h2 class="upgradeTierText">Upgrade for New Videos Weekly!</h2>
-        <button class="btn btn-upgradeTierButton" routerLink="/upgrade" *ngIf="tierOneTwo">Upgrade</button>
+    <div class="upgradeContainer" id="fixed" *ngIf="tierTwoThree">
+        <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
+        <button class="btn btn-upgradeTierButton" routerLink="/upgrade" *ngIf="tierOne">Upgrade</button>
     </div>
     <!-- <div class="payWall" *ngIf="tierTwoThree"> -->
     <mat-card class="cardContainerTwo">
         <mat-card-header>
             <h1 class="tierName">Motivated</h1>
-            <!-- <h1 id="tierName">{{tierName}}</h1> -->
+            <!-- <h1 class="tierName">{{tierName}}</h1> -->
         </mat-card-header>
         <div class="toggle-area">
             <div class="toggle">
