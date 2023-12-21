@@ -103,7 +103,7 @@ button{
     height: 4rem;
     /* border-radius: 50%; */
     /* overflow: hidden; */
-    margin-top: 23px;
+    margin-top: 15px;
 }
 
   @media screen and (min-width: 500px) and (max-width: 1000px) 
