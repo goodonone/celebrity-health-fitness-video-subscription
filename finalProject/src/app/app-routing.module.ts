@@ -23,13 +23,14 @@ const routes: Routes = [
   { path: "home", component: HomeComponent },
   { path: "about", component: AboutComponent },
   { path: "contact", component: ContactComponent },
+  // Remove id from content page
   { path: "content/:id", component: ContentComponent },
   { path: "create-profile", component: CreateProfileComponent },
   { path: "edit-profile/:id", component: EditProfileComponent },
   { path: "profile/:id", component: ProfileComponent },
   { path: "signup", component: SignUpComponent },
   { path: "signin", component: SignInComponent },
-  // correctly implement search with the right syntax ?q or something
+  // Disable search if not implemented
   { path: "search", component: SearchComponent },
   { path: "store", component: StoreComponent },
   { path: "test", component: ContentStyledComponent },

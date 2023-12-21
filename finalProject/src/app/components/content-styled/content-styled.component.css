@@ -363,10 +363,6 @@ label {
     color: #c7ff20;
 }
 
-/* .!checked{
-
-  } */
-
  .yearAndRecipes{
     display: flex;
     flex-direction: column;
@@ -376,7 +372,6 @@ p.recipes {
 color: white;
 font-size: larger;
 padding: 2rem 0rem 0 8rem ;
-
 }
 
 button.btn-recipes{
@@ -386,7 +381,6 @@ color: white;
 font-size: larger;
 margin-left: 3rem;
 margin-top: 2rem;
-/* padding: 2rem 0rem 0 8rem ; */
 }
 
 button.btn-recipes:hover{

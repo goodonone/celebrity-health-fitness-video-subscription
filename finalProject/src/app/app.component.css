@@ -61,7 +61,26 @@ mat-icon:hover {
   color: #71BBF5;
 }
 
+.logoSpan{
+  /* text-align: left; */
+}
+
+img.logo{
+  transform: scale(10%,10%);
+}
+
+.logoImage{
+    width: 13rem;
+    height: 4rem;
+    /* border-radius: 50%; */
+    /* overflow: hidden; */
+    margin-top: 23px;
+}
+
+
 .logo {
+  /* background-image: url('src/assets/Images/ProjectLogo.svg');
+  background-repeat: no-repeat; */
   cursor: pointer;
 }
 
