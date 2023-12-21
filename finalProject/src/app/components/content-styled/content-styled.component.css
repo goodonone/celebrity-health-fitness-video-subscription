@@ -305,23 +305,24 @@ div.upgradeContainer {
 
 
 .upgradeContainer {
+    
+    /* margin-top: 15%; */
+}
+
+#fixed{
     display: flex;
     flex-wrap: wrap;
     position: absolute;
     padding-top: 0.2%;
-    /* top: 25%; */
+    /* top: 0; */
+    top:250;
     right: 4%;
     /* height: 3rem; */
     width: 25rem;
     flex-direction: row;
     justify-content: space-between;
     z-index: 3;
-    /* margin-top: 15%; */
 }
-
-/* #fixed{
-    position: absolute;
-} */
 
 .smallerFont{
     font-size: 2rem;
@@ -388,7 +389,7 @@ label {
     display: flex;
     flex-direction: column;
     padding-left: 2rem;
-    padding-right: 3rem;
+    padding-right: 4rem;
  } 
 
 p.recipes {

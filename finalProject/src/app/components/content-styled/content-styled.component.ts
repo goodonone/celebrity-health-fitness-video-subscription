@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 
 interface JQuery {
-  chosen(options?:any):JQuery;
+  chosen(options?: any): JQuery;
 }
 
 @Component({
@@ -12,48 +12,73 @@ interface JQuery {
 })
 export class ContentStyledComponent implements OnInit {
   // count: any;
-  
+
 
   ngOnInit(): void {
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
     this.checked = false;
-    let tierName: string | null = localStorage.getItem('tier');
-    if (tierName == "Just Looking") {
-    tierName = 'Motivated & All In'
-    }
+
+    // Checking what tier we are on
+    let tier = localStorage.getItem('tier');
+
+    // Tier One, Two and Three Logic
+    // if (tier == "Just Looking") {
+    //   this.tierName = "Motivated & All In";
+    //   this.tierOne = true;
+    //   this.tierOneTwo = true;
+    //   this.tierTwoThree = true;
+    //   this.tierThree = false;
+    // } else if(tier == "Motivated")
+    // {
+    //   this.tierName = "Motivated";
+    //   this.tierOne = false;
+    //   this.tierOneTwo = true;
+    //   this.tierTwoThree = false;
+    // } else {
+    //   this.tierName = "All In";
+    //   this.tierOne = false;
+    //   this.tierOneTwo = false;
+    //   this.tierTwoThree = true;
+    //   this.tierThree = true;
+    // }    
+    
+
     // Try to do this where the latest year updates automatically
 
     // const yearSpan = document.getElementById('#currentYear');
     // const currentYear = new Date();
     // yearSpan!.innerText = currentYear.getFullYear();
 
-  
 
-    var $ = require( "jquery" );
+    // only run if Tier = 'Just Looking'
+    // if(tierName == 'Just Looking')
+    var $ = require("jquery");
     var windw = this;
 
-    $.fn.followTo = function ( pos: number ) {
-        var $this = this,
-            $window = $(windw);
-        
-        $window.scroll(function(e:any){
-            if ($window.scrollTop() > pos) {
-                $this.css({
-                    position: 'absolute',
-                    top: pos
-                });
-            } else {
-                $this.css({
-                    position: 'fixed',
-                    top: 0
-                });
-            }
-        });
-    };
-    
-    $('#fixed').followTo(5000);
+    $.fn.followTo = function (pos: number) {
+      var $this = this,
+        $window = $(windw);
 
+      $window.scroll(function (e: any) {
+        if ($window.scrollTop() > pos) {
+          $this.css({
+            position: 'absolute',
+            top: pos
+          });
+        } else {
+          $this.css({
+            position: 'fixed',
+            top: 0
+          });
+        }
+      });
+    };
+
+    $('#fixed').followTo(250);
+    //   $(window).scroll(() =>{
+    //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
+    // });
 
 
   }
@@ -65,6 +90,7 @@ export class ContentStyledComponent implements OnInit {
   tierTwoThree: boolean = true;
   tierThree: boolean = true;
   showLiveVideo: boolean = false;
+  tier: string = "";
   tierName: string = "";
   checked: boolean = false;
 
@@ -72,7 +98,7 @@ export class ContentStyledComponent implements OnInit {
 
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
-testCardsThree : number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
+  testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
     var countDownDate = new Date("Jan 7, 2024 15:37:25").getTime();
 
@@ -144,7 +170,7 @@ testCardsThree : number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 
 
   // Upgrade Follow scroll 
 
-  
+
 
 
 }
