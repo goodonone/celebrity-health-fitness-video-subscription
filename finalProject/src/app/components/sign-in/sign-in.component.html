@@ -1,8 +1,12 @@
 <div class="background">
     <div class="overlay">
         <mat-card>
+          <mat-card-header>
+            <div class="logoImage">
+              <img class="img" src="assets/Images/ProjectLogo.svg" alt="Hugh-Jackedman-Logo" routerLink="/home">
+            </div>
+          </mat-card-header>
             <mat-card-content>
-                <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
                 <form (ngSubmit)="signin()" #loginForm="ngForm">
         <!-- User Name input -->
         <div class="input-details">
