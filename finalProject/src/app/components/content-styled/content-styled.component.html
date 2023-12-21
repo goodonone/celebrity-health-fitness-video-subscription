@@ -41,8 +41,6 @@
 </div>
 
 
-<!-- Add year for next tiers and an upgrade section for other videos-->
-
 <div class="cardSecondAndThirdTiers">
     <div class="upgradeContainer" *ngIf="tierTwoThree">
         <h2 class="upgradeTierText">Upgrade for New Videos Weekly!</h2>
@@ -54,7 +52,16 @@
             <h1 class="tierName">Motivated</h1>
             <!-- <h1 id="tierName">{{tierName}}</h1> -->
         </mat-card-header>
+        <div class="toggle-area">
+            <div class="toggle">
+              <label [ngClass]="{'checked':!checked}">All Workouts</label>
+              <mat-slide-toggle [checked]="checked" (change)="toggleBilling()" color="primary">
+              </mat-slide-toggle>
+              <label [ngClass]="{'checked':checked}">Workouts By Category</label>
+            </div>
+          </div>
         <mat-card-content>
+            <div class="toggleAllWorkouts" *ngIf="!checked">
             <mat-card class="contentCardOne flexCards">
                 <h1 class="cardHeaderYear">2023</h1>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
@@ -91,6 +98,51 @@
                     {{card}}
                 </mat-card>
             </mat-card>
+        </div>
+        <div class="toggleWorkoutsByCategory" *ngIf="checked">
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Abs</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Chest</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Shoulders</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Biceps</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Triceps</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Back</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+            <mat-card class="contentCardOne flexCards">
+                <h1 class="cardHeadertype">Legs</h1>
+                <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                    {{card}}
+                </mat-card>
+            </mat-card>
+        </div>
         </mat-card-content>
     </mat-card>
     <!-- </div> -->

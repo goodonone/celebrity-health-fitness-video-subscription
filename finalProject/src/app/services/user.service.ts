@@ -18,8 +18,6 @@ export class UserService {
     return this.http.post(`${this.baseURL}/`, newUser)
 }
 
-
-
 login(email: string, password: string){
   let request = { email, password };
 

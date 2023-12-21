@@ -171,14 +171,12 @@ span.description{
   border-radius: .5rem;
   border-radius: 0.625rem;
   background-color: rgb(255, 255, 255);
-  /* @include variables.flexCenter(row); */
 }
 
 .toggle {
   padding-left: 1.8rem;
   width: 100%;
   width: 11.4rem;
-  /* @include variables.flexSpaceBetween(row); */
 }
 
 label {
@@ -186,7 +184,6 @@ label {
   height: 1rem;
   width: 3.4rem;
   color: #aeaeae;
-  /* @include variables.body-primary-xs; */
   font-size: .875rem;
 }
 
@@ -202,9 +199,6 @@ label {
   color:#C7FF20;
 }
 
-/* md-slide-toggle{
-  color:#C7FF20;
-} */
 
 @media (min-width: 37.5em) {
 

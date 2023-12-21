@@ -6,10 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./content-styled.component.css']
 })
 export class ContentStyledComponent implements OnInit {
-  count: any;
+  // count: any;
+
   ngOnInit(): void {
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
+    this.checked = false;
     let tierName: string | null = localStorage.getItem('tier');
     if (tierName == "Just Looking") {
     tierName = 'Motivated & All In'
@@ -19,6 +21,7 @@ export class ContentStyledComponent implements OnInit {
     // const yearSpan = document.getElementById('#currentYear');
     // const currentYear = new Date();
     // yearSpan!.innerText = currentYear.getFullYear();
+
   }
 
   // Conditionally activate these
@@ -29,12 +32,13 @@ export class ContentStyledComponent implements OnInit {
   tierThree: boolean = true;
   showLiveVideo: boolean = false;
   tierName: string = "";
+  checked: boolean = false;
 
   // Add logic to only show one timer based on tier
 
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
-
+testCardsThree : number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
     var countDownDate = new Date("Jan 7, 2024 15:37:25").getTime();
 
@@ -100,7 +104,9 @@ export class ContentStyledComponent implements OnInit {
   // Condition to display various items on page
   // localStorage.getItem('tier') === 'Just Looking';
 
-
+  toggleBilling() {
+    this.checked = !this.checked;
+  }
 
 }
 

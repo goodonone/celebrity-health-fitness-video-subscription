@@ -80,10 +80,6 @@ div.cardFirstTier {
     margin-top: 10rem;
 }
 
-div.cardSecondAndThirdTiers {
-margin-top: 10rem;
-}
-
 .cardContainer {
     height: fit-content;
     width: 80%;
@@ -153,6 +149,10 @@ mat-card.cardVideosFirst {
 
 /* For tier Two and Three content */
 
+div.cardSecondAndThirdTiers {
+    margin-top: 10rem;
+}
+
 .cardContainerTwo {
     position: relative;
     height: fit-content;
@@ -202,8 +202,17 @@ mat-card.cardVideosFirst {
     padding-top: 5rem;
     padding-bottom: 5rem
 } */
-*/ mat-card.contentCardTwo {
-    margin-top: 5rem;
+
+mat-card.contentCardTwo,
+.contentCardThree,
+.contentCardFour,
+.contentCardFive,
+.contentCardSix {
+    margin-top: 8rem;
+}
+
+.flexCards.contentCardOne {
+    margin-top: 3rem;
 }
 
 .flexCards {
@@ -216,7 +225,7 @@ mat-card.cardVideosFirst {
     width: 100%;
     color: black;
     /* border-radius: 6px; */
-    margin-top: 3rem;
+    margin-top: 6rem;
 }
 
 mat-card.cardVideosSecondThird {
@@ -239,31 +248,38 @@ mat-card.cardVideosSecondThird {
     padding-bottom: 0rem;
 }
 
-.cardHeaderYear {
+.cardHeaderYear, .cardHeadertype {
     color: white;
     font-weight: 500;
     /* text-align: left; */
     font-size: 7vw;
     /* padding: 1rem; */
-    padding-left: 0.5rem;
+    padding-left: 0.8rem;
     padding-top: 4rem;
     width: 18rem;
-    margin-left: 0.5rem;
-    margin-right: 4rem;
+    margin-left: 1rem;
+    margin-right: 2.8rem;
 }
 
-div.upgradeContainer{
+.cardHeadertype{
+    text-align: left;
+    padding-left: 6rem;
+    padding-bottom: 3rem;
+    width: 100%;
+}
+
+div.upgradeContainer {
     height: 3rem;
 }
 
 
-.upgradeContainer{
+.upgradeContainer {
     display: flex;
     flex-wrap: wrap;
     position: absolute;
-    padding-top: 0.4%;
+    padding-top: 0.2%;
     /* top: 95%; */
-    right:4%;
+    right: 4%;
     /* height: 3rem; */
     width: 25rem;
     flex-direction: row;
@@ -295,3 +311,41 @@ div.upgradeContainer{
     background-color: white;
     border-color: rgb(165, 165, 165);
 }
+
+.toggle-area {
+    display: flex;
+    justify-content: center;
+    border-radius: 6px;
+    background-color: rgb(18, 17, 17);
+    width: 24rem;
+    /* height: rem; */
+    margin: auto;
+    margin-top: 3rem;
+    padding: 1rem;
+}
+
+.toggle {
+    padding-left: 1.8rem;
+    width: 100%;
+    /* width: 11.4rem; */
+    /* @include variables.flexSpaceBetween(row); */
+  }
+
+  label {
+    margin: 0 0.5rem 0 0.2rem;
+    /* height: 1rem; */
+    /* width: 3.4rem; */
+    color: #ffffff;
+    /* @include variables.body-primary-xs; */
+    font-size: 1rem;
+  }
+  
+  .checked {
+    color: #c7ff20;
+  }
+
+  /* .!checked{
+
+  } */
+
+
