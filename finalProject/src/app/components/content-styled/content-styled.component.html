@@ -13,6 +13,9 @@
 
     <!-- Live Video Div -->
     <div class="liveVideo" *ngIf="showLiveVideo">
+        <h1 class="liveVideoText">
+            We are Live!
+        </h1>
         <mat-card class="liveVideoContainer">
             <mat-card-content>
 
@@ -63,37 +66,55 @@
         <mat-card-content>
             <div class="toggleAllWorkouts" *ngIf="!checked">
             <mat-card class="contentCardOne flexCards">
-                <h1 class="cardHeaderYear">2023</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2023</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>
             </mat-card>
             <mat-card class="contentCardTwo flexCards">
-                <h1 class="cardHeaderYear">2022</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2022</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>
             </mat-card>
             <mat-card class="contentCardThree flexCards">
-                <h1 class="cardHeaderYear">2021</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2021</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>
             </mat-card>
             <mat-card class="contentCardFour flexCards">
-                <h1 class="cardHeaderYear">2020</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2020</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>
             </mat-card>
             <mat-card class="contentCardFive flexCards">
-                <h1 class="cardHeaderYear">2019</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2019</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>
             </mat-card>
             <mat-card class="contentCardSix flexCards">
-                <h1 class="cardHeaderYear">2018</h1>
+                <div class="yearAndRecipes">
+                    <h1 class="cardHeaderYear">2018</h1>
+                    <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                </div>
                 <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                     {{card}}
                 </mat-card>

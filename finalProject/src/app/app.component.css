@@ -13,6 +13,7 @@ nav {
 }
 
 .navBar {
+  /* position: static; */
   border-radius: 6px;
   /* display: flex; */
   /* background-color: #CBFF4C; */
@@ -39,6 +40,7 @@ nav {
 .menu {
   display: flex;
   align-items: center;
+  z-index: 100;
   /* flex-direction: column; */
   /* flex-flow: column; */
 }
@@ -132,7 +134,7 @@ nav{
     width: 200px;
     display: none;
     clear: right;
-    z-index: 2;
+    z-index: 100;
     right: 0;
     /* flex-direction: column; */
   }

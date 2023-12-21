@@ -56,6 +56,8 @@ h1.tierOneHeader {
     /* text-shadow: ; */
 }
 
+
+
 .bannerThirdTier {
     background-color: white;
     color: black;
@@ -71,11 +73,29 @@ div.cardFirstTier {
     margin: 10rem auto;
 }
 
+.liveVideo {
+    display: flex;
+    margin-top: 5rem;
+}
+
+h1.liveVideoText {
+    justify-content: center;
+    font-size: 8rem;
+    width: 10rem;
+    line-height: 10rem;
+    text-align: left;
+    color: white;
+    margin: auto;
+    padding-top: 10rem;
+    /* padding-bottom: 5rem; */
+}
+
 .liveVideoContainer {
     height: 30rem;
     width: 50rem;
     color: black;
     border-radius: 6px;
+    /* justify-content: right; */
     margin: auto;
     margin-top: 10rem;
 }
@@ -89,8 +109,6 @@ div.cardFirstTier {
     margin-top: 2rem;
     padding-bottom: 0.8rem;
 }
-
-mat-card-header {}
 
 /* .cardVideos {
      padding: 1rem;
@@ -248,7 +266,8 @@ mat-card.cardVideosSecondThird {
     padding-bottom: 0rem;
 }
 
-.cardHeaderYear, .cardHeadertype {
+.cardHeaderYear,
+.cardHeadertype {
     color: white;
     font-weight: 500;
     /* text-align: left; */
@@ -261,7 +280,7 @@ mat-card.cardVideosSecondThird {
     margin-right: 2.8rem;
 }
 
-.cardHeadertype{
+.cardHeadertype {
     text-align: left;
     padding-left: 6rem;
     padding-bottom: 3rem;
@@ -329,23 +348,48 @@ div.upgradeContainer {
     width: 100%;
     /* width: 11.4rem; */
     /* @include variables.flexSpaceBetween(row); */
-  }
+}
 
-  label {
+label {
     margin: 0 0.5rem 0 0.2rem;
     /* height: 1rem; */
     /* width: 3.4rem; */
     color: #ffffff;
     /* @include variables.body-primary-xs; */
     font-size: 1rem;
-  }
-  
-  .checked {
-    color: #c7ff20;
-  }
+}
 
-  /* .!checked{
+.checked {
+    color: #c7ff20;
+}
+
+/* .!checked{
 
   } */
 
+ .yearAndRecipes{
+    display: flex;
+    flex-direction: column;
+ } 
 
+p.recipes {
+color: white;
+font-size: larger;
+padding: 2rem 0rem 0 8rem ;
+
+}
+
+button.btn-recipes{
+width: 15rem;
+background-color: rgb(18, 17, 17);
+color: white;
+font-size: larger;
+margin-left: 3rem;
+margin-top: 2rem;
+/* padding: 2rem 0rem 0 8rem ; */
+}
+
+button.btn-recipes:hover{
+background-color: white;
+color: black;
+}
