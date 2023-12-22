@@ -14,6 +14,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
   constructor(private inputFormGroup: FormGroupDirective) { }
 
+
   ngOnInit(): void {
     this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
   }
