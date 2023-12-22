@@ -30,6 +30,8 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierOneTwo = true;
     //   this.tierTwoThree = true;
     //   this.tierThree = false;
+    // this.toggleClass();
+    //  (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
     // } else if(tier == "Motivated")
     // {
     //   this.tierName = "Motivated";
@@ -68,6 +70,17 @@ export class ContentStyledComponent implements OnInit {
       
     });
 
+    // var paywall = $("#paywall");
+
+    // paywall.on(flip(), 
+
+    this.toggleClass();
+    (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
+
+      // payWall.disabled = true;
+    //  <HTMLFieldSetElement>(document.getElementById("payWall")).disabled = true;
+      // var toggle = <HTMLFieldSetElement>document.getElementById("payWall");
+      // toggle.setAttribute("disabled","disabled");
 
     // var windw = this;
 
@@ -94,6 +107,8 @@ export class ContentStyledComponent implements OnInit {
     //   $(window).scroll(() =>{
     //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
     // });
+    
+
   }
 
 
@@ -106,6 +121,7 @@ export class ContentStyledComponent implements OnInit {
   tier: string = "";
   tierName: string = "";
   checked: boolean = false;
+  classApplied = false;
 
   // Add logic to only show one timer based on tier
 
@@ -182,9 +198,15 @@ export class ContentStyledComponent implements OnInit {
     this.checked = !this.checked;
   }
 
-  // Upgrade Follow scroll 
+//   toggleDisable() {
+//     var toggle = document.getElementById("payWall");
+//     toggle!.disabled = true;
+// }
 
 
+toggleClass() {
+  this.classApplied = !this.classApplied;
+}
 
 
 }

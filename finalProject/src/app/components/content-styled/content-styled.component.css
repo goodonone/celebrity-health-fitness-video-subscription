@@ -194,7 +194,7 @@ div.cardSecondAndThirdTiers {
     margin-bottom: 10rem;
 }
 
-.payWall {
+#payWall.active {
     border-radius: 6px;
     -webkit-filter: blur(2px);
     -moz-filter: blur(2px);
@@ -202,6 +202,20 @@ div.cardSecondAndThirdTiers {
     -ms-filter: blur(2px);
     filter: blur(4px);
 }
+
+fieldset{
+        border-color: rgb(0, 0, 0);
+        border-style: solid;
+}
+
+/* .active{
+    border-radius: 6px;
+    -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(4px);
+} */
 
 .contentCardOne,
 .contentCardTwo,

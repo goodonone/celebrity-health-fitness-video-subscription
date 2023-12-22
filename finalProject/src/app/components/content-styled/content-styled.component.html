@@ -52,7 +52,7 @@
             <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
         </div>
     </div>
-    <fieldset disabled class="payWall" *ngIf="tierTwoThree">
+    <fieldset id="payWall" [class.active]="classApplied">
     <!-- <div class="payWall" *ngIf="!tierTwoThree"> -->
     <mat-card class="cardContainerTwo">
         <mat-card-header>
