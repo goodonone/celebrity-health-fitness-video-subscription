@@ -203,7 +203,6 @@ div.cardSecondAndThirdTiers {
     filter: blur(4px);
 }
 
-
 .contentCardOne,
 .contentCardTwo,
 .contentCardThree,
@@ -306,9 +305,6 @@ div.upgradeContainer {
 
 .upgradeContainer {
    /* margin-top: 15%; */
-}
-
-#fixed{
     display: flex;
     flex-wrap: wrap;
     position: absolute;
@@ -321,7 +317,15 @@ div.upgradeContainer {
     flex-direction: row;
     justify-content: space-between;
     z-index: 3;
+    /* #fixed{
+      position: fixed;  
+      top: 22%;
+      width: 25rem;
+      right: 4%
+    } */
 }
+
+
 
 .smallerFont{
     font-size: 2rem;
@@ -416,3 +420,7 @@ color: black;
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
  }
+
+/* ::ing-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch.mdc-switch--unselected:enabled .mdc-switch__icon {
+    fill: rgba(165, 165, 165);
+} */

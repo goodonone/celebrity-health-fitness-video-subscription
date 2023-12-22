@@ -11,6 +11,7 @@ interface JQuery {
   styleUrls: ['./content-styled.component.css']
 })
 export class ContentStyledComponent implements OnInit {
+  // scrollTop: number;
   // count: any;
 
 
@@ -41,6 +42,7 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierOneTwo = false;
     //   this.tierTwoThree = true;
     //   this.tierThree = true;
+    // this.timerTierThree = false;
     // }    
     
 
@@ -54,41 +56,52 @@ export class ContentStyledComponent implements OnInit {
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
     var $ = require("jquery");
-    var windw = this;
+    var wrap = $("#fixed");
 
-    $.fn.followTo = function (pos: number) {
-      var $this = this,
-        $window = $(windw);
+    wrap.on("scroll", (e: any) => {
+        
+      if (document.documentElement.scrollTop > 147) {
+        wrap.addClass("fix-search");
+      } else {
+        wrap.removeClass("fix-search");
+      }
+      
+    });
 
-      $window.scroll(function (e: any) {
-        if ($window.scrollTop() > pos) {
-          $this.css({
-            position: 'absolute',
-            top: pos
-          });
-        } else {
-          $this.css({
-            position: 'fixed',
-            top: 0
-          });
-        }
-      });
-    };
 
-    $('#fixed').followTo(250);
+    // var windw = this;
+
+    // $.fn.followTo = function (pos: number) {
+    //   var $this = this,
+    //     $window = $(windw);
+
+    //   $window.scroll(function (e: any) {
+    //     if ($window.scrollTop() > pos) {
+    //       $this.css({
+    //         position: 'absolute',
+    //         top: pos
+    //       });
+    //     } else {
+    //       $this.css({
+    //         position: 'fixed',
+    //         top: 0
+    //       });
+    //     }
+    //   });
+    // };
+
+    // $('#fixed').followTo(250);
     //   $(window).scroll(() =>{
     //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
     // });
-
-
   }
 
-  // Conditionally activate these
 
   tierOne: boolean = true;
   tierOneTwo: boolean = true;
   tierTwoThree: boolean = true;
   tierThree: boolean = true;
+  timerTierThree: boolean = true;
   showLiveVideo: boolean = false;
   tier: string = "";
   tierName: string = "";
@@ -156,6 +169,7 @@ export class ContentStyledComponent implements OnInit {
       if (distance < 0) {
         clearInterval(x);
         document.getElementById("timerTierThree")!.innerHTML = "EXPIRED";
+        this.timerTierThree = false;
         this.showLiveVideo = true;
       }
     }, 1000);

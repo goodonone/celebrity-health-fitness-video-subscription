@@ -9,7 +9,7 @@
     </div>
 
     <!-- Countdown timer for Third Tier -->
-    <div class="bannerThirdTier" id="timerTierThree" *ngIf="tierThree">
+    <div class="bannerThirdTier" id="timerTierThree" *ngIf="timerTierThree">
     </div>
 
     <!-- Live Video Div -->
@@ -46,10 +46,13 @@
 <!-- Tier two and three videos -->
 <div class="cardSecondAndThirdTiers">
     <!-- Make this if a ! -->
-    <div class="upgradeContainer" id="fixed" *ngIf="tierTwoThree">
-        <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
-        <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
+    <div class="upgradeContainer" *ngIf="tierTwoThree">
+        <div id="fixed">
+            <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
+            <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
+        </div>
     </div>
+    <fieldset disabled class="payWall" *ngIf="tierTwoThree">
     <!-- <div class="payWall" *ngIf="!tierTwoThree"> -->
     <mat-card class="cardContainerTwo">
         <mat-card-header>
@@ -168,4 +171,5 @@
         </mat-card-content>
     </mat-card>
     <!-- </div> -->
+</fieldset>
 </div>
