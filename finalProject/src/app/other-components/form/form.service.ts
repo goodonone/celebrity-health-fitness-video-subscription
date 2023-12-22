@@ -84,7 +84,7 @@ export class FormService {
       personalDetails: this.fb.group({
         name: ['', [Validators.required, Validators.minLength(4)]],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required]]
+        password: ['', [Validators.required, Validators.minLength(8)]]
       }),
       planDetails: this.fb.group({
         plan: ['Just Looking', [Validators.required]],

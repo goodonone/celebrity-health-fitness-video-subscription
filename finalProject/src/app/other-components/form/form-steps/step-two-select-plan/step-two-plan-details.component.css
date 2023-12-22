@@ -248,4 +248,13 @@ label {
   mat-slide-toggle {
     width: 2rem;
   }
+
+  ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+    background-color: black;
+  }
+  
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+    background-color: rgb(46, 46, 46) !important;
+ }
+
 }

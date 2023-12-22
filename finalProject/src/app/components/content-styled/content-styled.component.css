@@ -283,7 +283,7 @@ mat-card.cardVideosSecondThird {
     color: white;
     font-weight: 500;
     /* text-align: left; */
-    font-size: 7vw;
+    font-size: 6.5vw;
     /* padding: 1rem; */
     padding-left: 0.8rem;
     padding-top: 4rem;
@@ -305,8 +305,7 @@ div.upgradeContainer {
 
 
 .upgradeContainer {
-    
-    /* margin-top: 15%; */
+   /* margin-top: 15%; */
 }
 
 #fixed{
@@ -329,13 +328,11 @@ div.upgradeContainer {
     line-height: 0rem;
 }
 
-
 .upgradeTierText {
     color: white;
     font-size: 3rem;
     line-height: 2.9rem;
 }
-
 
 .btn-upgradeTierButton {
     /* position: fixed;
@@ -376,13 +373,13 @@ label {
     margin: 0 0.5rem 0 0.2rem;
     /* height: 1rem; */
     /* width: 3.4rem; */
-    color: #ffffff;
+    color: #6f6f6f;
     /* @include variables.body-primary-xs; */
     font-size: 1rem;
 }
 
 .checked {
-    color: #c7ff20;
+    color: white;
 }
 
 .yearAndRecipes{
@@ -411,3 +408,11 @@ button.btn-recipes:hover{
 background-color: white;
 color: black;
 }
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+    background-color: black;
+  }
+  
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+    background-color: rgb(46, 46, 46) !important;
+ }
