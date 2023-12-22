@@ -22,13 +22,18 @@ export class SignInComponent implements OnInit {
  signin(){
    this.userService.login(this.email, this.password).subscribe((response:any) => {
     const userId = response.userId;
-       this.router.navigateByUrl(`/profile/${userId}`);
+    localStorage.setItem('tier', response.tier);
+    localStorage.setItem('token', response.token);
+       this.router.navigateByUrl(`/workouts/${userId}`);
    }, error => {
        console.log('Error: ', error);
        this.errorMessage = true;
        this.router.navigateByUrl('/signin');
    });
  }
+
+
+  
 
 
 

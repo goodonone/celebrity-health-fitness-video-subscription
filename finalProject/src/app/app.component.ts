@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.UpdateStatus();
+    
   }
 
 // Toggles the visiblity of the search input field

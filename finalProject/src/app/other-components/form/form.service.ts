@@ -22,7 +22,7 @@ export class FormService {
     planDetails: this.fb.group({
       plan: ['Just Looking', [Validators.required]],
       billing: ['monthly', [Validators.required]],
-      planCost: [],
+      planCost: [0],
       totalCost: []
     }),
     paymentDetails: this.fb.group({
@@ -49,6 +49,7 @@ export class FormService {
   }
 
   submit() {
+    const type : string ="subscription"; 
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
     const generatedUserId: string = Math.random().toString(18).slice(2);
@@ -69,22 +70,40 @@ export class FormService {
     const planData = {
       tier: planInfo.plan,
       paymentFrequency: planInfo.billing,
-      price: planInfo.totalCost
+      price: planInfo.totalCost,
+      purchaseType: type
     }
 
     this.user.signUp(userData).subscribe(() => {
    });
 
-  this.payment.newPayment(planData).subscribe(()=>{
-    this.router.navigate(['signin']);
-  })
+    this.payment.newPayment(planData).subscribe(()=>{
+  });
 
-    // function to send payment to backend;
-
+    this.multiStepForm = this.fb.group({
+      personalDetails: this.fb.group({
+        name: ['', [Validators.required, Validators.minLength(4)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(8)]]
+      }),
+      planDetails: this.fb.group({
+        plan: ['Just Looking', [Validators.required]],
+        billing: ['monthly', [Validators.required]],
+        planCost: [0],
+        totalCost: []
+      }),
+      paymentDetails: this.fb.group({
+        nameOnCard: ['', [Validators.required, Validators.minLength(4)]],
+        ccNumber: ['', [Validators.required, Validators.minLength(16), Validators.maxLength(16)]],
+        expDate: ['', [Validators.required]],
+        cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
+        zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]]
+      }),
+    })
 
     this.goToNextStep(4);
     setTimeout(() => {
-      this.activeStepSubject.next(1); location.reload();
+      this.activeStepSubject.next(1); this.router.navigate(['signin']);
     }, 4000);
   }
 

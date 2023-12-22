@@ -12,6 +12,7 @@ import { FormService } from '../form/form.service';
 export class ProgressionButtonsComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$: number = 0;
+  planCost: number = 0;
   
 
 
@@ -20,8 +21,17 @@ export class ProgressionButtonsComponent implements OnInit {
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
     this.formService.activeStep$.subscribe(
-      step => this.activeStep$ = step
-    );
+      step => {
+        this.activeStep$ = step;
+        this.planCost = this.stepForm.controls['planDetails'].value.planCost;
+  });
+
+    this.formService.activeStep$.subscribe(
+      step => {
+        console.log(step);
+        console.log(this.stepForm.controls['planDetails'].value.planCost);
+        console.log(this.stepForm.controls);
+      });
   }
 
   nextStep() {

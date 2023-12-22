@@ -16,11 +16,13 @@
                                  aria-label="planOptions"
                                  [value]="group.value"
                                  (change)="onPlanChange(group.value)">
-                                 <!-- *ngFor="let plan of planOptions;" -->
+                                
           <mat-button-toggle 
                              [value]="planOptions[0].plan"
                              [checked]="planOptions[0].plan === planType"
-                             (click)="updatePlanType(planOptions[0].plan, planOptions[0].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[0]}}" >
+                             (click)="updatePlanType(planOptions[0].plan, planOptions[0].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[0]}}"
+                             [ngClass]="{'checked':chosenPlan}">
+                             
             <div class="plan">
               <div class="details">
                 <span class="plan_title">{{ planOptions[0].plan | titlecase}}</span>
@@ -33,7 +35,9 @@
           <mat-button-toggle 
                              [value]="planOptions[1].plan"
                              [checked]="planOptions[1].plan === planType"
-                             (click)="updatePlanType(planOptions[1].plan, planOptions[1].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[1]}}" >
+                             (click)="updatePlanType(planOptions[1].plan, planOptions[1].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[1]}}" 
+                             [ngClass]="{'checked':chosenPlan}">
+                            
             <div class="plan">
               <div class="details">
                 <span class="plan_title">{{ planOptions[1].plan | titlecase}}</span>
@@ -46,7 +50,8 @@
           <mat-button-toggle 
                              [value]="planOptions[2].plan"
                              [checked]="planOptions[2].plan === planType"
-                             (click)="updatePlanType(planOptions[2].plan, planOptions[2].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[2]}}" >
+                             (click)="updatePlanType(planOptions[2].plan, planOptions[2].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[2]}}"
+                             [ngClass]="{'checked':chosenPlan}">
             <div class="plan">
               <div class="details">
                 <span class="plan_title">{{ planOptions[2].plan | titlecase}}</span>

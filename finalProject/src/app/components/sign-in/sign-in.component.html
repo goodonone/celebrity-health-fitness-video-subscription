@@ -1,8 +1,12 @@
 <div class="background">
     <div class="overlay">
         <mat-card>
+          <mat-card-header>
+            <div class="logoImage">
+              <img class="img" src="assets/Images/ProjectLogo.svg" alt="Hugh-Jackedman-Logo" routerLink="/home">
+            </div>
+          </mat-card-header>
             <mat-card-content>
-                <span class="logo" routerLink="/home">&lt;Insert Logo Here&gt;</span>
                 <form (ngSubmit)="signin()" #loginForm="ngForm">
         <!-- User Name input -->
         <div class="input-details">
@@ -19,17 +23,19 @@
           <div class="input-details">
             <label for="password">Password</label>
           </div>
-          <input type="text"
+          <input type="password"
                  matInput
                  name="password"
                  id="password"
                  placeholder="Enter your password"
                  [(ngModel)]="password"
                  required>
-                <p *ngIf="errorMessage">Invalid Username or Password! Try again.</p>
-                 <button class="btn btn-submit"
-                 [disabled]="loginForm.form.invalid"
-                 (click)="signin()">Sign-In</button>
+                <span class="errorSpan"><p *ngIf="errorMessage">Invalid Username or Password! Try again.</p></span>
+                 <span class="buttonSpan">
+                  <button class="btn btn-submit"
+                  [disabled]="loginForm.form.invalid"
+                  (click)="signin()">Sign-In</button>
+                 </span>
                 </form>
             </mat-card-content>
         </mat-card>
