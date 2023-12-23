@@ -16,6 +16,7 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
 
+
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "home", component: HomeComponent },

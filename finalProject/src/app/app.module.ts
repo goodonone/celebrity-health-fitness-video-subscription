@@ -48,6 +48,7 @@ import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-up
 import { AuthGuard } from './auth.guard';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,6 +76,7 @@ import { AuthGuard } from './auth.guard';
     PaymentComponent,
     ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
+  
   ],
   imports: [
     BrowserModule,
