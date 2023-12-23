@@ -13,6 +13,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   stepForm!: FormGroup;
   planType: string = 'Just Looking' || 'Motivated' || 'All In!';
+  chosenPlan : string = "";
   typeOfBilling: string = 'monthly' || 'yearly';
   totalCost: number = 0;
   checked: boolean = false;
@@ -25,6 +26,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
     this.typeOfBilling = this.stepForm.controls['billing'].value || 'monthly';
+    this.chosenPlan = this.stepForm.value.plan;
     this.checked = this.typeOfBilling === 'monthly' ? false : true;
     this.planType = this.planType || 'Just Looking';
     this.updateBilling();
@@ -42,7 +44,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       plan: plan,
       planCost: cost,
       totalCost: cost,
-      // billing: billing
     })
     console.log(plan + cost);
   }

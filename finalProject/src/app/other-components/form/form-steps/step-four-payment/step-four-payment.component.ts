@@ -16,7 +16,6 @@ export class StepFourPaymentComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
-    console.log()
   }
 
 

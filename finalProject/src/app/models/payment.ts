@@ -1,17 +1,18 @@
 export class Payment {
     paymentId?: number;
-    userId?: number;
+    userId?: string;
     tier?: string;
     paymentStatus?: string;
     membershipStatus?: string;
     paymentFrequency?: string;
     membershipDate?: Date;
+    purchaseType?: string;
     updatedAt?: Date;
 
 
 constructor(
         paymentId?: number,
-        userId?: number,
+        userId?: string,
         tier?: string,
         paymentStatus?: string,
         membershipStatus?: string,

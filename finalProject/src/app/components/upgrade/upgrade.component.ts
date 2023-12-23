@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
 })
 export class UpgradeComponent {
 
+  // set the state of the token: tier, to new tier
 }
