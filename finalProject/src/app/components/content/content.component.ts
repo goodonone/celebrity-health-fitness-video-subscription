@@ -21,7 +21,6 @@ export class ContentComponent implements OnInit{
   aVideos: any[] = [];
   currentUser: User = new User;
   
-
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit() { 

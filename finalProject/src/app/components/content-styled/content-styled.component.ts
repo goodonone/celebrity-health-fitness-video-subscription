@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as $ from 'jquery';
+import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 interface JQuery {
   chosen(options?: any): JQuery;
@@ -14,8 +17,19 @@ export class ContentStyledComponent implements OnInit {
   // scrollTop: number;
   // count: any;
 
+  currentUser: User = new User;
+
+  constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userService.getUser(userId).subscribe(user => {
+      this.currentUser = user;
+      // console.log(user);
+    });
+
+
+
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
     this.checked = false;

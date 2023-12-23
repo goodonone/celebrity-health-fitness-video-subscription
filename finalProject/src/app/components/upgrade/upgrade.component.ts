@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -11,14 +13,18 @@ export class UpgradeComponent implements OnInit{
 
   userLoggedIn = true;
 
+  currentUser: User = new User;
+
+  constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // this.UpdateStatus();
-  }
-
-  constructor() { }
+    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userService.getUser(userId).subscribe(user => {
+      this.currentUser = user;
+      // console.log(user);
+    });
   // private user: UserService
-  
+
   // set the state of the token: tier, to new tier
 
 
@@ -31,4 +37,5 @@ export class UpgradeComponent implements OnInit{
     
   // }
 
+}
 }
