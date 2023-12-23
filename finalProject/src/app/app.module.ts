@@ -45,7 +45,6 @@ import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
-import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { AuthGuard } from './auth.guard';
 
 
@@ -76,7 +75,6 @@ import { AuthGuard } from './auth.guard';
     PaymentComponent,
     ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
-    ForbiddenComponent
   ],
   imports: [
     BrowserModule,

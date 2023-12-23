@@ -18,6 +18,7 @@ export class ContentStyledComponent implements OnInit {
   // count: any;
 
   currentUser: User = new User;
+ 
 
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
@@ -35,7 +36,8 @@ export class ContentStyledComponent implements OnInit {
     this.checked = false;
 
     // Checking what tier we are on
-    let tier = localStorage.getItem('tier');
+    // let tier = localStorage.getItem('tier');
+    let tier = this.currentUser.tier;
 
     // Tier One, Two and Three Logic
     // if (tier == "Just Looking") {
@@ -62,13 +64,6 @@ export class ContentStyledComponent implements OnInit {
     // }    
     
 
-    // Try to do this where the latest year updates automatically
-
-    // const yearSpan = document.getElementById('#currentYear');
-    // const currentYear = new Date();
-    // yearSpan!.innerText = currentYear.getFullYear();
-
-
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
     var $ = require("jquery");
@@ -83,64 +78,10 @@ export class ContentStyledComponent implements OnInit {
     });
 
 
-//     var windw = this;
-// $.fn.followTo = function(down: number, up: number) {
-//   var scrollup = true;
-//   var $this = this,
-//     $window = $(windw);
 
-//   $window.scroll(function(e: any) {
-//     console.log($window.scrollTop());
-//     if ($window.scrollTop() < down || $window.scrollTop() > up) {
-//       $this.css({
-//         position: 'absolute',
-//         top: up
-//       });
-//     } else {
-//       $this.css({
-//         position: 'fixed',
-//         top: 100,
-//         width: 260.25,
-//         bottom: 50
-//       });
-//     }
-//   });
-// };
-// $('#fixed').followTo(200, 2550);
-
+// Delete this out when the page is ready
     this.toggleClass();
     (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
-
-      // payWall.disabled = true;
-      //  <HTMLFieldSetElement>(document.getElementById("payWall")).disabled = true;
-      // var toggle = <HTMLFieldSetElement>document.getElementById("payWall");
-      // toggle.setAttribute("disabled","disabled");
-
-    // var windw = this;
-
-    // $.fn.followTo = function (pos: number) {
-    //   var $this = this,
-    //     $window = $(windw);
-
-    //   $window.scroll(function (e: any) {
-    //     if ($window.scrollTop() > pos) {
-    //       $this.css({
-    //         position: 'absolute',
-    //         top: pos
-    //       });
-    //     } else {
-    //       $this.css({
-    //         position: 'fixed',
-    //         top: 0
-    //       });
-    //     }
-    //   });
-    // };
-
-    // $('#fixed').followTo(250);
-    //   $(window).scroll(() =>{
-    //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
-    // });
     
 
   }

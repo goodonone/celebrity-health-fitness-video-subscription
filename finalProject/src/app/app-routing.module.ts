@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ContentComponent } from './components/content/content.component';
@@ -16,9 +14,7 @@ import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
-import { ForbiddenComponent } from './components/forbidden/forbidden.component';
 import { AuthGuard } from './auth.guard';
-
 
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
@@ -37,7 +33,6 @@ const routes: Routes = [
   { path: "store", component: StoreComponent, canActivate: [AuthGuard]  },
   { path: "test", component: ContentStyledComponent },
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
-  { path: "forbidden", component: ForbiddenComponent },
   { path: "**", component: NotFoundComponent },
 ];
 
