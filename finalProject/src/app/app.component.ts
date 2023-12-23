@@ -64,6 +64,7 @@ export class AppComponent implements OnInit {
     }
 
   }
+  
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();
     if (this.userIsLoggedIn) {

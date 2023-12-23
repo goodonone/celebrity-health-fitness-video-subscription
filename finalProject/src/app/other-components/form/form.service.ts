@@ -25,7 +25,7 @@ export class FormService implements OnInit {
     //   console.log(this.userIsLoggedIn);
     // }
 
-    console.log("Testing"+"Testing");
+    console.log("Testing" + "Testing");
     // this.UpdateStatus();
   }
 
@@ -77,30 +77,48 @@ export class FormService implements OnInit {
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
-    const userData = {
-      userId: generatedUserId,
-      name: userInfo.name,
-      password: userInfo.password,
-      email: userInfo.email,
-      tier: planInfo.plan
+    if (!localStorage.getItem('userSignedIn')) {
+      const userData = {
+        userId: generatedUserId,
+        name: userInfo.name,
+        password: userInfo.password,
+        email: userInfo.email,
+        tier: planInfo.plan,
+        paymentFrequency: planInfo.billing,
+        price: planInfo.totalCost
+      }
+      this.user.signUp(userData).subscribe(() => {
+      });
+      const planData = {
+        tier: planInfo.plan,
+        paymentFrequency: planInfo.billing,
+        price: planInfo.totalCost,
+        purchaseType: type
+      }
+      this.payment.newPayment(planData).subscribe(() => {
+      });
     }
+    else {
+      this.UserId = this.user.getUserId() ?? "";
+      const userData = {
+        userId: this.UserId,
+        tier: planInfo.plan,
+        paymentFrequency: planInfo.billing,
+        price: planInfo.totalCost
+      }
+      this.user.updateUser(userData).subscribe(() => {
+      });
+      const planData = {
+        tier: planInfo.plan,
+        paymentFrequency: planInfo.billing,
+        price: planInfo.totalCost,
+        purchaseType: type
+      }
+      // Update not create a new payment or they will have two subscriptions
+      this.payment.updatePayment(planData).subscribe(() => {
+      });
 
-    const planData = {
-      tier: planInfo.plan,
-      paymentFrequency: planInfo.billing,
-      price: planInfo.totalCost,
-      purchaseType: type
     }
-
-    // check if logged in and do an updateUser instead
-    this.user.signUp(userData).subscribe(() => {
-    });
-
-    // check if logged in and do an updatePayment instead
-    this.payment.newPayment(planData).subscribe(() => {
-    });
-
-    // retoute to new upgraded page
 
     this.multiStepForm = this.fb.group({
       personalDetails: this.fb.group({
@@ -123,36 +141,18 @@ export class FormService implements OnInit {
       }),
     })
 
-if(!localStorage.getItem('userSignedIn')) {
-  this.goToNextStep(4);
-  setTimeout(() => {
-    this.activeStepSubject.next(1); this.router.navigate(['signin']);
-  }, 4000);
-}   else {
-  this.router.navigateByUrl(`/test`);
-}
-    
+    if (!localStorage.getItem('userSignedIn')) {
+      this.goToNextStep(4);
+      setTimeout(() => {
+        this.activeStepSubject.next(1); this.router.navigate(['signin']);
+      }, 4000);
+    } else {
+      // Change this to route to workouts/this.UserId
+      this.router.navigateByUrl(`/test`);
+    }
+
 
 
   }
 
-
-  // Check if logged in
-  // UpdateStatus() {
-  //   if (this.user.isloggedIn()) {
-  //     !this.userIsLoggedIn;
-  //     // this.UserId = this.user.getUserId() ?? "";
-  //   }
-    
-  // }
-
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.user.isloggedIn();
-  //   this.userIsLoggedIn = !this.userIsLoggedIn;
-  //   // console.log(this.userIsLoggedIn);
-  //   if (this.userIsLoggedIn) {
-  //     this.UserId = this.user.getUserId() ?? "";
-  //   }
-    
-  // }
 }

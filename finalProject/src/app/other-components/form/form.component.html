@@ -19,10 +19,12 @@
             <app-step-three-summary *ngIf="activeStep$ == 3"
                                        [stepForm]="stepForm"></app-step-three-summary>                              
             </div>
+            <div class="skipStep" *ngIf="loggedIn">
             <app-step-two-plan-details *ngIf="activeStep$ == 1"
                                        formGroupName="planDetails"></app-step-two-plan-details>
             <app-step-three-summary *ngIf="activeStep$ == 2"
                                    [stepForm]="stepForm"></app-step-three-summary>
+                                  </div>
           <div class="skipStep" *ngIf="!loggedIn">
             <app-step-four-payment *ngIf="activeStep$ == 4" 
                                     formGroupName="paymentDetails"></app-step-four-payment>
