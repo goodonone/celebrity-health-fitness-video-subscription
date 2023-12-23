@@ -21,21 +21,9 @@ export class UpgradeComponent implements OnInit{
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
-      // console.log(user);
+
     });
-  // private user: UserService
-
-  // set the state of the token: tier, to new tier
-
-
-
-  // UpdateStatus() {
-  //   if (this.user.isloggedIn()) {
-  //     this.userIsLoggedIn = !this.userIsLoggedIn;
-  //     console.log("Upgrade"+ this.userIsLoggedIn);
-  //   }
-    
-  // }
+  
 
 }
 }

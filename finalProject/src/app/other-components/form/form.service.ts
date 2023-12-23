@@ -79,6 +79,7 @@ export class FormService implements OnInit {
 
     if (!localStorage.getItem('userSignedIn')) {
       const userData = {
+        // remove generated UsesrId when added to backend
         userId: generatedUserId,
         name: userInfo.name,
         password: userInfo.password,
