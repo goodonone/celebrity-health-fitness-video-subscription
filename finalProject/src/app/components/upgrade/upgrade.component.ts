@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -7,21 +7,28 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./upgrade.component.css']
 })
 export class UpgradeComponent implements OnInit{
-  userIsLoggedIn:boolean = false;
+  
+
+  userLoggedIn = true;
+
+
   ngOnInit(): void {
-    this.UpdateStatus();
+    // this.UpdateStatus();
   }
 
-  constructor(private user: UserService) { }
+  constructor() { }
+  // private user: UserService
+  
   // set the state of the token: tier, to new tier
 
 
-  UpdateStatus() {
-    if (this.user.isloggedIn()) {
-      this.userIsLoggedIn = !this.userIsLoggedIn;
-      console.log("Upgrade"+ this.userIsLoggedIn);
-    }
+
+  // UpdateStatus() {
+  //   if (this.user.isloggedIn()) {
+  //     this.userIsLoggedIn = !this.userIsLoggedIn;
+  //     console.log("Upgrade"+ this.userIsLoggedIn);
+  //   }
     
-  }
+  // }
 
 }

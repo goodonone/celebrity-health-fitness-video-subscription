@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormService } from '../form/form.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -9,6 +9,8 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class StepTrackerIconsUpgradeComponent implements OnInit {
 
+// @Input() userIsLoggedIn = "true";
+
   userIsLoggedIn : boolean = false;
   // user!: string;
   activeStep$?: number;
@@ -17,16 +19,16 @@ export class StepTrackerIconsUpgradeComponent implements OnInit {
 
   ngOnInit(): void {
     
-    if(localStorage.getItem('userSignedIn')){
-      !this.userIsLoggedIn;
-      console.log("icons"+this.userIsLoggedIn);
-    }
+    // if(localStorage.getItem('userSignedIn')){
+    //   !this.userIsLoggedIn;
+    //   console.log("icons"+this.userIsLoggedIn);
+    // }
 
     this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
 
-      console.log("Tracker icons"+"testing")
-      this.UpdateStatus();
+      // console.log("Tracker icons"+"testing")
+      // this.UpdateStatus();
   }
     
   stepDetails: { step: number; description: string; }[] = [
@@ -34,14 +36,14 @@ export class StepTrackerIconsUpgradeComponent implements OnInit {
       { step: 2, description: 'Summary' },
     ]
 
-    UpdateStatus() {
-      if (this.user.isloggedIn()) {
-        this.userIsLoggedIn = !this.userIsLoggedIn;
-        console.log("Upgrade"+this.userIsLoggedIn);
-        // this.UserId = this.user.getUserId() ?? "";
-      }
+    // UpdateStatus() {
+    //   if (this.user.isloggedIn()) {
+    //     this.userIsLoggedIn = !this.userIsLoggedIn;
+    //     console.log("Upgrade"+this.userIsLoggedIn);
+    //     // this.UserId = this.user.getUserId() ?? "";
+    //   }
       
-    }
+    // }
 
   }
   

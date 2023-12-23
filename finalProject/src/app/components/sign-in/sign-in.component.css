@@ -15,7 +15,8 @@
     display: flex;
     justify-content: space-evenly;
     padding-top: 16rem;
-    padding-right: 2rem;
+    /* padding-right: 2rem; */
+    margin: auto;
 }
 
 mat-card {

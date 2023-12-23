@@ -17,6 +17,7 @@ export class FormService implements OnInit {
   activeStep$ = this.activeStepSubject.asObservable();
 
 
+
   ngOnInit(): void {
 
     // if (localStorage.getItem('userSignedIn')) {
@@ -25,14 +26,14 @@ export class FormService implements OnInit {
     // }
 
     console.log("Testing"+"Testing");
-    this.UpdateStatus();
+    // this.UpdateStatus();
   }
 
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.minLength(8)]]
     }),
     planDetails: this.fb.group({
       plan: ['Just Looking', [Validators.required]],
@@ -91,11 +92,15 @@ export class FormService implements OnInit {
       purchaseType: type
     }
 
+    // check if logged in and do an updateUser instead
     this.user.signUp(userData).subscribe(() => {
     });
 
+    // check if logged in and do an updatePayment instead
     this.payment.newPayment(planData).subscribe(() => {
     });
+
+    // retoute to new upgraded page
 
     this.multiStepForm = this.fb.group({
       personalDetails: this.fb.group({
@@ -118,10 +123,17 @@ export class FormService implements OnInit {
       }),
     })
 
-    this.goToNextStep(4);
-    setTimeout(() => {
-      this.activeStepSubject.next(1); this.router.navigate(['signin']);
-    }, 4000);
+if(!localStorage.getItem('userSignedIn')) {
+  this.goToNextStep(4);
+  setTimeout(() => {
+    this.activeStepSubject.next(1); this.router.navigate(['signin']);
+  }, 4000);
+}   else {
+  this.router.navigateByUrl(`/test`);
+}
+    
+
+
   }
 
 
@@ -134,13 +146,13 @@ export class FormService implements OnInit {
     
   // }
 
-  UpdateStatus() {
-    this.userIsLoggedIn = this.user.isloggedIn();
-    this.userIsLoggedIn = !this.userIsLoggedIn;
-    // console.log(this.userIsLoggedIn);
-    if (this.userIsLoggedIn) {
-      this.UserId = this.user.getUserId() ?? "";
-    }
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.user.isloggedIn();
+  //   this.userIsLoggedIn = !this.userIsLoggedIn;
+  //   // console.log(this.userIsLoggedIn);
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.user.getUserId() ?? "";
+  //   }
     
-  }
+  // }
 }

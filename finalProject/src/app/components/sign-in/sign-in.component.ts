@@ -17,6 +17,10 @@ export class SignInComponent implements OnInit {
  constructor(private userService: UserService, private router: Router) { }
 
  ngOnInit(): void {
+  if(localStorage.getItem('userSignedIn'))
+ {
+  this.router.navigateByUrl(`/test`);
+ } 
  }
 
  signin(){
