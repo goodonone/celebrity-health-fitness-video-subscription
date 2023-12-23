@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
@@ -8,10 +8,25 @@ import { PaymentService } from 'src/app/services/payment.service';
 @Injectable({
   providedIn: 'root'
 })
-export class FormService {
+export class FormService implements OnInit {
+
+  userIsLoggedIn: boolean = false;
+  UserId: string = "";
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
+
+
+  ngOnInit(): void {
+
+    // if (localStorage.getItem('userSignedIn')) {
+    //   !this.userIsLoggedIn;
+    //   console.log(this.userIsLoggedIn);
+    // }
+
+    console.log("Testing"+"Testing");
+    this.UpdateStatus();
+  }
 
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
@@ -34,6 +49,7 @@ export class FormService {
     }),
   })
 
+
   get stepForm(): FormGroup {
     return this.multiStepForm;
   }
@@ -49,21 +65,22 @@ export class FormService {
   }
 
   submit() {
-    const type : string ="subscription"; 
+    const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
     const generatedUserId: string = Math.random().toString(18).slice(2);
 
-    console.log(this.multiStepForm.value);
+    // console.log(this.multiStepForm.value);
     // console.log(generatedUserId);
+
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
     const userData = {
       userId: generatedUserId,
-      name:userInfo.name,
-      password:userInfo.password,
-      email:userInfo.email,
+      name: userInfo.name,
+      password: userInfo.password,
+      email: userInfo.email,
       tier: planInfo.plan
     }
 
@@ -75,10 +92,10 @@ export class FormService {
     }
 
     this.user.signUp(userData).subscribe(() => {
-   });
+    });
 
-    this.payment.newPayment(planData).subscribe(()=>{
-  });
+    this.payment.newPayment(planData).subscribe(() => {
+    });
 
     this.multiStepForm = this.fb.group({
       personalDetails: this.fb.group({
@@ -108,4 +125,22 @@ export class FormService {
   }
 
 
+  // Check if logged in
+  // UpdateStatus() {
+  //   if (this.user.isloggedIn()) {
+  //     !this.userIsLoggedIn;
+  //     // this.UserId = this.user.getUserId() ?? "";
+  //   }
+    
+  // }
+
+  UpdateStatus() {
+    this.userIsLoggedIn = this.user.isloggedIn();
+    this.userIsLoggedIn = !this.userIsLoggedIn;
+    // console.log(this.userIsLoggedIn);
+    if (this.userIsLoggedIn) {
+      this.UserId = this.user.getUserId() ?? "";
+    }
+    
+  }
 }

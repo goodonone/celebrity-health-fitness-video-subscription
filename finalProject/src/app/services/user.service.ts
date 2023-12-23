@@ -33,7 +33,10 @@ isloggedIn() {
 }
 
 logoutUser() {
-  localStorage.removeItem(this.tokenKey)
+  localStorage.removeItem(this.tokenKey);
+  localStorage.removeItem('userSignedIn');
+  localStorage.removeItem('tier');
+  localStorage.removeItem('token');
 }
 
 getUserId() {
@@ -55,7 +58,7 @@ getUser(userId: string): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
-  console.log(this.baseURL + "/" + userId);
+  // console.log(this.baseURL + "/" + userId);
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   

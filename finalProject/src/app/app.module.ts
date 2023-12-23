@@ -35,7 +35,7 @@ import { MaterialModule } from './material.module';
 import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
 import { StepOnePersonalInfoComponent } from './other-components/form/form-steps/step-one-personal-info/step-one-personal-info.component';
 import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
-import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
+import { StepTrackerIconsComponent} from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 // import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -44,6 +44,7 @@ import { StepFourPaymentComponent } from './other-components/form/form-steps/ste
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
+import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
 
 
 
@@ -73,6 +74,7 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
     UpgradeComponent,
     PaymentComponent,
     ContentStyledComponent,
+    StepTrackerIconsUpgradeComponent
   ],
   imports: [
     BrowserModule,

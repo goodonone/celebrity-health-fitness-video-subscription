@@ -12,6 +12,7 @@ import { FormService } from './form.service';
 export class FormComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$?: number;
+userIsLoggedIn: any;
 
   constructor(private formService: FormService) { }
 

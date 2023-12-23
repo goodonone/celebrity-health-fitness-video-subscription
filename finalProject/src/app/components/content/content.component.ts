@@ -28,7 +28,7 @@ export class ContentComponent implements OnInit{
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
-      console.log(user);
+      // console.log(user);
     });
 
     this.listOfInterested();

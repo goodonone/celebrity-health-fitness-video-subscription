@@ -47,7 +47,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
 // Search Function(INCOMPLETE)
 
   search(searchString: string) {
@@ -70,6 +69,14 @@ export class AppComponent implements OnInit {
     }
     
   }
+
+  // UpdateStatus() {
+  //   if (this.userService.isloggedIn()) {
+  //     !this.userIsLoggedIn;
+  //     this.UserId = this.userService.getUserId() ?? "";
+  //   }
+    
+  // }
 
   logOut() {
     this.userService.logoutUser();

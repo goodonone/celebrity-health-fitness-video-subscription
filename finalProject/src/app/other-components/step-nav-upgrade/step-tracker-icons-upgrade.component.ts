@@ -3,11 +3,11 @@ import { FormService } from '../form/form.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-step-tracker-icons',
-  templateUrl: './step-tracker-icons.component.html',
-  styleUrls: ['./step-tracker-icons.component.css'],
+  selector: 'app-step-tracker-icons-upgrade',
+  templateUrl: './step-tracker-icons-upgrade.component.html',
+  styleUrls: ['./step-tracker-icons-upgrade.component.css'],
 })
-export class StepTrackerIconsComponent implements OnInit {
+export class StepTrackerIconsUpgradeComponent implements OnInit {
 
   userIsLoggedIn : boolean = false;
   // user!: string;
@@ -19,25 +19,25 @@ export class StepTrackerIconsComponent implements OnInit {
     
     if(localStorage.getItem('userSignedIn')){
       !this.userIsLoggedIn;
+      console.log("icons"+this.userIsLoggedIn);
     }
 
     this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
 
+      console.log("Tracker icons"+"testing")
+      this.UpdateStatus();
   }
     
-stepDetails: { step: number; description: string; }[] = [
-      { step: 1, description: 'Your info' },
-      { step: 2, description: 'Select plan' },
-      { step: 3, description: 'Summary' },
-      { step: 4, description: 'Payment' },
-      { step: 5, description: 'Confirmation' }
+  stepDetails: { step: number; description: string; }[] = [
+      { step: 1, description: 'Select Plan' },
+      { step: 2, description: 'Summary' },
     ]
 
     UpdateStatus() {
       if (this.user.isloggedIn()) {
         this.userIsLoggedIn = !this.userIsLoggedIn;
-        console.log("SignUp"+this.userIsLoggedIn);
+        console.log("Upgrade"+this.userIsLoggedIn);
         // this.UserId = this.user.getUserId() ?? "";
       }
       

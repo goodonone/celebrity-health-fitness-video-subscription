@@ -8,6 +8,7 @@
     max-width: 100%;
     overflow-x: hidden;
     height: fit-content;
+    /* position: relative; */
     /* box-sizing: border-box; */
     /* overflow: hidden; */
     
@@ -181,6 +182,7 @@ mat-card.cardVideosFirst {
 
 div.cardSecondAndThirdTiers {
     margin-top: 10rem;
+    position: relative;
 }
 
 .cardContainerTwo {
@@ -207,15 +209,6 @@ fieldset{
         border-color: rgb(0, 0, 0);
         border-style: solid;
 }
-
-/* .active{
-    border-radius: 6px;
-    -webkit-filter: blur(2px);
-    -moz-filter: blur(2px);
-    -o-filter: blur(2px);
-    -ms-filter: blur(2px);
-    filter: blur(4px);
-} */
 
 .contentCardOne,
 .contentCardTwo,
@@ -331,15 +324,18 @@ div.upgradeContainer {
     flex-direction: row;
     justify-content: space-between;
     z-index: 3;
-    /* #fixed{
+    #fixed{
       position: fixed;  
       top: 22%;
       width: 25rem;
-      right: 4%
-    } */
+      right: 4%;
+      /* -webkit-appearance: none; */
+    }
 }
 
+/* #fixed{
 
+} */
 
 .smallerFont{
     font-size: 2rem;
