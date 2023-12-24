@@ -132,12 +132,18 @@
   </div>
 
   <!-- Live Video Div -->
-  <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo">
+  <!-- <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo"> -->
+    <div class="liveVideo" *ngIf="currentUser.tier === 'All In'">
       <h1 class="liveVideoText">
           We are Live!
       </h1>
       <mat-card class="liveVideoContainer">
           <mat-card-content>
+            <div *ngFor="let video of livestreamVideos" >
+              
+                  <iframe width="800" height="480" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+                
+            </div>
 
           </mat-card-content>
       </mat-card>

@@ -127,6 +127,7 @@ h1.liveVideoText {
     /* justify-content: right; */
     margin: auto;
     margin-top: 10rem;
+    background-color: black;
 }
 
 .cardContainer {
@@ -161,7 +162,7 @@ mat-content {
 }
 
 mat-card.cardVideosFirst {
-    /* background-color: white; */
+    background-color:  rgb(2, 2, 2);
     width: 18rem;
     height: 12rem;
     margin: 2rem;
@@ -275,7 +276,7 @@ mat-card.contentCardTwo,
 }
 
 mat-card.cardVideosSecondThird {
-    /* background-color: white; */
+    background-color:  rgb(2, 2, 2);
     width: 23rem;
     height: 15rem;
     margin: 3rem;
