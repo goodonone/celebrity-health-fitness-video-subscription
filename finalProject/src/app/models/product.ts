@@ -1,26 +1,32 @@
 export class Product {
     productId?: number;
     paymentId?: number;
-    name?: string;
-    description?: string;
-    imgUrl?: string;
-    price?: number;
+    productName?: string;
+    productPrice?: number;
+    productDescription?: string;
+    productUrl?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 
     constructor(
         productId?: number,
         paymentId?: number,
-        name?: string,
-        description?: string,
-        imgUrl?: string,
-        price?: number,
+        productName?: string,
+        productPrice?: number,
+        productDescription?: string,
+        productUrl?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
 
     ) 
     {
         this.productId = productId;
         this.paymentId = paymentId;
-        this.name = name;
-        this.description = description;
-        this.imgUrl = imgUrl;
-        this.price = price;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.productDescription = productDescription;
+        this.productUrl = productUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     };
 }
