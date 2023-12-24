@@ -43,6 +43,7 @@ import { StepThreeSummaryComponent } from './other-components/form/form-steps/st
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { CartComponent } from './components/cart/cart.component';
 
 
 
@@ -74,6 +75,7 @@ import { PaymentComponent } from './components/payment/payment.component';
     UpgradeComponent,
 
     PaymentComponent,
+      CartComponent,
 
   ],
   imports: [

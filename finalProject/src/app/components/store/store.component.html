@@ -1,10 +1,10 @@
 <h1>Store</h1>
 <ul>
     <li *ngFor="let product of productList">
-        <img src="{{product.productURL}}">
+        <img [src]="product.productURL">
         <p>{{product.productName}}</p>
         <p>{{product.productDescription}}</p>
         <p>{{product.productPrice}}</p>
-        <a [routerLink] ='["/cart", currentUser.userId]'> Add to Cart </a>
+        <button> Add to Cart </button>
     </li>
 </ul>
