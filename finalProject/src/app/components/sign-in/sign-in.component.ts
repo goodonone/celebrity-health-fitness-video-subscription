@@ -24,7 +24,7 @@ export class SignInComponent implements OnInit {
     const userId = response.userId;
     localStorage.setItem('tier', response.tier);
     localStorage.setItem('token', response.token);
-       this.router.navigateByUrl(`/workouts/${userId}`);
+       this.router.navigateByUrl(`/content/${userId}`);
    }, error => {
        console.log('Error: ', error);
        this.errorMessage = true;

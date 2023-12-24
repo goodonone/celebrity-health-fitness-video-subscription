@@ -115,7 +115,7 @@
 
 
 
-<p>hello </p>
+
 
 <div class="pageContainer">
   <!-- Upgrade button for Tier Two and Three -->
@@ -128,11 +128,11 @@
   </div>
 
   <!-- Countdown timer for Third Tier -->
-  <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser?.tier === 'All In'">
+  <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser.tier === 'All In'">
   </div>
 
   <!-- Live Video Div -->
-  <div class="liveVideo" *ngIf="currentUser?.tier === 'All In' && showLiveVideo">
+  <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo">
       <h1 class="liveVideoText">
           We are Live!
       </h1>
@@ -153,7 +153,7 @@
           </mat-card-header>
           <mat-card-content>
               <div class="cardVideos">
-                  <mat-card *ngFor="let video of iaVideos" class="cardVideosFirst">
+                  <mat-card *ngFor="let video of starterVideos" class="cardVideosFirst">
                     <div >
                       <div >
                         <iframe width="288" height="192" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -181,8 +181,8 @@
       </div>
   </div>
   
-  <fieldset [disabled]="currentUser?.tier === 'Just Looking'" class="fieldset">
-  <div [ngClass]="{'payWall' : currentUser?.tier === 'Just Looking'}">
+  <fieldset [disabled]="currentUser.tier === 'Just Looking'" class="fieldset">
+  <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
       <mat-card-header>
           
@@ -203,8 +203,17 @@
                   <h1 class="cardHeaderYear">2023</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
+              <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
               </mat-card>
           </mat-card>
           <mat-card class="contentCardTwo flexCards">
@@ -212,8 +221,17 @@
                   <h1 class="cardHeaderYear">2022</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
+              <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
               </mat-card>
           </mat-card>
           <mat-card class="contentCardThree flexCards">
@@ -221,8 +239,17 @@
                   <h1 class="cardHeaderYear">2021</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
+              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
               </mat-card>
           </mat-card>
           <mat-card class="contentCardFour flexCards">
@@ -230,11 +257,20 @@
                   <h1 class="cardHeaderYear">2020</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
+              <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
               </mat-card>
           </mat-card>
-          <mat-card class="contentCardFive flexCards">
+          <!-- <mat-card class="contentCardFive flexCards">
               <div class="yearAndRecipes">
                   <h1 class="cardHeaderYear">2019</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
@@ -251,51 +287,83 @@
               <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
                   {{card}}
               </mat-card>
-          </mat-card>
+          </mat-card> -->
       </div>
       <div class="toggleWorkoutsByCategory" *ngIf="checked">
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Abs</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
+              <mat-card *ngFor="let video of absVideos" class="cardVideosSecondThird">
+                
+                  
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  
+                    
+                      <a>{{ video.snippet.title }}</a>
+                    
+                  
+                
               </mat-card>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Chest</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
+              <h1 class="cardHeadertype">Full Body Workouts</h1>
+              <mat-card *ngFor="let video of fullBodyVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
+          </mat-card>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Shoulders</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
+              <h1 class="cardHeadertype">Upper Body Workouts</h1>
+              <mat-card *ngFor="let video of upperBodyVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
+          </mat-card>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Biceps</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
+              <h1 class="cardHeadertype">HIIT Workouts</h1>
+              <mat-card *ngFor="let video of hiitVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
           </mat-card>
-          <mat-card class="contentCardOne flexCards">
+          </mat-card>
+          <!-- <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Triceps</h1>
               <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
                   {{card}}
               </mat-card>
-          </mat-card>
-          <mat-card class="contentCardOne flexCards">
+          </mat-card> -->
+          <!-- <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Back</h1>
               <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
                   {{card}}
               </mat-card>
-          </mat-card>
-          <mat-card class="contentCardOne flexCards">
+          </mat-card> -->
+          <!-- <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Legs</h1>
               <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
                   {{card}}
               </mat-card>
-          </mat-card>
+          </mat-card> -->
       </div>
       </mat-card-content>
   </mat-card>

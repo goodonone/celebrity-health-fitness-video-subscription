@@ -1,121 +1,3 @@
-// import { Component, OnInit } from '@angular/core';
-// import { ActivatedRoute, Router } from '@angular/router';
-// import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-// import { YoutubeService } from 'src/app/services/youtube.service';
-// import { User } from 'src/app/models/user';
-// import { UserService } from 'src/app/services/user.service';
-
-// @Component({
-//   selector: 'app-content',
-//   templateUrl: './content.component.html',
-//   styleUrls: ['./content.component.css']
-// })
-// export class ContentComponent implements OnInit{
-
-  // iaVideos: any[] = [];
-  // ifbVideos: any[] = [];
-  // ilbVideos: any[] = [];
-  // maVideos: any[] = [];
-  // mfbVideos: any[] = [];
-  // mlbVideos: any[] = [];
-  // aVideos: any[] = [];
-  // currentUser: User = new User;
-  
-
-//   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
-
-//   ngOnInit() { 
-    // const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    // this.userService.getUser(userId).subscribe(user => {
-    //   this.currentUser = user;
-    //   console.log(user);
-    // });
-
-    // this.listOfInterested();
-    // this.listOfMotivated();
-    // this.listOfAllIn();
-
-//   }
-
-//   getVideos(videoId: string, videoArray: any[]): void {
-//     videoArray.length = 0;
-
-//     this.youTubeService
-//     .getVideosById(videoId)
-//     .subscribe((list: any) => {
-//       for (const element of list.items) {
-//         const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.id + '?autohide=1&rel=0';
-//         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-//         element.sanitizedURL = sanitizedURL;
-//         videoArray.push(element);
-//       }
-//     },
-//     error => {
-//       console.log('Error: ', error)
-//       if (error.status === 404 || error.status === 402) 
-//       this.router.navigate(['notfound']);
-//     });
-
-//   }
-
-//   getVideosFromPlaylist(playlistId: string, maxResults: string, videoArray: any[]): void {
-//     videoArray.length = 0;
-
-//     this.youTubeService
-//         .getVideosFromPlaylist(playlistId, maxResults)
-//         .subscribe(
-//             (list: any) => {
-//                 for (const element of list.items) {
-//                     const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
-//                     const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-//                     element.sanitizedURL = sanitizedURL;
-//                     videoArray.push(element);
-//                 }
-//             },
-//             error => {
-//                 console.error('Error: ', error);
-//                 if (error.status === 404 || error.status === 402) {
-//                     this.router.navigate(['notfound']);
-//                 }
-//             });
-// }
-
-//   listOfInterested() {
-  
-//     this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "1" , this.iaVideos);
-//     this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "1" , this.ifbVideos);
-//     this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "1" , this.ilbVideos);
-
-//   }
-
-//   listOfMotivated() {
-//     this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "3" , this.maVideos);
-//     this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "3" , this.mfbVideos);
-//     this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "3" , this.mlbVideos);
-//   }
-
-//   listOfAllIn() {
-//     this.getVideos('uBBDMqZKagY', this.aVideos);
-//   }
-
- 
-  
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -149,10 +31,10 @@ export class ContentComponent implements OnInit {
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
     this.checked = false;
-
-    this.listOfInterested();
-    this.listOfMotivated();
-    this.listOfAllIn();
+    this.addToNewest();
+    this.addToStarterVideos();
+    this.addToCategory();
+    this.addTolivestreamVideo();
 
     
     
@@ -216,14 +98,20 @@ export class ContentComponent implements OnInit {
   currentUser: User = new User;
   // Add logic to only show one timer based on tier
 
-  iaVideos: any[] = [];
-  ifbVideos: any[] = [];
-  ilbVideos: any[] = [];
-  maVideos: any[] = [];
-  mfbVideos: any[] = [];
-  mlbVideos: any[] = [];
+  starterVideos: any[] = [];
+  channel23Videos: any[] = [];
+  channel22Videos: any[] = [];
+  channel21Videos: any[] = [];
+  channel20Videos: any[] = [];
 
-  aVideos: any[] = [];
+
+  absVideos: any[] = [];
+  lowerBodyVideos: any[] = [];
+  fullBodyVideos: any[] = [];
+  upperBodyVideos: any[] = [];
+  hiitVideos: any[] = [];
+
+  livestreamVideos: any[] = [];
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
   testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
@@ -342,23 +230,65 @@ export class ContentComponent implements OnInit {
                     }
                 });
     }
+
+    // getVideosfromChannel(channelId: string, maxResults: string, videoArray: any[]): void {
+    //   videoArray.length = 0;
+  
+    //   this.youTubeService
+    //       .getVideosFromChannel(channelId, maxResults)
+    //       .subscribe(
+    //           (list: any) => {
+    //               for (const element of list.items) {
+    //                   const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
+    //                   const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+    //                   element.sanitizedURL = sanitizedURL;
+    //                   videoArray.push(element);
+    //               }
+    //           },
+    //           error => {
+    //               console.error('Error: ', error);
+    //               if (error.status === 404 || error.status === 402) {
+    //                   this.router.navigate(['notfound']);
+    //               }
+    //           });
+    // }
     
-      listOfInterested() {
+      addToStarterVideos() {
       
-        this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "7-" , this.iaVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "1" , this.ifbVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "1" , this.ilbVideos);
+        this.getVideos('Jf5_PJCFs-g', this.starterVideos);
+        this.getVideos('BdhqubW1GJE', this.starterVideos);
+        this.getVideos('zBkujDDdDkY', this.starterVideos);
+        this.getVideos('4NOxBkzneyQ', this.starterVideos);
+        this.getVideos('jIpRlynVMBo', this.starterVideos);
+        this.getVideos('UCkzBmuABQo', this.starterVideos);
+        this.getVideos('snA6ls2kG3U', this.starterVideos);
+        
     
       }
+
+      addToNewest() {
+        this.getVideosFromPlaylist('PL2NpXBzdtNakNg1rqdfL1SfaiGQzoaQsf', "6", this.channel23Videos)
+        this.getVideosFromPlaylist('PL2NpXBzdtNakaDzELYs0EXmbnYiWMEo2b', "6", this.channel22Videos)
+        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "6", this.channel21Videos)
+        this.getVideosFromPlaylist('PL2NpXBzdtNam-M_8y6FFypSf7ae8Ph4_6', "6", this.channel20Videos)
+        // this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "5", this.channel19Videos)
+        // this.getVideosFromPlaylist('UCiP6wD_tYlYLYh3agzbByWQ', "10", this.channel22Videos)
+        // this.getVideosFromPlaylist('UCiP6wD_tYlYLYh3agzbByWQ', "10", this.channel21Videos)
+        // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', "2022", "25", this.channel22Videos)
+        // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', "2021", "25", this.channel21Videos)
+        
+      }
+
     
-      listOfMotivated() {
-        this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "3" , this.maVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "3" , this.mfbVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNambi5AXgQK_mWRiePlaiw28', "3" , this.mlbVideos);
+      addToCategory() {
+        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "4" , this.absVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "4" , this.fullBodyVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNan-D0XhNEBRicxI52UsV1D5', "4" , this.upperBodyVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNaldC0EzXxxS-WyeadCvx7sg', "4" , this.hiitVideos);
       }
     
-      listOfAllIn() {
-        this.getVideos('uBBDMqZKagY', this.aVideos);
+      addTolivestreamVideo() {
+        this.getVideos('uBBDMqZKagY', this.livestreamVideos);
       }
 
 }
@@ -384,63 +314,7 @@ export class ContentComponent implements OnInit {
 
 
 
-  // listOfInterested() {
-  //   this.iVideos = [];
-  //   this.youTubeService
-  //     .getVideosForChanel('UCiP6wD_tYlYLYh3agzbByWQ', "1")
-  //     .subscribe((list: any) => {
-  //       for (const element of list.items) {
-  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
-  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-  //         element.sanitizedURL = sanitizedURL;
-  //         this.iVideos.push(element);
-  //       }
-  //     },
-  //     error => {
-  //       console.log('Error: ', error)
-  //       if (error.status === 404 || error.status === 402) 
-  //       this.router.navigate(['notfound']);
-  //     });
-  // }
-
-  // listOfMotivated() {
-  //   console.log('Calling listOfMotivated');
-  //   this.mVideos = [];
-  //   this.youTubeService
-  //     .getVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
-  //     .subscribe((list: any) => {
-  //       for (const element of list.items) {
-  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
-  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-  //         element.sanitizedURL = sanitizedURL;
-  //         this.mVideos.push(element);
-  //       }
-  //     },
-  //     error => {
-  //       console.log('Error: ', error)
-  //       if (error.status === 404 || error.status === 402) 
-  //       this.router.navigate(['notfound']);
-  //     });
-  // }
-
-  // listOfAllIn() {
-  //   this.aVideos = [];
-  //   this.youTubeService
-  //     .getVideosForChanel('UCXtE168z7GAxYKAIHFOgm8w', "1")
-  //     .subscribe((list: any) => {
-  //       for (const element of list.items) {
-  //         const videoURL = 'https://www.youtube.com/embed/' + element.id.videoId;
-  //         const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-  //         element.sanitizedURL = sanitizedURL;
-  //         this.aVideos.push(element);
-  //       }
-  //     },
-  //     error => {
-  //       console.log('Error: ', error)
-  //       if (error.status === 404 || error.status === 402) 
-  //       this.router.navigate(['notfound']);
-  //     });
-  // }
+ 
 
   
 

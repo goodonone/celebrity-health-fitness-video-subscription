@@ -425,6 +425,10 @@ margin-left: 3rem;
 margin-top: 2rem;
 }
 
+.disable{
+    pointer-events: none;
+}
+
 button.btn-recipes:hover{
 background-color: white;
 color: black;
