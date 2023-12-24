@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as $ from 'jquery';
+import { User } from 'src/app/models/user';
+import { UserService } from 'src/app/services/user.service';
 
 interface JQuery {
   chosen(options?: any): JQuery;
@@ -14,14 +17,27 @@ export class ContentStyledComponent implements OnInit {
   // scrollTop: number;
   // count: any;
 
+  currentUser: User = new User;
+ 
+
+  constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userService.getUser(userId).subscribe(user => {
+      this.currentUser = user;
+      // console.log(user);
+    });
+
+
+
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
     this.checked = false;
 
     // Checking what tier we are on
-    let tier = localStorage.getItem('tier');
+    // let tier = localStorage.getItem('tier');
+    let tier = this.currentUser.tier;
 
     // Tier One, Two and Three Logic
     // if (tier == "Just Looking") {
@@ -30,6 +46,8 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierOneTwo = true;
     //   this.tierTwoThree = true;
     //   this.tierThree = false;
+    // this.toggleClass();
+    //  (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
     // } else if(tier == "Motivated")
     // {
     //   this.tierName = "Motivated";
@@ -46,54 +64,26 @@ export class ContentStyledComponent implements OnInit {
     // }    
     
 
-    // Try to do this where the latest year updates automatically
-
-    // const yearSpan = document.getElementById('#currentYear');
-    // const currentYear = new Date();
-    // yearSpan!.innerText = currentYear.getFullYear();
-
-
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
     var $ = require("jquery");
-    var wrap = $("#fixed");
+    var wrap = $("#wrap");
 
     wrap.on("scroll", (e: any) => {
-        
-      if (document.documentElement.scrollTop > 147) {
-        wrap.addClass("fix-search");
+      if (document.documentElement.scrollTop > 300) {
+        wrap.addId("fixed");
       } else {
-        wrap.removeClass("fix-search");
+        wrap.removeId("fixed");
       }
-      
     });
 
 
-    // var windw = this;
 
-    // $.fn.followTo = function (pos: number) {
-    //   var $this = this,
-    //     $window = $(windw);
+// Delete this out when the page is ready
+    this.toggleClass();
+    (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
+    
 
-    //   $window.scroll(function (e: any) {
-    //     if ($window.scrollTop() > pos) {
-    //       $this.css({
-    //         position: 'absolute',
-    //         top: pos
-    //       });
-    //     } else {
-    //       $this.css({
-    //         position: 'fixed',
-    //         top: 0
-    //       });
-    //     }
-    //   });
-    // };
-
-    // $('#fixed').followTo(250);
-    //   $(window).scroll(() =>{
-    //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
-    // });
   }
 
 
@@ -106,6 +96,7 @@ export class ContentStyledComponent implements OnInit {
   tier: string = "";
   tierName: string = "";
   checked: boolean = false;
+  classApplied = false;
 
   // Add logic to only show one timer based on tier
 
@@ -113,7 +104,7 @@ export class ContentStyledComponent implements OnInit {
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
   testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
-    var countDownDate = new Date("Jan 7, 2024 15:37:25").getTime();
+    var countDownDate = new Date("Jan 8, 2024 15:37:25").getTime();
 
     // Update the count down every 1 second
     var x = setInterval(function () {
@@ -182,9 +173,15 @@ export class ContentStyledComponent implements OnInit {
     this.checked = !this.checked;
   }
 
-  // Upgrade Follow scroll 
+//   toggleDisable() {
+//     var toggle = document.getElementById("payWall");
+//     toggle!.disabled = true;
+// }
 
 
+toggleClass() {
+  this.classApplied = !this.classApplied;
+}
 
 
 }
