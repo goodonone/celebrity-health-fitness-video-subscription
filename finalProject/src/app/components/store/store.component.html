@@ -1,1 +1,10 @@
-<p>store works!</p>
+<h1>Store</h1>
+<ul>
+    <li *ngFor="let product of productList">
+        <img src="{{product.productURL}}">
+        <p>{{product.productName}}</p>
+        <p>{{product.productDescription}}</p>
+        <p>{{product.productPrice}}</p>
+        
+    </li>
+</ul>
