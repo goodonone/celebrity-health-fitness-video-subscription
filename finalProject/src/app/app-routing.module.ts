@@ -33,6 +33,7 @@ const routes: Routes = [
   { path: "store", component: StoreComponent, canActivate: [AuthGuard]  },
   { path: "test", component: ContentStyledComponent },
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
+  { path: "change-plan/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "**", component: NotFoundComponent },
 ];
 
