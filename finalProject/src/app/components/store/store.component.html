@@ -5,6 +5,6 @@
         <p>{{product.productName}}</p>
         <p>{{product.productDescription}}</p>
         <p>{{product.productPrice}}</p>
-        
+        <a [routerLink] ='["/cart", currentUser.userId]'> Add to Cart </a>
     </li>
 </ul>
