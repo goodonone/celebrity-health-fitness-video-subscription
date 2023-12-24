@@ -1,4 +1,4 @@
-<div *ngIf="currentUser?.tier === 'Just Looking'">
+<!-- <div *ngIf="currentUser?.tier === 'Just Looking'">
   <h1>Workouts</h1>
   <h3>Abs</h3>
 <div *ngFor="let video of iaVideos">
@@ -104,6 +104,201 @@
       </div>
     </div>
   </div>
-</div>  
+</div>   -->
 
 
+
+
+
+
+
+
+
+
+<p>hello </p>
+
+<div class="pageContainer">
+  <!-- Upgrade button for Tier Two and Three -->
+  <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+      <button class="btn btn-upgrade" routerLink="/upgrade">Upgrade</button>
+  </div>
+
+  <!-- Countdown timer for First and Second Tiers -->
+  <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+  </div>
+
+  <!-- Countdown timer for Third Tier -->
+  <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser?.tier === 'All In'">
+  </div>
+
+  <!-- Live Video Div -->
+  <div class="liveVideo" *ngIf="currentUser?.tier === 'All In' && showLiveVideo">
+      <h1 class="liveVideoText">
+          We are Live!
+      </h1>
+      <mat-card class="liveVideoContainer">
+          <mat-card-content>
+
+          </mat-card-content>
+      </mat-card>
+  </div>
+
+  <!-- Free Tier Videos -->
+  <div class="cardFirstTier" *ngIf="currentUser?.tier === 'Just Looking'">
+      <mat-card class="cardContainer">
+          <mat-card-header>
+              <h1 class="tierOneHeader">
+                  Workouts To Get You Started
+              </h1>
+          </mat-card-header>
+          <mat-card-content>
+              <div class="cardVideos">
+                  <mat-card *ngFor="let video of iaVideos" class="cardVideosFirst">
+                    <div >
+                      <div >
+                        <iframe width="288" height="192" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                      </div>
+                      <div >
+                        <h5 class="card-title mb-0">
+                          <a>{{ video.snippet.title }}</a>
+                        </h5>
+                      </div>
+                    </div>
+                  </mat-card>
+              </div>
+          </mat-card-content>
+      </mat-card>
+  </div>
+</div>
+
+<!-- Tier two and three videos -->
+<div class="cardSecondAndThirdTiers">
+  <!-- Make this if a ! -->
+  <div class="upgradeContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+      <div id="fixed">
+          <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
+          <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
+      </div>
+  </div>
+  
+  <fieldset [disabled]="currentUser?.tier === 'Just Looking'" class="fieldset">
+  <div [ngClass]="{'payWall' : currentUser?.tier === 'Just Looking'}">
+  <mat-card class="cardContainerTwo">
+      <mat-card-header>
+          
+          <h1 class="tierName">{{currentUser.tier}}</h1>
+      </mat-card-header>
+      <div class="toggle-area">
+          <div class="toggle">
+            <label [ngClass]="{'checked':!checked}">All Workouts</label>
+            <mat-slide-toggle [checked]="checked" (change)="toggleBilling()" >
+            </mat-slide-toggle>
+            <label [ngClass]="{'checked':checked}">Workouts By Category</label>
+          </div>
+        </div>
+      <mat-card-content>
+          <div class="toggleAllWorkouts" *ngIf="!checked">
+          <mat-card class="contentCardOne flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2023</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardTwo flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2022</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardThree flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2021</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardFour flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2020</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardFive flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2019</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardSix flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2018</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+      </div>
+      <div class="toggleWorkoutsByCategory" *ngIf="checked">
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Abs</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Chest</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Shoulders</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Biceps</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Triceps</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Back</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Legs</h1>
+              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
+                  {{card}}
+              </mat-card>
+          </mat-card>
+      </div>
+      </mat-card-content>
+  </mat-card>
+</div>
+</fieldset>
+</div>

@@ -33,7 +33,7 @@ const routes: Routes = [
   // Disable search if not implemented
   { path: "search", component: SearchComponent },
   { path: "store", component: StoreComponent },
-  { path: "test", component: ContentStyledComponent },
+  { path: "content-styled", component: ContentStyledComponent },
   { path: "upgrade", component: UpgradeComponent },
   { path: "**", component: NotFoundComponent },
 ];

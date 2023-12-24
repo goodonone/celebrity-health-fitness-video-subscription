@@ -24,26 +24,30 @@ export class ContentStyledComponent implements OnInit {
     let tier = localStorage.getItem('tier');
 
     // Tier One, Two and Three Logic
-    // if (tier == "Just Looking") {
-    //   this.tierName = "Motivated & All In";
-    //   this.tierOne = true;
-    //   this.tierOneTwo = true;
-    //   this.tierTwoThree = true;
-    //   this.tierThree = false;
-    // } else if(tier == "Motivated")
-    // {
-    //   this.tierName = "Motivated";
-    //   this.tierOne = false;
-    //   this.tierOneTwo = true;
-    //   this.tierTwoThree = false;
-    // } else {
-    //   this.tierName = "All In";
-    //   this.tierOne = false;
-    //   this.tierOneTwo = false;
-    //   this.tierTwoThree = true;
-    //   this.tierThree = true;
-    // this.timerTierThree = false;
-    // }    
+    if (tier == "Just Looking") 
+    {
+      this.tierName = "Motivated & All In";
+      this.tierOne = true;
+      this.tierOneTwo = true;
+      this.tierTwoThree = true;
+      this.tierThree = false;
+    } 
+    else if(tier == "Motivated") 
+    {
+      this.tierName = "Motivated";
+      this.tierOne = false;
+      this.tierOneTwo = true;
+      this.tierTwoThree = false;
+    } 
+    else 
+    {
+      this.tierName = "All In";
+      this.tierOne = false;
+      this.tierOneTwo = false;
+      this.tierTwoThree = true;
+      this.tierThree = true;
+    this.timerTierThree = false;
+    }    
     
 
     // Try to do this where the latest year updates automatically
