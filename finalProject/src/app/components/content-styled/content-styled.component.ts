@@ -60,7 +60,7 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierOneTwo = false;
     //   this.tierTwoThree = true;
     //   this.tierThree = true;
-    // this.timerTierThree = false;
+    //   this.timerTierThree = true;
     // }    
     
 
@@ -86,19 +86,16 @@ export class ContentStyledComponent implements OnInit {
 
   }
 
-
   tierOne: boolean = true;
   tierOneTwo: boolean = true;
   tierTwoThree: boolean = true;
   tierThree: boolean = true;
-  timerTierThree: boolean = true;
+  timerTierThree: boolean = false;
   showLiveVideo: boolean = false;
   tier: string = "";
   tierName: string = "";
   checked: boolean = false;
   classApplied = false;
-
-  // Add logic to only show one timer based on tier
 
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -123,7 +120,7 @@ export class ContentStyledComponent implements OnInit {
 
       // Display the result in the element with id="demo"
       document.getElementById("timer")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
-        + minutes + "m " + seconds + "s. " + "Upgrade For Live Access!"
+        + minutes + "m " + seconds + "s. " + "Upgrade To 'All In' For Live Access!"
 
       // If the count down is finished, write some text
       if (distance < 0) {
@@ -166,17 +163,10 @@ export class ContentStyledComponent implements OnInit {
     }, 1000);
   }
 
-  // Condition to display various items on page
-  // localStorage.getItem('tier') === 'Just Looking';
 
   toggleBilling() {
     this.checked = !this.checked;
   }
-
-//   toggleDisable() {
-//     var toggle = document.getElementById("payWall");
-//     toggle!.disabled = true;
-// }
 
 
 toggleClass() {
