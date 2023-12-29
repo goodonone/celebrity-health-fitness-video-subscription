@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
@@ -68,16 +68,16 @@ export class ContentStyledComponent implements OnInit {
 
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
-    var $ = require("jquery");
-    var wrap = $("#wrap");
+    // var $ = require("jquery");
+    // var wrap = $("#wrap");
 
-    wrap.on("scroll", (e: any) => {
-      if (document.documentElement.scrollTop > 300) {
-        wrap.addId("fixed");
-      } else {
-        wrap.removeId("fixed");
-      }
-    });
+    // wrap.on("scroll", (e: any) => {
+    //   if (document.documentElement.scrollTop > 300) {
+    //     wrap.addId("fixed");
+    //   } else {
+    //     wrap.removeId("fixed");
+    //   }
+    // });
 
 
 
