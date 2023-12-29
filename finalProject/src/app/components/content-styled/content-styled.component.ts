@@ -18,6 +18,8 @@ export class ContentStyledComponent implements OnInit {
   // count: any;
 
   currentUser: User = new User;
+  timerVal = '';
+  timerValThree = '';
  
 
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
@@ -104,7 +106,7 @@ export class ContentStyledComponent implements OnInit {
     var countDownDate = new Date("Jan 8, 2024 15:37:25").getTime();
 
     // Update the count down every 1 second
-    var x = setInterval(function () {
+    var x = setInterval( () => {
 
       // Get today's date and time
       var now = new Date().getTime();
@@ -119,13 +121,13 @@ export class ContentStyledComponent implements OnInit {
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timer")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+      this.timerVal = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. " + "Upgrade To 'All In' For Live Access!"
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timer")!.innerHTML = "EXPIRED";
+        this.timerVal = "EXPIRED";
         // ngIf to open up a card for live video here
       }
     }, 1000);
@@ -150,13 +152,13 @@ export class ContentStyledComponent implements OnInit {
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timerTierThree")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+      this.timerValThree = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. ";
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timerTierThree")!.innerHTML = "EXPIRED";
+        this.timerValThree = "EXPIRED";
         this.timerTierThree = false;
         this.showLiveVideo = true;
       }
