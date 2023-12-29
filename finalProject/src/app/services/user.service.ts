@@ -39,6 +39,7 @@ logoutUser() {
   localStorage.removeItem('userSignedIn');
   localStorage.removeItem('tier');
   localStorage.removeItem('token');
+  localStorage.removeItem('billing');
 }
 
 getUserId() {

@@ -129,7 +129,7 @@ export class FormService implements OnInit {
       }),
       planDetails: this.fb.group({
         plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
-        billing: ['monthly', [Validators.required]],
+        billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
         planCost: [0],
         totalCost: []
       }),
