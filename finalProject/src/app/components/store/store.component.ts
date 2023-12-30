@@ -11,6 +11,7 @@ import { CartService } from 'src/app/services/cart.service';
 })
 export class StoreComponent implements OnInit {
   productList: Product[] = [ ];
+  
 
 
   constructor(private productService: ProductService, private router: Router, private cartService: CartService ) {}
@@ -20,12 +21,12 @@ export class StoreComponent implements OnInit {
       console.log(foundProducts);
       this.productList = foundProducts;
     })
-    // this.productList;
+    
   }
 
-  // addToCart(){
-  //   this.cartService.addToCart(this.product)
-  // }
+  addToCart(selectedProduct: Product){
+    this.cartService.addToCart(selectedProduct)
+  }
 
 
 }

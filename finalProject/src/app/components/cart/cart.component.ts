@@ -28,4 +28,8 @@ export class CartComponent implements OnInit{
     this.cartService.changeQuantity(cartItem.product.productId ?? 0, quantity);
 
   }
+
+  emptyCart(){
+    this.cartService.clearCart();
+  }
 }

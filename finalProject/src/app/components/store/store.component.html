@@ -7,7 +7,7 @@
         <p>{{product.productDescription}}</p>
         <p>${{product.productPrice}}</p>
         <button [routerLink] = '["product/", product.productId]'>View Item</button>
-        <button> Add to Cart </button>
+        <button (click)="addToCart(product)"> Add to Cart </button>
         <br>
     </li>
     <br>

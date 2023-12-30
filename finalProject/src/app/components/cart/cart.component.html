@@ -1,6 +1,6 @@
 <h1>Cart</h1>
 
-<div>
+<div *ngIf="cart.totalCount > 0">
     <ul>
         <li *ngFor="let cartItem of cart.items">
             <div>
@@ -34,5 +34,9 @@
         <div>{{cart.totalCount}}</div>
         <div>${{cart.totalPrice}}</div>
     </div>
-    <button routerLink="/checkout">Proceed to Checkout</button>
+    <button routerLink="/checkout" (click)="emptyCart()">Proceed to Checkout</button>
+</div>
+
+<div *ngIf="cart.totalCount === 0">
+    Your cart is empty
 </div>

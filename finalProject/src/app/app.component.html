@@ -25,6 +25,7 @@
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]">Workouts</h6>
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store">Store</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity">{{cartQuantity}}</span></h6>
 
       
       <!-- </div> -->
