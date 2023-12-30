@@ -1,1 +1,38 @@
-<p>cart works!</p>
+<h1>Cart</h1>
+
+<div>
+    <ul>
+        <li *ngFor="let cartItem of cart.items">
+            <div>
+                <img [src]="cartItem.product.productURL" [alt]="cartItem.product.productName">
+            </div>
+            <div>
+                <a>{{cartItem.product.productName}}</a>
+            </div>
+            <div>
+                <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+
+                </select>
+            </div>
+            <div>
+                ${{cartItem.productPrice}}
+            </div>
+            <div>
+                <button (click)="removeFromCart(cartItem)">
+                    Remove
+                </button>
+            </div>
+
+        </li>
+    </ul>
+    <div>
+        <div>{{cart.totalCount}}</div>
+        <div>${{cart.totalPrice}}</div>
+    </div>
+    <a routerLink="/checkout">Proceed to Checkout</a>
+</div>

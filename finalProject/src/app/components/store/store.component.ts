@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
+import { CartService } from 'src/app/services/cart.service';
 
 @Component({
   selector: 'app-store',
@@ -12,7 +13,7 @@ export class StoreComponent implements OnInit {
   productList: Product[] = [];
 
 
-  constructor(private productService: ProductService, private router: Router, ) {}
+  constructor(private productService: ProductService, private router: Router, private cartService: CartService ) {}
 
   ngOnInit(): void {
     this.productService.getAllProducts().subscribe(foundProducts => {
@@ -20,6 +21,10 @@ export class StoreComponent implements OnInit {
       this.productList = foundProducts;
     })
   }
+
+  // addToCart(){
+  //   this.cartService.addToCart(this.product)
+  // }
 
 
 }

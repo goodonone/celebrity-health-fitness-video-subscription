@@ -14,6 +14,8 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
+import { ProductComponent } from './components/product/product.component';
+import { CartComponent } from './components/cart/cart.component';
 
 
 const routes: Routes = [
@@ -30,6 +32,8 @@ const routes: Routes = [
   // correctly implement search with the right syntax ?q or something
   { path: "search", component: SearchComponent},
   { path: "Store", component: StoreComponent},
+  { path: "product/:id", component: ProductComponent},
+  { path: "cart", component: CartComponent},
   { path: "**", component: NotFoundComponent }
 ];
 

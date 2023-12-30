@@ -44,6 +44,8 @@ import { StepFourPaymentComponent } from './other-components/form/form-steps/ste
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
 import { CartComponent } from './components/cart/cart.component';
+import { ProductComponent } from './components/product/product.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 
 
@@ -76,6 +78,8 @@ import { CartComponent } from './components/cart/cart.component';
 
     PaymentComponent,
       CartComponent,
+      ProductComponent,
+      CheckoutComponent,
 
   ],
   imports: [

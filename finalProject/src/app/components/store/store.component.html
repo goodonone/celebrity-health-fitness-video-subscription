@@ -5,6 +5,7 @@
         <p>{{product.productName}}</p>
         <p>{{product.productDescription}}</p>
         <p>{{product.productPrice}}</p>
+        <button [routerLink] = '["product/", product.productId]'>View Item</button>
         <button> Add to Cart </button>
     </li>
 </ul>
