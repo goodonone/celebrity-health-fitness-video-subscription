@@ -1,120 +1,3 @@
-<!-- <div *ngIf="currentUser?.tier === 'Just Looking'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of iaVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of ifbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of ilbVideos" >
-    <div>
-      <div>
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div>
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1>
-    Upgrade to Motivated to unlock more workouts
-  </h1>
-</div>  
-
-<div *ngIf="currentUser?.tier === 'Motivated' || currentUser?.tier === 'All In'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of maVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of mfbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of mlbVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1 *ngIf="currentUser?.tier === 'Motivated'">
-    Upgrade to All In to unlock live streams
-  </h1>
-</div>  
-
-<div *ngIf="currentUser?.tier === 'All In'">
-  <h1>Live Stream</h1>
-<div *ngFor="let video of aVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>Join us Live Mon, Wed, Fri at 6:30 pm</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-</div>   -->
-
-
-
-
-
-
-
-
-
-
 
 
 <div class="pageContainer">
@@ -133,7 +16,7 @@
 
   <!-- Live Video Div -->
   <!-- <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo"> -->
-    <div class="liveVideo" *ngIf="currentUser.tier === 'All In'">
+    <div class="liveVideo" *ngIf="currentUser.tier === 'All In'&& showLiveVideo">
       <h1 class="liveVideoText">
           We are Live!
       </h1>
@@ -376,3 +259,114 @@
 </div>
 </fieldset>
 </div>
+
+
+
+
+<!-- <div *ngIf="currentUser?.tier === 'Just Looking'">
+  <h1>Workouts</h1>
+  <h3>Abs</h3>
+<div *ngFor="let video of iaVideos">
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h3>Full Body</h3>
+<div *ngFor="let video of ifbVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h3>Lower Body</h3>
+<div *ngFor="let video of ilbVideos" >
+    <div>
+      <div>
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div>
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h1>
+    Upgrade to Motivated to unlock more workouts
+  </h1>
+</div>  
+
+<div *ngIf="currentUser?.tier === 'Motivated' || currentUser?.tier === 'All In'">
+  <h1>Workouts</h1>
+  <h3>Abs</h3>
+<div *ngFor="let video of maVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h3>Full Body</h3>
+<div *ngFor="let video of mfbVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h3>Lower Body</h3>
+<div *ngFor="let video of mlbVideos">
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>{{ video.snippet.title }}</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+  <h1 *ngIf="currentUser?.tier === 'Motivated'">
+    Upgrade to All In to unlock live streams
+  </h1>
+</div>  
+
+<div *ngIf="currentUser?.tier === 'All In'">
+  <h1>Live Stream</h1>
+<div *ngFor="let video of aVideos" >
+    <div >
+      <div >
+        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+      </div>
+      <div >
+        <h5 class="card-title mb-0">
+          <a>Join us Live Mon, Wed, Fri at 6:30 pm</a>
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>   -->
