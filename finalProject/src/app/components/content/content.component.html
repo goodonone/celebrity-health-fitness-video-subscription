@@ -159,24 +159,6 @@
                 </div>
               </mat-card>
           </mat-card>
-          <!-- <mat-card class="contentCardFive flexCards">
-              <div class="yearAndRecipes">
-                  <h1 class="cardHeaderYear">2019</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
-              </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
-          </mat-card>
-          <mat-card class="contentCardSix flexCards">
-              <div class="yearAndRecipes">
-                  <h1 class="cardHeaderYear">2018</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
-              </div>
-              <mat-card *ngFor="let card of testCardsTwo" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
-          </mat-card> -->
       </div>
       <div class="toggleWorkoutsByCategory" *ngIf="checked">
           <mat-card class="contentCardOne flexCards">
@@ -235,24 +217,7 @@
             
           </mat-card>
           </mat-card>
-          <!-- <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Triceps</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
-          </mat-card> -->
-          <!-- <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Back</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
-          </mat-card> -->
-          <!-- <mat-card class="contentCardOne flexCards">
-              <h1 class="cardHeadertype">Legs</h1>
-              <mat-card *ngFor="let card of testCardsThree" class="cardVideosSecondThird">
-                  {{card}}
-              </mat-card>
-          </mat-card> -->
+          
       </div>
       </mat-card-content>
   </mat-card>
@@ -260,113 +225,3 @@
 </fieldset>
 </div>
 
-
-
-
-<!-- <div *ngIf="currentUser?.tier === 'Just Looking'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of iaVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of ifbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of ilbVideos" >
-    <div>
-      <div>
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div>
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1>
-    Upgrade to Motivated to unlock more workouts
-  </h1>
-</div>  
-
-<div *ngIf="currentUser?.tier === 'Motivated' || currentUser?.tier === 'All In'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of maVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of mfbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of mlbVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1 *ngIf="currentUser?.tier === 'Motivated'">
-    Upgrade to All In to unlock live streams
-  </h1>
-</div>  
-
-<div *ngIf="currentUser?.tier === 'All In'">
-  <h1>Live Stream</h1>
-<div *ngFor="let video of aVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>Join us Live Mon, Wed, Fri at 6:30 pm</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-</div>   -->

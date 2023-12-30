@@ -231,27 +231,27 @@ export class ContentComponent implements OnInit {
                 });
     }
 
-    // getVideosfromChannel(channelId: string, maxResults: string, videoArray: any[]): void {
-    //   videoArray.length = 0;
+    getVideosfromChannel(channelId: string, year: string, maxResults: string, videoArray: any[]): void {
+      videoArray.length = 0;
   
-    //   this.youTubeService
-    //       .getVideosFromChannel(channelId, maxResults)
-    //       .subscribe(
-    //           (list: any) => {
-    //               for (const element of list.items) {
-    //                   const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
-    //                   const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-    //                   element.sanitizedURL = sanitizedURL;
-    //                   videoArray.push(element);
-    //               }
-    //           },
-    //           error => {
-    //               console.error('Error: ', error);
-    //               if (error.status === 404 || error.status === 402) {
-    //                   this.router.navigate(['notfound']);
-    //               }
-    //           });
-    // }
+      this.youTubeService
+          .getVideosFromChannel(channelId, year, maxResults)
+          .subscribe(
+              (list: any) => {
+                  for (const element of list.items) {
+                      const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.id.videoId + '?autohide=1&rel=0';
+                      const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+                      element.sanitizedURL = sanitizedURL;
+                      videoArray.push(element);
+                  }
+              },
+              error => {
+                  console.error('Error: ', error);
+                  if (error.status === 404 || error.status === 402) {
+                      this.router.navigate(['notfound']);
+                  }
+              });
+    }
     
       addToStarterVideos() {
       
@@ -267,15 +267,12 @@ export class ContentComponent implements OnInit {
       }
 
       addToNewest() {
-        this.getVideosFromPlaylist('PL2NpXBzdtNakNg1rqdfL1SfaiGQzoaQsf', "6", this.channel23Videos)
-        this.getVideosFromPlaylist('PL2NpXBzdtNakaDzELYs0EXmbnYiWMEo2b', "6", this.channel22Videos)
-        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "6", this.channel21Videos)
-        this.getVideosFromPlaylist('PL2NpXBzdtNam-M_8y6FFypSf7ae8Ph4_6', "6", this.channel20Videos)
-        // this.getVideosFromPlaylist('PL2NpXBzdtNamI0UmG_iCS7pbGW6Uccdkm', "5", this.channel19Videos)
-        // this.getVideosFromPlaylist('UCiP6wD_tYlYLYh3agzbByWQ', "10", this.channel22Videos)
-        // this.getVideosFromPlaylist('UCiP6wD_tYlYLYh3agzbByWQ', "10", this.channel21Videos)
-        // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', "2022", "25", this.channel22Videos)
-        // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', "2021", "25", this.channel21Videos)
+        
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "6", this.channel23Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "6", this.channel22Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "6", this.channel21Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "6", this.channel20Videos)
+  
         
       }
 

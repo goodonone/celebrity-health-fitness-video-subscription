@@ -30,10 +30,9 @@ export class YoutubeService {
       }))
   }
 
-  // getVideosFromChannel(channelId: string, startIndex: string, maxResults: string): Observable<Object> {
-    getVideosFromChannel(channelId: string, maxResults: string): Observable<Object> {
-    // let url = 'https://www.googleapis.com/youtube/v3/search?key=' + this.apiKey + '&channelId=' + channelId + '&order=date&part=snippet &type=video&startIndex=' + startIndex + '&maxResults=' + maxResults;  
-   let url = 'https://www.googleapis.com/youtube/v3/search?key=' + this.apiKey + '&channelId=' + channelId + '&order=date&part=snippet &type=video,id&maxResults=' + maxResults   
+    getVideosFromChannel(channelId: string, year: string, maxResults: string): Observable<Object> {
+    
+   let url = 'https://www.googleapis.com/youtube/v3/search?key=' + this.apiKey + '&channelId=' + channelId + '&order=date&part=snippet&publishedBefore=' + (parseInt(year)+1) + '-01-01T00:00:00Z&type=video,id&maxResults=' + maxResults   
  return this.http.get(url)
       .pipe(map((res) => {
         return res;
