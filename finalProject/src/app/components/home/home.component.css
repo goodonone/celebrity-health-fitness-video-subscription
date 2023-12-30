@@ -197,7 +197,7 @@
 }
 
 .card {
-    height: 700px;
+    height: 600px;
     width: 500px;
     background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
     background-size: cover;
@@ -210,7 +210,7 @@
     margin: auto;
     color: black;
     line-height: 1.5;
-    padding-bottom: 250px;
+    padding-bottom: 190px;
 }
 
 .nutritionText {
@@ -237,7 +237,7 @@
 }
 
 .cardTwo {
-    height: 700px;
+    height: 600px;
     width: 500px;
     margin-top: 130px;
     overflow: hidden;
@@ -363,7 +363,7 @@ label {
     text-align: center;
     margin: auto;
     font-family: 'Outfit', sans-serif;
-    margin-top: 120px;
+    margin-top: 60px;
     color: white;
     font-size: 70px;
     height: 3vw;

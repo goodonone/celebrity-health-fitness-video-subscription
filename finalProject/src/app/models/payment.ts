@@ -9,6 +9,7 @@ export class Payment {
     membershipStatus?: string;
     membershipDate?: Date;
     createdAt?: Date;
+    purchaseType?: string;
     updatedAt?: Date;
 
 

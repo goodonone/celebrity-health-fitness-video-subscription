@@ -26,8 +26,8 @@
 
 .step_number {
   /* @include variables.body-primary-s(); */
-  width: 2rem;
-  height: 2rem;
+  width: 2.1rem;
+  height: 2.1rem;
   border: 0.063rem solid #C7FF20;
   color: #C7FF20;
   border-radius: 50%;
@@ -52,7 +52,7 @@
   width: 2.1rem;
   height: 2.1rem;
   text-align: center;
-  line-height: 30px;
+  line-height: 32px;
 }
 
 .step_details {

@@ -1,3 +1,150 @@
-span {
-    color: white;
+* {
+    font-family: 'Outfit', sans-serif;
 }
+
+.background {
+    position: relative;
+    background-color: #C7FF20;
+    margin-top: -80px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.overlay{
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 16rem;
+    /* padding-right: 2rem; */
+    margin: auto;
+}
+
+mat-card {
+
+    /* display: flex;
+    justify-content: space-around; */
+    /* position: absolute;
+    right: 39%;
+    top: 30%; */
+
+    /* left: 50%; */
+
+    
+
+    /* bottom: 50%; */
+    width: 25rem;
+    height: 25rem;
+    border-radius: 8px;
+}
+
+form{
+/* padding-top: 4rem; */
+}
+
+.logo{
+    font-size: 1.5rem;
+}
+
+input {
+    /* @include variables.body-primary-xs; */
+    display: inline-block;
+    width: 21.8rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+}
+
+input:focus,
+input:valid {
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+}
+
+.input-details {
+    display: flex;
+    justify-content: space-between;
+    width: 15.437rem;
+}
+
+.btn {
+    padding: 0.3rem;
+    border-radius: 6px;
+}
+
+.btn-submit:disabled {
+    background-color: rgb(174, 174, 174);
+    border-color: rgb(174, 174, 174);
+    color: rgb(113, 113, 113);
+}
+
+.btn-submit {
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    color: black;
+}
+
+button{
+    padding-top: 2rem;
+}
+
+/* @media (min-width: 37.5em) {
+
+    input {
+        height: 2rem;
+        margin-bottom: 1.5rem;
+        width: 21.8rem;
+    }
+
+    .input-details {
+        width: 30.125rem;
+    } */
+
+    /* .btn-next,
+  .btn-submit {
+    position: absolute;
+    top: 0%;
+    right: 9%;
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+  } */
+
+  .logoImage{
+    width: 13rem;
+    height: 4rem;
+    /* border-radius: 50%; */
+    /* overflow: hidden; */
+    margin-top: 15px;
+}
+
+  /* @media screen and (min-width: 500px) and (max-width: 792px) 
+{
+
+mat-card {
+    position: absolute;
+    right: 10%;
+    /* left: 50%; */
+    /* top: 30%; */
+    /* bottom: 50%; */
+    /* width: 25rem;
+    height: 25rem;
+    border-radius: 8px; */
+/* } */
+
+    /* input {
+        height: 2rem;
+        margin-bottom: 1.5rem;
+        width: 21.8rem;
+    }
+
+    .input-details {
+        width: 30.125rem;
+    }
+ */
+
+/* } */
+

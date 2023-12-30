@@ -1,33 +1,34 @@
+* {
+  font-family: 'Outfit', sans-serif;
+  }
+
 span {
   display: contents;
-  color: blue;
+  color: rgb(0, 0, 0);
   font-size: 16px;
   font-weight: 700;
   line-height: 1.25rem;
   letter-spacing: 0;
-
 }
 mat-card-content{
   height: 16rem;
-  /* @include variables.flexSpaceBetween(column); */
 }
 
 table {
   height: fit-content;
-  margin: 2rem auto 1.5rem auto;
-  padding: 1rem;
-  width: 18.4rem;
-  background-color: blueviolet;
+  margin: 2rem auto 2rem auto;
+  padding: 1.3rem;
+  width: 35.4rem;
+  background-color: rgb(231, 230, 230);
   border-radius: .5rem;
 }
 
 mat-divider {
-  color: blueviolet;
+  color: rgb(0, 0, 0);
   height: 0.125rem;
   width: 100%;
   border-radius: 0;
   opacity: .2;
-
 }
 
 .mat-card-content {
@@ -35,73 +36,60 @@ mat-divider {
 }
 
 th {
-  /* @include variables.flexCenter(column); */
-  height: 3rem;
+  height: 4rem;
   width: 100%;
 }
 
 tr {
-  /* @include variables.flexSpaceBetween(row); */
+  display: flex;
+  justify-content: space-between;
   align-items: flex-start;
   height: 100%;
-  width: 100%;
+  width: 31rem;
 }
 
 .type {
-  /* @include variables.flexSpaceBetween(column); */
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
-  height: 2.438rem;
-  /* @include variables.body-primary-xs; */
+  height: 3rem;
+  font-size: larger;
   letter-spacing: 0;
-  color: green;
-
+  color: rgb(0, 0, 0);
 }
 
 button {
   border: none;
   background-color: transparent;
-  color: red;
   text-decoration-line: underline;
-  /* @include variables.body-primary-s; */
   letter-spacing: 0;
-  padding-left: 0;
 }
 
+
 .btn-change:hover {
-  color: pink;
+  color: rgb(0, 0, 0);
 }
 
 .cost {
-  /* @include variables.heading-m; */
   font-size: 0.875rem;
 }
 
-.service,
-.service_cost {
-  margin-top: 0.75rem;
-  color: yellow;
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.25rem;
-  letter-spacing: 0;
-}
-
-.service_cost {
-  color: yellow;
+div.cost{
+  width: 9.3rem;
 }
 
 .total {
   width: 100%;
-  padding: 0 1.5rem;
-  /* @include variables.flexSpaceBetween(row); */
-  color: purple;
+  padding: 0 0 2rem 0.5rem;
+  color: rgb(0, 0, 0);
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.25rem;
 }
 
 .total .cost {
-  color: blue;
+  color: rgb(0, 0, 0);
   font-weight: 700;
   font-size: 1rem;
   line-height: 1.25rem;
@@ -110,7 +98,9 @@ button {
 @media (min-width: 37.5em) {
 
   table {
-    width: 28.125rem;
+    display: flex;
+    flex-direction: row;
+    width: 30.7rem;
   }
 
   th {
@@ -124,7 +114,7 @@ button {
 
   button {
     margin-top: .5rem;
-    padding-left: 0;
+    padding: 1rem;
   }
 
   tr {

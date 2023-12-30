@@ -10,14 +10,13 @@ import { FormGroup, FormGroupDirective } from '@angular/forms';
 export class StepOnePersonalInfoComponent implements OnInit {
   stepForm!: FormGroup;
 
-  @Input() formGroupName!: string;
+  @Input() formGroupName!: string; 
 
-  
+  constructor(private inputFormGroup: FormGroupDirective) { }
 
-  constructor(private rootFormGroup: FormGroupDirective) { }
 
   ngOnInit(): void {
-    this.stepForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
+    this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
   }
 
 

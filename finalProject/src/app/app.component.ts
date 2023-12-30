@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
@@ -12,6 +12,8 @@ import { CartService } from './services/cart.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
+
   title = 'finalProject';
 
   searchString: string = "";
@@ -53,7 +55,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
 // Search Function(INCOMPLETE)
 
   search(searchString: string) {
@@ -69,6 +70,7 @@ export class AppComponent implements OnInit {
     }
 
   }
+  
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();
     if (this.userIsLoggedIn) {
@@ -76,6 +78,14 @@ export class AppComponent implements OnInit {
     }
     
   }
+
+  // UpdateStatus() {
+  //   if (this.userService.isloggedIn()) {
+  //     !this.userIsLoggedIn;
+  //     this.UserId = this.userService.getUserId() ?? "";
+  //   }
+    
+  // }
 
   logOut() {
     this.userService.logoutUser();

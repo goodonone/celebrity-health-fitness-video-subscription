@@ -35,7 +35,7 @@ import { MaterialModule } from './material.module';
 import { StepFiveConfimComponent } from './other-components/form/form-steps/step-five-confirm/step-five-confim.component';
 import { StepOnePersonalInfoComponent } from './other-components/form/form-steps/step-one-personal-info/step-one-personal-info.component';
 import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/step-two-select-plan/step-two-plan-details.component';
-import { StepTrackerIconsComponent } from './other-components/step-nav/step-tracker-icons.component';
+import { StepTrackerIconsComponent} from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 // import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -46,6 +46,9 @@ import { PaymentComponent } from './components/payment/payment.component';
 import { CartComponent } from './components/cart/cart.component';
 import { ProductComponent } from './components/product/product.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { ContentStyledComponent } from './components/content-styled/content-styled.component';
+import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
+import { AuthGuard } from './auth.guard';
 
 
 
@@ -64,7 +67,6 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     SignInComponent,
     SearchComponent,
     StoreComponent,
-
     FormComponent,
     ProgressionButtonsComponent,
     SignUpComponent,
@@ -75,11 +77,15 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     StepThreeSummaryComponent,
     StepFourPaymentComponent,
     UpgradeComponent,
-
     PaymentComponent,
+
       CartComponent,
       ProductComponent,
       CheckoutComponent,
+
+    ContentStyledComponent,
+    StepTrackerIconsUpgradeComponent,
+  
 
   ],
   imports: [
@@ -101,7 +107,6 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     MatStepperModule,
     ReactiveFormsModule,
     MaterialModule,
-    
   ],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent]
