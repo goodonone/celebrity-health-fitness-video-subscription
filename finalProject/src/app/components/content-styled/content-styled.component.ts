@@ -40,6 +40,7 @@ export class ContentStyledComponent implements OnInit {
     let tier = this.currentUser.tier;
 
     // Tier One, Two and Three Logic
+
     // if (tier == "Just Looking") {
     //   this.tierName = "Motivated & All In";
     //   this.tierOne = true;
@@ -62,6 +63,7 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierThree = true;
     // this.timerTierThree = false;
     // }    
+
     
 
     // only run if Tier = 'Just Looking'

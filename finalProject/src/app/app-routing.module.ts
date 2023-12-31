@@ -38,10 +38,11 @@ const routes: Routes = [
   { path: "store/product/:id", component: ProductComponent},
   { path: "cart", component: CartComponent},
   { path: "checkout", component: CheckoutComponent},
-  { path: "**", component: NotFoundComponent }
-
+ 
   // Disable search if not implemented
   { path: "search", component: SearchComponent },
+  { path: "content-styled", component: ContentStyledComponent },
+  { path: "upgrade", component: UpgradeComponent },
   { path: "store", component: StoreComponent, canActivate: [AuthGuard]  },
   { path: "test", component: ContentStyledComponent },
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
