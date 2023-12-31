@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
+import { CartService } from './services/cart.service';
 
 // Insert Service/Area where the search can Search and model here
 
@@ -11,6 +12,8 @@ import { UserService } from './services/user.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
+
   title = 'finalProject';
 
   searchString: string = "";
@@ -21,12 +24,17 @@ export class AppComponent implements OnInit {
 
   UserId : string = "";
 
+  cartQuantity=0;
 
-  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService) { 
+
+  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService, private cartService: CartService) { 
     this.router.events.subscribe((event) =>{
       if(event instanceof NavigationEnd) {
         this.UpdateStatus();
       }
+    });
+    this.cartService.getCartObservable().subscribe((newCart) => {
+      this.cartQuantity = newCart.totalCount;
     });
   }
 
@@ -47,7 +55,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-
 // Search Function(INCOMPLETE)
 
   search(searchString: string) {
@@ -63,6 +70,7 @@ export class AppComponent implements OnInit {
     }
 
   }
+  
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();
     if (this.userIsLoggedIn) {
@@ -71,10 +79,19 @@ export class AppComponent implements OnInit {
     
   }
 
+  // UpdateStatus() {
+  //   if (this.userService.isloggedIn()) {
+  //     !this.userIsLoggedIn;
+  //     this.UserId = this.userService.getUserId() ?? "";
+  //   }
+    
+  // }
+
   logOut() {
     this.userService.logoutUser();
     this.UpdateStatus();
   }
+
 
 
 }

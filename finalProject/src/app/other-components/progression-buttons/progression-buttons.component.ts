@@ -1,6 +1,7 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -13,36 +14,51 @@ export class ProgressionButtonsComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$: number = 0;
   planCost: number = 0;
-  
 
+  @Input() loggedIn!: boolean;
 
-  constructor(private formService: FormService) { }
+  // userIsLoggedIn : boolean = false;
+  // UserId : string = "";
+
+  constructor(private formService: FormService, private user: UserService) { }
 
   ngOnInit(): void {
+    // this.UpdateStatus();
     this.stepForm = this.formService.stepForm;
     this.formService.activeStep$.subscribe(
       step => {
         this.activeStep$ = step;
         this.planCost = this.stepForm.controls['planDetails'].value.planCost;
-  });
 
-    this.formService.activeStep$.subscribe(
-      step => {
-        console.log(step);
-        console.log(this.stepForm.controls['planDetails'].value.planCost);
-        console.log(this.stepForm.controls);
       });
+
+    // this.formService.activeStep$.subscribe(
+    //   step => {
+    //     console.log(step);
+    //     console.log(this.stepForm.controls['planDetails'].value.planCost);
+    //     console.log(this.stepForm.controls);
+    //   });
   }
 
   nextStep() {
-    if ((this.activeStep$ == 1) && (this.stepForm.controls['personalDetails'].pristine) && (!this.stepForm.controls['personalDetails'].touched)) {
-      // TO-DO => display error message if step 1 is skipped
+    if (!this.loggedIn) {
+      if ((this.activeStep$ == 1) && (this.stepForm.controls['personalDetails'].pristine) && (!this.stepForm.controls['personalDetails'].touched)) {
+        // TO-DO => display error message if step 1 is skipped
 
-      // console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
+        // console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
 
-    } else {
-      this.formService.goToNextStep(this.activeStep$);
+      } else {
+        this.formService.goToNextStep(this.activeStep$);
+      }
     }
+    else {
+      if (this.activeStep$ == 1) {
+        // TO-DO => display error message if step 1 is skipped
+        // console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
+        this.formService.goToNextStep(this.activeStep$);
+      }
+    }
+
   }
 
   goBack() {
@@ -53,15 +69,23 @@ export class ProgressionButtonsComponent implements OnInit {
     this.formService.submit();
   }
 
-//  planDetails = this.stepForm.controls['personalDetails']
-// if (planDetails){
-  
-// }
 
-// value = this.stepForm.controls['personalDetails.plan'] === 'Just Looking';
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.user.isloggedIn();
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.user.getUserId() ?? "";
+  // }
 
-// stepForm.valid = true;
+  // }
 
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.user.isloggedIn();
+  //   this.userIsLoggedIn = !this.userIsLoggedIn;
+  //   // console.log(this.userIsLoggedIn);
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.user.getUserId() ?? "";
+  //   }
 
+  // }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from './form.service';
 
@@ -12,6 +12,8 @@ import { FormService } from './form.service';
 export class FormComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$?: number;
+  
+  @Input() loggedIn!: boolean;
 
   constructor(private formService: FormService) { }
 

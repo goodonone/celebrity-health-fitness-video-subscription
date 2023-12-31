@@ -16,9 +16,18 @@ interface JQuery {
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.css']
 })
-export class ContentComponent implements OnInit {
-  // scrollTop: number;
-  // count: any;
+
+export class ContentComponent implements OnInit{
+
+  iaVideos: any[] = [];
+  ifbVideos: any[] = [];
+  ilbVideos: any[] = [];
+  maVideos: any[] = [];
+  mfbVideos: any[] = [];
+  mlbVideos: any[] = [];
+  aVideos: any[] = [];
+  currentUser: User = new User;
+  
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -26,7 +35,7 @@ export class ContentComponent implements OnInit {
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
-      console.log(user);
+      // console.log(user);
     });
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
