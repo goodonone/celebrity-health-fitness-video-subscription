@@ -12,9 +12,15 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SearchComponent } from './components/search/search.component';
 import { StoreComponent } from './components/store/store.component';
+
+import { ProductComponent } from './components/product/product.component';
+import { CartComponent } from './components/cart/cart.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
+
 
 
 const routes: Routes = [
@@ -29,12 +35,18 @@ const routes: Routes = [
   { path: "profile/:id", component: ProfileComponent, canActivate: [AuthGuard] },
   { path: "signup", component: SignUpComponent },
   { path: "signin", component: SignInComponent },
+  { path: "store/product/:id", component: ProductComponent},
+  { path: "cart", component: CartComponent},
+  { path: "checkout", component: CheckoutComponent},
+  { path: "**", component: NotFoundComponent }
+
   // Disable search if not implemented
   { path: "search", component: SearchComponent },
   { path: "store", component: StoreComponent, canActivate: [AuthGuard]  },
   { path: "test", component: ContentStyledComponent },
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "**", component: NotFoundComponent },
+
 ];
 
 @NgModule({
