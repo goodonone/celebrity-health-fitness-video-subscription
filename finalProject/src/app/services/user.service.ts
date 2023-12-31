@@ -12,7 +12,9 @@ export class UserService {
   // isLoggedIn$ : new BehaviorSubject;
 
   baseURL: string = "http://localhost:3000/api/users"
-  tokenKey: string = "myVideoToken";
+  tokenKey: string = "token";
+  tierKey: string = "tier";
+  userIdKey: string = "userId";
 
   constructor(private http: HttpClient) { }
 
@@ -26,24 +28,30 @@ login(email: string, password: string){
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
       localStorage.setItem(this.tokenKey, response.token);
-      localStorage.setItem('userSignedIn' , response.userId);
+      localStorage.setItem(this.userIdKey , response.userId);
+      localStorage.setItem(this.tierKey, response.tier);
     }));
 }
 
 isloggedIn() {
-  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem('userSignedIn')
+  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey)
 }
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-  localStorage.removeItem('userSignedIn');
-  localStorage.removeItem('tier');
-  localStorage.removeItem('token');
+
+  localStorage.removeItem(this.tierKey);
+  localStorage.removeItem(this.userIdKey);
+
+//   localStorage.removeItem('userSignedIn');
+//   localStorage.removeItem('tier');
+//   localStorage.removeItem('token');
+
 }
 
 getUserId() {
   if (this.isloggedIn()) {
-    return localStorage.getItem('userSignedIn') ?? "";
+    return localStorage.getItem(this.userIdKey) ?? "";
 
   }
   return "undefined";
