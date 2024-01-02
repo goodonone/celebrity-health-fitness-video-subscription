@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 
-interface JQuery {
+interface jquery {
   chosen(options?: any): JQuery;
 }
 
