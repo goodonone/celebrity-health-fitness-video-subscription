@@ -221,3 +221,11 @@ footer {
 .footer {
   cursor: pointer;
 }
+.reddot {
+  border-radius: 100em;
+  border-style: hidden;
+  background-color: white;
+  padding: .1em 0.45em;
+  
+
+}

@@ -1,7 +1,7 @@
-<div class="pageContainer">
+<div class="pageContainer" id="wrap">
     <!-- Upgrade button for Tier Two and Three -->
     <div class="upgradeButtonContainer" *ngIf="tierOneTwo">
-        <button class="btn btn-upgrade" routerLink="/upgrade">Upgrade</button>
+        <button class="btn btn-upgrade" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
     </div>
 
     <!-- Countdown timer for First and Second Tiers -->
@@ -44,20 +44,21 @@
 </div>
 
 <!-- Tier two and three videos -->
-<div class="cardSecondAndThirdTiers">
+<div class="cardSecondAndThirdTiers" >
     <!-- Make this if a ! -->
     <div class="upgradeContainer" *ngIf="tierTwoThree">
-        <div id="fixed">
+        <!-- <div class="fixed"> -->
             <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
-            <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
-        </div>
+            <button class="btn btn-upgradeTierButton" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
+        <!-- </div> -->
     </div>
-    <fieldset disabled class="payWall" *ngIf="tierTwoThree">
-    <!-- <div class="payWall" *ngIf="!tierTwoThree"> -->
+
+    <fieldset id="payWall" [class.active]="classApplied">
+
     <mat-card class="cardContainerTwo">
         <mat-card-header>
-            <h1 class="tierName">Motivated</h1>
-            <!-- <h1 class="tierName">{{tierName}}</h1> -->
+            <!-- <h1 class="tierName">Motivated</h1> -->
+            <h1 class="tierName">{{tierName}}</h1>
         </mat-card-header>
         <div class="toggle-area">
             <div class="toggle">

@@ -8,6 +8,8 @@ export class User {
     gender?: string;
     goals?: string; 
     tier?: string;
+    paymentFrequency?: string;
+    price?: number;
     dateOfBirth?: Date;
     imgUrl?: string;
     createdAt?: Date;
@@ -24,6 +26,8 @@ constructor(
         gender?: string, 
         goals?: string, 
         tier?: string, 
+        paymentFrequency?: string,
+        price?: number,
         dateOfBirth?: Date,
         imgUrl?: string,
         createdAt?: Date,
@@ -39,6 +43,8 @@ constructor(
         this.gender = gender;
         this.goals = goals;
         this.tier = tier;
+        this.paymentFrequency = paymentFrequency;
+        this.price = price;
         this.dateOfBirth = dateOfBirth;
         this.imgUrl = imgUrl;
         this.createdAt = createdAt;

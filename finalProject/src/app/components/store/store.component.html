@@ -1,1 +1,14 @@
-<p>store works!</p>
+<h1>Store</h1>
+<ul>
+    <li *ngFor="let product of productList">
+        <br>
+        <img [src]="product.productUrl">
+        <p>{{product.productName}}</p>
+        <p>{{product.productDescription}}</p>
+        <p>${{product.productPrice}}</p>
+        <button [routerLink] = '["product/", product.productId]'>View Item</button>
+        <button (click)="addToCart(product)"> Add to Cart </button>
+        <br>
+    </li>
+    <br>
+</ul>
