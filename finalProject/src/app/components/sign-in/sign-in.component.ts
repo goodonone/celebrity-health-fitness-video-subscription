@@ -27,6 +27,7 @@ export class SignInComponent implements OnInit {
    this.userService.login(this.email, this.password).subscribe((response:any) => {
     const userId = response.userId;
     localStorage.setItem('tier', response.tier);
+    localStorage.setItem('billing', response.paymentFrequency);
     localStorage.setItem('token', response.token);
 
        this.router.navigateByUrl(`/content/${userId}`);

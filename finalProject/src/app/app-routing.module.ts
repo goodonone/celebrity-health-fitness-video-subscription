@@ -28,7 +28,6 @@ const routes: Routes = [
   { path: "home", component: HomeComponent },
   { path: "about", component: AboutComponent },
   { path: "contact", component: ContactComponent },
-  // Remove id from content page
   { path: "content/:id", component: ContentComponent, canActivate: [AuthGuard] },
   { path: "create-profile", component: CreateProfileComponent, canActivate: [AuthGuard] },
   { path: "edit-profile/:id", component: EditProfileComponent, canActivate: [AuthGuard] },
@@ -46,6 +45,7 @@ const routes: Routes = [
   { path: "store", component: StoreComponent, canActivate: [AuthGuard]  },
   { path: "test", component: ContentStyledComponent },
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
+  { path: "change-plan/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "**", component: NotFoundComponent },
 
 ];
