@@ -1,27 +1,29 @@
-<h1>Profile</h1>
+<h1>Welcome!</h1>
 <div *ngIf="currentUser.imgUrl">
     <img [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
+    <p>{{currentUser.name}}</p>
 </div>
 
 <div *ngIf="!currentUser.imgUrl">
     <img src="assets\Images\user generic.webp" alt="Add photo" width="200" height="250" />
+    <p>{{currentUser.name}}</p>
 </div>
 
-<p>{{currentUser.name}}</p>
+<!-- <p>{{currentUser.name}}</p>
 
-<p>{{currentUser.dateOfBirth}}</p>
+<p>{{currentUser.dateOfBirth}}</p> -->
 
 
 <p>{{currentUser.gender}}</p>
-<p>You are {{currentUser.tier}}</p>
-<p>{{currentUser.height}} ft</p>
-<p>{{currentUser.weight}} lb</p>
-<p>Goal: {{currentUser.goals}}</p>
+<p class="profileMembership">You are {{currentUser.tier}}</p>
+<p class="profileHeight">{{currentUser.height}} ft</p>
+<p class="profileWeight">{{currentUser.weight}} lb</p>
+<p class="profileGoal">Goal: {{currentUser.goals}}</p>
 
-<button [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+<div>
+<button class="edit" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+</div>
 
 
-
-<hr>
 
 

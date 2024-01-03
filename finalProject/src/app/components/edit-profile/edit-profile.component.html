@@ -13,6 +13,14 @@
     <span>Date of Birth  </span>
     <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"><br><br>
 
+    
+    
+    <span>Weight  </span>
+    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
+
+    <span>Height  </span>
+    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
+
     <mat-form-field appearance="fill"> 
       <mat-label>Gender</mat-label> 
       <mat-select placeholder="Select Gender"  name="gender" [(ngModel)]="currentUser.gender"> 
@@ -22,12 +30,6 @@
     </mat-form-field>
 
     <br>
-    
-    <span>Weight  </span>
-    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
-
-    <span>Height  </span>
-    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
 
     <mat-form-field appearance="fill"> 
       <mat-label>Goals</mat-label> 
@@ -43,3 +45,5 @@
       Edit Profile
     </button>
 </form>
+
+<br>
