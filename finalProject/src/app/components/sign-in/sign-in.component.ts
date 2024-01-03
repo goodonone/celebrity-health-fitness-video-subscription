@@ -17,7 +17,7 @@ export class SignInComponent implements OnInit {
  constructor(private userService: UserService, private router: Router) { }
 
  ngOnInit(): void {
-  if(localStorage.getItem('userSignedIn'))
+  if(localStorage.getItem('userId'))
  {
   this.router.navigateByUrl(`/signin`);
  } 
