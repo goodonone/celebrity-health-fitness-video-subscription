@@ -64,12 +64,11 @@ button {
   background-color: transparent;
   text-decoration-line: underline;
   letter-spacing: 0;
-  border-radius: 6px;
 }
+
 
 .btn-change:hover {
   color: rgb(0, 0, 0);
-  /* background-color: #000000; */
 }
 
 .cost {

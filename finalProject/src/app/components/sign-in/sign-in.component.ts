@@ -29,7 +29,11 @@ export class SignInComponent implements OnInit {
     localStorage.setItem('tier', response.tier);
     localStorage.setItem('billing', response.paymentFrequency);
     localStorage.setItem('token', response.token);
-       this.router.navigateByUrl(`/test`);
+
+       this.router.navigateByUrl(`/content/${userId}`);
+
+      // this.router.navigateByUrl(`/test`);
+
    }, error => {
        console.log('Error: ', error);
        this.errorMessage = true;

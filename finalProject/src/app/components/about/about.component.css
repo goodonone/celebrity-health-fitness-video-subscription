@@ -1,7 +1,48 @@
-h1,p {
+h1{
     color: white;
-    
+    margin : auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    height: 10vh;
+    flex-direction: row;
+    align-content: center;
+    font-size: 50px;   
 }
+.container {
+    text-align: center;
+  }
+
+  .image {
+    display: block;
+    margin: 0 auto;
+    height: 500px;
+    padding-bottom: 110px;
+  }
+
+
+p {
+    color: white;
+    margin : auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    /* height: 100vh; */
+    /* position: relative; */
+    flex-direction: row;
+    align-content: center;
+    text-wrap: 10px;
+    padding-left: 110px;
+    padding-right: 110px;
+    padding-bottom: 110px;    
+}
+
+/* .bannerFour {
+    height: 100vh;
+    width: 100%;
+    background-color: #C7FF20;
+    min-height: 100vh;
+} */
 
 
 

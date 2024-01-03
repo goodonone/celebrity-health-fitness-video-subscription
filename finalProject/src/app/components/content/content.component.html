@@ -1,110 +1,235 @@
-<div *ngIf="currentUser?.tier === 'Just Looking'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of iaVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of ifbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of ilbVideos" >
-    <div>
-      <div>
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div>
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1>
-    Upgrade to Motivated to unlock more workouts
-  </h1>
-</div>  
 
-<div *ngIf="currentUser?.tier === 'Motivated' || currentUser?.tier === 'All In'">
-  <h1>Workouts</h1>
-  <h3>Abs</h3>
-<div *ngFor="let video of maVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Full Body</h3>
-<div *ngFor="let video of mfbVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h3>Lower Body</h3>
-<div *ngFor="let video of mlbVideos">
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
-      </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>{{ video.snippet.title }}</a>
-        </h5>
-      </div>
-    </div>
-  </div>
-  <h1 *ngIf="currentUser?.tier === 'Motivated'">
-    Upgrade to All In to unlock live streams
-  </h1>
-</div>  
 
-<div *ngIf="currentUser?.tier === 'All In'">
-  <h1>Live Stream</h1>
-<div *ngFor="let video of aVideos" >
-    <div >
-      <div >
-        <iframe width="560" height="315" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+<div class="pageContainer">
+  <!-- Upgrade button for Tier Two and Three -->
+  <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+      <button class="btn btn-upgrade" routerLink="/upgrade">Upgrade</button>
+  </div>
+
+  <!-- Countdown timer for First and Second Tiers -->
+  <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+  </div>
+
+  <!-- Countdown timer for Third Tier -->
+  <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser.tier === 'All In'">
+  </div>
+
+  <!-- Live Video Div -->
+  <!-- <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo"> -->
+    <div class="liveVideo" *ngIf="currentUser.tier === 'All In'&& showLiveVideo">
+      <h1 class="liveVideoText">
+          We are Live!
+      </h1>
+      <mat-card class="liveVideoContainer">
+          <mat-card-content>
+            <div *ngFor="let video of livestreamVideos" >
+              
+                  <iframe width="800" height="480" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+                
+            </div>
+
+          </mat-card-content>
+      </mat-card>
+  </div>
+
+  <!-- Free Tier Videos -->
+  <div class="cardFirstTier" *ngIf="currentUser?.tier === 'Just Looking'">
+      <mat-card class="cardContainer">
+          <mat-card-header>
+              <h1 class="tierOneHeader">
+                  Workouts To Get You Started
+              </h1>
+          </mat-card-header>
+          <mat-card-content>
+              <div class="cardVideos">
+                  <mat-card *ngFor="let video of starterVideos" class="cardVideosFirst">
+                    <div >
+                      <div >
+                        <iframe width="288" height="192" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                      </div>
+                      <div >
+                        <h5 class="card-title mb-0">
+                          <a>{{ video.snippet.title }}</a>
+                        </h5>
+                      </div>
+                    </div>
+                  </mat-card>
+              </div>
+          </mat-card-content>
+      </mat-card>
+  </div>
+</div>
+
+<!-- Tier two and three videos -->
+<div class="cardSecondAndThirdTiers">
+  <!-- Make this if a ! -->
+  <div class="upgradeContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+      <div id="fixed">
+          <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
+          <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
       </div>
-      <div >
-        <h5 class="card-title mb-0">
-          <a>Join us Live Mon, Wed, Fri at 6:30 pm</a>
-        </h5>
+  </div>
+  
+  <fieldset [disabled]="currentUser.tier === 'Just Looking'" class="fieldset">
+  <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
+  <mat-card class="cardContainerTwo">
+      <mat-card-header>
+          
+          <h1 class="tierName">{{currentUser.tier}}</h1>
+      </mat-card-header>
+      <div class="toggle-area">
+          <div class="toggle">
+            <label [ngClass]="{'checked':!checked}">All Workouts</label>
+            <mat-slide-toggle [checked]="checked" (change)="toggleBilling()" >
+            </mat-slide-toggle>
+            <label [ngClass]="{'checked':checked}">Workouts By Category</label>
+          </div>
+        </div>
+      <mat-card-content>
+          <div class="toggleAllWorkouts" *ngIf="!checked">
+          <mat-card class="contentCardOne flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2023</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardTwo flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2022</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardThree flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2021</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardFour flexCards">
+              <div class="yearAndRecipes">
+                  <h1 class="cardHeaderYear">2020</h1>
+                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+              </div>
+              <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
+                <div>
+                  <div >
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  </div>
+                  <div >
+                    <h5 class="card-title mb-0">
+                      <a>{{ video.snippet.title }}</a>
+                    </h5>
+                  </div>
+                </div>
+              </mat-card>
+          </mat-card>
       </div>
+      <div class="toggleWorkoutsByCategory" *ngIf="checked">
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Abs</h1>
+              <mat-card *ngFor="let video of absVideos" class="cardVideosSecondThird">
+                
+                  
+                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  
+                    
+                      <a>{{ video.snippet.title }}</a>
+                    
+                  
+                
+              </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Full Body Workouts</h1>
+              <mat-card *ngFor="let video of fullBodyVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
+          </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">Upper Body Workouts</h1>
+              <mat-card *ngFor="let video of upperBodyVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
+          </mat-card>
+          </mat-card>
+          <mat-card class="contentCardOne flexCards">
+              <h1 class="cardHeadertype">HIIT Workouts</h1>
+              <mat-card *ngFor="let video of hiitVideos" class="cardVideosSecondThird">
+                
+                  
+                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+              
+                
+                  <a>{{ video.snippet.title }}</a>
+                
+              
+            
+          </mat-card>
+          </mat-card>
+          
+      </div>
+
+      </mat-card-content>
+  </mat-card>
+</div>
+</fieldset>
+</div>
+
     </div>
   </div>
 </div>  
 <button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
+
 
 

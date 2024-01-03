@@ -29,6 +29,15 @@ export class YoutubeService {
         return res;
       }))
   }
+
+    getVideosFromChannel(channelId: string, year: string, maxResults: string): Observable<Object> {
+    
+   let url = 'https://www.googleapis.com/youtube/v3/search?key=' + this.apiKey + '&channelId=' + channelId + '&order=date&part=snippet&publishedBefore=' + (parseInt(year)+1) + '-01-01T00:00:00Z&type=video,id&maxResults=' + maxResults   
+ return this.http.get(url)
+      .pipe(map((res) => {
+        return res;
+      }))
+  }
   
   
 }
