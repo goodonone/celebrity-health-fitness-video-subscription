@@ -99,6 +99,11 @@ h3 {
     color: white;
 } */
 
+.buttons{
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .btn-editProfileButton{
     height: 2.4rem;
     padding-left: 0.6rem;
@@ -111,11 +116,36 @@ h3 {
     width: 10rem;
     color: white;
     margin-top: 60rem;
-    margin-left: 5.5rem;
+    margin-left: 5rem;
 }
 
-.btn:hover {
-    background-color: #C7FF20;
-    border-color: #C7FF20;
+.btn:hover{
+background-color: #C7FF20;
+color: black;
+}
+
+.planContainer{
+    display: flex;
+    justify-content: space-between;
+    /* margin-right: 7rem; */
+}
+
+.btn-change{
+    height: 2rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(87, 87, 87);
+    /* border-color: rgb(0, 0, 0); */
+    width: 5rem;
+    margin-top: 1.6rem;
+    margin-right: 9rem; 
+}
+
+.btn-change:hover {
+    background-color: white;
+    /* border-color: #C7FF20; */
     color: black;
 }

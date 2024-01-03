@@ -29,7 +29,11 @@
                         <h3 *ngIf="currentUser.weight"><span class="spanProfileData">Weight</span> <br> {{currentUser.weight}}lbs</h3>
                         <h3 *ngIf="currentUser.height"><span class="spanProfileData">Height</span> <br> {{currentUser.height}}ft</h3>
                         <h3 *ngIf="currentUser.goals"><span class="spanProfileData">Objective</span> <br> {{currentUser.goals}}</h3>
-                        <h3 *ngIf="currentUser.tier"><span class="spanProfileData">Plan</span> <br> {{currentUser.tier}}</h3>
+                        <div class="planContainer">
+                            <h3 *ngIf="currentUser.tier"><span class="spanProfileData">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <button mat-button class="btn-change" [routerLink]="['/upgrade/', currentUser.userId]">Change</button>
+                        </div>
+                        <!-- Checking if it is a free tier or paid tier -->
                         <h3 *ngIf="freeTier"><span class="spanProfileData">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
                             {{monthOrYear}}</h3>
                         <h3 *ngIf="!freeTier"><span class="spanProfileData">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
