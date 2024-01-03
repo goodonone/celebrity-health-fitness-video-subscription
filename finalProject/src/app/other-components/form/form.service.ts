@@ -69,18 +69,18 @@ export class FormService implements OnInit {
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    const generatedUserId: string = Math.random().toString(18).slice(2);
+    // const generatedUserId: string = Math.random().toString(18).slice(2);
 
     // console.log(this.multiStepForm.value);
     // console.log(generatedUserId);
 
-    // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
-    // console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
+    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
+    console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
 
 
 
-    // Creating a new user/new payment for initial signUp of new user.
+    // Creating a new user/new payment for initial signUp of new user if not signed in else update user
 
     if (!localStorage.getItem('userSignedIn')) {
       const userData = {
@@ -111,6 +111,7 @@ export class FormService implements OnInit {
         price: planInfo.totalCost
       }
       this.user.updateUser(userData).subscribe(() => {
+        console.log(userData);
       });
       const planData = {
         tier: planInfo.plan,

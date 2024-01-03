@@ -1,6 +1,121 @@
-p {
-    color: white;
+* {
+    font-family: 'Outfit', sans-serif;
 }
-h1 {
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    overflow-x: hidden;
+    height: 100vh;
+    margin-top: -80px;
+    padding-top: 5rem;
+    /* position: relative; */
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+}
+
+.flexContainer {
+    /* ƒ */
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 2rem;
+}
+
+.nameTier {
+    padding-top: 5rem;
+    padding-right: 1rem;
+    text-align: center;
+}
+
+.profilePictureContainer {
+    height: 21rem;
+    width: 21rem;
+    background-color: #C7FF20;
+    margin-left: 0.7rem;
+    margin-top: 0.7rem;
+    border-radius: 100rem;
+    align-items: right;
+}
+
+.flexAllProfileData {
+    display: flex;
+    /* justify-content: space-evenly; */
+}
+
+h1.profileNameTier {
+    font-size: 7.5rem;
+    font-weight: 1000;
+}
+
+.profileNameTier {
+    text-align: center;
+    width: 35rem;
+    line-height: 9rem;
+    padding-right: 0.5rem;
+}
+
+
+.profileInfo {
+    height: 52rem;
+    width: 50rem;
+    background-color: #000000;
+    border-radius: 10px;
+}
+
+.profileImage {
+
+}
+
+h3 {
     color: white;
+    font-weight: 500;
+    font-size: 2rem;
+    margin-bottom: 1.8rem;
+}
+
+.profileDataContainer {
+    padding-left: 2rem;
+    margin-top: 0.5rem;
+    width: fit-content;
+    /* background: red; */
+    /* width: 35%; */
+
+
+}
+
+.spanProfileData {
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+}
+
+/* button.editProfileButton {
+    width: 5rem;
+    background-color: white;
+    border-radius: 0.5rem;
+} */
+
+/* h1 {
+    color: white;
+} */
+
+.btn-editProfileButton{
+    height: 2.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(3, 3, 3);
+    border-color: rgb(73, 73, 73);
+    width: 10rem;
+    color: white;
+    margin-top: 60rem;
+    margin-left: 5.5rem;
+}
+
+.btn:hover {
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    color: black;
 }
