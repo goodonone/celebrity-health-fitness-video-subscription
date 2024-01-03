@@ -74,13 +74,16 @@ export class FormService implements OnInit {
     // console.log(this.multiStepForm.value);
     // console.log(generatedUserId);
 
-    console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
-    console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
+    // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
+    // console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
+
+
+
+
+    // Creating a new user/new payment for initial signUp of new user.
 
     if (!localStorage.getItem('userSignedIn')) {
       const userData = {
-        // remove generated UsesrId when added to backend
-        userId: generatedUserId,
         name: userInfo.name,
         password: userInfo.password,
         email: userInfo.email,
@@ -94,7 +97,7 @@ export class FormService implements OnInit {
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
-        purchaseType: type
+        purchaseType: type,
       }
       this.payment.newPayment(planData).subscribe(() => {
       });
