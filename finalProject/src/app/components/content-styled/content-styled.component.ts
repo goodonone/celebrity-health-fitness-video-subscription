@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 // import * as $ from 'jquery';
@@ -83,10 +84,12 @@ export class ContentStyledComponent implements OnInit {
 
 
 
-// Delete this out when the page is ready
-    this.toggleClass();
-    (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
+
+// // Delete this out when the page is ready
+//     this.toggleClass();
+//     (document.getElementById('payWall') as HTMLFieldSetElement).setAttribute('disabled','disabled');
     
+
 
   }
 
@@ -173,12 +176,8 @@ export class ContentStyledComponent implements OnInit {
   }
 
 
-toggleClass() {
-  this.classApplied = !this.classApplied;
-}
 
-
-}
+// }
 
 
 

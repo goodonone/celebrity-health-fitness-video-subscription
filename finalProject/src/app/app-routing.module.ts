@@ -20,6 +20,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
+import { AllyshiaTestProfileComponent } from './components/allyshia-test-profile/allyshia-test-profile.component';
 
 
 
@@ -47,6 +48,10 @@ const routes: Routes = [
   { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "change-plan/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "**", component: NotFoundComponent },
+
+  { path: "allyshia-profile", component: AllyshiaTestProfileComponent}
+
+
 
 ];
 

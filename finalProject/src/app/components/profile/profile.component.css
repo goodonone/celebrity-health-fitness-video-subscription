@@ -1,6 +1,66 @@
 p {
-    color: white;
+    color: #C7FF20;
+    font-weight: bold;
 }
 h1 {
     color: white;
+}
+.title{
+    color:#C7FF20;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 30px;
+    text-align: center;
+}
+img{
+    border: 1px solid #C7FF20;
+    border-radius: 2px;
+    padding: 5px;
+    width: 250px;
+    height: 250px;
+    border-radius: 5px;
+    padding: 1em;
+}
+.edit{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: medium;
+    background-color: #C7FF20;
+    border: 1px;
+    color: #71BBF5;
+    padding: 15px 32px;
+    text-decoration: none;
+    display: flexbox;
+    font-size: 16px;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,2), 0 6px 20px 0 reba(0,0,0,19);
+}
+*{
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    padding: 1em;
+}
+.profileMembership{
+    display: block;
+    flex-direction: column;
+    height: 10px;
+    color: white;
+    font-size: medium;
+    font-weight: lighter;
+}
+.profileHeight{
+    display: block;
+    flex-direction: column;
+    height: fit-content;
+    color: white;
+    font-size: medium;
+    font-weight: lighter;
+}
+.profileWeight{
+    display: block;
+    color: white;
+    font-weight: lighter;
+}
+.profileGoal{
+    display: block;
+    color: white;
+    font-weight: lighter;
 }
