@@ -1,29 +1,86 @@
+<div class="pageContainer">
+
+
+    <div class="flexContainer">
+        <div class="nameTier">
+            <h1 class="profileNameTier" *ngIf="tierOne">Hi! {{firstName}}</h1>
+            <h1 class="profileNameTier" *ngIf="tierTwoThree">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
+            <!-- <h1 class="profileNameTier" *ngIf="tierThree">You are {{currentUser.tier | uppercase}},
+                <br>{{currentUser.name | titlecase}}</h1> -->
+        </div>
+
+        <div class="profileContainer">
+            <mat-card class="profileInfo">
+                <mat-card-content class="flexAllProfileData">
+                    <mat-card class="profilePictureContainer" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}">
+                        <mat-card-content>
+                            <!-- style="background-image: url('[currentUser.imgUrl]') -->
+                            <!-- <img class="profilePicture" [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250"> -->
+                        </mat-card-content>
+                        <!-- <mat-card-actions> -->
+                            <div class="editButtonsContainer">
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+                            </div>
+                        <!-- </mat-card-actions> -->
+                    </mat-card>
+                    <div class="profileDataContainer">
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{currentUser.height}}ft</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
+                        <div class="planContainer">
+                            <h3 class="profileDetails" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <button mat-button style="color:white" class="btn-change" [routerLink]="['/upgrade/', currentUser.userId]">Change</button>
+                        </div>
+                        <!-- Checking if it is a free tier or paid tier-->
+                        <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                            {{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                            {{monthOrYear}}</h3>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+    </div>
+
+</div>
+
+<span class="spanProfileData"></span>
+
+
+
+
+
+
+<!-- 
 <h1>Profile</h1>
 <div *ngIf="currentUser.imgUrl">
     <img [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
-    <p>{{currentUser.name}}</p>
 </div>
 
 <div *ngIf="!currentUser.imgUrl">
     <img src="assets\Images\user generic.webp" alt="Add photo" width="200" height="250" />
-    <p>{{currentUser.name}}</p>
 </div>
 
-<!-- <p>{{currentUser.name}}</p>
+<p>{{currentUser.name}}</p>
 
-<p>{{currentUser.dateOfBirth}}</p> -->
+<p>{{currentUser.dateOfBirth}}</p>
 
 
 <p>{{currentUser.gender}}</p>
-<p class="profileMembership">You are {{currentUser.tier}}</p>
-<p class="profileHeight">{{currentUser.height}} ft</p>
-<p class="profileWeight">{{currentUser.weight}} lb</p>
-<p class="profileGoal">Goal: {{currentUser.goals}}</p>
+<p>You are {{currentUser.tier}}</p>
+<p>{{currentUser.height}} ft</p>
+<p>{{currentUser.weight}} lb</p>
+<p>Goal: {{currentUser.goals}}</p>
 
 <button [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
 
 
 
-<hr>
-
-
+<hr> -->
