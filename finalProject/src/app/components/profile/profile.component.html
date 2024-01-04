@@ -12,15 +12,18 @@
         <div class="profileContainer">
             <mat-card class="profileInfo">
                 <mat-card-content class="flexAllProfileData">
-                    <mat-card class="profilePictureContainer">
-                        <mat-card-content *ngIf="currentUser.imgUrl">
-                            <img class="profilePicture" [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
+                    <mat-card class="profilePictureContainer" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}">
+                        <mat-card-content>
+                            <!-- style="background-image: url('[currentUser.imgUrl]') -->
+                            <!-- <img class="profilePicture" [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250"> -->
                         </mat-card-content>
-                        <mat-card-actions class="editButtonsContainer">
-                            <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Add Picture</button>
-                            <button mat-button style="color:white" class="btn btn-editPhotoButton" [routerLink]="'/edit-profile/' + currentUser.userId">Change Picture</button>
-                            <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
-                        </mat-card-actions>
+                        <!-- <mat-card-actions> -->
+                            <div class="editButtonsContainer">
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+                            </div>
+                        <!-- </mat-card-actions> -->
                     </mat-card>
                     <div class="profileDataContainer">
                         <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>

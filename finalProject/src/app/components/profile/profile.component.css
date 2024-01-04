@@ -32,6 +32,7 @@
     height: 21rem;
     width: 21rem;
     background-color: #C7FF20;
+    background-size: cover;
     margin-left: 0.7rem;
     margin-top: 0.7rem;
     border-radius: 100rem;
@@ -116,7 +117,7 @@ h3.profileDetails {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(25, 25, 25);
     border-color: rgb(73, 73, 73);
     width: 10rem;
     /* color: white; */
@@ -131,7 +132,7 @@ h3.profileDetails {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(25, 25, 25);
     border-color: rgb(73, 73, 73);
     width: 10rem;
     /* color: white; */
@@ -159,7 +160,7 @@ h3.profileDetails {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    background-color: rgb(41, 41, 41);
+    background-color: rgb(25, 25, 25);
     /* border-color: rgb(0, 0, 0); */
     width: 5rem;
     margin-top: 1.3rem;
