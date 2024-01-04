@@ -30,6 +30,7 @@ const routes: Routes = [
   { path: "about", component: AboutComponent },
   { path: "contact", component: ContactComponent },
   { path: "content/:id", component: ContentComponent, canActivate: [AuthGuard] },
+  // { path: "content/:id", component: ContentComponent },
   { path: "create-profile", component: CreateProfileComponent, canActivate: [AuthGuard] },
   { path: "edit-profile/:id", component: EditProfileComponent, canActivate: [AuthGuard] },
   { path: "profile/:id", component: ProfileComponent, canActivate: [AuthGuard] },

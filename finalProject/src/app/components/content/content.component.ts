@@ -104,7 +104,7 @@ export class ContentComponent implements OnInit{
   showLiveVideo: boolean = false;
   
   checked: boolean = false;
-  currentUser: User = new User;
+  // currentUser: User = new User;
   // Add logic to only show one timer based on tier
 
   starterVideos: any[] = [];
