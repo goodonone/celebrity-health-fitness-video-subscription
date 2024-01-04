@@ -36,7 +36,7 @@ export class FormService implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]]
     }),
     planDetails: this.fb.group({
-      plan: ['Just Looking', [Validators.required]],
+      plan: [ localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
       billing: ['monthly', [Validators.required]],
       planCost: [0],
       totalCost: []
@@ -69,7 +69,7 @@ export class FormService implements OnInit {
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    const generatedUserId: string = Math.random().toString(18).slice(2);
+    // const generatedUserId: string = Math.random().toString(18).slice(2);
 
     // console.log(this.multiStepForm.value);
     // console.log(generatedUserId);
@@ -77,10 +77,13 @@ export class FormService implements OnInit {
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
+
+
+
+    // Creating a new user/new payment for initial signUp of new user if not signed in else update user
+
     if (!localStorage.getItem('userSignedIn')) {
       const userData = {
-        // remove generated UsesrId when added to backend
-        userId: generatedUserId,
         name: userInfo.name,
         password: userInfo.password,
         email: userInfo.email,
@@ -94,7 +97,7 @@ export class FormService implements OnInit {
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
-        purchaseType: type
+        purchaseType: type,
       }
       this.payment.newPayment(planData).subscribe(() => {
       });
@@ -108,6 +111,7 @@ export class FormService implements OnInit {
         price: planInfo.totalCost
       }
       this.user.updateUser(userData).subscribe(() => {
+        console.log(userData);
       });
       const planData = {
         tier: planInfo.plan,
@@ -128,8 +132,8 @@ export class FormService implements OnInit {
         password: ['', [Validators.required, Validators.minLength(8)]]
       }),
       planDetails: this.fb.group({
-        plan: ['Just Looking', [Validators.required]],
-        billing: ['monthly', [Validators.required]],
+        plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+        billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
         planCost: [0],
         totalCost: []
       }),

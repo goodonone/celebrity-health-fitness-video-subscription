@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
@@ -18,6 +18,8 @@ export class ContentStyledComponent implements OnInit {
   // count: any;
 
   currentUser: User = new User;
+  timerVal = '';
+  timerValThree = '';
  
 
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
@@ -61,23 +63,23 @@ export class ContentStyledComponent implements OnInit {
     //   this.tierOneTwo = false;
     //   this.tierTwoThree = true;
     //   this.tierThree = true;
-    // this.timerTierThree = false;
+    //   this.timerTierThree = true;
     // }    
 
     
 
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
-    var $ = require("jquery");
-    var wrap = $("#wrap");
+    // var $ = require("jquery");
+    // var wrap = $("#wrap");
 
-    wrap.on("scroll", (e: any) => {
-      if (document.documentElement.scrollTop > 300) {
-        wrap.addId("fixed");
-      } else {
-        wrap.removeId("fixed");
-      }
-    });
+    // wrap.on("scroll", (e: any) => {
+    //   if (document.documentElement.scrollTop > 300) {
+    //     wrap.addId("fixed");
+    //   } else {
+    //     wrap.removeId("fixed");
+    //   }
+    // });
 
 
 
@@ -88,19 +90,16 @@ export class ContentStyledComponent implements OnInit {
 
   }
 
-
   tierOne: boolean = true;
   tierOneTwo: boolean = true;
   tierTwoThree: boolean = true;
   tierThree: boolean = true;
-  timerTierThree: boolean = true;
+  timerTierThree: boolean = false;
   showLiveVideo: boolean = false;
   tier: string = "";
   tierName: string = "";
   checked: boolean = false;
   classApplied = false;
-
-  // Add logic to only show one timer based on tier
 
   testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
   testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
@@ -109,7 +108,7 @@ export class ContentStyledComponent implements OnInit {
     var countDownDate = new Date("Jan 8, 2024 15:37:25").getTime();
 
     // Update the count down every 1 second
-    var x = setInterval(function () {
+    var x = setInterval( () => {
 
       // Get today's date and time
       var now = new Date().getTime();
@@ -124,13 +123,13 @@ export class ContentStyledComponent implements OnInit {
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timer")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
-        + minutes + "m " + seconds + "s. " + "Upgrade For Live Access!"
+      this.timerVal = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+        + minutes + "m " + seconds + "s. " + "Upgrade To 'All In' For Live Access!"
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timer")!.innerHTML = "EXPIRED";
+        this.timerVal = "EXPIRED";
         // ngIf to open up a card for live video here
       }
     }, 1000);
@@ -155,30 +154,23 @@ export class ContentStyledComponent implements OnInit {
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timerTierThree")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+      this.timerValThree = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. ";
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timerTierThree")!.innerHTML = "EXPIRED";
+        this.timerValThree = "EXPIRED";
         this.timerTierThree = false;
         this.showLiveVideo = true;
       }
     }, 1000);
   }
 
-  // Condition to display various items on page
-  // localStorage.getItem('tier') === 'Just Looking';
 
   toggleBilling() {
     this.checked = !this.checked;
   }
-
-//   toggleDisable() {
-//     var toggle = document.getElementById("payWall");
-//     toggle!.disabled = true;
-// }
 
 
 toggleClass() {

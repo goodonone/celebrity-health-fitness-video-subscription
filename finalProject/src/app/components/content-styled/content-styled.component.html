@@ -1,4 +1,4 @@
-<div class="pageContainer" id="wrap">
+<div class="pageContainer">
     <!-- Upgrade button for Tier Two and Three -->
     <div class="upgradeButtonContainer" *ngIf="tierOneTwo">
         <button class="btn btn-upgrade" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
@@ -6,10 +6,12 @@
 
     <!-- Countdown timer for First and Second Tiers -->
     <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="tierOneTwo">
+        {{timerVal}}
     </div>
 
     <!-- Countdown timer for Third Tier -->
     <div class="bannerThirdTier" id="timerTierThree" *ngIf="timerTierThree">
+        {{timerValThree}}
     </div>
 
     <!-- Live Video Div -->
@@ -50,7 +52,6 @@
         <!-- <div class="fixed"> -->
             <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
             <button class="btn btn-upgradeTierButton" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
-        <!-- </div> -->
     </div>
 
     <fieldset id="payWall" [class.active]="classApplied">

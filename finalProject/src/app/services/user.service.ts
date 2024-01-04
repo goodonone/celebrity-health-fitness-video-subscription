@@ -39,14 +39,9 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-
-  localStorage.removeItem(this.tierKey);
-  localStorage.removeItem(this.userIdKey);
-
-//   localStorage.removeItem('userSignedIn');
-//   localStorage.removeItem('tier');
-//   localStorage.removeItem('token');
-
+  localStorage.removeItem('userSignedIn');
+  localStorage.removeItem('tier');
+  localStorage.removeItem('token');
 }
 
 getUserId() {

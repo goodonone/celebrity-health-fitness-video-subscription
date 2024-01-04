@@ -324,14 +324,15 @@ div.upgradeContainer {
     flex-direction: row;
     justify-content: space-between;
     z-index: 3;
-    #fixed{
-      position: fixed;  
-      top: 22%;
-      width: 25rem;
-      right: 4%;
-      /* -webkit-appearance: none; */
-    }
 }
+
+/* .upgradeContainer #fixed{
+    position: fixed;  
+    top: 22%;
+    width: 25rem;
+    right: 4%;
+    /* -webkit-appearance: none; */
+  /* } */ 
 
 /* #fixed{
 
