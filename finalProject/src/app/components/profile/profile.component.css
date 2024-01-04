@@ -50,7 +50,7 @@ h1.profileNameTier {
 
 .profileNameTier {
     text-align: center;
-    width: 35rem;
+    width: 40rem;
     line-height: 9rem;
     padding-right: 0.5rem;
 }
@@ -63,14 +63,12 @@ h1.profileNameTier {
     border-radius: 10px;
 }
 
-.profileImage {
+.profileImage {}
 
-}
-
-h3 {
+h3.profileDetails {
     color: white;
     font-weight: 500;
-    font-size: 2rem;
+    font-size: 1.9rem;
     margin-bottom: 1.8rem;
 }
 
@@ -80,14 +78,14 @@ h3 {
     width: fit-content;
     /* background: red; */
     /* width: 35%; */
-
-
 }
 
-.spanProfileData {
+.spanProfileCategory {
     font-size: 1.4rem;
     margin-bottom: 0.3rem;
 }
+
+
 
 /* button.editProfileButton {
     width: 5rem;
@@ -99,53 +97,78 @@ h3 {
     color: white;
 } */
 
-.buttons{
+.buttons {
     display: flex;
     flex-wrap: wrap;
 }
 
-.btn-editProfileButton{
+.editButtonsContainer{
+    display: flex;
+    flex-wrap: wrap;
+    width: 20rem;
+    justify-content: center;
+}
+
+.btn-editProfileButton {
     height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    background-color: rgb(3, 3, 3);
+    background-color: rgb(41, 41, 41);
     border-color: rgb(73, 73, 73);
     width: 10rem;
-    color: white;
-    margin-top: 60rem;
-    margin-left: 5rem;
+    /* color: white; */
+    margin-top: 18rem;
+    margin-left: 1rem;
 }
 
-.btn:hover{
-background-color: #C7FF20;
-color: black;
-}
-
-.planContainer{
-    display: flex;
-    justify-content: space-between;
-    /* margin-right: 7rem; */
-}
-
-.btn-change{
-    height: 2rem;
+.btn-editPhotoButton{
+    height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    background-color: rgb(87, 87, 87);
-    /* border-color: rgb(0, 0, 0); */
-    width: 5rem;
-    margin-top: 1.6rem;
-    margin-right: 9rem; 
+    background-color: rgb(41, 41, 41);
+    border-color: rgb(73, 73, 73);
+    width: 10rem;
+    /* color: white; */
+    margin-top: 22rem;
+    margin-left: 1rem;
 }
 
-.btn-change:hover {
+/* .btn:hover {
+    background-color: #C7FF20;
+    color: black;
+} */
+
+.planContainer {
+    display: flex;
+    justify-content: space-between;
+    /* background-color: red; */
+    width: 14.6rem;
+    /* margin-right: 7rem; */
+}
+
+.btn-change {
+    height: 2.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(41, 41, 41);
+    /* border-color: rgb(0, 0, 0); */
+    width: 5rem;
+    margin-top: 1.3rem;
+    /* margin-right: 8rem; */
+}
+
+.btn-change:hover, .btn-editPhotoButton:hover, .btn-editProfileButton:hover {
     background-color: white;
     /* border-color: #C7FF20; */
-    color: black;
+    color: black !important;
 }
+

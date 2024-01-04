@@ -3,11 +3,10 @@
 
     <div class="flexContainer">
         <div class="nameTier">
-            <h1 class="profileNameTier" *ngIf="tierOne">Hi, {{currentUser.name}}</h1>
-            <h1 class="profileNameTier" *ngIf="!tierTwo">STAY {{currentUser.tier | uppercase}} <br> {{currentUser.name}}
-            </h1>
-            <h1 class="profileNameTier" *ngIf="!tierThree">You are {{currentUser.tier | uppercase}},
-                <br>{{currentUser.name | titlecase}}</h1>
+            <h1 class="profileNameTier" *ngIf="tierOne">Hi! {{firstName}}</h1>
+            <h1 class="profileNameTier" *ngIf="tierTwoThree">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
+            <!-- <h1 class="profileNameTier" *ngIf="tierThree">You are {{currentUser.tier | uppercase}},
+                <br>{{currentUser.name | titlecase}}</h1> -->
         </div>
 
         <div class="profileContainer">
@@ -17,26 +16,28 @@
                         <mat-card-content *ngIf="currentUser.imgUrl">
                             <img class="profilePicture" [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
                         </mat-card-content>
-                        <mat-card-actions>
-                            <button class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+                        <mat-card-actions class="editButtonsContainer">
+                            <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Add Picture</button>
+                            <button mat-button style="color:white" class="btn btn-editPhotoButton" [routerLink]="'/edit-profile/' + currentUser.userId">Change Picture</button>
+                            <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
                         </mat-card-actions>
                     </mat-card>
                     <div class="profileDataContainer">
-                        <h3><span class="spanProfileData">Name</span> <br> {{currentUser.name}}</h3>
-                        <h3><span class="spanProfileData">Email Address</span> <br> {{currentUser.email}}</h3>
-                        <h3 *ngIf="currentUser.dateOfBirth"><span class="spanProfileData">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
-                        <h3 *ngIf="currentUser.gender"><span class="spanProfileData">Gender</span> <br> {{currentUser.gender}}</h3>
-                        <h3 *ngIf="currentUser.weight"><span class="spanProfileData">Weight</span> <br> {{currentUser.weight}}lbs</h3>
-                        <h3 *ngIf="currentUser.height"><span class="spanProfileData">Height</span> <br> {{currentUser.height}}ft</h3>
-                        <h3 *ngIf="currentUser.goals"><span class="spanProfileData">Objective</span> <br> {{currentUser.goals}}</h3>
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{currentUser.height}}ft</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
                         <div class="planContainer">
-                            <h3 *ngIf="currentUser.tier"><span class="spanProfileData">Plan</span> <br> {{currentUser.tier}}</h3>
-                            <button mat-button class="btn-change" [routerLink]="['/upgrade/', currentUser.userId]">Change</button>
+                            <h3 class="profileDetails" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <button mat-button style="color:white" class="btn-change" [routerLink]="['/upgrade/', currentUser.userId]">Change</button>
                         </div>
-                        <!-- Checking if it is a free tier or paid tier -->
-                        <h3 *ngIf="freeTier"><span class="spanProfileData">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                        <!-- Checking if it is a free tier or paid tier-->
+                        <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
                             {{monthOrYear}}</h3>
-                        <h3 *ngIf="!freeTier"><span class="spanProfileData">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
                             {{monthOrYear}}</h3>
                     </div>
                 </mat-card-content>
