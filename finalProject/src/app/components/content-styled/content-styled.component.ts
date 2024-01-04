@@ -32,8 +32,6 @@ export class ContentStyledComponent implements OnInit {
       // console.log(user);
     });
 
-
-
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
     this.checked = false;
@@ -176,10 +174,6 @@ export class ContentStyledComponent implements OnInit {
   }
 
 
-
-// }
-
-
-
+}
 
 
