@@ -1,4 +1,4 @@
-<h1>Welcome!</h1>
+<h1>Profile</h1>
 <div *ngIf="currentUser.imgUrl">
     <img [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250">
     <p>{{currentUser.name}}</p>
@@ -20,10 +20,10 @@
 <p class="profileWeight">{{currentUser.weight}} lb</p>
 <p class="profileGoal">Goal: {{currentUser.goals}}</p>
 
-<div>
-<button class="edit" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
-</div>
+<button [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
 
 
+
+<hr>
 
 

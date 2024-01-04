@@ -1,9 +1,10 @@
 import { Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { UserService } from 'src/app/services/user.service';
+// import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import { PaymentService } from 'src/app/services/payment.service';
+import { UserService } from '../../services/user.service';
+import { PaymentService } from '../../services/payment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,6 @@ export class FormService implements OnInit {
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
-
 
 
   ngOnInit(): void {
@@ -69,7 +69,7 @@ export class FormService implements OnInit {
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-    const generatedUserId: string = Math.random().toString(18).slice(2);
+    // const generatedUserId: string = Math.random().toString(18).slice(2);
 
     // console.log(this.multiStepForm.value);
     // console.log(generatedUserId);
@@ -77,10 +77,16 @@ export class FormService implements OnInit {
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
+
+    // if (!localStorage.getItem('userId')) {
+
+
+
+
+    // Creating a new user/new payment for initial signUp of new user if not signed in else update user
+
     if (!localStorage.getItem('userId')) {
       const userData = {
-        // remove generated UsesrId when added to backend
-        userId: generatedUserId,
         name: userInfo.name,
         password: userInfo.password,
         email: userInfo.email,
@@ -94,7 +100,7 @@ export class FormService implements OnInit {
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
-        purchaseType: type
+        purchaseType: type,
       }
       this.payment.newPayment(planData).subscribe(() => {
       });
@@ -108,6 +114,7 @@ export class FormService implements OnInit {
         price: planInfo.totalCost
       }
       this.user.updateUser(userData).subscribe(() => {
+        console.log(userData);
       });
       const planData = {
         tier: planInfo.plan,
