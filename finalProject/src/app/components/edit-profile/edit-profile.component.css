@@ -1,3 +1,19 @@
 span {
     color: white;
 }
+h1{
+    font-size: large;
+}
+.button{
+    align-items: center;
+    background-color: #C7FF20;
+    size: 10px;
+    background-color: #C7FF20;
+    padding: 15px 32px;
+    border: 1px;
+    font-size: medium;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    display: flexbox;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0,2), 0 6px 20px 0 rgba(0,0,0,0,19);
+}

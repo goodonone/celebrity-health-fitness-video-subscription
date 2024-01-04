@@ -5,13 +5,22 @@
     <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"><br><br>
 
     <span>Image  </span>
-    <input placeholder="Insert Picture " type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br>
+    <input placeholder="Upload Image Image " type="file" id="myfile" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br>
+    <!-- <input placeholder="Insert Picture " type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br> -->
 
     <span>Email  </span>
     <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"><br><br>
 
     <span>Date of Birth  </span>
     <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"><br><br>
+
+    
+    
+    <span>Weight  </span>
+    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
+
+    <span>Height  </span>
+    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
 
     <mat-form-field appearance="fill"> 
       <mat-label>Gender</mat-label> 
@@ -22,12 +31,6 @@
     </mat-form-field>
 
     <br>
-    
-    <span>Weight  </span>
-    <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br>
-
-    <span>Height  </span>
-    <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br>
 
     <mat-form-field appearance="fill"> 
       <mat-label>Goals</mat-label> 
@@ -43,3 +46,5 @@
       Edit Profile
     </button>
 </form>
+
+<br>

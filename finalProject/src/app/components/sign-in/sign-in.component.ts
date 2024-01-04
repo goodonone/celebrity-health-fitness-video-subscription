@@ -17,9 +17,9 @@ export class SignInComponent implements OnInit {
  constructor(private userService: UserService, private router: Router) { }
 
  ngOnInit(): void {
-  if(localStorage.getItem('userSignedIn'))
+  if(localStorage.getItem('userId'))
  {
-  this.router.navigateByUrl(`/test`);
+  this.router.navigateByUrl(`/signin`);
  } 
  }
 
@@ -27,6 +27,7 @@ export class SignInComponent implements OnInit {
    this.userService.login(this.email, this.password).subscribe((response:any) => {
     const userId = response.userId;
     localStorage.setItem('tier', response.tier);
+    localStorage.setItem('billing', response.paymentFrequency);
     localStorage.setItem('token', response.token);
 
        this.router.navigateByUrl(`/content/${userId}`);
