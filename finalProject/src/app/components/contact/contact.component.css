@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.contact-banner {
+  height: 10px;
+}
+
+.social-media a {
+  display: inline-block;
+  margin-right: 10px;
+  justify-content: right;
+}
+/* Need to work on this */
+.img1 {
+  width: 50px; 
+  height: 40px;
+}
+
+.social-media img {
+  width: 40px; 
+  height: 40px;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.banner {
+  max-width: 100%;
+  height: auto;
+}
+
+.left-banner {
+  order: 1; /* Move the left banner to the beginning */
+}
+
+.right-banner {
+  order: 3; /* Move the right banner to the end */
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  /* Additional styling for your main content */
+}
+/*  */
+/* 
+h1{
+    color: white;
+    margin : auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    height: 10vh;
+    flex-direction: row;
+    align-content: center;
+    font-size: 50px;  
+    padding-top: 40px; 
+}
+
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly; 
+    margin: 1px; 
+    text-align: center;
+    padding-left: 10px;
+}
+  .image {
+    display: block;
+    margin: 0 auto;
+    height: 500px;
+    width: calc(20% - 15px); 
+    margin: 5px; 
+    box-sizing: border-box;
+    border-radius: .4vw;
+    border: 2px solid #C7FF20;
+
+  }
+
+
+p {
+    color: white;
+    margin : auto;
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    text-size-adjust: 20px;
+    flex-direction: row;
+    align-content: center;
+    text-wrap: 10px;
+    padding-left: 110px;
+    padding-right: 110px;
+    padding-bottom: 110px; 
+    padding-top: 90px;   
+}
+.custom-text {
+  font-size: 18px; 
+  color: white; 
+} */
+
+/* .bannerFour {
+    height: 100vh;
+    width: 100%;
+    background-color: #C7FF20;
+    min-height: 100vh;
+} */
+

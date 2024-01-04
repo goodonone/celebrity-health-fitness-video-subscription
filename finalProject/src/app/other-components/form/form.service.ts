@@ -36,7 +36,7 @@ export class FormService implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]]
     }),
     planDetails: this.fb.group({
-      plan: ['Just Looking', [Validators.required]],
+      plan: [ localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
       billing: ['monthly', [Validators.required]],
       planCost: [0],
       totalCost: []
@@ -128,8 +128,8 @@ export class FormService implements OnInit {
         password: ['', [Validators.required, Validators.minLength(8)]]
       }),
       planDetails: this.fb.group({
-        plan: ['Just Looking', [Validators.required]],
-        billing: ['monthly', [Validators.required]],
+        plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+        billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
         planCost: [0],
         totalCost: []
       }),

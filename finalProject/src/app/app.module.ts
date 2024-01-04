@@ -43,9 +43,13 @@ import { StepThreeSummaryComponent } from './other-components/form/form-steps/st
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { PaymentComponent } from './components/payment/payment.component';
+import { CartComponent } from './components/cart/cart.component';
+import { ProductComponent } from './components/product/product.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
 import { AuthGuard } from './auth.guard';
+
 
 
 
@@ -74,9 +78,15 @@ import { AuthGuard } from './auth.guard';
     StepFourPaymentComponent,
     UpgradeComponent,
     PaymentComponent,
+
+      CartComponent,
+      ProductComponent,
+      CheckoutComponent,
+
     ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
   
+
   ],
   imports: [
     BrowserModule,

@@ -2,6 +2,7 @@ import { Component, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
+import { CartService } from './services/cart.service';
 
 // Insert Service/Area where the search can Search and model here
 
@@ -23,12 +24,17 @@ export class AppComponent implements OnInit {
 
   UserId : string = "";
 
+  cartQuantity=0;
 
-  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService) { 
+
+  constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService, private cartService: CartService) { 
     this.router.events.subscribe((event) =>{
       if(event instanceof NavigationEnd) {
         this.UpdateStatus();
       }
+    });
+    this.cartService.getCartObservable().subscribe((newCart) => {
+      this.cartQuantity = newCart.totalCount;
     });
   }
 
@@ -85,6 +91,7 @@ export class AppComponent implements OnInit {
     this.userService.logoutUser();
     this.UpdateStatus();
   }
+
 
 
 }

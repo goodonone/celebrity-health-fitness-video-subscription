@@ -25,10 +25,12 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
-    this.typeOfBilling = this.stepForm.controls['billing'].value || 'monthly';
-    this.chosenPlan = this.stepForm.value.plan;
+    const formVals = this.rootFormGroup.form.get('planDetails') ?.value;
+    
+    this.typeOfBilling = formVals?.billing || 'monthly';
+    this.chosenPlan = formVals?.plan;
     this.checked = this.typeOfBilling === 'monthly' ? false : true;
-    this.planType = this.planType || 'Just Looking';
+    this.planType = formVals?.plan || 'Just Looking';
     this.updateBilling();
   }
 
