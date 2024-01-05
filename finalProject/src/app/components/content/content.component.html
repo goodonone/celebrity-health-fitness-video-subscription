@@ -94,9 +94,10 @@
               </div>
               <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  <div>
+                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
+                  <!-- width="380" height="250" -->
                   <div >
                     <h5 class="card-title mb-0">
                       <a>{{ video.snippet.title }}</a>
