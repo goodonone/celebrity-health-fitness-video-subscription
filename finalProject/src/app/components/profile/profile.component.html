@@ -11,11 +11,6 @@
             <mat-card class="profileInfo">
                 <div class="flexAllProfileData">
                     <mat-card class="profilePictureContainer" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}">
-                        <!-- <mat-card-content> -->
-                            <!-- style="background-image: url('[currentUser.imgUrl]') -->
-                            <!-- <img class="profilePicture" [src]="currentUser.imgUrl" alt="Add photo" width="200" height="250"> -->
-                        <!-- </mat-card-content> -->
-                        <!-- <mat-card-actions> -->
                             <div class="editButtonsContainer">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Change Picture</button>
@@ -23,7 +18,6 @@
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button>
                             </div>
-                        <!-- </mat-card-actions> -->
                     </mat-card>
                     <div class="profileDataContainer" *ngIf="!editProfileToggle">
                         <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
@@ -72,6 +66,9 @@
     </div>
 
 </div>
+
+
+<!-- Allyshia's code -->
 
                         <!-- <div class="planContainer">
                             <h3 class="profileDetails" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
