@@ -33,8 +33,8 @@
     width: 21rem;
     background-color: #C7FF20;
     background-size: cover;
-    margin-left: 0.7rem;
-    margin-top: 0.7rem;
+    /* margin-left: 1.5rem; */
+    /* margin-top: 1.5rem; */
     border-radius: 100rem;
     align-items: right;
 }
@@ -54,18 +54,19 @@ h1.profileNameTier {
     width: 40rem;
     line-height: 9rem;
     padding-right: 0.5rem;
-    animation: fade-in 1s linear;
-    animation-fill-mode: forwards;
+    /* animation: fade-in 0.5s linear;
+    animation-fill-mode: forwards; */
 }
 
-@keyframes fade-in {
+/* @keyframes fade-in {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 100;
     }
-}
+} */
 
 #buttonDisappear.active {
     opacity: 0;
@@ -74,6 +75,7 @@ h1.profileNameTier {
 .profileInfo {
     height: 52rem;
     width: 50rem;
+    padding: 1.5rem;
     background-color: #000000;
     border-radius: 10px;
 }
@@ -87,10 +89,54 @@ h3.profileDetails {
     margin-bottom: 1.8rem;
 }
 
+h3.profileDetailsInput {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.8rem;
+}
+
+h3.profileDetailsInputGender {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.8rem;
+}
+
+h3.profileDetailsInputGender,
+h3.profileDetailsInputPhoto {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 1.1rem;
+}
+
+h3.profileDetailsInputWeight{
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.9rem;
+}
+
+h3.profileDetailsInputHeight{
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.9rem;
+}
+
+h3.profileDetailsInputObjective{
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.9rem;
+}
+
 .profileDataContainer {
-    padding-left: 2rem;
-    margin-top: 0.8rem;
-    width: fit-content;
+    padding-left: 1rem;
+    margin-top: .2rem;
+    width:fit-content;
+    /* padding-right: 6rem; */
     /* background: red; */
     /* width: 35%; */
 }
@@ -117,7 +163,7 @@ h3.profileDetails {
     flex-wrap: wrap;
 }
 
-.editButtonsContainer{
+.editButtonsContainer {
     display: flex;
     flex-wrap: wrap;
     width: 20rem;
@@ -139,7 +185,7 @@ h3.profileDetails {
     margin-left: 1rem;
 }
 
-.btn-editPhotoButton{
+.btn-editPhotoButton {
     height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -181,15 +227,46 @@ h3.profileDetails {
     /* margin-right: 8rem; */
 }
 
-.btn-change:hover, .btn-editPhotoButton:hover, .btn-editProfileButton:hover {
+.btn-change:hover,
+.btn-editPhotoButton:hover,
+.btn-editProfileButton:hover {
     background-color: white;
     /* border-color: #C7FF20; */
     color: black !important;
 }
 
+input,
+select {
+    width: 20rem;
+    height: 2.5rem;
+    font-size: large;
+    font-weight: 400;
+}
+
+/* input{
+    width: 10.2rem;
+    height: 2.5rem;
+    font-size: large;
+    font-weight:300;
+} */
+
+input#weight,
+#height,
+#dob {
+    width: 10.2rem;
+    height: 2.5rem;
+    font-size: large;
+    font-weight:400;
+}
+
+#gender,
+#objective {
+    width: 10.3rem;
+    height: 2.7rem;
+}
 
 
-
+/* Allyshia's code */
 
 /* p {
     color: #C7FF20;

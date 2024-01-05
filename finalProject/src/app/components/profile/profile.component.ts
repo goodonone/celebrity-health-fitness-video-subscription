@@ -16,7 +16,7 @@ export class ProfileComponent implements OnInit {
   tierOne = false;
   tierTwoThree = false;
   tierThree = false;
-  freeTier = false;
+  freeTier = true;
   firstName?: string;
   editProfileToggle = false;
   saveOrChange = false;
@@ -37,6 +37,12 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     // this.loadUserProfile();
     // console.log('UserId:', this.UserId);
+    this.fillProfile();
+
+
+  }
+
+  fillProfile(){
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     // console.log(UserId);
     this.userService.getUser(UserId).subscribe(user => {
@@ -45,7 +51,7 @@ export class ProfileComponent implements OnInit {
       if (this.currentUser.tier === "Just Looking") {
         this.tierOne = true;
       }
-      else if (this.currentUser.tier === "Motivated" || "All In" ) {
+      else if (this.currentUser.tier === "Motivated" || "All In") {
         this.tierTwoThree = true;
       }
       if (this.currentUser.paymentFrequency === "monthly") {
@@ -54,19 +60,19 @@ export class ProfileComponent implements OnInit {
       else if (this.currentUser.paymentFrequency === "yearly") {
         this.monthOrYear = "year";
       }
-  
-      if (this.currentUser.paymentFrequency === "free" || 0)
-       {
+
+      if (this.currentUser.tier === "Just Looking") {
         this.freeTier = true;
-       } 
-       const displayName  = this.currentUser.name;
-       //  console.log(displayName);
-        this.firstName = displayName?.split(' ').slice(0,1).join(' ');
-       
+      }
+      else {
+        this.freeTier = false;
+      }
+      const displayName = this.currentUser.name;
+      //  console.log(displayName);
+      this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
+
       //  console.log(firstName);
     });
-    
-   
   }
 
   // loadUserProfile() {
@@ -80,25 +86,26 @@ export class ProfileComponent implements OnInit {
 
   editProfile() {
     this.userService.updateUser(this.currentUser).subscribe(() => {
-      window.alert("Edited Profile Successfully");
-      this.router.navigate(['profile/', this.currentUser.userId]);
-    }, error => {
-      console.log('Error: ', error)
-      if (error.status === 401 || error.status === 403) {
-        this.userService.logoutUser();
-        this.router.navigate(['signin']);
-  
-      }
-    });  
-  }
+      // location.reload();
+      // window.alert("Edited Profile Successfully");
+      // this.router.navigate(['profile/', this.currentUser.userId]);
+    // }, error => {
+    //   console.log('Error: ', error)
+    //   if (error.status === 401 || error.status === 403) {
+    //     this.userService.logoutUser();
+    //     this.router.navigate(['signin']);
 
-  toggleProfile(){
+    //   }
+    // });
+  });
+}
+
+  toggleProfile() {
     this.saveOrChange = !this.saveOrChange;
     this.editProfileToggle = !this.editProfileToggle;
   }
 
-  toggleEditProfile()
-  {
+  toggleEditProfile() {
     this.classApplied = !this.classApplied;
     this.saveOrChange = !this.saveOrChange;
     this.editOrUpdate = !this.editOrUpdate;
