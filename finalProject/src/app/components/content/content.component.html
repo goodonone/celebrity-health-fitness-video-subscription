@@ -49,7 +49,7 @@
                       </div>
                       <div >
                         <h5 class="card-title mb-0">
-                          <a>{{ video.snippet.title }}</a>
+                          <a class="videoTitle">{{ video.snippet.title }}</a>
                         </h5>
                       </div>
                     </div>
@@ -62,7 +62,7 @@
 
 <!-- Tier two and three videos -->
 <div class="cardSecondAndThirdTiers">
-  <!-- Make this if a ! -->
+  <!-- Make this if a class="videoTitle" ! -->
   <div class="upgradeContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
       <div id="fixed">
           <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
@@ -100,7 +100,7 @@
                   <!-- width="380" height="250" -->
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -113,12 +113,12 @@
               </div>
               <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
+                  <div>
                     <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -136,7 +136,7 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -154,7 +154,7 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -170,7 +170,7 @@
                     <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   
                     
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     
                   
                 
@@ -184,7 +184,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
@@ -198,7 +198,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
@@ -212,7 +212,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
