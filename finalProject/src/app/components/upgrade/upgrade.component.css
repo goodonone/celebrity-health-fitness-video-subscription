@@ -32,6 +32,20 @@
     /* padding-bottom: 0rem; */
 }
 
+.changeTierTextTwo {
+    color: white;
+    font-weight: 500;
+    text-align: left;
+    font-size: 7vw;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 2.5rem;
+    text-align: center;
+    line-height: 8rem;
+    /* height: 100rem; */
+    /* padding-bottom: 0rem; */
+}
+
 .cardContainer {
     /* display: flex;
     justify-content: space-around; */

@@ -12,7 +12,7 @@ export class UpgradeComponent implements OnInit {
 
 
   userLoggedIn = true;
-  showOrHide = false;
+  showOrHide!: boolean;
 
   currentUser: User = new User;
 
@@ -26,11 +26,20 @@ export class UpgradeComponent implements OnInit {
     });
     console.log(this.router.url);
 
-    if (this.router.url === '/change-plan/currentUser.userId') {
-      this.showOrHide = true;
-    }
-    else {
-      this.showOrHide = !this.showOrHide;
-    }
+    this.routeCheck();
+      
+    
+    
+}
+
+routeCheck() {
+  if (this.router.url.startsWith('/change-plan/')) {
+    console.log("Change-plan");
+    this.showOrHide = true;
   }
+  else{
+    this.showOrHide = false;
+  }
+}
+
 }
