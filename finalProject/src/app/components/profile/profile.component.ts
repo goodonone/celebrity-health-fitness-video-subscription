@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
   editOrUpdate = false;
   disappear = false;
   classApplied = false;
+  classAppliedTwo = false;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -106,6 +107,8 @@ export class ProfileComponent implements OnInit {
 
   toggleProfile() {
     this.saveOrChange = !this.saveOrChange;
+    // this.classApplied = !this.classApplied;
+    this.classAppliedTwo = !this.classAppliedTwo;
     this.editProfileToggle = !this.editProfileToggle;
   }
 

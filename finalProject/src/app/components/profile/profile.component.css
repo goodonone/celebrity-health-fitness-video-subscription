@@ -72,6 +72,10 @@ h1.profileNameTier {
     opacity: 0;
 }
 
+#buttonDisappearEdit.active{
+    opacity: 0;
+}
+
 .profileInfo {
     height: 52rem;
     width: 50rem;
@@ -227,13 +231,30 @@ h3.profileDetailsInputObjective{
     /* margin-right: 8rem; */
 }
 
+.btn-updateProfileButton{
+    height: 2.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    /* border-color: rgb(0, 0, 0); */
+    width: 10rem;
+    margin-top: 1.3rem;
+}
+
 .btn-change:hover,
 .btn-editPhotoButton:hover,
-.btn-editProfileButton:hover {
+.btn-editProfileButton:hover,
+.btn-updateProfileButton:hover
+    {
     background-color: white;
     /* border-color: #C7FF20; */
     color: black !important;
 }
+
+
 
 input,
 select {
@@ -241,6 +262,15 @@ select {
     height: 2.5rem;
     font-size: large;
     font-weight: 400;
+    /* Comment out following text if you want to revert to white background input and select */
+    background-color: rgb(25, 25, 25);
+    border-radius: 6px;
+    /* border-color: #1a1a1a; */
+    color: white;
+}
+
+input{
+    padding-left: 0.3rem;
 }
 
 /* input{
@@ -265,6 +295,9 @@ input#weight,
     height: 2.7rem;
 }
 
+::placeholder {
+    text-align: center; 
+ }
 
 /* Allyshia's code */
 

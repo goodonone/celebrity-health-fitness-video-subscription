@@ -14,9 +14,9 @@
                             <div class="editButtonsContainer">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Change Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="saveOrChange" id="buttonDisappear" [class.active]="classApplied" (click)="toggleProfile()" form="profileForm" type="submit" (click)="editProfile()">Save Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()">Edit Profile</button>
-                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="saveOrChange == true" id="buttonDisappear" (click)="toggleProfile()" form="profileForm" type="submit" (click)="editProfile()" [class.active]="classApplied">Save Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Edit Profile</button>
+                                <!-- <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button> -->
                             </div>
                     </mat-card>
                     <div class="profileDataContainer" *ngIf="!editProfileToggle">
@@ -57,6 +57,7 @@
                                 </select>
                             </h3> 
                             <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span> <br> <input placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"></h3>
+                            <button mat-button style="color:white" class="btn btn-updateProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button>
                         </form>    
                     </div>
                 </div>
