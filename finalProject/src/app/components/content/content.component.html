@@ -3,7 +3,7 @@
 <div class="pageContainer">
   <!-- Upgrade button for Tier Two and Three -->
   <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <button class="btn btn-upgrade" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
+      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
   </div>
 
   <!-- Countdown timer for First and Second Tiers -->
@@ -75,7 +75,6 @@
   <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
       <mat-card-header>
-          
           <h1 class="tierName">{{currentUser.tier}}</h1>
       </mat-card-header>
       <div class="toggle-area">

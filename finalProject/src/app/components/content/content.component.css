@@ -187,12 +187,22 @@ mat-card.cardVideosFirst {
     cursor: pointer;
     font-weight: 600;
     background-color: white;
-    border-color: rgb(165, 165, 165);
+    border: 1.5px solid rgb(0, 0, 0) !important;
 }
+
+/* mat-button.btn-upgrade{
+    border-color: rgb(0, 0, 0) !important;
+    border-width: 2px;
+} */
 
 .btn:hover {
     background-color: #C7FF20;
     border-color: #C7FF20;
+}
+
+.btn-upgrade:hover{
+    /* border:  !important; */
+    border: none !important;
 }
 
 /* For tier Two and Three content */

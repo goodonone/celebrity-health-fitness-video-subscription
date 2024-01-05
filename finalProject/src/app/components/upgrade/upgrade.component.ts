@@ -22,9 +22,9 @@ export class UpgradeComponent implements OnInit {
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
-      this.currentUser.userId
+      // this.currentUser.userId
     });
-    console.log(this.router.url);
+    // console.log(this.router.url);
 
     this.routeCheck();
       
@@ -34,7 +34,7 @@ export class UpgradeComponent implements OnInit {
 
 routeCheck() {
   if (this.router.url.startsWith('/change-plan/')) {
-    console.log("Change-plan");
+    // console.log("Change-plan");
     this.showOrHide = true;
   }
   else{

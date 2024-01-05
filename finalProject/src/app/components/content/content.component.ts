@@ -36,6 +36,7 @@ export class ContentComponent implements OnInit{
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
+      console.log(this.currentUser.tier);
       // console.log(user);
     });
     this.startCountDownTierOneTwo();
@@ -45,8 +46,7 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
-
-    
+  }
     
 
     // Try to do this where the latest year updates automatically
@@ -97,7 +97,7 @@ export class ContentComponent implements OnInit{
     //   $(window).scroll(() =>{
     //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
     // });
-  }
+  
 
 
  
