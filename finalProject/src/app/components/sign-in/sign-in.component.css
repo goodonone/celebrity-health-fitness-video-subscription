@@ -71,7 +71,7 @@ input:valid {
 }
 
 .btn {
-    padding: 0.3rem;
+    /* padding: 0.3rem; */
     border-radius: 6px;
 }
 
@@ -87,9 +87,9 @@ input:valid {
     color: black;
 }
 
-button{
-    padding-top: 2rem;
-}
+/* button{
+    padding-top: 1rem;
+} */
 
 /* @media (min-width: 37.5em) {
 
