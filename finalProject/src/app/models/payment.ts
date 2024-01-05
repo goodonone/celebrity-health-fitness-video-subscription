@@ -24,6 +24,7 @@ constructor(
         membershipStatus?: string,
         membershipDate?: Date,
         createdAt?: Date,
+        purchaseType?: string,
         updatedAt?: Date,
 )
     {
@@ -37,7 +38,7 @@ constructor(
         this.membershipStatus = membershipStatus;
         this.membershipDate = membershipDate;
         this.createdAt = createdAt;
+        this.purchaseType =  purchaseType,
         this.updatedAt = updatedAt;
-
     }
 }

@@ -77,10 +77,7 @@ export class FormService implements OnInit {
     console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
     console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
 
-
     // if (!localStorage.getItem('userId')) {
-
-
 
 
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
@@ -114,7 +111,7 @@ export class FormService implements OnInit {
         price: planInfo.totalCost
       }
       this.user.updateUser(userData).subscribe(() => {
-        console.log(userData);
+        // console.log(userData);
       });
       const planData = {
         tier: planInfo.plan,
