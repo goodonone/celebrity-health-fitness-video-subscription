@@ -54,7 +54,7 @@ h1.profileNameTier {
     width: 40rem;
     line-height: 9rem;
     padding-right: 0.5rem;
-    animation: fade-in 2s linear;
+    animation: fade-in 1s linear;
     animation-fill-mode: forwards;
 }
 
@@ -67,6 +67,9 @@ h1.profileNameTier {
     }
 }
 
+#buttonDisappear.active {
+    opacity: 0;
+}
 
 .profileInfo {
     height: 52rem;
@@ -86,7 +89,7 @@ h3.profileDetails {
 
 .profileDataContainer {
     padding-left: 2rem;
-    margin-top: 0.5rem;
+    margin-top: 0.8rem;
     width: fit-content;
     /* background: red; */
     /* width: 35%; */

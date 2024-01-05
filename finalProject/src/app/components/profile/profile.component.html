@@ -19,11 +19,11 @@
                         </mat-card-content>
                         <!-- <mat-card-actions> -->
                             <div class="editButtonsContainer">
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" (click)="toggleProfile()">Add Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" (click)="toggleProfile()">Save Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" (click)="toggleProfile();">Change Picture</button>
-
-                                <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="saveOrChange" id="buttonDisappear" [class.active]="classApplied" (click)="toggleProfile()">Save Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()">Update Profile</button>
                             </div>
                         <!-- </mat-card-actions> -->
                     </mat-card>

@@ -19,6 +19,10 @@ export class ProfileComponent implements OnInit {
   freeTier = false;
   firstName?: string;
   editProfileToggle = false;
+  saveOrChange = false;
+  editOrUpdate = false;
+  disappear = false;
+  classApplied = false;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -89,11 +93,17 @@ export class ProfileComponent implements OnInit {
   }
 
   toggleProfile(){
+    this.saveOrChange = !this.saveOrChange;
     this.editProfileToggle = !this.editProfileToggle;
   }
 
-  innerHtmlToggle(){
-    
+  toggleEditProfile()
+  {
+    this.classApplied = !this.classApplied;
+    this.saveOrChange = !this.saveOrChange;
+    this.editOrUpdate = !this.editOrUpdate;
+    // this.disappear = !this.disappear;
+    this.editProfileToggle = !this.editProfileToggle;
   }
 
 
