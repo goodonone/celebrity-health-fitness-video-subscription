@@ -33,7 +33,7 @@ a {
 /* For First tier content */
 
 .bannerFirstAndSecondTiers {
-    position: absolute;
+    position: fixed;
     top: 9%;
     background-color: rgb(255, 255, 255);
     color: black;
@@ -45,7 +45,7 @@ a {
 }
 
 .bannerThirdTier {
-    position: absolute;
+    position: fixed;
     top: 9%;
     background-color: rgb(255, 255, 255);
     color: black;
@@ -178,7 +178,7 @@ mat-card.cardVideosFirst {
 } */
 
 .btn-upgrade {
-    position: absolute;
+    position: fixed;
     right: 12%;
     top: 11%;
     padding: 0.5rem;

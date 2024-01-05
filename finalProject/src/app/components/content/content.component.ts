@@ -27,7 +27,8 @@ export class ContentComponent implements OnInit{
   mlbVideos: any[] = [];
   aVideos: any[] = [];
   currentUser: User = new User;
-  
+  timerVal = '';
+  timerValThree = '';
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -57,18 +58,18 @@ export class ContentComponent implements OnInit{
 
     // only run if Tier = 'Just Looking'
     // if(tierName == 'Just Looking')
-    var $ = require("jquery");
-    var wrap = $("#fixed");
+    // var $ = require("jquery");
+    // var wrap = $("#fixed");
 
-    wrap.on("scroll", (e: any) => {
+    // wrap.on("scroll", (e: any) => {
         
-      if (document.documentElement.scrollTop > 147) {
-        wrap.addClass("fix-search");
-      } else {
-        wrap.removeClass("fix-search");
-      }
+    //   if (document.documentElement.scrollTop > 147) {
+    //     wrap.addClass("fix-search");
+    //   } else {
+    //     wrap.removeClass("fix-search");
+    //   }
       
-    });
+    // });
 
 
     // var windw = this;
@@ -128,7 +129,7 @@ export class ContentComponent implements OnInit{
     var countDownDate = new Date("Jan 7, 2024 15:37:25").getTime();
 
     // Update the count down every 1 second
-    var x = setInterval(function () {
+    var x = setInterval( () => {
 
       // Get today's date and time
       var now = new Date().getTime();
@@ -143,13 +144,13 @@ export class ContentComponent implements OnInit{
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timer")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+      this.timerVal = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. " + "Upgrade For Live Access!"
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timer")!.innerHTML = "EXPIRED";
+        this.timerVal  = "EXPIRED";
         // ngIf to open up a card for live video here
       }
     }, 1000);
@@ -174,13 +175,13 @@ export class ContentComponent implements OnInit{
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // Display the result in the element with id="demo"
-      document.getElementById("timerTierThree")!.innerHTML = "Next Live Workout in:" + " " + days + "d " + hours + "h "
+      this.timerValThree = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. ";
 
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        document.getElementById("timerTierThree")!.innerHTML = "EXPIRED";
+        this.timerValThree = "EXPIRED";
         this.timerTierThree = false;
         this.showLiveVideo = true;
       }
