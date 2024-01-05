@@ -86,6 +86,7 @@ export class ProfileComponent implements OnInit {
 
   editProfile() {
     this.userService.updateUser(this.currentUser).subscribe(() => {
+      this.fillProfile();
       // location.reload();
       // window.alert("Edited Profile Successfully");
       // this.router.navigate(['profile/', this.currentUser.userId]);
