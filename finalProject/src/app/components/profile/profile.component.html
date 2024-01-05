@@ -19,13 +19,15 @@
                         </mat-card-content>
                         <!-- <mat-card-actions> -->
                             <div class="editButtonsContainer">
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Add Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" [routerLink]="'/edit-profile/' + currentUser.userId">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" (click)="toggleProfile()">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl" (click)="toggleProfile()">Save Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl" (click)="toggleProfile();">Change Picture</button>
+
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" [routerLink]="'/edit-profile/' + currentUser.userId">Edit Profile</button>
                             </div>
                         <!-- </mat-card-actions> -->
                     </mat-card>
-                    <div class="profileDataContainer">
+                    <div class="profileDataContainer" *ngIf="!editProfileToggle">
                         <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
                         <h3 class="profileDetails"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
                         <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
@@ -43,6 +45,100 @@
                         <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
                             {{monthOrYear}}</h3>
                     </div>
+                    <div class="profileDataContainer" *ngIf="editProfileToggle">
+                       <form (ngSubmit)="editProfile()">
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br>  <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"></h3>
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Email Address</span><br> <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"></h3>
+                        <h3 class="profileDetails"><span class="spanProfileCategory">Image</span> <br> <input placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"></h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br> <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"></h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> 
+                        <mat-form-field appearance="fill"> 
+                            <mat-select placeholder="Select Gender"  name="gender" [(ngModel)]="currentUser.gender"> 
+                              <mat-option value="Male" >Male</mat-option> 
+                              <mat-option value="Female">Female</mat-option> 
+                            </mat-select> 
+                          </mat-form-field></h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span></h3> <br> <input placeholder="Enter Weight in lbs" type="text" name="weight" [(ngModel)]="currentUser.weight">
+                        <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span></h3> <br> <input placeholder="Enter Height in feet" type="text" name="height" [(ngModel)]="currentUser.height">
+                        <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span>
+                            <mat-form-field appearance="fill"> 
+                                <mat-select placeholder="Select Goals" name="goals" [(ngModel)]="currentUser.goals"> 
+                                  <mat-option value="Maintain Weight" >Maintain Weight</mat-option>
+                                  <mat-option value="Lose Fat">Lose Fat</mat-option>  
+                                  <mat-option value="Build Muscle">Build Muscle</mat-option> 
+                                </mat-select> 
+                              </mat-form-field>
+                        </h3> 
+                        <button>
+                            Update Profile
+                        </button>
+                      </form>
+                    </div>
+
+                        <!-- <div class="planContainer">
+                            <h3 class="profileDetails" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <button mat-button style="color:white" class="btn-change" [routerLink]="['/upgrade/', currentUser.userId]">Change</button>
+                        </div> -->
+                        <!-- Checking if it is a free tier or paid tier-->
+                        <!-- <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                            {{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
+                            {{monthOrYear}}</h3> -->
+                    
+                           
+                        <!-- <form (ngSubmit)="editProfile()">
+                                <h1>Edit Profile</h1>
+                            
+                                <span>Name  </span>
+                                 <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"><br><br> -->
+                            
+                                <!-- <span>Image  </span> -->
+                                <!-- <input placeholder="Upload Image Image " type="file" id="myfile" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br> -->
+                                <!-- <input placeholder="Insert Picture " type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"><br><br> -->
+                            
+                                <!-- <span>Email  </span> -->
+                                <!-- <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"><br><br> -->
+                            
+                                <!-- <span>Date of Birth  </span> -->
+                                <!-- <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" [(ngModel)]="currentUser.dateOfBirth"><br><br> -->
+                                
+                                <!-- <span>Weight  </span> -->
+                                <!-- <input placeholder="Enter Weight" type="text" name="weight" [(ngModel)]="currentUser.weight"><br><br> -->
+                            
+                                <!-- <span>Height  </span> -->
+                                <!-- <input placeholder="Enter Height" type="text" name="height" [(ngModel)]="currentUser.height"><br><br> -->
+                            
+                                <!-- <mat-form-field appearance="fill"> 
+                                  <mat-label>Gender</mat-label> 
+                                  <mat-select placeholder="Select Gender"  name="gender" [(ngModel)]="currentUser.gender"> 
+                                    <mat-option value="Male" >Male</mat-option> 
+                                    <mat-option value="Female">Female</mat-option> 
+                                  </mat-select> 
+                                </mat-form-field> -->
+                            
+                                <!-- <br> -->
+<!--                             
+                                <mat-form-field appearance="fill"> 
+                                  <mat-label>Goals</mat-label> 
+                                  <mat-select placeholder="Select Goals" name="goals" [(ngModel)]="currentUser.goals"> 
+                                    <mat-option value="Maintain Weight" >Maintain Weight</mat-option>
+                                    <mat-option value="Lose Fat">Lose Fat</mat-option>  
+                                    <mat-option value="Build Muscle">Build Muscle</mat-option> 
+                                  </mat-select> 
+                                </mat-form-field> -->
+                            
+                            <!-- <br>
+                                
+
+
+
+
+                    
+                        </div>
+
+
+
+
                 </mat-card-content>
             </mat-card>
         </div>
@@ -51,7 +147,7 @@
 
 </div>
 
-<span class="spanProfileData"></span>
+<span class="spanProfileData"></span> -->
 
 
 

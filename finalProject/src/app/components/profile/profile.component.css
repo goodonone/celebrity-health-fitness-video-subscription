@@ -54,6 +54,17 @@ h1.profileNameTier {
     width: 40rem;
     line-height: 9rem;
     padding-right: 0.5rem;
+    animation: fade-in 2s linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
 }
 
 
@@ -172,6 +183,8 @@ h3.profileDetails {
     /* border-color: #C7FF20; */
     color: black !important;
 }
+
+
 
 
 

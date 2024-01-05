@@ -18,6 +18,7 @@ export class ProfileComponent implements OnInit {
   tierThree = false;
   freeTier = false;
   firstName?: string;
+  editProfileToggle = false;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -73,7 +74,27 @@ export class ProfileComponent implements OnInit {
   //   });
   // };
 
+  editProfile() {
+    this.userService.updateUser(this.currentUser).subscribe(() => {
+      window.alert("Edited Profile Successfully");
+      this.router.navigate(['profile/', this.currentUser.userId]);
+    }, error => {
+      console.log('Error: ', error)
+      if (error.status === 401 || error.status === 403) {
+        this.userService.logoutUser();
+        this.router.navigate(['signin']);
+  
+      }
+    });  
+  }
 
+  toggleProfile(){
+    this.editProfileToggle = !this.editProfileToggle;
+  }
+
+  innerHtmlToggle(){
+    
+  }
 
 
 }
