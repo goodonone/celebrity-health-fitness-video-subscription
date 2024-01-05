@@ -14,7 +14,7 @@ export class ProfileComponent implements OnInit {
   monthOrYear!: string;
 
   tierOne = false;
-  tierTwoThree = false;
+  tierTwo = false;
   tierThree = false;
   freeTier = true;
   firstName?: string;
@@ -52,7 +52,10 @@ export class ProfileComponent implements OnInit {
         this.tierOne = true;
       }
       else if (this.currentUser.tier === "Motivated" || "All In") {
-        this.tierTwoThree = true;
+        this.tierTwo = true;
+      }
+      else{
+        this.tierThree = true;
       }
       if (this.currentUser.paymentFrequency === "monthly") {
         this.monthOrYear = "month";

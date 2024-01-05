@@ -2,10 +2,9 @@
 
     <div class="flexContainer">
         <div class="nameTier">
-            <h1 class="profileNameTier" *ngIf="tierOne">Hi! {{firstName}}</h1>
-            <h1 class="profileNameTier" *ngIf="tierTwoThree">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
-            <!-- <h1 class="profileNameTier" *ngIf="tierThree">You are {{currentUser.tier | uppercase}},
-                <br>{{currentUser.name | titlecase}}</h1> -->
+            <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}!</h1>
+            <h1 class="profileNameTier" *ngIf="tierTwo">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
+            <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
         </div>
 
         <div class="profileContainer">
@@ -63,13 +62,13 @@
                                     <option value="Build Muscle">Build Muscle</option>
                                 </select>
                             </h3> 
-                            <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture</span> <br> <input placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"></h3>
+                            <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span> <br> <input placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl"></h3>
                         </form>    
                     </div>
                 </div>
             </mat-card>       
         </div>  
-                
+
     </div>
 
 </div>
