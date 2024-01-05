@@ -17,18 +17,19 @@
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup">Sign Up</h6>
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signin">Log In</h6>
 
+      <h6 class="navBarText" routerLink="/home">Home</h6>
 
-      <!-- <div *ngIf="userIsLoggedIn"> -->
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]">Profile</h6>
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]">Workouts</h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store">Store</h6>
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity">{{cartQuantity}}</span></h6>
-
       <h6 class="navBarText" routerLink="/about">About</h6>
 
       <h6 class="navBarText" routerLink="/contact">Contact</h6>
+
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store">Store</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity">{{cartQuantity}}</span></h6>
+
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home">Sign Out</h6>
 

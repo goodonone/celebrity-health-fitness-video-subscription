@@ -130,7 +130,7 @@ label {
 
 /* Makes Home Page Flexible */
 
-@media screen and (min-width: 500px) and (max-width: 717px) {
+@media screen and (min-width: 500px) and (max-width: 850px) {
 nav{
   width: 94vw;
 }
