@@ -11,7 +11,6 @@ import { ContentComponent } from './components/content/content.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CreateProfileComponent } from './components/create-profile/create-profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
@@ -27,7 +26,6 @@ import { MatCardModule } from '@angular/material/card'
 import { MatGridListModule } from '@angular/material/grid-list';
 import { CarouselModule } from './other-components/carousel/carousel.module';
 import { VideoPlayerModule } from './other-components/video-player/video-player.module';
-
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormComponent } from './other-components/form/form.component';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
@@ -38,11 +36,10 @@ import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/
 import { StepTrackerIconsComponent} from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
-// import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { StepThreeSummaryComponent } from './other-components/form/form-steps/step-three-summary/step-three-summary.component';
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
-import { PaymentComponent } from './components/payment/payment.component';
 import { CartComponent } from './components/cart/cart.component';
 import { ProductComponent } from './components/product/product.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
@@ -60,7 +57,6 @@ import { AppPasswordDirective } from './app-password.directive';
     ContactComponent,
     ContentComponent,
     ProfileComponent,
-    CreateProfileComponent,
     EditProfileComponent,
     NotFoundComponent,
     SignInComponent,
@@ -76,7 +72,6 @@ import { AppPasswordDirective } from './app-password.directive';
     StepThreeSummaryComponent,
     StepFourPaymentComponent,
     UpgradeComponent,
-    PaymentComponent,
  
 
       CartComponent,
