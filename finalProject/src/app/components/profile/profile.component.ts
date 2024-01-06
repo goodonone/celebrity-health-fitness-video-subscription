@@ -44,7 +44,7 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  fillProfile(){
+  fillProfile() {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     // console.log(UserId);
     this.userService.getUser(UserId).subscribe(user => {
@@ -53,16 +53,17 @@ export class ProfileComponent implements OnInit {
       if (this.currentUser.tier === "Just Looking") {
         this.tierOne = true;
       }
-      else if (this.currentUser.tier === "Motivated" || "All In") {
+      else if (this.currentUser.tier === "Motivated") {
         this.tierTwo = true;
       }
-      else{
+      else {
         this.tierThree = true;
       }
       if (this.currentUser.paymentFrequency === "monthly") {
         this.monthOrYear = "month";
       }
-      else if (this.currentUser.paymentFrequency === "yearly") {
+      else {
+        // (this.currentUser.paymentFrequency === "yearly");
         this.monthOrYear = "year";
       }
 
@@ -95,16 +96,16 @@ export class ProfileComponent implements OnInit {
       // location.reload();
       // window.alert("Edited Profile Successfully");
       // this.router.navigate(['profile/', this.currentUser.userId]);
-    // }, error => {
-    //   console.log('Error: ', error)
-    //   if (error.status === 401 || error.status === 403) {
-    //     this.userService.logoutUser();
-    //     this.router.navigate(['signin']);
+      // }, error => {
+      //   console.log('Error: ', error)
+      //   if (error.status === 401 || error.status === 403) {
+      //     this.userService.logoutUser();
+      //     this.router.navigate(['signin']);
 
-    //   }
-    // });
-  });
-}
+      //   }
+      // });
+    });
+  }
 
   toggleProfile() {
     this.saveOrChange = !this.saveOrChange;

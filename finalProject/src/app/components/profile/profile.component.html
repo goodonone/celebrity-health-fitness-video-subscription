@@ -4,7 +4,7 @@
         <div class="nameTier">
             <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}!</h1>
             <h1 class="profileNameTier" *ngIf="tierTwo">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
-            <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
+            <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}} </h1>
         </div>
 
         <div class="profileContainer">
@@ -33,8 +33,7 @@
                         </div>
                         <!-- Checking if it is a free tier or paid tier-->
                         <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.paymentFrequency}}</h3>
-                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> {{currentUser.paymentFrequency}} per
-                            {{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
                     </div>
                     <div class="profileDataContainer" *ngIf="editProfileToggle">
                         <form (ngSubmit)="editProfile()" id="profileForm">
@@ -50,6 +49,11 @@
                                 </h3>
                                 <h3 class="profileDetailsInputWeight"><span class="spanProfileCategory">Weight</span><br> <input placeholder="Enter Weight in lbs" type="text" name="weight" id="weight" [(ngModel)]="currentUser.weight"></h3>
                                 <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Height</span><br> <input placeholder="Enter Height in feet" type="text" name="height" id="height" [(ngModel)]="currentUser.height"></h3>
+                                    <!--just to test, comment out later  -->
+                                <!-- <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Plan</span><br> <input type="text" name="height" id="height" [(ngModel)]="currentUser.tier"></h3>
+                                <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Payment Frequency</span><br> <input type="text" name="height" id="height" [(ngModel)]="currentUser.paymentFrequency"></h3>
+                                <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Price</span><br> <input type="text" name="height" id="height" [(ngModel)]="currentUser.price"></h3> -->
+                                    <!--  -->
                                 <h3 class="profileDetailsInputObjective"><span class="spanProfileCategory">Objective</span> <br>
                                     <select name="objective" id="objective">
                                         <option value="Lose Fat">Lose Fat</option>

@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { PaymentService } from '../../services/payment.service';
+import { User } from 'src/app/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class FormService implements OnInit {
   userIsLoggedIn: boolean = false;
   UserId: string = "";
   userId: string = "";
+  currentUser: User = new User();
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
@@ -109,24 +111,40 @@ export class FormService implements OnInit {
       // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
       console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
       this.UserId = this.user.getUserId() ?? "";
-      const userData = {
+      this.user.getUser(this.UserId).subscribe((user)=>{
+        this.currentUser = user;
+      });
+
+      // console.log(this.UserId);
+      this.currentUser = {
         userId: this.UserId,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost
       }
-      this.user.updateUser(userData).subscribe(() => {
-        // console.log(userData);
+      this.user.updateUser(this.currentUser).subscribe(() => {
       });
+
+      // const planData = {
+      //   tier: planInfo.plan,
+      //   paymentFrequency: planInfo.billing,
+      //   price: planInfo.totalCost,
+      //   purchaseType: type
+      // }
+      // // Update not create a new payment or they will have two subscriptions
+      // this.payment.updatePayment(planData).subscribe(() => {
+      // });
+
       const planData = {
+        // userId: generatedUserId,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
-        purchaseType: type
+        purchaseType: type,
       }
-      // Update not create a new payment or they will have two subscriptions
-      this.payment.updatePayment(planData).subscribe(() => {
+      this.payment.newPayment(planData).subscribe(() => {
       });
+
     }
 
 
@@ -157,8 +175,10 @@ export class FormService implements OnInit {
       })
     } else {
       // Change this to route to workouts/this.UserId
+      localStorage.removeItem('tier');
+      localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
-      localStorage.setItem('billing', planInfo.billing)
+      localStorage.setItem('billing', planInfo.billing);
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 
