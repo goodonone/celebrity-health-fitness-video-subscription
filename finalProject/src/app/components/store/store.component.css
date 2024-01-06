@@ -95,17 +95,17 @@ height: 20rem;
     color: white;
     font-size: 5rem;
     height:10rem;
-    margin-top: 5rem;
+    margin-top: 2rem;
 }
 
 .buttonContainer{
     display: flex;
     justify-content: space-between;
     width: 13rem;
-    margin-top: 7rem;
+    margin-top: 9.5rem;
     margin-left: 0.4rem;
 }
 
 .buttonView,.buttonAdd {
-    background-color: aliceblue;
+    background-color: white;
 }
