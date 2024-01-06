@@ -180,6 +180,7 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
+      location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 

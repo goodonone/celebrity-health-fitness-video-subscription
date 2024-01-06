@@ -28,6 +28,11 @@ export class UpgradeComponent implements OnInit {
     });
     // console.log(this.router.url);
     this.routeCheck();
+
+    setTimeout(function(){
+      location.reload();
+  }, 10000);
+
   }
 
   routeCheck() {
@@ -39,5 +44,7 @@ export class UpgradeComponent implements OnInit {
       this.showOrHide = false;
     }
   }
+
+ 
 
 }
