@@ -25,6 +25,7 @@ export class ProfileComponent implements OnInit {
   classApplied = false;
   classAppliedTwo = false;
   onlyProfilePicture = true;
+  userId?: number;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -47,7 +48,8 @@ export class ProfileComponent implements OnInit {
   fillProfile() {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     // console.log(UserId);
-    this.userService.getUser(UserId).subscribe(user => {
+    this.userId = parseInt(UserId);
+    this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
       // console.log(this.currentUser);
       if (this.currentUser.tier === "Just Looking") {

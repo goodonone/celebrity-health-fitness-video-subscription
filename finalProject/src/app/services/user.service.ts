@@ -56,7 +56,6 @@ logoutUser() {
 getUserId() {
   if (this.isloggedIn()) {
     return localStorage.getItem(this.userIdKey) ?? "";
-
   }
   return "undefined";
 }
@@ -68,7 +67,7 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
 
-getUser(userId: string): Observable<User> {
+getUser(userId: number): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
