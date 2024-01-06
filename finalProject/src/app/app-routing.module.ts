@@ -50,7 +50,8 @@ const routes: Routes = [
   { path: "change-plan/:id", component: UpgradeComponent, canActivate: [AuthGuard] },
   { path: "**", component: NotFoundComponent },
 
-  { path: "allyshia-profile", component: AllyshiaTestProfileComponent}
+  { path: "allyshia-profile", component: AllyshiaTestProfileComponent},
+
 
 
 

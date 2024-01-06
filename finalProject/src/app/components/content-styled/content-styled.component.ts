@@ -177,7 +177,7 @@ export class ContentStyledComponent implements OnInit {
 
 
 
-// }
+}
 
 
 

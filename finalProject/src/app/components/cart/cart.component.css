@@ -1,6 +1,60 @@
-div {
-    color: azure;
-}
- img {
-    max-width: 40em;
- }
+div.cart-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+  }
+  
+  img {
+    max-width: 100px;
+    max-height: 100px;
+    margin-right: 10px;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  select {
+    padding: 5px;
+  }
+  
+  div.total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  button {
+    background-color: #C7FF20;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #C7FF20;
+  }
+  
+  div.empty-cart {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #888;
+  }
+  
