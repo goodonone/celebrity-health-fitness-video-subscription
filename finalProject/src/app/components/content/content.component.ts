@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { YoutubeService } from 'src/app/services/youtube.service';
-import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user';
+import { YoutubeService } from '../../services/youtube.service';
+// import { User } from 'src/app/models/user';
+// import { UserService } from 'src/app/services/user.service';
 
 
 @Component({

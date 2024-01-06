@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subscribe } from 'diagnostics_channel';
-import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-profile',
@@ -136,6 +137,7 @@ export class ProfileComponent implements OnInit {
     (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
     this.userService.deleteUser(this.userId).subscribe(() => {
       this.router.navigate(['/home']);
+      this.userService.logoutUser();
     });
   }
 

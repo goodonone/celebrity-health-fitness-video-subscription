@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../models/user';
+
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { User } from '../models/user';
 
 
 @Injectable({
@@ -39,7 +40,6 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-
   localStorage.removeItem('userSignedIn');
   localStorage.removeItem('tier');
   localStorage.removeItem('token');

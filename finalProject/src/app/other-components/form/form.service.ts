@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 // import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import { PaymentService } from '../../services/payment.service';
-import { User } from 'src/app/models/user';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
 
 @Injectable({
   providedIn: 'root'

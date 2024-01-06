@@ -49,6 +49,8 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
 import { AuthGuard } from './auth.guard';
+import { AppPasswordDirective } from './app-password.directive';
+
 
 
 
@@ -78,6 +80,7 @@ import { AuthGuard } from './auth.guard';
     StepFourPaymentComponent,
     UpgradeComponent,
     PaymentComponent,
+ 
 
       CartComponent,
       ProductComponent,
@@ -85,6 +88,7 @@ import { AuthGuard } from './auth.guard';
 
     ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
+    AppPasswordDirective,
   
 
   ],

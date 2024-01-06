@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { UserService } from 'src/app/services/user.service';
+import { Component, ContentChild, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
+
+
 
 @Component({
  selector: 'app-sign-in',
@@ -30,9 +32,7 @@ export class SignInComponent implements OnInit {
     localStorage.setItem('billing', response.paymentFrequency);
     localStorage.setItem('token', response.token);
 
-       this.router.navigateByUrl(`/content/${userId}`);
-
-      // this.router.navigateByUrl(`/test`);
+    this.router.navigateByUrl(`/content/${userId}`);
 
    }, error => {
        console.log('Error: ', error);
@@ -42,7 +42,7 @@ export class SignInComponent implements OnInit {
  }
 
 
-  
+
 
 
 

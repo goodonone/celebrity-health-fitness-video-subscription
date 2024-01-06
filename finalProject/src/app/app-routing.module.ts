@@ -20,6 +20,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
+
 import { AllyshiaTestProfileComponent } from './components/allyshia-test-profile/allyshia-test-profile.component';
 
 
