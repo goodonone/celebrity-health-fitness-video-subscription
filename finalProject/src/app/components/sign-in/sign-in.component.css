@@ -56,7 +56,7 @@ input {
     padding: 0.5rem 0 0.5rem 1rem;
     color: black;
     background-color: white;
-    font-size: large;
+    font-size: 1rem;
 }
 
 input:focus,
@@ -89,7 +89,7 @@ input:valid {
 }
 
 ::placeholder{
-    font-size: large;
+    font-size: 1rem;
 }
 
 /* button{

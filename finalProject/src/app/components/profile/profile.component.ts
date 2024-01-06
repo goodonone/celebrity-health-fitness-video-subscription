@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { subscribe } from 'diagnostics_channel';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
@@ -25,7 +26,7 @@ export class ProfileComponent implements OnInit {
   classApplied = false;
   classAppliedTwo = false;
   onlyProfilePicture = true;
-  userId?: number;
+  userId!: number;
   classAppliedDeleteProfile = false;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
@@ -133,8 +134,13 @@ export class ProfileComponent implements OnInit {
 
   goodbye(){
     (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+    this.userService.deleteUser(this.userId).subscribe(() => {
+      this.router.navigate(['/home']);
+    });
   }
 
+    
+  
 
 }
 

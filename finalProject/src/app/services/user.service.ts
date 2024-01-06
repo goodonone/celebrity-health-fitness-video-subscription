@@ -75,7 +75,7 @@ getUser(userId: number): Observable<User> {
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   
-deleteUser(userId: string) : Observable<any> {
+deleteUser(userId: number) : Observable<any> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
