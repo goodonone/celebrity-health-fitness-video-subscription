@@ -31,7 +31,7 @@ h1
     font-weight: 500;
     text-align: left;
     font-size: 10vw;
-    padding-left: 7rem;
+    padding-left: 8rem;
     /* padding-right: 1rem;
     padding-top: 2rem;
     padding-bottom: 0rem; */
@@ -50,11 +50,10 @@ h1
 }
 
 div.cardsDiv{
+    position: relative;
     padding-left: 2rem;
     padding-right: 2rem;
 }
-
-
 
 mat-card.products{
     background-color: rgb(18, 17, 17);
@@ -63,12 +62,50 @@ mat-card.products{
     border-radius: 8px;
     margin-top: 2rem;
     margin-bottom: 10rem;
+    background-size: 80%;
 }
 
-img {
-    max-width: 40em;
+.productDetails{
+position: absolute;
+top: 4%;
+left: 4%;
+z-index: 1;
+height: 20rem;
 }
 
-p {
+/* mat-button{
+    background-color: aqua !important;
+} */
+
+.name {
+    font-weight: 500;
+    width: 25rem;
     color: white;
+    font-size: 5rem;
+    height:8rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    line-height: 4rem;
+}
+
+.price{
+    font-weight: 400;
+    width: 10rem;
+    /* font-style: italic; */
+    color: white;
+    font-size: 5rem;
+    height:10rem;
+    margin-top: 5rem;
+}
+
+.buttonContainer{
+    display: flex;
+    justify-content: space-between;
+    width: 13rem;
+    margin-top: 7rem;
+    margin-left: 0.4rem;
+}
+
+.buttonView,.buttonAdd {
+    background-color: aliceblue;
 }
