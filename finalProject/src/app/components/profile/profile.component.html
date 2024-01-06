@@ -10,9 +10,10 @@
         <div class="profileContainer">
             <div class="deleteProfileContainer" *ngIf="classAppliedDeleteProfile">
                 <div class="absoluteContainer">
-                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership!</span> You will Lose All Access to Plan Specific Content & All Access to the Store. Proceeding will Delete All Traces of Your Profile, this Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You, will be Missed!</h1>
+                    <img class="warningImg" src="assets/Images/Exclamation.svg">
+                    <h1 class="deleteProfileText">You are About to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content <br> & All Access to the Store. Proceeding will Delete <br> All Traces of Your Profile. This Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You will be Missed!</h1>
                     <div class="cancelSubscriptionButtonContainer">
-                        <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Back</button>
+                        <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Keep <br> Subscription</button>
                         <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
                     </div>
                 </div>
@@ -49,14 +50,14 @@
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
                         <!-- Checking if it is a free tier or paid tier-->
-                        <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.paymentFrequency}}</h3>
+                        <!-- <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.paymentFrequency}}</h3> -->
                         <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
                     </div>
                     <div class="profileDataContainer" *ngIf="editProfileToggle">
                         <form (ngSubmit)="editProfile()" id="profileForm">
                             <div class="updateOnlyPicture" *ngIf="onlyProfilePicture">
-                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Name</span> <br>  <input placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"></h3>
-                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Email Address</span><br> <input placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"></h3>
+                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Name</span> <br>  <input class="name" placeholder="Enter First Name" type="text" name="firstName" [(ngModel)]="currentUser.name"></h3>
+                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Email Address</span><br> <input class="email" placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"></h3>
                                 <h3 class="profileDetailsInput"><span class="spanProfileCategory">Date Of Birth</span> <br> <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" id="dob" [(ngModel)]="currentUser.dateOfBirth"></h3>
                                 <h3 class="profileDetailsInputGender"><span class="spanProfileCategory">Gender</span> <br> 
                                     <select name="gender" id="gender">
