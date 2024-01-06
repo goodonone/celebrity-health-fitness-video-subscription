@@ -1,6 +1,74 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+a {
+    color: white;
+    text-align: center;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: fit-content;
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+}
+
+.pageContent{
+    /* overflow: visible; */
+    margin-top: 15rem;
+    height: fit-content;
+    /* padding-left: 5rem; */
+}
+
+h1
+{
+    color: Black;
+    font-weight: 500;
+    text-align: left;
+    font-size: 10vw;
+    padding-left: 7rem;
+    /* padding-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 0rem; */
+    font-weight: 600;
+}
+
+.productsContainer{
+    /* display: block;
+    justify-content: space-around; */
+    display:flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    margin-top: 7rem;
+    height: fit-content;
+}
+
+div.cardsDiv{
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+
+
+mat-card.products{
+    background-color: rgb(18, 17, 17);
+    width: 23rem; 
+    height: 35rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    margin-bottom: 10rem;
+}
+
 img {
     max-width: 40em;
 }
+
 p {
     color: white;
 }

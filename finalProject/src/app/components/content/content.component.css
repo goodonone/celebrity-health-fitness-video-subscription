@@ -15,6 +15,7 @@ a {
     color: white;
     text-align: center;
 }
+
 .fieldset {
     border: none; 
   }
@@ -26,8 +27,7 @@ a {
     overflow-x: hidden;
     height: fit-content;
     /* box-sizing: border-box; */
-    /* overflow: hidden; */
-    
+    /* overflow: hidden; */ 
 }
 
 /* For First tier content */
