@@ -2,7 +2,7 @@
 
     <div class="flexContainer">
         <div class="nameTier">
-            <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}!</h1>
+            <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier" *ngIf="tierTwo">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
             <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}} </h1>
         </div>
@@ -11,7 +11,7 @@
             <div class="deleteProfileContainer" *ngIf="classAppliedDeleteProfile">
                 <div class="absoluteContainer">
                     <img class="warningImg" src="assets/Images/Exclamation.svg">
-                    <h1 class="deleteProfileText">You are About to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content <br> & All Access to the Store. Proceeding will Delete <br> All Traces of Your Profile. This Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You will be Missed!</h1>
+                    <h1 class="deleteProfileText">You are About to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content <br> & All Access to the Store. <br> <br> Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You will be Missed!</h1>
                     <div class="cancelSubscriptionButtonContainer">
                         <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Keep <br> Subscription</button>
                         <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
