@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ProductService {
   baseURL : string = "http://localhost:3000/api/product";
-  tokenKey : string = "MyVideoToken"
+  tokenKey : string = "token"
 
   private sampleProducts: Product[] = [
    

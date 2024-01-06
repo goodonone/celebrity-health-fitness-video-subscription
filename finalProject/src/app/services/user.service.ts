@@ -39,17 +39,11 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-
-  localStorage.removeItem('userSignedIn');
-  localStorage.removeItem('tier');
-  localStorage.removeItem('token');
   localStorage.removeItem('billing');
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
+  localStorage.removeItem("cart");
 
-//   localStorage.removeItem('userSignedIn');
-//   localStorage.removeItem('tier');
-//   localStorage.removeItem('token');
 
 }
 

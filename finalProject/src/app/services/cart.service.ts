@@ -48,21 +48,28 @@ export class CartService {
     // if (!this.cart || !this.cart.items) {
     //   return;
     // }
-    this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => {
-      if(currentItem.price === undefined) {
-        return prevSum;
-      }
+    // this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => {
+      // if(currentItem.price === undefined) {
+      //   return prevSum;
+      // }
 
-      return prevSum + currentItem.price;}, 0)
-    // this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => prevSum + currentItem.price!, 0)
+      // return prevSum + currentItem.price;}, 0)
+    this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => prevSum + currentItem.price!, 0)
     this.cart.totalCount = this.cart.items.reduce((prevSum, currentItem) => prevSum + currentItem.quantity, 0)
     const cartJson = JSON.stringify(this.cart);
-    localStorage.setItem('Cart', cartJson)
+    localStorage.setItem('cart', cartJson)
     this.cartSubject.next(this.cart)
    }
 
    private getCartFromLocalStorage():Cart{
-    const cartJson = localStorage.getItem('Cart');
+    const cartJson = localStorage.getItem('cart');
     return cartJson? JSON.parse(cartJson): new Cart();
    }
+
+   getCart(){}
+
+   updateCart(){}
+
+   saveCart(){} //probably the same as updatecart
+
 }

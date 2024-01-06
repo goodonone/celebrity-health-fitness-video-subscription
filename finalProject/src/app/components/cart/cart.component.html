@@ -34,7 +34,7 @@
         <div>{{cart.totalCount}}</div>
         <div>${{cart.totalPrice}}</div>
     </div>
-    <button routerLink="/checkout" (click)="emptyCart()">Proceed to Checkout</button>
+    <button routerLink="/checkout" (click)="checkoutCart()">Proceed to Checkout</button>
 </div>
 
 <div *ngIf="cart.totalCount === 0">
