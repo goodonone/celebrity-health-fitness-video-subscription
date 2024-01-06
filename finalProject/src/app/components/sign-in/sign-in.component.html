@@ -32,9 +32,9 @@
                  required>
                 <span class="errorSpan"><p *ngIf="errorMessage">Invalid Username or Password! Try again.</p></span>
                  <span class="buttonSpan">
-                  <button class="btn btn-submit"
+                  <button class="btn btn-submit" mat-button
                   [disabled]="loginForm.form.invalid"
-                  (click)="signin()">Sign-In</button>
+                  (click)="signin()">Log In</button>
                  </span>
                 </form>
             </mat-card-content>

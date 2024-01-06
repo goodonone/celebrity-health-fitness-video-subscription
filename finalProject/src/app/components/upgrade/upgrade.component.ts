@@ -8,10 +8,11 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './upgrade.component.html',
   styleUrls: ['./upgrade.component.css']
 })
-export class UpgradeComponent implements OnInit{
-  
+export class UpgradeComponent implements OnInit {
+
 
   userLoggedIn = true;
+  showOrHide!: boolean;
 
   currentUser: User = new User;
 
@@ -21,9 +22,24 @@ export class UpgradeComponent implements OnInit{
     const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.userService.getUser(userId).subscribe(user => {
       this.currentUser = user;
-
+      // this.currentUser.userId
     });
-  
+    // console.log(this.router.url);
 
+    this.routeCheck();
+      
+    
+    
 }
+
+routeCheck() {
+  if (this.router.url.startsWith('/change-plan/')) {
+    // console.log("Change-plan");
+    this.showOrHide = true;
+  }
+  else{
+    this.showOrHide = false;
+  }
+}
+
 }

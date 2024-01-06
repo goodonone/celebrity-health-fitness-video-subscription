@@ -2,13 +2,6 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 
 
-// hardcoded user data.
-const loggedInUser = {
- id: '1zx-casd123-asdzxc132',
- name: 'Lakindu Hewawasam',
- role: 'customer'
-}
-
 @Injectable({
  providedIn: 'root'
 })
@@ -34,7 +27,6 @@ canActivate(): boolean{
   else{
     this.router.navigateByUrl('/signin')
     return false;
-    
   }
 
  }

@@ -3,15 +3,17 @@
 <div class="pageContainer">
   <!-- Upgrade button for Tier Two and Three -->
   <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <button class="btn btn-upgrade" routerLink="/upgrade">Upgrade</button>
+      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
   </div>
 
   <!-- Countdown timer for First and Second Tiers -->
   <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
+    {{timerVal}}
   </div>
 
   <!-- Countdown timer for Third Tier -->
   <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser.tier === 'All In'">
+    {{timerValThree}}
   </div>
 
   <!-- Live Video Div -->
@@ -27,7 +29,6 @@
                   <iframe width="800" height="480" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
                 
             </div>
-
           </mat-card-content>
       </mat-card>
   </div>
@@ -49,7 +50,7 @@
                       </div>
                       <div >
                         <h5 class="card-title mb-0">
-                          <a>{{ video.snippet.title }}</a>
+                          <a class="videoTitle">{{ video.snippet.title }}</a>
                         </h5>
                       </div>
                     </div>
@@ -62,11 +63,11 @@
 
 <!-- Tier two and three videos -->
 <div class="cardSecondAndThirdTiers">
-  <!-- Make this if a ! -->
+  <!-- Make this if a class="videoTitle" ! -->
   <div class="upgradeContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
       <div id="fixed">
-          <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
-          <button class="btn btn-upgradeTierButton" routerLink="/upgrade">Upgrade</button>
+          <!-- <h2 class="upgradeTierText">Upgrade for New Videos Weekly! <span class="smallerFont">(And access to the entire workout library)</span></h2>
+          <button class="btn btn-upgradeTierButton" [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button> -->
       </div>
   </div>
   
@@ -74,7 +75,6 @@
   <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
       <mat-card-header>
-          
           <h1 class="tierName">{{currentUser.tier}}</h1>
       </mat-card-header>
       <div class="toggle-area">
@@ -94,12 +94,13 @@
               </div>
               <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                  <div>
+                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
+                  <!-- width="380" height="250" -->
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -112,12 +113,12 @@
               </div>
               <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
+                  <div>
                     <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -135,7 +136,7 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -153,7 +154,7 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     </h5>
                   </div>
                 </div>
@@ -169,7 +170,7 @@
                     <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   
                     
-                      <a>{{ video.snippet.title }}</a>
+                      <a class="videoTitle">{{ video.snippet.title }}</a>
                     
                   
                 
@@ -183,7 +184,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
@@ -197,7 +198,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
@@ -211,7 +212,7 @@
                 <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a>{{ video.snippet.title }}</a>
+                  <a class="videoTitle">{{ video.snippet.title }}</a>
                 
               
             
@@ -229,7 +230,7 @@
     <!-- </div>
   </div>
 </div>   -->
-<button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
+<!-- <button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button> -->
 
 
 
