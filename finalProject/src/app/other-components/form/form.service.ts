@@ -93,19 +93,20 @@ export class FormService implements OnInit {
         email: userInfo.email,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
-        price: planInfo.totalCost
-      }
-      this.user.signUp(userData).subscribe(() => {
-      });
-      const planData = {
-        // userId: generatedUserId,
-        tier: planInfo.plan,
-        paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
         purchaseType: type,
       }
-      this.payment.newPayment(planData).subscribe(() => {
+      this.user.signUp(userData).subscribe(() => {
       });
+      // const planData = {
+      //   // userId: generatedUserId,
+      //   tier: planInfo.plan,
+      //   paymentFrequency: planInfo.billing,
+      //   price: planInfo.totalCost,
+      //   purchaseType: type,
+      // }
+      // this.payment.newPayment(planData).subscribe(() => {
+      // });
     }
     else {
       // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
