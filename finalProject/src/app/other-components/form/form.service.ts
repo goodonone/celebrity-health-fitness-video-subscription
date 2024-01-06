@@ -95,6 +95,7 @@ export class FormService implements OnInit {
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
         purchaseType: type,
+        paymentType: type
       }
       this.user.signUp(userData).subscribe(() => {
       });

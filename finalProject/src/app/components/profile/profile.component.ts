@@ -96,17 +96,17 @@ export class ProfileComponent implements OnInit {
     this.userService.updateUser(this.currentUser).subscribe(() => {
       this.fillProfile();
       // location.reload();
-      // window.alert("Edited Profile Successfully");
-      // this.router.navigate(['profile/', this.currentUser.userId]);
-      // }, error => {
-      //   console.log('Error: ', error)
-      //   if (error.status === 401 || error.status === 403) {
-      //     this.userService.logoutUser();
-      //     this.router.navigate(['signin']);
+      window.alert("Edited Profile Successfully");
+      this.router.navigate(['profile/', this.currentUser.userId]);
+      }, error => {
+        console.log('Error: ', error)
+        if (error.status === 401 || error.status === 403) {
+          this.userService.logoutUser();
+          this.router.navigate(['signin']);
 
-      //   }
-      // });
-    });
+        }
+      });
+    // });
   }
 
   toggleProfile() {
