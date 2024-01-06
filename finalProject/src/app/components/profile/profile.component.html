@@ -8,7 +8,21 @@
         </div>
 
         <div class="profileContainer">
+            <div class="deleteProfileContainer" *ngIf="classAppliedDeleteProfile">
+                <div class="absoluteContainer">
+                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership!</span> You will Lose All Access to Plan Specific Content & All Access to the Store. Proceeding will Delete All Traces of Your Profile, this Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You, will be Missed!</h1>
+                    <div class="cancelSubscriptionButtonContainer">
+                        <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Back</button>
+                        <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
+                    </div>
+                </div>
+            </div>
+
+            <fieldset id="deleteProfile" [class.active]="classAppliedDeleteProfile" [disabled]="classAppliedDeleteProfile">
+                
             <mat-card class="profileInfo">
+                <!-- <fieldset id="deleteProfile" [class.active]="classAppliedDeleteProfile"> -->
+
                 <div class="flexAllProfileData">
                     <mat-card class="profilePictureContainer" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}">
                             <div class="editButtonsContainer">
@@ -16,9 +30,12 @@
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Change Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="saveOrChange == true" id="buttonDisappear" (click)="toggleProfile()" form="profileForm" type="submit" (click)="editProfile()" [class.active]="classApplied">Save Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" *ngIf="!editOrUpdate" (click)="toggleDelete()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Cancel Subscription</button>
+
                                 <!-- <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button> -->
                             </div>
                     </mat-card>
+                    <!-- <div></div> -->
                     <div class="profileDataContainer" *ngIf="!editProfileToggle">
                         <h3 class="profileDetails"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
                         <h3 class="profileDetails"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
@@ -67,7 +84,9 @@
                         </form>    
                     </div>
                 </div>
-            </mat-card>       
+                
+            </mat-card>      
+        </fieldset> 
         </div>  
 
     </div>

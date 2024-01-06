@@ -74,7 +74,7 @@
   <fieldset [disabled]="currentUser.tier === 'Just Looking'" class="fieldset">
   <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
-      <mat-card-header>
+      <mat-card-header class="tierTwoThreeHeader">
           <h1 class="tierName">{{currentUser.tier}}</h1>
       </mat-card-header>
       <div class="toggle-area">

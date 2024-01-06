@@ -7,9 +7,9 @@ import { User } from '../../models/user';
 // import { User } from 'src/app/models/user';
 // import { UserService } from 'src/app/services/user.service';
 
-interface jquery {
-  chosen(options?: any): JQuery;
-}
+// interface jquery {
+//   chosen(options?: any): JQuery;
+// }
 
 @Component({
   selector: 'app-content-styled',

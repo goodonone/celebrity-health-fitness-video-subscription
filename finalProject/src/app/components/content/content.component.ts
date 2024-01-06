@@ -5,11 +5,6 @@ import { YoutubeService } from 'src/app/services/youtube.service';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
-import * as $ from 'jquery';
-
-interface JQuery {
-  chosen(options?: any): JQuery;
-}
 
 @Component({
   selector: 'app-content',

@@ -84,9 +84,18 @@ h1,
     /* padding-right: 5rem; */
 }
 
+mat-card-header{
+    justify-content: center;
+}
+
+mat-card-header.tierTwoThreeHeader{
+    justify-content: left;
+}
+
 h1.tierOneHeader {
     font-size: 5rem;
-    text-align: left;
+    text-align: center;
+    /* font-style: italic; */
     color: white;
     padding-top: 2.5vw;
     padding-left: 1.2rem;
@@ -368,8 +377,6 @@ div.upgradeContainer {
       right: 4%
     } */
 }
-
-
 
 .smallerFont{
     font-size: 2rem;

@@ -26,6 +26,7 @@ export class ProfileComponent implements OnInit {
   classAppliedTwo = false;
   onlyProfilePicture = true;
   userId?: number;
+  classAppliedDeleteProfile = false;
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -96,17 +97,17 @@ export class ProfileComponent implements OnInit {
     this.userService.updateUser(this.currentUser).subscribe(() => {
       this.fillProfile();
       // location.reload();
-      window.alert("Edited Profile Successfully");
-      this.router.navigate(['profile/', this.currentUser.userId]);
-      }, error => {
-        console.log('Error: ', error)
-        if (error.status === 401 || error.status === 403) {
-          this.userService.logoutUser();
-          this.router.navigate(['signin']);
+      // window.alert("Edited Profile Successfully");
+      // this.router.navigate(['profile/', this.currentUser.userId]);
+      // }, error => {
+      //   console.log('Error: ', error)
+      //   if (error.status === 401 || error.status === 403) {
+      //     this.userService.logoutUser();
+      //     this.router.navigate(['signin']);
 
-        }
-      });
-    // });
+      //   }
+      // });
+    });
   }
 
   toggleProfile() {
@@ -125,5 +126,16 @@ export class ProfileComponent implements OnInit {
     this.editProfileToggle = !this.editProfileToggle;
   }
 
+  toggleDelete(){
+    this.classAppliedDeleteProfile = !this.classAppliedDeleteProfile;
+    (document.getElementById('deleteProfile') as HTMLFieldSetElement).setAttribute('disabled','disabled');
+  }
+
+  goodbye(){
+    (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+  }
+
 
 }
+
+
