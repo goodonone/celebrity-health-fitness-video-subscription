@@ -12,6 +12,7 @@ input {
   padding: 0.2rem 0.2rem 0.2rem 0.5rem;
   color: black;
   background-color: white;
+  font-size: 0.9rem;
 }
 
 input:focus,
