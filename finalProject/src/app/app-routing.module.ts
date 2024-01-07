@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AboutComponent } from './components/about/about.component';
 import { ContactComponent } from './components/contact/contact.component';
 import { ContentComponent } from './components/content/content.component';
-import { CreateProfileComponent } from './components/create-profile/create-profile.component';
 import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -20,6 +19,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
+
 import { AllyshiaTestProfileComponent } from './components/allyshia-test-profile/allyshia-test-profile.component';
 
 
@@ -31,7 +31,6 @@ const routes: Routes = [
   { path: "contact", component: ContactComponent },
   { path: "content/:id", component: ContentComponent, canActivate: [AuthGuard] },
   // { path: "content/:id", component: ContentComponent },
-  { path: "create-profile", component: CreateProfileComponent, canActivate: [AuthGuard] },
   { path: "edit-profile/:id", component: EditProfileComponent, canActivate: [AuthGuard] },
   { path: "profile/:id", component: ProfileComponent, canActivate: [AuthGuard] },
   { path: "signup", component: SignUpComponent },

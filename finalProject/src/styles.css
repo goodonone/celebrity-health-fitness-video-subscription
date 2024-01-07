@@ -16,6 +16,22 @@ body {
     background:black;
 }
 
+::-webkit-scrollbar
+{
+    background: transparent;
+    width: 10px
+} 
 
+::-webkit-scrollbar-thumb {
+    background: rgb(64, 64, 64);
+    border-radius: 200px;
+    padding-right: 2px;
+    width: 3px;
+}
+
+::-webkit-scrollbar-corner {
+    background: black;
+    border-radius: 10px;
+}
 
 

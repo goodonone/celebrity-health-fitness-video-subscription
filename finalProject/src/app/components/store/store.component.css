@@ -1,6 +1,162 @@
-img {
-    max-width: 40em;
+* {
+    font-family: 'Outfit', sans-serif;
 }
-p {
+
+a {
     color: white;
+    text-align: center;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: fit-content;
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+}
+
+.pageContent {
+    /* overflow: visible; */
+    margin-top: 15rem;
+    height: fit-content;
+    /* padding-left: 5rem; */
+}
+
+h1 {
+    color: Black;
+    font-weight: 500;
+    text-align: left;
+    font-size: 10vw;
+    padding-left: 8rem;
+    /* padding-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 0rem; */
+    font-weight: 600;
+}
+
+.productsContainer {
+    /* display: block;
+    justify-content: space-around; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    margin-top: 7rem;
+    height: fit-content;
+}
+
+div.cardsDiv {
+    position: relative;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+mat-card.products {
+    background-color: rgb(18, 17, 17);
+    width: 23rem;
+    height: 35rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    margin-bottom: 10rem;
+    background-size: 80%;
+}
+
+.productDetails {
+    position: absolute;
+    top: 4%;
+    left: 3%;
+    z-index: 1;
+    height: 20rem;
+}
+/* mat-button{
+    background-color: aqua !important;
+} */
+
+.name {
+    font-weight: 500;
+    width: 25rem;
+    color: white;
+    font-size: 5rem;
+    height: 8rem;
+    margin-top:13rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    line-height: 4rem;
+}
+
+.price {
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 600;
+    width: 10rem;
+    /* font-style: italic; */
+    color: white;
+    font-size: 10rem;
+    height: 10rem;
+    margin-top: 2rem;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    height: 4rem;
+    width: 23rem;
+    margin-top: -4rem;
+    margin-left: -0.7rem;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0 0 8px 8px;
+}
+
+/* .buttonView,
+.buttonAdd {
+    background-color: white;
+} */
+
+.buttonView{
+    font-size: 1rem;
+    color:black;
+    margin-right: 1rem;
+    padding-top: 1.4rem;
+    /* text-decoration: underline;
+    text-decoration-color: white; */
+}
+
+.buttonAdd{
+    font-size: 1rem;
+    color: black;
+    margin-left: 2rem;
+    letter-spacing: 0.5px;
+    padding-top: 1.4rem;
+}
+
+a.buttonAdd:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+}
+
+p.buttonView:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+}
+
+
+#card4 .name,
+#card4 .price {
+    /* color: rgb(28, 27, 27); */
+    color: #c7ff20;
+}
+
+#card9 .name,
+#card9 .price {
+    /* color: rgb(28, 27, 27); */
+    color: #c7ff20;
+}
+
+#card7 .name,
+#card7 .price {
+    color: rgb(28, 27, 27);
+    color: #c7ff20;
 }

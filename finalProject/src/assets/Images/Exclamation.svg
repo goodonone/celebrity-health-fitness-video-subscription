@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 161.84 143.9">
+  <defs>
+    <style>
+      .cls-1 {
+        font-family: SourceSansPro-Regular, 'Source Sans Pro';
+        font-size: 76.91px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        stroke: #000;
+      }
+
+      .cls-2, .cls-3 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-3 {
+        fill: #231f20;
+        stroke: #fff;
+      }
+
+      .cls-4 {
+        stroke-width: 0px;
+      }
+    </style>
+  </defs>
+  <path class="cls-4" d="M160.49,127.89L89.52,4.96c-3.83-6.62-13.38-6.62-17.2,0L1.34,127.89c-3.82,6.62.96,14.9,8.6,14.9h141.95c7.64,0,12.42-8.28,8.6-14.9ZM136.65,134.29H25.18c-7.64,0-12.42-8.27-8.6-14.89L72.32,22.86c3.82-6.62,13.37-6.62,17.2,0l55.73,96.54c3.82,6.62-.96,14.89-8.6,14.89Z"/>
+  <path class="cls-3" d="M136.65,134.29H25.18c-7.64,0-12.42-8.27-8.6-14.89L72.32,22.86c3.82-6.62,13.37-6.62,17.2,0l55.73,96.54c3.82,6.62-.96,14.89-8.6,14.89Z"/>
+  <path class="cls-2" d="M136.65,134.29H25.18c-7.64,0-12.42-8.27-8.6-14.89L72.32,22.86c3.82-6.62,13.37-6.62,17.2,0l55.73,96.54c3.82,6.62-.96,14.89-8.6,14.89Z"/>
+  <text class="cls-1" transform="translate(69.76 113.14)"><tspan x="0" y="0">!</tspan></text>
+</svg>

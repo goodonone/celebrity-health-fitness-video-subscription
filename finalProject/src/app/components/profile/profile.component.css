@@ -29,6 +29,7 @@
 }
 
 .profilePictureContainer {
+    position: relative;
     height: 21rem;
     width: 21rem;
     background-color: #C7FF20;
@@ -185,7 +186,21 @@ h3.profileDetailsInputObjective{
     border-color: rgb(73, 73, 73);
     width: 10rem;
     /* color: white; */
-    margin-top: 18rem;
+    margin-top: 15rem;
+    margin-left: 1rem;
+}
+
+.btn-cancelSubscriptionButton{
+    height: 3rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    /* border-color: rgb(0, 0, 0); */
+    width: 10rem;
+    margin-top: 1.3rem;
     margin-left: 1rem;
 }
 
@@ -213,7 +228,7 @@ h3.profileDetailsInputObjective{
     display: flex;
     justify-content: space-between;
     /* background-color: red; */
-    width: 14.6rem;
+    width: 18rem;
     /* margin-right: 7rem; */
 }
 
@@ -244,16 +259,114 @@ h3.profileDetailsInputObjective{
     margin-top: 1.3rem;
 }
 
+.btn-backButton{
+    height: 3rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    /* border-color: rgb(0, 0, 0); */
+    width: 10rem;
+    margin-top: 1.3rem;
+    margin-left: 1rem;
+}
+
+
 .btn-change:hover,
 .btn-editPhotoButton:hover,
 .btn-editProfileButton:hover,
-.btn-updateProfileButton:hover
+.btn-updateProfileButton:hover,
+.btn-cancelSubscriptionButton:hover,
+.btn-backButton:hover
     {
     background-color: white;
     /* border-color: #C7FF20; */
     color: black !important;
 }
 
+.btn-cancelSubscriptionButtonFinal{
+    height: 3rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    /* border-color: rgb(0, 0, 0); */
+    width: 10rem;
+    margin-top: 1.3rem;
+    margin-left: 1rem;
+}
+
+.btn-cancelSubscriptionButtonFinal:hover{
+    background-color: red;
+    /* border-color: #C7FF20; */
+    color: black !important;
+}
+
+/* p{
+    color: red;
+} */
+
+.deleteProfileContainer{
+    position: relative;
+}
+
+.absoluteContainer{
+    position: absolute;
+    top: -12rem;
+    right: -1rem;
+    z-index: 1;
+    width: 49rem;
+    padding: 1.5rem;
+    height: 50rem;
+}
+
+
+h1.deleteProfileText{
+    margin-top: -14rem;
+    color: white;
+    font-weight: 500;
+    font-size: large;
+    text-align: center;
+}
+
+/* a{
+    color: white;
+ } */
+
+ /* a:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+ } */
+
+ .underline{
+    text-decoration: underline;
+ }
+
+ .cancelSubscriptionButtonContainer{
+    display: flex;
+    justify-content: space-between;
+    width: 30rem;
+    padding: 3rem 10rem 3rem 10rem;
+}
+
+img.warningImg{
+    transform: scale(30%, 30%);
+}
+
+.avatar{
+    position: absolute;
+    z-index: 1;
+    background-size: cover;
+    background-position:center center;
+    transform:scale(10%,10%);
+    left: -42.5rem;
+    top: -54rem
+    /* bottom: 2rem; */
+}
 
 
 input,
@@ -265,11 +378,12 @@ select {
     /* Comment out following text if you want to revert to white background input and select */
     background-color: rgb(25, 25, 25);
     border-radius: 6px;
-    /* border-color: #1a1a1a; */
+    border-color: white;
+    border-width: 1px;
     color: white;
 }
 
-input{
+input.name,input.email{
     padding-left: 0.3rem;
 }
 
@@ -295,9 +409,34 @@ input#weight,
     height: 2.7rem;
 }
 
+#deleteProfile.active {
+    border-radius: 6px;
+    -webkit-filter: blur(30px);
+    -moz-filter: blur(30px);
+    -o-filter: blur(30px);
+    -ms-filter: blur(30px);
+    filter: blur(30px);
+}
+
+fieldset{
+        border-color: rgb(255, 255, 255);
+        border-style: solid;
+}
+
+
+/* .deleteProfileText{
+    position: absolute;
+    top: 15%;
+    right: 5%;
+    z-index: 1;
+} */
+
+
+
 ::placeholder {
     text-align: center; 
- }
+}
+
 
 /* Allyshia's code */
 

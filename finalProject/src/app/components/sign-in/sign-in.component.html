@@ -24,14 +24,15 @@
             <label for="password">Password</label>
           </div>
           <input type="password"
-                 matInput
+                 matInput 
+                 appPassword
                  name="password"
                  id="password"
                  placeholder="Enter your password"
                  [(ngModel)]="password"
                  required>
                 <span class="errorSpan"><p *ngIf="errorMessage">Invalid Username or Password! Try again.</p></span>
-                 <span class="buttonSpan">
+                <span class="buttonSpan">
                   <button class="btn btn-submit" mat-button
                   [disabled]="loginForm.form.invalid"
                   (click)="signin()">Log In</button>

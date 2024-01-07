@@ -18,6 +18,7 @@ input {
   padding: 0.5rem 0 0.5rem 1rem;
   color: black;
   background-color: white;
+  font-size: 1rem;
 }
 
 mat-card-header{

@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../models/user';
+
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { User } from '../models/user';
 
 
 @Injectable({
@@ -39,7 +40,6 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-
   localStorage.removeItem('userSignedIn');
   localStorage.removeItem('tier');
   localStorage.removeItem('token');
@@ -56,7 +56,6 @@ logoutUser() {
 getUserId() {
   if (this.isloggedIn()) {
     return localStorage.getItem(this.userIdKey) ?? "";
-
   }
   return "undefined";
 }
@@ -68,7 +67,7 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
 
-getUser(userId: string): Observable<User> {
+getUser(userId: number): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
@@ -76,7 +75,7 @@ getUser(userId: string): Observable<User> {
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   
-deleteUser(userId: string) : Observable<any> {
+deleteUser(userId: number) : Observable<any> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }

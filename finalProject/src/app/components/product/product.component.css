@@ -1,6 +1,117 @@
-p {
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: 100vh;
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+}
+
+.cardFlex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.productContainer {
+    margin: auto;
+    width: 70rem;
+    height: 40rem;
+    background-color: white;
+    margin-top: 15rem;
+}
+
+.productImage{
+    height: 38rem;
+    width: 40rem;
+    background-size: cover;
+    /* background-repeat: no-repeat; */
+    border-radius: 8px;
+}
+
+.productInfo{
+    padding-top: 2rem;
+    height: 30rem;
+    width: 28rem;
+    background-size: cover;
+    border-radius: 8px;
+}
+
+
+p.name{
+    margin-left: 2rem;
+    font-size: 6rem;
+    font-weight: 500;
+    height: 5rem;
+    line-height: 2rem;
+}
+
+p.price{
+    margin-left: 2rem;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 6rem;
+    /* font-weight: 500; */
+    line-height: 3rem;
+}
+
+.productDescriptionContainer{
+    margin-left: 2rem;
+    margin-top: 5rem;
+    height: fit-content;
+}
+
+.descriptionTitle{
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+.productDescriptionLorem{
+    font-size: 1.2rem;
+    margin-top: 1rem;
+    /* margin-left: 2rem; */
+}
+
+.buttonContainer{
+    width: 28rem;
+}
+
+.addToCartButton, .viewCartButton {
+    margin-left: 2rem;
+    margin-top: 3.3rem;
+    background-color: black !important;
+}
+
+.viewCartButton{
+    padding: 0 1rem 0 1rem;
+}
+
+.backButton{
+letter-spacing: 1px;
+margin-left: 2rem;
+margin-top: 3.3rem;
+background-color: black !important;
+}
+
+.addToCartButton:hover, .viewCartButton:hover, .backButton:hover{
+    color: black !important;
+    background-color: white !important;
+}
+
+
+
+
+/* p {
     color: white;
 }
-img{
+
+img {
     max-width: 50em;
-}
+} */

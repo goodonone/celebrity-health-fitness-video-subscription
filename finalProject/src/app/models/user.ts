@@ -1,5 +1,5 @@
 export class User {
-    userId?: string;
+    userId?: number;
     email?: string;
     password?: string;
     name?: string;
@@ -17,7 +17,7 @@ export class User {
 
 
 constructor(
-        userId?: string, 
+        userId?: number, 
         email?: string, 
         password?: string, 
         name?: string, 

@@ -19,6 +19,14 @@
   border-radius: 6px;
 }
 
+.btn-next{
+  letter-spacing: 0.9px;
+}
+
+.btn-confirm{
+  padding: 0.58rem;
+}
+
 .btn-next,
 .btn-confirm {
   margin: 1rem 0 1rem auto;

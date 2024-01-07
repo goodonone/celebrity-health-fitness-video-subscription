@@ -10,6 +10,8 @@ import { CartService } from 'src/app/services/cart.service';
 })
 export class CartComponent implements OnInit{
   cart!: Cart;
+
+
   constructor(private cartService: CartService) {
 
   }
