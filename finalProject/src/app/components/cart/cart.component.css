@@ -1,6 +1,181 @@
-div {
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* a {
+    color: white;
+    text-align: center;
+} */
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: 100vh;
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+}
+
+.productImage{
+    width: 4rem;
+    height: 4rem;
+}
+
+.cardFlex{
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    margin-top: 3rem;
+    position: relative;
+}
+
+.cartContainer{
+    margin: 10.5rem auto auto auto;
+    width: 80rem;
+    height: fit-content;
+    padding-top: 5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    /* min-height: 40rem; */
+}
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    background-color: rgb(220, 220, 220);
+    margin: 0.5rem 0 0.5rem 0;
+    border-radius: 6px;
+    padding: 0.4rem ;
+}
+
+.pageName{
+    color: Black;
+    font-weight: 500;
+    text-align: left;
+    font-size: 8vw;
+    padding-left: 3rem;
+    /* padding-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 0rem; */
+    font-weight: 600; 
+}
+
+p.name{
+    /* padding-top: 1.3rem; */
+    padding: 1.3rem 0 0rem 1.3rem;
+    font-size: 2.5rem;
+}
+
+div.quantity{
+    position: absolute;
+    left: 60rem;
+    top: 2rem;
+    /* margin-left: 10rem; */
+}
+
+div.removeButton{
+    position: absolute;
+    left: 71rem;
+    top: 1.5rem;
+}
+
+div.priceContainer{
+    position: absolute;
+    margin-left: 10rem;
+    top: 2rem;
+    left: 55rem;
+}
+
+p.price{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h1.totalText{
+    font-size: 3rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.totalContainer{
+    /* position: absolute; */
+    display:inline-flex;
+/* flex-direction: row; */
+    justify-content: right;
+    margin-right: 8rem;
+    /* background-color: aqua; */
+}
+
+.totalCountContainer{
+    margin-top: 4rem;
+    margin-right: 2rem;
+}
+
+p.totalCount{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+p.totalPrice{
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.totalPriceContainer{
+    margin-top: 3.9rem;
+}
+
+button.buttonCheckOut{
+    background-color: rgb(220, 220, 220);
+    width: 12rem;
+    margin-left: 54rem;
+    /* padding-bottom: 2rem; */
+}
+
+.buttonCheckOut:hover{
+    background-color: rgb(0, 0, 0) !important;
+    color: white !important;
+}
+
+.buttonContainer{
+    margin-top: 1rem;
+    margin-left: 12rem;
+}
+
+div.emptyMessageContainer{
+    padding-top: 5rem;
+    text-align: center;
+    margin: auto;
+    padding-bottom: 10rem;
+}
+
+p.emptyMessage{
+    font-size: 2rem;
+}
+
+div.thankYouMessage{
+    margin-top: 2rem;
+}
+
+h1.thankYou{
+    font-weight: 500;
+}
+
+p.payment{
+    font-size: 1rem;
+}
+
+
+
+
+
+
+/* div {
     color: azure;
 }
  img {
     max-width: 40em;
- }
+ } */

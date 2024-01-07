@@ -22,7 +22,7 @@ export class ProductComponent implements OnInit{
       }
     });
   }
-  addToCart() {
+  addToCart(selectedProduct: Product) {
     this.cartService.addToCart(this.currentProduct)
   }
 }
