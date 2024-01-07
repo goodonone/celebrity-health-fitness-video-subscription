@@ -13,8 +13,8 @@ import { User } from 'src/app/models/user';
 export class FormService implements OnInit {
 
   userIsLoggedIn: boolean = false;
-  UserId: string = "";
-  userId: string = "";
+  UserId?: string;
+  userId?: number;
   currentUser: User = new User();
 
   private activeStepSubject = new BehaviorSubject<number>(1);
@@ -112,13 +112,14 @@ export class FormService implements OnInit {
       // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
       console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
       this.UserId = this.user.getUserId() ?? "";
-      this.user.getUser(this.UserId).subscribe((user)=>{
+      this.userId = parseInt(this.UserId)
+      this.user.getUser(this.userId).subscribe((user)=>{
         this.currentUser = user;
       });
 
       // console.log(this.UserId);
       this.currentUser = {
-        userId: this.UserId,
+        userId: this.userId,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost

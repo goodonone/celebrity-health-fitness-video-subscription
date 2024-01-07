@@ -28,11 +28,11 @@ export class ContentStyledComponent implements OnInit {
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userService.getUser(userId).subscribe(user => {
-      this.currentUser = user;
-      // console.log(user);
-    });
+    // const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    // this.userService.getUser(userId).subscribe(user => {
+    //   this.currentUser = user;
+    //   // console.log(user);
+    // });
 
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();

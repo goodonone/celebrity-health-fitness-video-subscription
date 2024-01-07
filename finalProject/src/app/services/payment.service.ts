@@ -17,6 +17,10 @@ export class PaymentService {
     return this.http.post(`${this.baseURL}/`, newPayment);
   }
 
+  newPaymentStore(newPayment: Payment) {
+    return this.http.post(`${this.baseURL}/store/`, newPayment);
+  }
+
   updatePayment(updatedPayment: Payment): Observable<Payment> {
     let reqHeaders = {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`

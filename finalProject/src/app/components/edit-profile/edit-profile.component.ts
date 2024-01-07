@@ -17,17 +17,17 @@ export class EditProfileComponent implements OnInit{
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userService.getUser(userId).subscribe(user => {
-      this.currentUser = user;
-      console.log(user);
-    });
+    // const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    // this.userService.getUser(userId).subscribe(user => {
+    //   this.currentUser = user;
+    //   console.log(user);
+    // });
   }
 
   
 
   editProfile() {
-    this.userService.updateUser(this.currentUser).subscribe(() => {
+    this.userService.updateUser2(this.currentUser).subscribe(() => {
       window.alert("Edited Profile Successfully");
       this.router.navigate(['profile/', this.currentUser.userId]);
     }, error => {

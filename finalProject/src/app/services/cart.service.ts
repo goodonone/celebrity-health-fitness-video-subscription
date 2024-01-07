@@ -14,12 +14,16 @@ export class CartService {
 
   addToCart(product:Product):void{
     let cartItem = this.cart.items.find(item => item.product.productId === product.productId);
-    if(cartItem)
-      return;
-
+    if(cartItem) {
+      if(cartItem.quantity < 5)
+      cartItem.quantity++;
+    } else {
+      
     this.cart.items.push(new CartItems(product));
-    this.setCartToLocalStorage();
+    
   }
+  this.setCartToLocalStorage();
+};
 
   removeFromCart(productId: number): void{
     this.cart.items = this.cart.items.filter(items => items.product.productId !== productId);

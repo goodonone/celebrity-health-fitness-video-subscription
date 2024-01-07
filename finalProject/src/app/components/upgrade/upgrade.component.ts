@@ -13,14 +13,16 @@ export class UpgradeComponent implements OnInit {
 
   userLoggedIn = true;
   showOrHide!: boolean;
+  userId?: number;
 
   currentUser: User = new User;
 
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userService.getUser(userId).subscribe(user => {
+    const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    this.userId = parseInt(UserId);
+    this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
       // this.currentUser.userId
     });

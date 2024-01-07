@@ -114,7 +114,7 @@
               <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
                 <div>
                   <div>
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
@@ -132,7 +132,7 @@
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <div>
                   <div >
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
@@ -150,7 +150,7 @@
               <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
                 <div>
                   <div >
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
@@ -167,7 +167,7 @@
               <mat-card *ngFor="let video of absVideos" class="cardVideosSecondThird">
                 
                   
-                    <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                    <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   
                     
                       <a class="videoTitle">{{ video.snippet.title }}</a>
@@ -181,7 +181,7 @@
               <mat-card *ngFor="let video of fullBodyVideos" class="cardVideosSecondThird">
                 
                   
-                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
                   <a class="videoTitle">{{ video.snippet.title }}</a>
@@ -195,7 +195,7 @@
               <mat-card *ngFor="let video of upperBodyVideos" class="cardVideosSecondThird">
                 
                   
-                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
                   <a class="videoTitle">{{ video.snippet.title }}</a>
@@ -209,7 +209,7 @@
               <mat-card *ngFor="let video of hiitVideos" class="cardVideosSecondThird">
                 
                   
-                <iframe width="380" height="250" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+                <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
                   <a class="videoTitle">{{ video.snippet.title }}</a>

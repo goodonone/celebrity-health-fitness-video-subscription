@@ -62,7 +62,15 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
 
-getUser(userId: string): Observable<User> {
+
+updateUser2(updatedUser2: User): Observable<User> {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+  }
+    return this.http.put<User>(this.baseURL + "/data/" + updatedUser2.userId, updatedUser2, {headers: reqHeaders});
+  }
+
+getUser(userId: number): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
@@ -70,7 +78,7 @@ getUser(userId: string): Observable<User> {
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   
-deleteUser(userId: string) : Observable<any> {
+deleteUser(userId: number) : Observable<any> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }

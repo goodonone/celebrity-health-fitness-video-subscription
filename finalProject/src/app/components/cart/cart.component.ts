@@ -31,18 +31,16 @@ export class CartComponent implements OnInit{
   }
 
   checkoutCart(){
-    
+    let UserId: string | null = localStorage.getItem("userId");
       const newPayment = {
-        // userId: parseInt(localStorage.getItem("userId")),
-        tier: localStorage.getItem("tier"),
-        price: this.cart.totalPrice,
+        userId: parseInt(UserId!),
+        tier: localStorage.getItem("tier") || "",
+        price: this.cart.totalPrice || 0,
         paymentType: 'store purchase',
-        paymentFrequency: 'one time purchase' ,
         
-
       }
     
-    this.paymentService.newPayment(newPayment).subscribe(()=>{
+    this.paymentService.newPaymentStore(newPayment).subscribe(()=>{
 
     });
     this.cartService.clearCart();
