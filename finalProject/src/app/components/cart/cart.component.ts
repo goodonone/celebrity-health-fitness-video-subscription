@@ -11,7 +11,9 @@ import { PaymentService } from 'src/app/services/payment.service';
 })
 export class CartComponent implements OnInit{
   cart!: Cart;
+
   constructor(private cartService: CartService, private paymentService: PaymentService) {
+
 
   }
   ngOnInit(): void {

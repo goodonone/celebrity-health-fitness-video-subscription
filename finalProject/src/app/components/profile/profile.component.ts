@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
+import { subscribe } from 'diagnostics_channel';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +27,10 @@ export class ProfileComponent implements OnInit {
   classApplied = false;
   classAppliedTwo = false;
   onlyProfilePicture = true;
-  userId?: number;
+
+  userId!: number;
+  classAppliedDeleteProfile = false;
+
 
   constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
 
@@ -49,7 +54,9 @@ export class ProfileComponent implements OnInit {
 
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     // console.log(UserId);
-    this.userId=parseInt(UserId)
+
+    this.userId = parseInt(UserId);
+
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
       // console.log(this.currentUser);
@@ -126,5 +133,22 @@ export class ProfileComponent implements OnInit {
     this.editProfileToggle = !this.editProfileToggle;
   }
 
+  toggleDelete(){
+    this.classAppliedDeleteProfile = !this.classAppliedDeleteProfile;
+    (document.getElementById('deleteProfile') as HTMLFieldSetElement).setAttribute('disabled','disabled');
+  }
+
+  goodbye(){
+    (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+    this.userService.deleteUser(this.userId).subscribe(() => {
+      this.router.navigate(['/home']);
+      this.userService.logoutUser();
+    });
+  }
+
+    
+  
 
 }
+
+

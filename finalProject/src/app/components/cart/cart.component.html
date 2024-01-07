@@ -1,4 +1,62 @@
-<h1>Cart</h1>
+<div class="pageContainer">
+   
+    <mat-card class="cartContainer">
+        <h1 class="pageName">Cart</h1>
+        <mat-card-content class="cardFlex">
+            <mat-card class="cards" *ngFor="let cartItem of cart.items">
+            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                <!-- <img [src]="currentProduct.productUrl"> -->
+            </mat-card>
+            <p class="name">{{cartItem.product.productName}}</p>
+            <div class="quantity">
+                <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <div class="removeButton">
+                <button mat-button (click)="removeFromCart(cartItem)">
+                    Remove
+                </button>
+            </div>
+            <div class="priceContainer">
+                <p class="price">${{cartItem.price}}</p>
+            </div>
+            </mat-card>
+            <!-- <div clas="totalContainer"> -->
+                <div class="totalContainer" *ngIf="cart.totalCount !== 0">
+                    <h1 class="totalText">Total:</h1>
+                    <!-- <div class="totalCountContainer">
+                        <p class="totalCount"><span class="totalSpan">{{cart.totalCount}}</span> &nbsp; items</p>
+                    </div> -->
+                    <div class="totalPriceContainer">
+                        <p class="totalPrice">${{cart.totalPrice}}</p>
+                    </div>
+                    
+                </div>
+                <div class="buttonContainer" *ngIf="cart.totalCount !== 0">
+                    <button mat-button class="buttonCheckOut" (click)="emptyCart()">Proceed to Checkout</button>
+                </div>
+                
+            <!-- </div> -->
+        <div class="emptyMessageContainer" *ngIf="cart.totalCount === 0">
+            <p class="emptyMessage">Your cart is empty</p>
+            <div class="thankYouMessage">
+                <h1 class="thankYou">Thank You for your Purchase!</h1>
+                <p class="payment">Payment has been processed with Card Number on file</p>
+            </div>
+        </div>
+        </mat-card-content>
+    </mat-card>
+    </div>
+
+
+
+
+<!-- <h1>Cart</h1>
 
 <div *ngIf="cart.totalCount > 0">
     <ul>
@@ -39,4 +97,4 @@
 
 <div *ngIf="cart.totalCount === 0">
     Your cart is empty
-</div>
+</div> -->

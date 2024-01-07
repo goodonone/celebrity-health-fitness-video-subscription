@@ -1,10 +1,38 @@
-<div>
-    <img [src]="currentProduct.productUrl">
+<div class="pageContainer">
+<mat-card class="productContainer">
+    <mat-card-content class="cardFlex">
+        <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + currentProduct.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+            <!-- <img [src]="currentProduct.productUrl"> -->
+        </mat-card>
+        <div class="productInfo">
+            <p class="name">{{currentProduct.productName}}</p>
+            <p class="price">${{currentProduct.productPrice}}</p>
+            <div class="productDescriptionContainer">
+            <p class="descriptionTitle"> Product Description: <br><br> </p>
+            <p class="productDescriptionLorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+           </div>
+           <div class="buttonContainer">
+            <button mat-button class="backButton" style="color:white" routerLink="/store">Back To Store</button>
+            <button mat-button class="addToCartButton" style="color:white" (click)="addToCart(currentProduct)">Add to Cart</button>
+            <button mat-button class="viewCartButton" style="color:white" routerLink="/cart">View Cart</button>
+           </div>
+            
+        </div>
+    </mat-card-content>
+</mat-card>
+</div>
+
+
+<!-- <div>
+
+
+
+    
         <p>{{currentProduct.productName}}</p>
         <p>{{currentProduct.productDescription}}</p>
         <p>{{currentProduct.productPrice}}</p>
         
         <button (click)="addToCart()"> Add to Cart </button>
-        <button routerLink="/cart"> View Cart</button>
-        <button routerLink="/store"> Return to store</button>
-</div>
+
+</div> -->
+

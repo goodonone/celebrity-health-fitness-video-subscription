@@ -56,6 +56,11 @@ input {
     padding: 0.5rem 0 0.5rem 1rem;
     color: black;
     background-color: white;
+    font-size: 1rem;
+}
+
+input#password{
+    margin-bottom: 0.4rem; 
 }
 
 input:focus,
@@ -87,6 +92,43 @@ input:valid {
     color: black;
 }
 
+.logoImage{
+    width: 13rem;
+    height: 4rem;
+    /* border-radius: 50%; */
+    /* overflow: hidden; */
+    margin-top: 15px;
+}
+
+/* span.showHide{
+    position: absolute;
+    top: 250px;
+    padding: 10px;
+    right: 0;
+    cursor:pointer; 
+} */
+
+.showHide{
+    padding-left: 20%;
+}
+      
+span.buttonSpan{
+    padding-left: 19rem;
+}
+
+.errorSpan{
+    text-align: center;
+    padding-top: 3rem, 1rem, 1rem, 1rem;
+}
+
+::placeholder{
+    font-size: 1rem;
+}
+
+p{
+    margin-top: 0.3rem;
+}
+
 /* button{
     padding-top: 1rem;
 } */
@@ -113,13 +155,9 @@ input:valid {
     cursor: pointer;
   } */
 
-  .logoImage{
-    width: 13rem;
-    height: 4rem;
-    /* border-radius: 50%; */
-    /* overflow: hidden; */
-    margin-top: 15px;
-}
+ 
+
+
 
   /* @media screen and (min-width: 500px) and (max-width: 792px) 
 {

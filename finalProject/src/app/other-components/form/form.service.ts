@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 // import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import { PaymentService } from '../../services/payment.service';
-import { User } from 'src/app/models/user';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +95,7 @@ export class FormService implements OnInit {
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
         purchaseType: type,
+        paymentType: type
       }
       this.user.signUp(userData).subscribe(() => {
       });
@@ -112,7 +113,9 @@ export class FormService implements OnInit {
       // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
       console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
       this.UserId = this.user.getUserId() ?? "";
-      this.userId = parseInt(this.UserId)
+
+      this.userId = parseInt(this.UserId);
+
       this.user.getUser(this.userId).subscribe((user)=>{
         this.currentUser = user;
       });
@@ -146,7 +149,6 @@ export class FormService implements OnInit {
       }
       this.payment.newPayment(planData).subscribe(() => {
       });
-
     }
 
 
@@ -181,6 +183,7 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
+      location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 

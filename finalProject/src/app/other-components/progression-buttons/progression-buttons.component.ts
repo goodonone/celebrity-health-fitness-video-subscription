@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '../../services/user.service';
+
 
 
 @Component({
