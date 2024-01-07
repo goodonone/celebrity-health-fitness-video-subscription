@@ -18,15 +18,14 @@ a {
     /* overflow: hidden; */
 }
 
-.pageContent{
+.pageContent {
     /* overflow: visible; */
     margin-top: 15rem;
     height: fit-content;
     /* padding-left: 5rem; */
 }
 
-h1
-{
+h1 {
     color: Black;
     font-weight: 500;
     text-align: left;
@@ -38,10 +37,10 @@ h1
     font-weight: 600;
 }
 
-.productsContainer{
+.productsContainer {
     /* display: block;
     justify-content: space-around; */
-    display:flex;
+    display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     flex-wrap: wrap;
@@ -49,15 +48,15 @@ h1
     height: fit-content;
 }
 
-div.cardsDiv{
+div.cardsDiv {
     position: relative;
     padding-left: 2rem;
     padding-right: 2rem;
 }
 
-mat-card.products{
+mat-card.products {
     background-color: rgb(18, 17, 17);
-    width: 23rem; 
+    width: 23rem;
     height: 35rem;
     border-radius: 8px;
     margin-top: 2rem;
@@ -65,12 +64,12 @@ mat-card.products{
     background-size: 80%;
 }
 
-.productDetails{
-position: absolute;
-top: 4%;
-left: 3%;
-z-index: 1;
-height: 20rem;
+.productDetails {
+    position: absolute;
+    top: 4%;
+    left: 3%;
+    z-index: 1;
+    height: 20rem;
 }
 
 /* mat-button{
@@ -82,23 +81,23 @@ height: 20rem;
     width: 25rem;
     color: white;
     font-size: 5rem;
-    height:8rem;
+    height: 8rem;
     margin-bottom: 0;
     padding-bottom: 0;
     line-height: 4rem;
 }
 
-.price{
+.price {
     font-weight: 500;
     width: 10rem;
     /* font-style: italic; */
     color: white;
     font-size: 6rem;
-    height:10rem;
+    height: 10rem;
     margin-top: 3rem;
 }
 
-.buttonContainer{
+.buttonContainer {
     display: flex;
     justify-content: space-between;
     width: 13rem;
@@ -106,18 +105,25 @@ height: 20rem;
     margin-left: 0.4rem;
 }
 
-.buttonView,.buttonAdd {
+.buttonView,
+.buttonAdd {
     background-color: white;
 }
 
-#card4 .name, #card4 .price{
-color: rgb(28, 27, 27);
+#card4 .name,
+#card4 .price {
+    /* color: rgb(28, 27, 27); */
+    color: #c7ff20;
 }
 
-#card9 .name, #card9 .price{
-    color: rgb(28, 27, 27);
+#card9 .name,
+#card9 .price {
+    /* color: rgb(28, 27, 27); */
+    color: #c7ff20;
 }
 
-#card7 .name, #card7 .price{
+#card7 .name,
+#card7 .price {
     color: rgb(28, 27, 27);
+    color: #c7ff20;
 }

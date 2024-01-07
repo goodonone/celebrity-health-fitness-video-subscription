@@ -29,6 +29,7 @@
 }
 
 .profilePictureContainer {
+    position: relative;
     height: 21rem;
     width: 21rem;
     background-color: #C7FF20;
@@ -336,6 +337,17 @@ img.warningImg{
     transform: scale(30%, 30%);
 }
 
+.avatar{
+    position: absolute;
+    z-index: 1;
+    background-size: cover;
+    background-position:center center;
+    transform:scale(13%,13%);
+    left: -42.5rem;
+    top: -54rem
+    /* bottom: 2rem; */
+}
+
 
 input,
 select {
@@ -347,7 +359,7 @@ select {
     background-color: rgb(25, 25, 25);
     border-radius: 6px;
     border-color: white;
-    border-width: 0px;
+    border-width: 1px;
     color: white;
 }
 

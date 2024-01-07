@@ -26,6 +26,7 @@
 
                 <div class="flexAllProfileData">
                     <mat-card class="profilePictureContainer" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}">
+                        <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
                             <div class="editButtonsContainer">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Change Picture</button>
