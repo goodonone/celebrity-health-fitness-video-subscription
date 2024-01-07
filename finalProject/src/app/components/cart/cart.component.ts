@@ -48,4 +48,9 @@ export class CartComponent implements OnInit{
     this.cartService.clearCart();
     localStorage.removeItem("cart");
   }
+
+  cartItem(): boolean {
+    const cartItem = localStorage.getItem("cart");
+    return !!cartItem
+  }
 }
