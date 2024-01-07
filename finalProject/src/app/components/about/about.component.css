@@ -1,33 +1,27 @@
-/* about-us.component.css */
 .about-us-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
-
 header {
   position: relative;
 }
-
 .header-banner {
   background-color: #C7FF20;
   color: black;
   padding: 5;
   text-align: center;
 }
-
 .picture-bubbles {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
   margin-top: 20px;
 }
-
 .bubble {
   text-align: center;
   margin: 10px;
 }
-
 .bubble img {
   width: 160px;
   border-radius: 70%;
@@ -49,10 +43,7 @@ p {
     padding-bottom: 50px; 
     padding-top: 40px;    
  } 
-
-
 /* side picture banner */
-
  h1{
     color: white;
     margin : auto;
@@ -65,7 +56,6 @@ p {
     font-size: 40px;  
     padding-top: 10px; 
 } 
-
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -87,34 +77,12 @@ p {
     border-radius: .4vw; 
     border: 2px solid #C7FF20; 
    } 
-
-
  .custom-text {
   font-size: 15px; 
   color: white; 
 } 
-
 .bannerFour {
     height: 75vh;
     width: 100%;
     background-color: #C7FF20;
 } 
-
-/*.left-banner {
-  order: 1;
-}
-
-.right-banner {
-  order: 3; 
-} */
-
-/* .content {
-  flex: 1;
-  padding: 20px; */
-/* }
-body {
-  margin: 0;
-  padding: 0;
-} */
-
-
