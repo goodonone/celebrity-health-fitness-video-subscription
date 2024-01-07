@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
-
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -13,10 +12,8 @@ export class ProductComponent implements OnInit{
   // product!: Product;
   currentProduct: Product = new Product;
   constructor(private actRoute: ActivatedRoute, private productService: ProductService, private cartService: CartService, private router: Router) {
-
   }
-
-  ngOnInit() { 
+  ngOnInit() {
     const productId = this.actRoute.snapshot.paramMap.get("id") ?? "";
     this.productService.getProductById(productId).subscribe(product => {
       if(product) {
@@ -25,10 +22,7 @@ export class ProductComponent implements OnInit{
       }
     });
   }
-
   addToCart() {
     this.cartService.addToCart(this.currentProduct)
-    this.router.navigateByUrl('/cart');
   }
-
 }
