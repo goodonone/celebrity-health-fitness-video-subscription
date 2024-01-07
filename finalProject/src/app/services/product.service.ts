@@ -112,7 +112,7 @@ export class ProductService {
     let reqHeaders = {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
     }
-    return this.http.get<Product>(`${this.baseURL} /  ${productId}`, {headers: reqHeaders});
+    return this.http.get<Product>(`${this.baseURL}/${productId}`, {headers: reqHeaders});
     // const id = parseInt(productId)
     // const product = this.sampleProducts.find(p => p.productId === id)
 

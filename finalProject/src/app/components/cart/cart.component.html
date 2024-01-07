@@ -1,7 +1,9 @@
 <div class="pageContainer">
    
     <mat-card class="cartContainer">
-        <h1 class="pageName">Cart</h1>
+        <h1  *ngIf="cartItem()"class="pageName">Cart</h1>
+        <h1 *ngIf="!cartItem() " class="pageName">Checkout</h1>
+
         <mat-card-content class="cardFlex">
             <mat-card class="cards" *ngFor="let cartItem of cart.items">
             <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
@@ -38,13 +40,13 @@
                     
                 </div>
                 <div class="buttonContainer" *ngIf="cart.totalCount !== 0">
-                    <button mat-button class="buttonCheckOut" (click)="emptyCart()">Proceed to Checkout</button>
+                    <button mat-button class="buttonCheckOut" (click)="checkoutCart()">Proceed to Checkout</button>
                 </div>
                 
             <!-- </div> -->
         <div class="emptyMessageContainer" *ngIf="cart.totalCount === 0">
-            <p class="emptyMessage">Your cart is empty</p>
-            <div class="thankYouMessage">
+            <p *ngIf="cartItem()"class="emptyMessage">Your cart is empty</p>
+            <div  *ngIf="!cartItem()"class="thankYouMessage">
                 <h1 class="thankYou">Thank You for your Purchase!</h1>
                 <p class="payment">Payment has been processed with Card Number on file</p>
             </div>
