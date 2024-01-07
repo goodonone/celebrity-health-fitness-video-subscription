@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ProductService {
-  baseURL : string = "http://localhost:3000/api/product";
+  baseURL : string = "http://localhost:3000/api/products/";
   tokenKey : string = "token"
 
   private sampleProducts: Product[] = [
@@ -104,18 +104,18 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getAllProducts(): Observable<Product[]> {
-    return of(this.sampleProducts);
-    // return this.http.get<Product[]>(this.baseURL);
+    // return of(this.sampleProducts);
+    return this.http.get<Product[]>(this.baseURL);
   };
 
   getProductById(productId: string): Observable<Product | null> {
-    // let reqHeaders = {
-    //   Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-    // }
-    // return this.http.get<Product>(`${this.baseURL} /  ${productId}`, {headers: reqHeaders});
-    const id = parseInt(productId)
-    const product = this.sampleProducts.find(p => p.productId === id)
+    let reqHeaders = {
+      Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+    }
+    return this.http.get<Product>(`${this.baseURL} /  ${productId}`, {headers: reqHeaders});
+    // const id = parseInt(productId)
+    // const product = this.sampleProducts.find(p => p.productId === id)
 
-    return of(product || null)
+    // return of(product || null)
     };
 }
