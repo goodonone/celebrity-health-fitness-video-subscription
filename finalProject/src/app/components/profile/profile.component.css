@@ -316,7 +316,7 @@ h3.profileDetailsInputObjective{
 
 .absoluteContainer{
     position: absolute;
-    top: -14rem;
+    top: -12rem;
     right: -1rem;
     z-index: 1;
     width: 49rem;
@@ -329,7 +329,7 @@ h1.deleteProfileText{
     margin-top: -14rem;
     color: white;
     font-weight: 500;
-    font-size: x-large;
+    font-size: large;
     text-align: center;
 }
 
