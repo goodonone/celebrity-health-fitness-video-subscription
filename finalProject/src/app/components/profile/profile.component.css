@@ -286,6 +286,26 @@ h3.profileDetailsInputObjective{
     color: black !important;
 }
 
+.btn-cancelSubscriptionButtonFinal{
+    height: 3rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    /* border-color: rgb(0, 0, 0); */
+    width: 10rem;
+    margin-top: 1.3rem;
+    margin-left: 1rem;
+}
+
+.btn-cancelSubscriptionButtonFinal:hover{
+    background-color: red;
+    /* border-color: #C7FF20; */
+    color: black !important;
+}
+
 /* p{
     color: red;
 } */
@@ -309,7 +329,7 @@ h1.deleteProfileText{
     margin-top: -14rem;
     color: white;
     font-weight: 500;
-    font-size: xx-large;
+    font-size: x-large;
     text-align: center;
 }
 
@@ -342,7 +362,7 @@ img.warningImg{
     z-index: 1;
     background-size: cover;
     background-position:center center;
-    transform:scale(13%,13%);
+    transform:scale(10%,10%);
     left: -42.5rem;
     top: -54rem
     /* bottom: 2rem; */
