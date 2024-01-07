@@ -40,16 +40,13 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-  localStorage.removeItem('userSignedIn');
-  localStorage.removeItem('tier');
-  localStorage.removeItem('token');
+
+
   localStorage.removeItem('billing');
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
+  localStorage.removeItem("cart");
 
-//   localStorage.removeItem('userSignedIn');
-//   localStorage.removeItem('tier');
-//   localStorage.removeItem('token');
 
 }
 
@@ -66,6 +63,16 @@ updateUser(updatedUser: User): Observable<User> {
   }
     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
+
+
+
+updateUser2(updatedUser2: User): Observable<User> {
+  let reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+  }
+    return this.http.put<User>(this.baseURL + "/data/" + updatedUser2.userId, updatedUser2, {headers: reqHeaders});
+  }
+
 
 getUser(userId: number): Observable<User> {
   let reqHeaders = {

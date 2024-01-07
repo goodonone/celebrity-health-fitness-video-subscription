@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Cart } from 'src/app/models/cart';
 import { CartItems } from 'src/app/models/cart-items';
 import { CartService } from 'src/app/services/cart.service';
+import { PaymentService } from 'src/app/services/payment.service';
 
 @Component({
   selector: 'app-cart',
@@ -11,8 +12,8 @@ import { CartService } from 'src/app/services/cart.service';
 export class CartComponent implements OnInit{
   cart!: Cart;
 
+  constructor(private cartService: CartService, private paymentService: PaymentService) {
 
-  constructor(private cartService: CartService) {
 
   }
   ngOnInit(): void {
@@ -31,7 +32,20 @@ export class CartComponent implements OnInit{
 
   }
 
-  emptyCart(){
+  checkoutCart(){
+    let UserId: string | null = localStorage.getItem("userId");
+      const newPayment = {
+        userId: parseInt(UserId!),
+        tier: localStorage.getItem("tier") || "",
+        price: this.cart.totalPrice || 0,
+        paymentType: 'store purchase',
+        
+      }
+    
+    this.paymentService.newPaymentStore(newPayment).subscribe(()=>{
+
+    });
     this.cartService.clearCart();
+    localStorage.removeItem("cart");
   }
 }

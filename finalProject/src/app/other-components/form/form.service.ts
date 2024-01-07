@@ -113,7 +113,9 @@ export class FormService implements OnInit {
       // console.log("userInfo" + userInfo.name + userInfo.password + userInfo.email);
       console.log("planDetails" + planInfo.billing + " " + planInfo.plan + planInfo.totalCost);
       this.UserId = this.user.getUserId() ?? "";
+
       this.userId = parseInt(this.UserId);
+
       this.user.getUser(this.userId).subscribe((user)=>{
         this.currentUser = user;
       });
