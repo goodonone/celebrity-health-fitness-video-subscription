@@ -13,8 +13,8 @@ export class HomeComponent implements OnInit {
 
 
   videos = [
-    { videoSrc: "/assets/Videos/AdobeStock_232001391_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232005252_Video_HD_Preview.mp4" },
-    { videoSrc: "/assets/Videos/AdobeStock_232002478_Video_HD_Preview.mp4" }, { videoSrc: "/assets/Videos/AdobeStock_232002022_Video_HD_Preview.mp4" }
+    { videoSrc: "/assets/Videos/Man Video One.mp4" }, { videoSrc: "/assets/Videos/Man Video Two.mp4" },
+    { videoSrc: "/assets/Videos/Woman Video Three.mp4" }, { videoSrc: "/assets/Videos/Man Video Four.mp4" }
   ];
   
 
