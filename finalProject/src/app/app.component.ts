@@ -88,9 +88,13 @@ export class AppComponent implements OnInit {
   // }
 
   logOut() {
+    this.cartService.clearCart();
     this.userService.logoutUser();
     this.UpdateStatus();
+    
   }
+
+  
 
 
 
