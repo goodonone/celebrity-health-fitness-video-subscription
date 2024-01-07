@@ -7,4 +7,14 @@ import { Component } from '@angular/core';
 })
 export class ContactComponent {
 
+  name:string = "";
+  email: string = "";
+  message: string = "";
+
+  contactUs(){
+
+    // set timer to reset the toggle or refresh page
+  }
+
+
 }

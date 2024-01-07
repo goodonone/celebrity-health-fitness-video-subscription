@@ -1,7 +1,5 @@
-
-
 <div class="background"></div>
-  <!-- <div class="overlay">
+<!-- <div class="overlay">
     
   </div> -->
 
@@ -12,7 +10,30 @@
     <h1 class="contactUs">Contact Us</h1>
   </div>
   <mat-card class="contactForm">
-
+    <mat-card-content>
+      <h3 class="greeting">Hi! How can we help you?</h3>
+      <div class="formDiv">
+        <form (ngSubmit)="contactUs()" #loginForm="ngForm">
+          <!-- name input -->
+          <div class="input-details">
+            <label for="name">Name</label>
+          </div>
+          <input type="text" matInput name="name" id="name" placeholder="Enter your name" [(ngModel)]="name" required>
+          <!-- email input -->
+          <div class="input-details">
+            <label for="email">Email</label>
+          </div>
+          <input type="text" matInput name="email" id="email" placeholder="Enter your email" [(ngModel)]="email"
+            required>
+          <div class="input-details">
+            <label for="email">Message</label>
+          </div>
+          <textarea type="text" mat-input name="message" id="message" placeholder="Enter your message" [(ngModel)]="message" required></textarea>
+          <button class="btn btn-submit" mat-button [disabled]="loginForm.form.invalid"
+            (click)="contactUs()">Send</button>
+        </form>
+      </div>
+    </mat-card-content>
   </mat-card>
 </div>
 <div class="cardTwo">
