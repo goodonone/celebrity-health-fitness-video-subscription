@@ -88,27 +88,59 @@ mat-card.products {
 }
 
 .price {
-    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 600;
     width: 10rem;
     /* font-style: italic; */
     color: white;
-    font-size: 6rem;
+    font-size: 9rem;
     height: 10rem;
-    margin-top: 3rem;
+    margin-top: 15rem;
 }
 
 .buttonContainer {
     display: flex;
-    justify-content: space-between;
-    width: 13rem;
-    margin-top: 9.5rem;
-    margin-left: 0.4rem;
+    justify-content: center;
+    height: 3rem;
+    width: 23rem;
+    margin-top: -4rem;
+    margin-left: -0.7rem;
+    background-color: rgb(255, 255, 255);
 }
 
-.buttonView,
+/* .buttonView,
 .buttonAdd {
     background-color: white;
+} */
+
+.buttonView{
+    font-size: 1rem;
+    color:black;
+    margin-right: 1rem;
+    padding-top: 0.8rem;
+    /* text-decoration: underline;
+    text-decoration-color: white; */
 }
+
+.buttonAdd{
+    font-size: 1rem;
+    color: black;
+    margin-left: 2rem;
+    letter-spacing: 0.5px;
+    padding-top: 0.8rem;
+}
+
+a.buttonAdd:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+}
+
+p.buttonView:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+}
+
 
 #card4 .name,
 #card4 .price {
