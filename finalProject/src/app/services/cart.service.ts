@@ -18,7 +18,6 @@ export class CartService {
       if(cartItem.quantity < 5)
       cartItem.quantity++;
     } else {
-      
     this.cart.items.push(new CartItems(product));
     
   }
