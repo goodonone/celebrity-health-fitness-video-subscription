@@ -23,7 +23,7 @@ export class AppPasswordDirective {
   setup() {
     const parent = this.el.nativeElement.parentNode;
     const span = document.createElement('span');
-    span.setAttribute('class', "showHide");
+    span.setAttribute('id', "showHide");
     span.innerHTML = `Show password`;
     span.addEventListener('click', (event) => {
       this.toggle(span);
