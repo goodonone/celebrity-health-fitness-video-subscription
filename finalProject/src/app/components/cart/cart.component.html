@@ -1,8 +1,8 @@
 <div class="pageContainer">
    
     <mat-card class="cartContainer">
-        <h1  *ngIf="cartItem()"class="pageName">Cart</h1>
-        <h1 *ngIf="!cartItem() " class="pageName">Checkout</h1>
+        <h1 *ngIf="cartItem()" class="pageName">Cart</h1>
+        <h1 *ngIf="!cartItem()" class="pageName">Checkout</h1>
 
         <mat-card-content class="cardFlex">
             <mat-card class="cards" *ngFor="let cartItem of cart.items">
