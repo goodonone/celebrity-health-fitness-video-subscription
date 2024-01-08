@@ -96,3 +96,11 @@
     /* background:rgba(22, 22, 22, 0.6); */
 
 }
+
+.column {
+    width: 41.8rem;
+    /* @include variables.flexSpaceBetween(column); */
+    height: 35.5rem;
+    /* padding-top: 3.5rem; */
+    padding-bottom: 2rem;
+  }

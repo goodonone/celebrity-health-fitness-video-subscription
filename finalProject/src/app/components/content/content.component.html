@@ -23,7 +23,7 @@
           We are Live!
       </h1>
       <mat-card class="liveVideoContainer">
-        <p class="liveVideoLoadingText">Loading Live Video...</p>
+        <!-- <p class="liveVideoLoadingText">Loading Live Video...</p> -->
           <mat-card-content>
             <div *ngFor="let video of livestreamVideos" >
               
@@ -46,7 +46,7 @@
               <div class="cardVideos">
                 <!-- starterVideos -->
                   <mat-card *ngFor="let video of starterVideos" class="cardVideosFirst">
-                    <p class="loadingText">Loading...</p>
+                    <!-- <p class="loadingText">Loading...</p> -->
                     <div>
                       <div>
                         <iframe width="288" height="192" [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -96,7 +96,7 @@
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 <div>
                   <div>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -116,7 +116,7 @@
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 <div>
                   <div>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -136,7 +136,7 @@
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 <div>
                   <div >
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -156,7 +156,7 @@
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 <div>
                   <div >
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -174,7 +174,7 @@
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Abs</h1>
               <mat-card *ngFor="let video of absVideos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 
                   
                     <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -189,7 +189,7 @@
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Full Body Workouts</h1>
               <mat-card *ngFor="let video of fullBodyVideos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 
                   
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -204,7 +204,7 @@
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Upper Body Workouts</h1>
               <mat-card *ngFor="let video of upperBodyVideos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 
                   
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -219,7 +219,7 @@
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">HIIT Workouts</h1>
               <mat-card *ngFor="let video of hiitVideos" class="cardVideosSecondThird">
-                <p class="loadingText">Loading...</p>
+                <!-- <p class="loadingText">Loading...</p> -->
                 
                   
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>

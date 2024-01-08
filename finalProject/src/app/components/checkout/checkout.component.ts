@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
@@ -8,7 +8,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit{
 
   userLoggedIn = true;
   showOrHide!: boolean;
@@ -20,12 +20,12 @@ export class CheckoutComponent {
  
 
   ngOnInit(): void {
-    const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userId = parseInt(UserId);
-    this.userService.getUser(this.userId).subscribe(user => {
-      this.currentUser = user;
+    // const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
+    // this.userId = parseInt(UserId);
+    // this.userService.getUser(this.userId).subscribe(user => {
+    //   this.currentUser = user;
       // this.currentUser.userId
-    });
+    // });
     // console.log(this.router.url);
    
 

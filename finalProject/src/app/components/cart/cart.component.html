@@ -37,12 +37,12 @@
                     <div class="totalPriceContainer">
                         <p class="totalPrice">${{cart.totalPrice}}</p>
                     </div>
-                    
                 </div>
                 <div class="buttonContainer" *ngIf="cart.totalCount !== 0">
                     <button mat-button class="buttonCheckOut" (click)="checkoutCart()">Proceed to Checkout</button>
+                    <!-- <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button> -->
                 </div>
-                
+
             <!-- </div> -->
         <div class="emptyMessageContainer" *ngIf="cart.totalCount === 0">
             <p *ngIf="cartItem()"class="emptyMessage">Your cart is empty</p>
