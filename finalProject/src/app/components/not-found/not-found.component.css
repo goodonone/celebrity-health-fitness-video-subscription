@@ -1,0 +1,70 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    overflow-x: hidden;
+    height: 85vh;
+    margin-top: -80px;
+    padding-top: 5rem;
+    background-image: url('https://images.unsplash.com/photo-1591741543032-bf439b4fd46c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position:center;
+background-position-y:50%;
+    /* transform: scale(98%,98%); */
+    zoom: 100%;
+    /* position: relative; */
+    /* box-sizing: border-box; */
+    /* overflow: hidden; */
+    /* padding-top:10rem; */
+    position: relative;
+}
+
+.heading{
+    padding-top:20rem;
+    text-align: center;
+    font-size: 10rem;
+    color: white;
+    font-weight: 500;
+}
+
+.homeButton{
+ color: white;
+}
+
+.overlayTwo {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 4rem;
+  /* margin: auto */
+}
+
+.textContainer {
+    display: inline;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.findYourself {
+    display: inline;
+    font-family: 'Outfit', sans-serif;
+    margin-top: -2vw;
+    color: white;
+    font-size: 1.2vw;
+    border: solid;
+    border-radius: .2vw;
+    width: 7vw;
+    padding: .3vw .7vw .3vw .7vw;
+    animation: zoomIn 0.25s;
+    animation-iteration-count: infinite;
+}
+
+p.findYourself:hover{
+ background-color: white;
+ color: black;
+ cursor: pointer;
+}
