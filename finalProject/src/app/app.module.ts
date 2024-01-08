@@ -47,6 +47,8 @@ import { ContentStyledComponent } from './components/content-styled/content-styl
 import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
 import { AuthGuard } from './auth.guard';
 import { AppPasswordDirective } from './app-password.directive';
+import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
+
 
 
 @NgModule({
@@ -80,6 +82,7 @@ import { AppPasswordDirective } from './app-password.directive';
 
     ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
+    StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
   
 

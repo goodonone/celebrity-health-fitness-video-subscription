@@ -136,7 +136,7 @@ h1.liveVideoText {
     /* justify-content: right; */
     margin: auto;
     margin-top: 10rem;
-    background-color: black;
+    background-color: rgb(1, 1, 1);
 }
 
 .cardContainer {
@@ -274,6 +274,13 @@ p.loadingText{
     color: white;
     text-align: center;
     margin-top: 5rem;
+}
+
+p.liveVideoLoadingText{
+    color: white;
+    text-align: center;
+    margin-top: 15rem;
+    font-size: large;
 }
 
 mat-card.contentCardTwo,

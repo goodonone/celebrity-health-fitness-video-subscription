@@ -121,9 +121,9 @@ export class ContentComponent implements OnInit{
   hiitVideos: any[] = [];
 
   livestreamVideos: any[] = [];
-  testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
-  testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
-  testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
+  // testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
+  // testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
+  // testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
     var countDownDate = new Date("Jan 8, 2024 16:45:25").getTime();
 
@@ -149,7 +149,7 @@ export class ContentComponent implements OnInit{
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        this.timerVal  = "EXPIRED";
+        this.timerVal  = "Live Video In Progress...";
         // ngIf to open up a card for live video here
       }
     }, 1000);
@@ -157,6 +157,7 @@ export class ContentComponent implements OnInit{
 
   startCountDownTierThree() {
     var countDownDate = new Date("Jan 8, 2024 16:45:25").getTime();
+    // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second
     var x = setInterval(() => {
@@ -180,7 +181,7 @@ export class ContentComponent implements OnInit{
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        this.timerValThree = "EXPIRED";
+        this.timerValThree = "Live Video In Progress...";
         this.timerTierThree = false;
         this.showLiveVideo = true;
       }
