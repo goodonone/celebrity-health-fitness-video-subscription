@@ -17,7 +17,7 @@ export class ContactComponent {
     this.submitted = true;
     setTimeout(() => {
     this.toggle();
-    }, 4000);
+    }, 3000);
     var form = <HTMLFormElement>document.getElementById('contactForm');
     form.reset(); 
   }

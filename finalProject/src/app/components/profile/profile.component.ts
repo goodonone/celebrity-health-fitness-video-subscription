@@ -138,15 +138,30 @@ export class ProfileComponent implements OnInit {
     (document.getElementById('deleteProfile') as HTMLFieldSetElement).setAttribute('disabled','disabled');
   }
 
-  goodbye(){
-    (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
-    this.userService.deleteUser(this.userId).subscribe(() => {
-      this.router.navigate(['/home']);
-      this.userService.logoutUser();
-    });
-  }
+  // goodbye(){
+  //   (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+  //   setTimeout(() => {
+  //     this.deleteProfileUser();
+  //     }, 2500);
+  // }
 
+  goodbye(){
+      (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+      setTimeout(() => {
+        (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Deleting Profile..."
+        }, 1000);
+        setTimeout(() => {
+          this.deleteProfileUser();
+          }, 2000);
+      }
     
+
+  deleteProfileUser(){
+      this.userService.deleteUser(this.userId).subscribe(() => {
+        this.router.navigate(['/home']);
+        this.userService.logoutUser();
+      });
+    }
   
 
 }

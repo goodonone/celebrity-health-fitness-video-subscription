@@ -20,7 +20,6 @@ export class FormService implements OnInit {
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
-
   ngOnInit(): void {
 
     // if (localStorage.getItem('userSignedIn')) {
@@ -61,6 +60,7 @@ export class FormService implements OnInit {
   constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { }
 
   goToNextStep(number: number) {
+    // console.log(this.activeStep$)
     this.activeStepSubject.next(number + 1);
   }
 

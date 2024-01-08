@@ -11,7 +11,7 @@
             <div class="deleteProfileContainer" *ngIf="classAppliedDeleteProfile">
                 <div class="absoluteContainer">
                     <img class="warningImg" src="assets/Images/Exclamation.svg">
-                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content & All Access to the Store. <br> <br> Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br><br> Proceed with Caution. <br><br> You will be Missed!</h1>
+                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content & All Access to the Store. <br> <br> Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br><br> Proceed with Caution... <br><br> You will be Missed!</h1>
                     <div class="cancelSubscriptionButtonContainer">
                         <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Keep <br> Subscription</button>
                         <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
@@ -74,7 +74,7 @@
                                 <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Price</span><br> <input type="text" name="height" id="height" [(ngModel)]="currentUser.price"></h3> -->
                                     <!--  -->
                                 <h3 class="profileDetailsInputObjective"><span class="spanProfileCategory">Objective</span> <br>
-                                    <select name="objective" id="objective" (ngModel)]="currentUser.goals">
+                                    <select name="objective" id="objective" [(ngModel)]="currentUser.goals">
                                         <option value="Lose Fat">Lose Fat</option>
                                         <option value="Maintain Weight">Maintain Weight</option>
                                         <option value="Build Muscle">Build Muscle</option>

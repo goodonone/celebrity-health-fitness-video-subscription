@@ -11,7 +11,6 @@ import { ContentComponent } from './components/content/content.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditProfileComponent } from './components/edit-profile/edit-profile.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SignInComponent } from './components/sign-in/sign-in.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,10 +42,11 @@ import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { CartComponent } from './components/cart/cart.component';
 import { ProductComponent } from './components/product/product.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
-import { ContentStyledComponent } from './components/content-styled/content-styled.component';
 import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-upgrade/step-tracker-icons-upgrade.component';
 import { AuthGuard } from './auth.guard';
 import { AppPasswordDirective } from './app-password.directive';
+import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
+
 
 
 @NgModule({
@@ -57,7 +57,6 @@ import { AppPasswordDirective } from './app-password.directive';
     ContactComponent,
     ContentComponent,
     ProfileComponent,
-    EditProfileComponent,
     NotFoundComponent,
     SignInComponent,
     SearchComponent,
@@ -78,8 +77,8 @@ import { AppPasswordDirective } from './app-password.directive';
       ProductComponent,
       CheckoutComponent,
 
-    ContentStyledComponent,
     StepTrackerIconsUpgradeComponent,
+    StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
   
 

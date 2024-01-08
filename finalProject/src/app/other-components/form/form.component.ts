@@ -14,6 +14,7 @@ export class FormComponent implements OnInit {
   activeStep$?: number;
   
   @Input() loggedIn!: boolean;
+  @Input() payment!: boolean;
 
   constructor(private formService: FormService) { }
 

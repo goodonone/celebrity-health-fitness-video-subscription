@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
@@ -9,16 +9,18 @@ import { UserService } from '../../services/user.service';
   templateUrl: './upgrade.component.html',
   styleUrls: ['./upgrade.component.css']
 })
-export class UpgradeComponent implements OnInit {
+export class UpgradeComponent implements OnInit, OnDestroy {
 
 
   userLoggedIn = true;
   showOrHide!: boolean;
   userId?: number;
+  payment = false;
 
   currentUser: User = new User;
 
   constructor(private router: Router, private userService: UserService, private actRoute: ActivatedRoute) { }
+ 
 
   ngOnInit(): void {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
@@ -30,11 +32,24 @@ export class UpgradeComponent implements OnInit {
     // console.log(this.router.url);
     this.routeCheck();
 
-    setTimeout(function(){
-      location.reload();
-  }, 10000);
+    const tier = localStorage.getItem('tier')
+
+    if(tier == "Just Looking"){
+      this.togglePayment();
+      console.log(tier + this.payment);
+    }
+
+  //   setTimeout(function(){
+  //     location.reload();
+  // }, 10000);
 
   }
+
+
+  ngOnDestroy(): void {
+    location.reload();
+  }
+  
 
   routeCheck() {
     if (this.router.url.startsWith('/change-plan/')) {
@@ -46,6 +61,9 @@ export class UpgradeComponent implements OnInit {
     }
   }
 
+  togglePayment(){
+    this.payment = !this.payment;
+  }
  
 
 }

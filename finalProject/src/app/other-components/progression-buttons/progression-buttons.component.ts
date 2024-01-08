@@ -17,6 +17,7 @@ export class ProgressionButtonsComponent implements OnInit {
   planCost: number = 0;
 
   @Input() loggedIn!: boolean;
+  @Input() payment!: boolean;
 
   // userIsLoggedIn : boolean = false;
   // UserId : string = "";
@@ -30,7 +31,6 @@ export class ProgressionButtonsComponent implements OnInit {
       step => {
         this.activeStep$ = step;
         this.planCost = this.stepForm.controls['planDetails'].value.planCost;
-
       });
 
     // this.formService.activeStep$.subscribe(
@@ -39,6 +39,8 @@ export class ProgressionButtonsComponent implements OnInit {
     //     console.log(this.stepForm.controls['planDetails'].value.planCost);
     //     console.log(this.stepForm.controls);
     //   });
+
+    console.log("progression" + this.payment);
   }
 
   nextStep() {
@@ -58,6 +60,10 @@ export class ProgressionButtonsComponent implements OnInit {
         // console.log(this.stepForm.controls['personalDetails'].pristine, !this.stepForm.controls['personalDetails'].touched)
         this.formService.goToNextStep(this.activeStep$);
       }
+        else {
+          this.formService.goToNextStep(this.activeStep$);
+        }
+
     }
 
   }
