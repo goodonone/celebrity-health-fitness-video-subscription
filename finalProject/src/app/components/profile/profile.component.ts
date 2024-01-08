@@ -152,11 +152,11 @@ export class ProfileComponent implements OnInit {
         }, 1000);
         setTimeout(() => {
           this.deleteProfileUser();
-          }, 1000);
+          }, 2000);
       }
     
 
-    deleteProfileUser(){
+  deleteProfileUser(){
       this.userService.deleteUser(this.userId).subscribe(() => {
         this.router.navigate(['/home']);
         this.userService.logoutUser();

@@ -269,6 +269,13 @@ div.cardSecondAndThirdTiers {
     padding-bottom: 5rem
 } */
 
+
+p.loadingText{
+    color: white;
+    text-align: center;
+    margin-top: 5rem;
+}
+
 mat-card.contentCardTwo,
 .contentCardThree,
 .contentCardFour,
@@ -295,7 +302,7 @@ mat-card.contentCardTwo,
 }
 
 mat-card.cardVideosSecondThird {
-    background-color:  rgb(255, 255, 255);
+    background-color:  rgb(0, 0, 0);
     width: 23rem;
     height: 10rem;
     margin: 3rem;
