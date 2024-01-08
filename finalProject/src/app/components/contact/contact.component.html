@@ -11,27 +11,40 @@
   </div>
   <mat-card class="contactForm">
     <mat-card-content>
-      <h3 class="greeting">Hi! How can we help you?</h3>
-      <div class="formDiv">
-        <form (ngSubmit)="contactUs()" #loginForm="ngForm">
-          <!-- name input -->
-          <div class="input-details">
-            <label for="name">Name</label>
+      <div class="formToggleOff" *ngIf="!submitted">
+        <h3 class="greeting">Hi! How can we help you?</h3>
+        <div class="formDiv">
+          <form (ngSubmit)="contactUs()" #loginForm="ngForm" id="contactForm">
+            <!-- name input -->
+            <div class="input-details">
+              <label for="name">Name</label>
+            </div>
+            <input type="text" matInput name="name" id="name" placeholder="Enter your name" [(ngModel)]="name" required>
+            <!-- email input -->
+            <div class="input-details">
+              <label for="email">Email</label>
+            </div>
+            <input type="text" matInput name="email" type="email" id="email" placeholder="Enter your email"
+              [(ngModel)]="email" required>
+            <div class="input-details">
+              <label for="email">Message</label>
+            </div>
+            <textarea type="text" mat-input name="message" id="message" placeholder="Enter your message"
+              [(ngModel)]="message" required></textarea>
+            <button class="btn btn-submit" mat-button [disabled]="loginForm.form.invalid"
+              (click)="contactUs()">Send</button>
+          </form>
+        </div>
+      </div>
+      <div class="formToggleOn" *ngIf="submitted">
+        <div class="divAlign">
+          <img src="assets/Images/icon-thank-you-black.png" class="tick" alt="tick">
+          <div class="thankYouMessage">
+            <h1 class="sentMessage">Your message has been sent!</h1>
+            <h3 class="thankYouMesage">Thank you for your interest. <br>
+              We will do our best to respond to you within 24 business hours. </h3>
           </div>
-          <input type="text" matInput name="name" id="name" placeholder="Enter your name" [(ngModel)]="name" required>
-          <!-- email input -->
-          <div class="input-details">
-            <label for="email">Email</label>
-          </div>
-          <input type="text" matInput name="email" id="email" placeholder="Enter your email" [(ngModel)]="email"
-            required>
-          <div class="input-details">
-            <label for="email">Message</label>
-          </div>
-          <textarea type="text" mat-input name="message" id="message" placeholder="Enter your message" [(ngModel)]="message" required></textarea>
-          <button class="btn btn-submit" mat-button [disabled]="loginForm.form.invalid"
-            (click)="contactUs()">Send</button>
-        </form>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>
@@ -40,17 +53,51 @@
   <div class="heading">
     <h1 class="findUs">Find Us</h1>
   </div>
-  <mat-card class="mapSocial">
+  <mat-card class="mapSocialContainer">
+    <h1 class="location">Our Offices</h1>
+    <div class="mapSocialFlex">
+      <mat-card class="mapSocial">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m19!1m8!1m3!1d110773.75634727594!2d-95.8050881!3d29.8157912!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x8640d79ad8cf4f7f%3A0x5b3c2884f9c4163a!2s3115%20N%20Fry%20Rd%20%23305%2C%20Katy%2C%20TX%2077449!3m2!1d29.815818399999998!2d-95.722792!5e0!3m2!1sen!2sus!4v1704164030163!5m2!1sen!2sus"
+          width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </mat-card>
+      <div class="socialMedia">
+        <h2 class="socialBusinessHeadingOne">Business hours</h2>
+        <p> Monday: 8-5pm</p>
+        <p> Tuesday: 8-5pm</p>
+        <p> Wednesday: 8-5pm</p>
+        <p> Thursday: 8-5pm</p>
+        <p> Friday: 8-5pm</p>
+        <p> Saturday: 8-5pm</p>
+        <p> Sunday: Closed</p>
+        <!-- <h2>Connect with us</h2> -->
+        <h2 class="socialBusinessHeadingTwo">Follow us on social media for updates!</h2>
+        <div class="logoFlex">
 
+          <a href="https://www.instagram.com/thehughjackman/" target="_blank">
+            <img width="80" height="80" src="/assets/Images/Instagram_Glyph_Gradient.png" alt="instagram Icon">
+          </a>
+          <a class="a2" href="https://www.tiktok.com/@workout_inspiration_?is_from_webapp=1&sender_device=pc"
+            target="_blank">
+            <img width="70" height="70" src="/assets/Images/TikTok_Icon_Black_Square.png" alt="tiktok" /> </a>
+          <a class="a3" href="https://www.youtube.com/watch?v=gocClPWVKIA" target="_blank">
+            <img width="100" height="70" src="/assets/Images/yt_icon_rgb.png" alt="Youtube Icon">
+          </a>
+        </div>
+
+      </div>
+    </div>
   </mat-card>
-</div>
+
+
+  <!-- -->
 
 
 
 
-
-
-<!-- <head>
+  <!-- <head>
   <h6>Contact Us</h6>
 </head>
 <body>

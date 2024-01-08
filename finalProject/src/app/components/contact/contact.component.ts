@@ -11,10 +11,19 @@ export class ContactComponent {
   email: string = "";
   message: string = "";
 
-  contactUs(){
+  submitted = false;
 
-    // set timer to reset the toggle or refresh page
+  contactUs(){
+    this.submitted = true;
+    setTimeout(() => {
+    this.toggle();
+    }, 4000);
+    var form = <HTMLFormElement>document.getElementById('contactForm');
+    form.reset(); 
   }
 
+  toggle(){
+    this.submitted = !this.submitted;
+  }
 
 }
