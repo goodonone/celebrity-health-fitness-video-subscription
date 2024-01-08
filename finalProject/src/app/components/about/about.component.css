@@ -1,33 +1,179 @@
-/* about-us.component.css */
-.about-us-container {
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+  background-color: rgb(255, 255, 255);
+  width: 100vw;
+  max-width: 100%;
+  margin-top: -10rem;
+  overflow-x: hidden;
+  height: fit-content;
+  position: relative;
+  /* box-sizing: border-box; */
+  /* overflow: hidden; */
+}
+
+.heading {
+  color: Black;
+  font-weight: 500;
+  text-align: left;
+  font-size: 8vw;
+  padding-left: 3rem;
+  padding-top: 15rem;
+  /* padding-right: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 0rem; */
+  font-weight: 600;
+}
+
+.hughJackedManContainer {
+  display: flex;
+  justify-content: space-evenly;
+  padding-left: 2rem;
+}
+
+.hughJackedManPhoto {
+  height: 40rem;
+  width: 30rem;
+  background-image: url('src/assets/Images/HughJackmanBeachBod.jpg');
+  background-size: cover;
+  border-radius: 8px;
+  background-position: center;
+  /* padding-left: 2rem; */
+}
+
+.pageContent {
+  padding-top: 5rem;
+}
+
+.description {
+  width: 49%;
+}
+
+.customText {
+  /* padding-top: 3rem; */
+  font-size: 1.5rem;
+  line-height: 1.8rem;
+  font-weight: 500;
+}
+
+.ourTeamHeaderContainer {
+  display: flex;
+}
+
+
+h1.ourTeamHeader {
+  text-align: center;
+  font-size: 4rem;
+  font-weight: 500;
+}
+
+section.picture-bubbles {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 5rem;
+  /* margin-top: 5rem;/ */
+  flex-wrap: wrap;
+  /* margin-top: 20px; */
+  margin: auto;
+}
+
+.bubble {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.bubble img {
+  width: 15%;
+  border-radius: 70%;
+  margin-bottom: 3rem;
+  background-color: black;
+}
+
+.ourTeam {
+  margin-top: 10rem;
+}
+
+.picture-bubbles {
+  padding-top: 5rem;
+  margin-left: 10rem;
+  width: 80%;
+  margin-right: auto;
+}
+
+p.teamText {
+  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-weight: 500;
+  width: 35%;
+  padding-left: 3rem;
+}
+
+img#backgroundPicture {}
+
+.teamText-Paris {
+  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-weight: 500;
+  width: 35%;
+  padding-left: 3rem;
+  padding-top: 2.5rem;
+}
+
+.teamText-Jude {
+  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-weight: 500;
+  width: 35%;
+  padding-left: 3rem;
+  padding-top: 2rem;
+}
+
+.teamText-Allyshia {
+  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-weight: 500;
+  width: 35%;
+  padding-left: 3rem;
+  padding-top: 2.5rem;
+}
+
+.teamText-Gerrit {
+  font-size: 1.5rem;
+  line-height: 1.3rem;
+  font-weight: 500;
+  width: 35%;
+  padding-left: 3rem;
+  padding-top: 2.5rem;
+}
+
+
+/* .about-us-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
-
 header {
   position: relative;
 }
-
 .header-banner {
   background-color: #C7FF20;
   color: black;
   padding: 5;
   text-align: center;
 }
-
 .picture-bubbles {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
   margin-top: 20px;
 }
-
 .bubble {
   text-align: center;
   margin: 10px;
 }
-
 .bubble img {
   width: 160px;
   border-radius: 70%;
@@ -49,11 +195,8 @@ p {
     padding-bottom: 50px; 
     padding-top: 40px;    
  } 
-
-
 /* side picture banner */
-
- h1{
+/* h1{
     color: white;
     margin : auto;
     display: flex;
@@ -65,7 +208,6 @@ p {
     font-size: 40px;  
     padding-top: 10px; 
 } 
-
 .container {
     display: flex;
     flex-wrap: wrap;
@@ -87,34 +229,12 @@ p {
     border-radius: .4vw; 
     border: 2px solid #C7FF20; 
    } 
-
-
  .custom-text {
   font-size: 15px; 
   color: white; 
-} 
-
-.bannerFour {
+}  */
+/* .bannerFour {
     height: 75vh;
     width: 100%;
     background-color: #C7FF20;
-} 
-
-/*.left-banner {
-  order: 1;
-}
-
-.right-banner {
-  order: 3; 
-} */
-
-/* .content {
-  flex: 1;
-  padding: 20px; */
-/* }
-body {
-  margin: 0;
-  padding: 0;
-} */
-
-
+}  */

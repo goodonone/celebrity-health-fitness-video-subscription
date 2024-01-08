@@ -101,13 +101,21 @@ mat-card.products {
 
 .buttonContainer {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     height: 4rem;
     width: 23rem;
     margin-top: -4rem;
     margin-left: -0.7rem;
     background-color: rgb(255, 255, 255);
     border-radius: 0 0 8px 8px;
+    max-width: 23rem;
+    /* padding-left: 0.5rem; */
+    /* padding-right: 0.5rem; */
+    /* margin-right: 1rem; */
+}
+
+.buttonContainer:hover {
+background-color: black;
 }
 
 /* .buttonView,
@@ -119,7 +127,16 @@ mat-card.products {
     font-size: 1rem;
     color:black;
     margin-right: 1rem;
-    padding-top: 1.4rem;
+    border-radius: 0 0 0 8px;
+    /* margin-top: 1rem; */
+    margin-right: 1rem;
+    /* padding: 2rem; */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 5rem;
+    padding-right: 3rem;
+    background-color: rgb(255, 255, 255) !important;
+    /* padding-top: 1.4rem; */
     /* text-decoration: underline;
     text-decoration-color: white; */
 }
@@ -127,36 +144,55 @@ mat-card.products {
 .buttonAdd{
     font-size: 1rem;
     color: black;
-    margin-left: 2rem;
+    /* margin-left: 2rem; */
     letter-spacing: 0.5px;
-    padding-top: 1.4rem;
+    border-radius: 0 0 8px 0;
+    margin-left: 1rem;
+    width: 7rem;
+    /* margin-top: 2rem; */
+    background-color: rgb(255, 255, 255) !important;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    padding-left: 4rem;
+    padding-right: 6.6rem;
+    /* padding-top: 1.4rem; */
 }
 
-a.buttonAdd:hover{
+/* .buttonAdd:hover{
     text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+} */
+
+.buttonView:hover {
+    background-color: black !important;
+    color: white !important;
     cursor: pointer;
 }
 
-p.buttonView:hover{
-    text-shadow: 0 0 7px #71BBF5;
+.buttonAdd:hover{
+    background-color: black !important;
+    color: white !important;
     cursor: pointer;
 }
 
 
-#card4 .name,
-#card4 .price {
+
+
+
+/* #card4 .name,
+#card4 .price { */
     /* color: rgb(28, 27, 27); */
-    color: #c7ff20;
-}
+    /* color: #c7ff20;
+} */
 
-#card9 .name,
+/* #card9 .name,
 #card9 .price {
     /* color: rgb(28, 27, 27); */
-    color: #c7ff20;
-}
+    /* color: #c7ff20; */
+/* } */ 
 
-#card7 .name,
+/* #card7 .name,
 #card7 .price {
     color: rgb(28, 27, 27);
     color: #c7ff20;
-}
+} */

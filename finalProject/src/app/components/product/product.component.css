@@ -25,6 +25,7 @@
     height: 40rem;
     background-color: white;
     margin-top: 15rem;
+    border-radius: 10px;
 }
 
 .productImage{
@@ -36,6 +37,7 @@
 }
 
 .productInfo{
+    position: relative;
     padding-top: 2rem;
     height: 30rem;
     width: 28rem;
@@ -80,13 +82,17 @@ p.price{
 }
 
 .buttonContainer{
+    /* padding-top: 11.2rem; */
+    position: absolute;
+    top: 101.5%;
+    bottom: 0;
     width: 28rem;
 }
 
 .addToCartButton, .viewCartButton {
     margin-left: 2rem;
     margin-top: 3.3rem;
-    background-color: black !important;
+    background-color: rgb(255, 255, 255) !important;
 }
 
 .viewCartButton{
@@ -97,15 +103,18 @@ p.price{
 letter-spacing: 1px;
 margin-left: 2rem;
 margin-top: 3.3rem;
-background-color: black !important;
+background-color: rgb(255, 255, 255) !important;
 }
 
 .addToCartButton:hover, .viewCartButton:hover, .backButton:hover{
-    color: black !important;
-    background-color: white !important;
+    color: white !important;
+    background-color: rgb(0, 0, 0) !important;
 }
 
-
+/* p:hover{
+    text-shadow: 0 0 7px #71BBF5;
+    cursor: pointer;
+} */
 
 
 /* p {

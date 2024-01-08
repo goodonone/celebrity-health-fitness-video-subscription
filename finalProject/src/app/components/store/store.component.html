@@ -9,8 +9,8 @@
                         <p class="name">{{product.productName}}</p>
                         <p class="price">${{product.productPrice}}</p>
                         <div class="buttonContainer">
-                            <p  [routerLink] = '["product/", product.productId]' class="buttonView">View Item</p>
-                            <a (click)="addToCart(product)" class="buttonAdd"> Add to Cart </a>
+                            <button mat-button  [routerLink] = '["product/", product.productId]' class="buttonView">View</button>
+                            <button mat-button (click)="addToCart(product)" class="buttonAdd">+Cart</button>
                         </div>
                     </div>
                 </mat-card>
