@@ -251,10 +251,11 @@
     color: black;
     line-height: 1.5;
     padding-top: 19rem;
+    padding-right: 100px;
 }
 
 .workoutText {
-    width: 30%;
+    width: 35%;
 }
 
 .label {

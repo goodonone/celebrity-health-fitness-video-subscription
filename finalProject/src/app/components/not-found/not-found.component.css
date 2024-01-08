@@ -65,6 +65,8 @@ background-position-y:50%;
 
 p.findYourself:hover{
  background-color: white;
+ /* border-width: 2px;
+ border-color: black; */
  color: black;
  cursor: pointer;
 }
