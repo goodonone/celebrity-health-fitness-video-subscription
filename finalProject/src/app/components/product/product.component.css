@@ -36,6 +36,7 @@
 }
 
 .productInfo{
+    position: relative;
     padding-top: 2rem;
     height: 30rem;
     width: 28rem;
@@ -80,6 +81,10 @@ p.price{
 }
 
 .buttonContainer{
+    /* padding-top: 11.2rem; */
+    position: absolute;
+    top: 101%;
+    bottom: 0;
     width: 28rem;
 }
 
