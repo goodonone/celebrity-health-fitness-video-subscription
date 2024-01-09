@@ -279,20 +279,20 @@ export class ContentComponent implements OnInit{
       addToNewest() {
         
         // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "1", this.channel23Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "9", this.channel23Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "9", this.channel22Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "9", this.channel21Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "9", this.channel20Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel23Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel22Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel21Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "8", this.channel20Videos)
   
         
       }
 
     
       addToCategory() {
-        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "4" , this.absVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "4" , this.fullBodyVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNan-D0XhNEBRicxI52UsV1D5', "4" , this.upperBodyVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaldC0EzXxxS-WyeadCvx7sg', "4" , this.hiitVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "6" , this.absVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "6" , this.fullBodyVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNan-D0XhNEBRicxI52UsV1D5', "6" , this.upperBodyVideos);
+        this.getVideosFromPlaylist('PL2NpXBzdtNaldC0EzXxxS-WyeadCvx7sg', "6" , this.hiitVideos);
       }
     
       addTolivestreamVideo() {
