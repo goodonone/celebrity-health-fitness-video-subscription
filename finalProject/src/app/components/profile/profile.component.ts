@@ -146,14 +146,14 @@ export class ProfileComponent implements OnInit {
   // }
 
   goodbye(){
+    (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Deleting Profile..."
+    setTimeout(() => {
       (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+      }, 1000);
       setTimeout(() => {
-        (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Deleting Profile..."
-        }, 1000);
-        setTimeout(() => {
-          this.deleteProfileUser();
-          }, 2000);
-      }
+        this.deleteProfileUser();
+        }, 2000);
+}
     
 
   deleteProfileUser(){
