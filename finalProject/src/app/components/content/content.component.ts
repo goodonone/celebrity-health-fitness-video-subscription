@@ -27,6 +27,7 @@ export class ContentComponent implements OnInit{
   timerVal = '';
   timerValThree = '';
   userId?: number;
+  heading = true;
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -45,6 +46,12 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
+
+    if(this.currentUser.tier == "Just Looking"){
+      console.log(this.currentUser.tier);
+      this.toggleHeading();
+    }
+
   }
     
 
@@ -156,7 +163,7 @@ export class ContentComponent implements OnInit{
   }
 
   startCountDownTierThree() {
-    var countDownDate = new Date("Jan 8, 2024 16:45:25").getTime();
+    var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
     // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second
@@ -297,6 +304,10 @@ export class ContentComponent implements OnInit{
     
       addTolivestreamVideo() {
         this.getVideos('uBBDMqZKagY', this.livestreamVideos);
+      }
+
+      toggleHeading(){
+        this.heading = !this.heading;
       }
 
 }

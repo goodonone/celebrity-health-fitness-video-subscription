@@ -11,7 +11,7 @@
             <div class="deleteProfileContainer" *ngIf="classAppliedDeleteProfile">
                 <div class="absoluteContainer">
                     <img class="warningImg" src="assets/Images/Exclamation.svg">
-                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content & All Access to the Store. <br> <br> Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br><br> Proceed with Caution... <br><br> You will be Missed!</h1>
+                    <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific <br> Content & All Access to the Store. <br>  Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution... <br><br> You will be Missed!</h1>
                     <div class="cancelSubscriptionButtonContainer">
                         <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Keep <br> Subscription</button>
                         <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
@@ -33,6 +33,7 @@
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="saveOrChange == true" id="buttonDisappear" (click)="toggleProfile()" form="profileForm" type="submit" (click)="editProfile()" [class.active]="classApplied">Save Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" *ngIf="!editOrUpdate" (click)="toggleDelete()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Cancel Subscription</button>
+                                <button mat-button style="color:white" class="btn btn-signOutButton" *ngIf="!editOrUpdate" (click)="logOut()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Sign Out</button>
 
                                 <!-- <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="editOrUpdate" (click)="toggleEditProfile()" form="profileForm" type="submit" (click)="editProfile()">Update Profile</button> -->
                             </div>

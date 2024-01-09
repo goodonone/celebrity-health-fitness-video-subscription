@@ -186,7 +186,7 @@ h3.profileDetailsInputObjective{
     border-color: rgb(73, 73, 73);
     width: 10rem;
     /* color: white; */
-    margin-top: 15rem;
+    margin-top: 14rem;
     margin-left: 1rem;
 }
 
@@ -200,7 +200,7 @@ h3.profileDetailsInputObjective{
     background-color: rgb(25, 25, 25);
     /* border-color: rgb(0, 0, 0); */
     width: 10rem;
-    margin-top: 1.3rem;
+    margin-top: 1rem;
     margin-left: 1rem;
 }
 
@@ -216,6 +216,21 @@ h3.profileDetailsInputObjective{
     width: 10rem;
     /* color: white; */
     margin-top: 22rem;
+    margin-left: 1rem;
+}
+
+.btn-signOutButton{
+    height: 2.4rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: rgb(25, 25, 25);
+    border-color: rgb(73, 73, 73);
+    width: 10rem;
+    /* color: white; */
+    margin-top: 1rem;
     margin-left: 1rem;
 }
 
@@ -279,7 +294,8 @@ h3.profileDetailsInputObjective{
 .btn-editProfileButton:hover,
 .btn-updateProfileButton:hover,
 .btn-cancelSubscriptionButton:hover,
-.btn-backButton:hover
+.btn-backButton:hover,
+.btn-signOutButton:hover
     {
     background-color: white;
     /* border-color: #C7FF20; */
@@ -350,7 +366,7 @@ h1.deleteProfileText{
     display: flex;
     justify-content: space-between;
     width: 30rem;
-    padding: 3rem 10rem 3rem 10rem;
+    padding: 1rem 10rem 3rem 10rem;
 }
 
 img.warningImg{

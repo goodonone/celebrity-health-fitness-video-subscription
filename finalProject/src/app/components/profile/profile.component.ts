@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { subscribe } from 'diagnostics_channel';
-import { User } from '../../models/user';
-import { UserService } from '../../services/user.service';
+import { Component, OnInit} from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { User } from 'src/app/models/user';
+import { CartService } from 'src/app/services/cart.service';
+import { UserService } from 'src/app/services/user.service';
+
 
 
 @Component({
@@ -27,12 +29,15 @@ export class ProfileComponent implements OnInit {
   classApplied = false;
   classAppliedTwo = false;
   onlyProfilePicture = true;
+  userIsLoggedIn : boolean = false;
+  cartQuantity=0;
+
 
   userId!: number;
   classAppliedDeleteProfile = false;
 
 
-  constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute) { }
+  constructor(private userService: UserService, private router: Router, private actRoute: ActivatedRoute, private cartService: CartService) { }
 
   // ngOnInit(): void {
   //   const userId = this.actRoute.snapshot.paramMap.get("id") ?? "";
@@ -46,6 +51,14 @@ export class ProfileComponent implements OnInit {
     // this.loadUserProfile();
     // console.log('UserId:', this.UserId);
     this.fillProfile();
+    this.router.events.subscribe((event) =>{
+      if(event instanceof NavigationEnd) {
+        this.UpdateStatus();
+      }
+    });
+    this.cartService.getCartObservable().subscribe((newCart) => {
+      this.cartQuantity = newCart.totalCount;
+    });
 
 
   }
@@ -145,15 +158,15 @@ export class ProfileComponent implements OnInit {
   //     }, 2500);
   // }
 
-  goodbye(){
-    (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Deleting Profile..."
-    setTimeout(() => {
-      (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
-      }, 1000);
+   goodbye(){
+      (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Deleting Profile..."
       setTimeout(() => {
-        this.deleteProfileUser();
-        }, 2000);
-}
+        (document.getElementById('cancelSub') as HTMLButtonElement).innerText = "Goodbye"
+        }, 1000);
+        setTimeout(() => {
+          this.deleteProfileUser();
+          }, 2000);
+  }
     
 
   deleteProfileUser(){
@@ -161,6 +174,21 @@ export class ProfileComponent implements OnInit {
         this.router.navigate(['/home']);
         this.userService.logoutUser();
       });
+    }
+
+    UpdateStatus() {
+      this.userIsLoggedIn = this.userService.isloggedIn();
+      if (this.userIsLoggedIn) {
+        this.UserId = this.userService.getUserId() ?? "";
+      }
+    }
+
+    logOut() {
+      this.cartService.clearCart();
+      this.userService.logoutUser();
+      this.UpdateStatus();
+      this.router.navigate(['/home']);
+      
     }
   
 

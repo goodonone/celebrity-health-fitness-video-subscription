@@ -40,14 +40,10 @@ isloggedIn() {
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
-
-
   localStorage.removeItem('billing');
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
   localStorage.removeItem("cart");
-
-
 }
 
 getUserId() {

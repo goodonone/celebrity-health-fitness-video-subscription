@@ -146,7 +146,7 @@ h1.liveVideoText {
     border-radius: 1rem;
     margin: auto;
     margin-top: 2rem;
-    padding-bottom: 0.8rem;
+    padding-bottom: 3rem;
 }
 
 /* .cardVideos {
@@ -172,9 +172,10 @@ mat-content {
 
 mat-card.cardVideosFirst {
     background-color:  rgb(2, 2, 2);
-    width: 18rem;
-    height: 12rem;
+    width: 23rem;
+    height: 10rem;
     margin: 2rem;
+    margin-top: 4rem;
     /* padding: 1rem; */
 }
 
@@ -305,7 +306,11 @@ mat-card.contentCardTwo,
     width: 100%;
     color: black;
     /* border-radius: 6px; */
-    margin-top: 6rem;
+    margin-top: 2rem;
+}
+
+.cardVideos{
+margin-top: 0.5rem;
 }
 
 mat-card.cardVideosSecondThird {
