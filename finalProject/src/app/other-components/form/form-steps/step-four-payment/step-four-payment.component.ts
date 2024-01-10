@@ -17,8 +17,26 @@ export class StepFourPaymentComponent implements OnInit {
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
 
-    
+    const ccNumber: number | any = document.getElementById("ccNumber");
+    ccNumber.addEventListener("input", () => ccNumber.value = formatCCNumber(ccNumber.value.replaceAll(" ", "")));;
+    const formatCCNumber = (number: string) => number.split("").reduce((seed, next, index) => {
+      if (index !== 0 && !(index % 4)) seed += " ";
+      return seed + next;
+    }, "");
+
+
+    // const input: number | any = document.getElementById("expDate");
+    // input.addEventListener("input", () => input.value = formatDate(input.value.replaceAll(" ", "")));;
+    // const formatDate = (number: string) => number.split("").reduce((seed, next, index) => {
+    //   if (index !== 0 && !(index % 2)) seed += "/ ";
+    //   return seed + next;
+    // }, "");
+
+
+
   }
 
+
+  
 
 }

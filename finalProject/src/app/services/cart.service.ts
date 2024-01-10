@@ -19,7 +19,6 @@ export class CartService {
       cartItem.quantity++;
     } else {
     this.cart.items.push(new CartItems(product));
-    
   }
   this.setCartToLocalStorage();
 };
@@ -32,7 +31,6 @@ export class CartService {
   changeQuantity(productId: number, quantity: number) {
     let cartItem = this.cart.items.find(item => item.product.productId === productId);
     if(!cartItem || cartItem.product.productPrice === undefined) return;
-
     cartItem.quantity = quantity;
     cartItem.price = quantity * cartItem.product.productPrice;
     this.setCartToLocalStorage();
@@ -48,15 +46,6 @@ export class CartService {
    }
 
    private setCartToLocalStorage(): void{
-    // if (!this.cart || !this.cart.items) {
-    //   return;
-    // }
-    // this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => {
-      // if(currentItem.price === undefined) {
-      //   return prevSum;
-      // }
-
-      // return prevSum + currentItem.price;}, 0)
     this.cart.totalPrice = this.cart.items.reduce((prevSum, currentItem) => prevSum + currentItem.price!, 0)
     this.cart.totalCount = this.cart.items.reduce((prevSum, currentItem) => prevSum + currentItem.quantity, 0)
     const cartJson = JSON.stringify(this.cart);
@@ -73,6 +62,6 @@ export class CartService {
 
    updateCart(){}
 
-   saveCart(){} //probably the same as updatecart
+   saveCart(){}
 
 }

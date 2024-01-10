@@ -27,10 +27,6 @@
   padding: 0.58rem;
 }
 
-.btn-buyNow{
-  padding: 0.4rem
-}
-
 .btn-next,
 .btn-confirm {
   margin: 1rem 0 1rem auto;
@@ -54,8 +50,7 @@ a:hover {
 }
 
 .btn-next:disabled,
-.btn-confirm:disabled,
-.btn-buyNow:disabled {
+.btn-confirm:disabled {
   background-color: rgb(174, 174, 174);
   border-color: rgb(174, 174, 174);
   color: rgb(113, 113, 113);
@@ -73,8 +68,7 @@ a:hover {
   }
 
   .btn-next,
-  .btn-confirm,
-  .btn-buyNow {
+  .btn-confirm {
     position: absolute;
     top: 0%;
     right: 9%;

@@ -44,8 +44,8 @@
         <!-- If Current subscriber, tier one and needs to checkout -->
 
         <div class="upgrade" *ngIf="checkout">
-                <button class="btn btn-buyNow" mat-button *ngIf="activeStep$ < 2"
-                                [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="purchase()">Buy Now</button>
+                <button class="btn btn-confirm" mat-button *ngIf="activeStep$ < 2"
+                                [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="purchase()">Confirm</button>
          </div>
 
 
