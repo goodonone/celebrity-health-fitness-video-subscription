@@ -53,7 +53,7 @@
                       </div>
                       <div >
                         <h5 class="card-title mb-0">
-                          <a class="videoTitle">{{ video.snippet.title }}</a>
+                          <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                         </h5>
                       </div>
                     </div>
@@ -78,8 +78,8 @@
   <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
       <mat-card-header class="tierTwoThreeHeader">
-          <h1 class="tierName" *ngIf="!heading">{{currentUser.tier}}</h1>
-          <h1 class="tierName" *ngIf="heading">Motivated & All In</h1>
+          <h1 class="tierName" *ngIf="heading">{{currentUser.tier}}</h1>
+          <h1 class="tierName" *ngIf="!heading">Motivated & All In</h1>
       </mat-card-header>
       <div class="toggle-area">
           <div class="toggle">
@@ -105,11 +105,12 @@
                   <!-- width="380" height="250" -->
                   <div >
                     <h5 class="card-title mb-0">
-                      <a class="videoTitle">{{ video.snippet.title }}</a>
+                      <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                     </h5>
                   </div>
                 </div>
               </mat-card>
+              <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardTwo flexCards">
               <div class="yearAndRecipes">
@@ -124,11 +125,12 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a class="videoTitle">{{ video.snippet.title }}</a>
+                      <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                     </h5>
                   </div>
                 </div>
               </mat-card>
+              <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardThree flexCards">
             
@@ -144,11 +146,12 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a class="videoTitle">{{ video.snippet.title }}</a>
+                      <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                     </h5>
                   </div>
                 </div>
               </mat-card>
+              <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardFour flexCards">
            
@@ -164,11 +167,12 @@
                   </div>
                   <div >
                     <h5 class="card-title mb-0">
-                      <a class="videoTitle">{{ video.snippet.title }}</a>
+                      <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                     </h5>
                   </div>
                 </div>
               </mat-card>
+              <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
       </div>
       <div class="toggleWorkoutsByCategory" *ngIf="checked">
@@ -181,11 +185,12 @@
                     <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   
                     
-                      <a class="videoTitle">{{ video.snippet.title }}</a>
+                      <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                     
                   
                 
               </mat-card>
+              <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Full Body Workouts</h1>
@@ -196,11 +201,12 @@
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a class="videoTitle">{{ video.snippet.title }}</a>
+                  <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                 
               
             
           </mat-card>
+          <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">Upper Body Workouts</h1>
@@ -211,11 +217,12 @@
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a class="videoTitle">{{ video.snippet.title }}</a>
+                  <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                 
               
             
           </mat-card>
+          <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           <mat-card class="contentCardOne flexCards">
               <h1 class="cardHeadertype">HIIT Workouts</h1>
@@ -226,11 +233,12 @@
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               
                 
-                  <a class="videoTitle">{{ video.snippet.title }}</a>
+                  <!-- <a class="videoTitle">{{ video.snippet.title }}</a> -->
                 
               
             
           </mat-card>
+          <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
           
       </div>

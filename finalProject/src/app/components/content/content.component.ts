@@ -27,7 +27,7 @@ export class ContentComponent implements OnInit{
   timerVal = '';
   timerValThree = '';
   userId?: number;
-  heading = true;
+  heading:boolean = true;
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -36,8 +36,13 @@ export class ContentComponent implements OnInit{
     this.userId = parseInt(UserId);
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
-      console.log(this.currentUser.tier);
+      // console.log(this.currentUser.tier);
       // console.log(user);
+      if(this.currentUser.tier === "Just Looking"){
+        // console.log(this.currentUser.tier);
+        this.toggleHeading();
+        console.log(this.heading);
+      }
     });
     this.startCountDownTierOneTwo();
     this.startCountDownTierThree();
@@ -47,65 +52,9 @@ export class ContentComponent implements OnInit{
     this.addToCategory();
     this.addTolivestreamVideo();
 
-    if(this.currentUser.tier == "Just Looking"){
-      console.log(this.currentUser.tier);
-      this.toggleHeading();
-    }
-
-  }
     
-
-    // Try to do this where the latest year updates automatically
-
-    // const yearSpan = document.getElementById('#currentYear');
-    // const currentYear = new Date();
-    // yearSpan!.innerText = currentYear.getFullYear();
-
-
-    // only run if Tier = 'Just Looking'
-    // if(tierName == 'Just Looking')
-    // var $ = require("jquery");
-    // var wrap = $("#fixed");
-
-    // wrap.on("scroll", (e: any) => {
-        
-    //   if (document.documentElement.scrollTop > 147) {
-    //     wrap.addClass("fix-search");
-    //   } else {
-    //     wrap.removeClass("fix-search");
-    //   }
-      
-    // });
-
-
-    // var windw = this;
-
-    // $.fn.followTo = function (pos: number) {
-    //   var $this = this,
-    //     $window = $(windw);
-
-    //   $window.scroll(function (e: any) {
-    //     if ($window.scrollTop() > pos) {
-    //       $this.css({
-    //         position: 'absolute',
-    //         top: pos
-    //       });
-    //     } else {
-    //       $this.css({
-    //         position: 'fixed',
-    //         top: 0
-    //       });
-    //     }
-    //   });
-    // };
-
-    // $('#fixed').followTo(250);
-    //   $(window).scroll(() =>{
-    //     $("#fixed").css("top",Math.max(0,0-$(this).scrollTop()));
-    // });
+  }
   
-
-
  
   timerTierThree: boolean = true;
   showLiveVideo: boolean = false;
