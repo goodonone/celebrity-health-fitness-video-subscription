@@ -27,6 +27,7 @@ export class ContentComponent implements OnInit{
   timerVal = '';
   timerValThree = '';
   userId?: number;
+  heading = true;
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -45,6 +46,12 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
+
+    if(this.currentUser.tier == "Just Looking"){
+      console.log(this.currentUser.tier);
+      this.toggleHeading();
+    }
+
   }
     
 
@@ -125,7 +132,7 @@ export class ContentComponent implements OnInit{
   // testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
   // testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
-    var countDownDate = new Date("Jan 8, 2024 16:45:25").getTime();
+    var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
 
     // Update the count down every 1 second
     var x = setInterval( () => {
@@ -156,7 +163,7 @@ export class ContentComponent implements OnInit{
   }
 
   startCountDownTierThree() {
-    var countDownDate = new Date("Jan 8, 2024 16:45:25").getTime();
+    var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
     // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second
@@ -297,6 +304,10 @@ export class ContentComponent implements OnInit{
     
       addTolivestreamVideo() {
         this.getVideos('uBBDMqZKagY', this.livestreamVideos);
+      }
+
+      toggleHeading(){
+        this.heading = !this.heading;
       }
 
 }

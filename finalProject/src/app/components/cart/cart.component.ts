@@ -15,19 +15,15 @@ export class CartComponent implements OnInit {
   cart!: Cart;
   tierTwoThree = true;
   userId?: number;
+  tierOneCheckout = false;
+  cartStatic = true;
+  cartFlip = false;
 
   constructor(private cartService: CartService, private paymentService: PaymentService, private router: Router, private userService: UserService, private actRoute: ActivatedRoute) {
 
 
   }
   ngOnInit(): void {
-    // const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    // this.userId = parseInt(UserId);
-    // console.log(this.userId);
-    // this.userService.getUser(this.userId).subscribe(user => {
-    //   this.currentUser = user;
-      // this.currentUser.userId
-    // });
 
     let UserId = localStorage.getItem('userId');
     this.userId = parseInt(UserId!);
@@ -40,8 +36,11 @@ export class CartComponent implements OnInit {
 
     if (tier == "Just Looking") {
       this.checkTier();
-      // console.log(tier + this.payment);
     }
+
+    // if(!this.cartFlip){
+    //   this.toggleTier();
+    // }
 
   }
 
@@ -62,7 +61,6 @@ export class CartComponent implements OnInit {
       tier: localStorage.getItem("tier") || "",
       price: this.cart.totalPrice || 0,
       paymentType: 'store purchase',
-
     }
 
     this.paymentService.newPaymentStore(newPayment).subscribe(() => {
@@ -70,20 +68,40 @@ export class CartComponent implements OnInit {
     });
     this.cartService.clearCart();
     localStorage.removeItem("cart");
+    this.cartStatic = !this.cartStatic;
   }
+
+  // checkoutCartTierOne(){
+  //   this.cartService.clearCart();
+  //   localStorage.removeItem("cart"); 
+  //   this.toggleTier();
+  //   console.log(this.tierOneCheckout);
+  // }
+
 
   cartItem(): boolean {
     const cartItem = localStorage.getItem("cart");
-    return !!cartItem
+    return !!cartItem;
   }
 
   checkTier() {
     this.tierTwoThree = !this.tierTwoThree;
   }
 
-  // goToPaymentPage(){
-  //   this.router.navigateByUrl('/checkout');
+  // toggleTier(){
+  //   this.tierOneCheckout = !this.tierOneCheckout;
+  //   console.log("tierOneCheckout" + this.tierOneCheckout);
+  //   this.cartStatic = !this.cartStatic;
+  //   console.log("cartStatic" + this.cartStatic)
   // }
+
+// cartStatic = false;
+// tierOneCheckout = true;
+
+// toggleTier(){
+//   this.cartStatic = !this.cartStatic;
+//   this.tierOneCheckout = !this.tierOneCheckout;
+// }
 
 
 }

@@ -35,7 +35,6 @@ import { StepTwoPlanDetailsComponent } from './other-components/form/form-steps/
 import { StepTrackerIconsComponent} from './other-components/step-nav/step-tracker-icons.component';
 import { ProgressionButtonsComponent } from './other-components/progression-buttons/progression-buttons.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { StepThreeSummaryComponent } from './other-components/form/form-steps/step-three-summary/step-three-summary.component';
 import { StepFourPaymentComponent } from './other-components/form/form-steps/step-four-payment/step-four-payment.component';
 import { UpgradeComponent } from './components/upgrade/upgrade.component';
@@ -46,6 +45,7 @@ import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-up
 import { AuthGuard } from './auth.guard';
 import { AppPasswordDirective } from './app-password.directive';
 import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
+import { StepTrackerIconsCheckout } from './other-components/form/step-nav-checkout/step-tracker-icons-checkout.component';
 
 
 
@@ -80,6 +80,7 @@ import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/
     StepTrackerIconsUpgradeComponent,
     StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
+    StepTrackerIconsCheckout,
   
 
   ],

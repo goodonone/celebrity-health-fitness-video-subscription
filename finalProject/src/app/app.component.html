@@ -5,9 +5,7 @@
         <img class="logo" src="assets/Images/ProjectLogo.svg" alt="Hugh-Jackedman-Logo" routerLink="/home">
       </div>
     </a>
-    <!-- <span class="logoSpan">
-      <img class="logo" src="assets/Images/ProjectLogo.svg" alt="Hugh-Jackedman-Logo" routerLink="/home">
-    </span> -->
+    
     <span class="spacer"></span>
     <label id="hamburger" for="toggle">&#9776;</label>
     <input type="checkbox" id="toggle">
@@ -19,9 +17,9 @@
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup">Sign Up</h6>
       <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signin">Log In</h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]">Profile</h6>
-
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]">Workouts</h6>
+
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]">Profile</h6>
 
       <h6 class="navBarText" routerLink="/about">About</h6>
 

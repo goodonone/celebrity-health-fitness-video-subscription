@@ -86,7 +86,8 @@ section.picture-bubbles {
 }
 
 .bubble img {
-  width: 15%;
+  width: 13vw;
+  height: 13vw;
   border-radius: 70%;
   margin-bottom: 3rem;
   background-color: black;
@@ -105,9 +106,9 @@ section.picture-bubbles {
 
 p.teamText {
   font-size: 1.5rem;
-  line-height: 1.3rem;
+  line-height: 1.4rem;
   font-weight: 500;
-  width: 35%;
+  width: 37vw;
   padding-left: 3rem;
 }
 
@@ -115,43 +116,53 @@ img#backgroundPicture {}
 
 .teamText-Paris {
   font-size: 1.5rem;
+  line-height: 1.4rem;
+  font-weight: 500;
+  width: 37vw;
+  padding-left: 3rem;
+  padding-top: 3.8rem;
+}
+
+.teamText-Soyeon{
+  font-size: 1.5rem;
   line-height: 1.3rem;
   font-weight: 500;
-  width: 35%;
+  width: 37vw;
   padding-left: 3rem;
-  padding-top: 2.5rem;
+  padding-top: 1.8rem;
 }
 
 .teamText-Jude {
   font-size: 1.5rem;
-  line-height: 1.3rem;
+  line-height: 1.4rem;
   font-weight: 500;
-  width: 35%;
+  width: 37vw;
   padding-left: 3rem;
   padding-top: 2rem;
 }
 
 .teamText-Allyshia {
   font-size: 1.5rem;
-  line-height: 1.3rem;
+  line-height: 1.4rem;
   font-weight: 500;
-  width: 35%;
+  width: 37vw;
   padding-left: 3rem;
-  padding-top: 2.5rem;
+  padding-top: 3.5rem;
 }
 
 .teamText-Gerrit {
   font-size: 1.5rem;
-  line-height: 1.3rem;
+  line-height: 1.4rem;
   font-weight: 500;
-  width: 35%;
+  width: 37vw;
   padding-left: 3rem;
-  padding-top: 2.5rem;
+  padding-top: 3.6rem;
 }
 
 #backgroundPictureParis{
-  width: 15%;
-  height: 85%;
+  width: 13vw;
+  height: 13vw;
+  min-width: 1vw;
 }
 
 

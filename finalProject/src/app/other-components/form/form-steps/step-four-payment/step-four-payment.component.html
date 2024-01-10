@@ -25,7 +25,7 @@
                  matInput
                  name="nameOnCard"
                  id="nameOnCard"
-                 placeholder="Example: Aye Wantobejacked" 
+                 placeholder="Aye Wantobejacked" 
                  formControlName="nameOnCard"
                  required>
         </div>
@@ -37,11 +37,14 @@
                  *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
                  class="error-alert">Invalid</label>
         </div>
-        <input type="text"
+        <input type="tel"
                matInput
                name="ccNumber"
                id="ccNumber"
-               placeholder="1234567891011121" 
+               maxlength="19"
+               pattern="[0-9\s]{13,19}"
+               inputmode="numeric"
+               placeholder="xxxx xxxx xxxx xxxx"
                formControlName="ccNumber"
                required>
         </div>
@@ -55,9 +58,10 @@
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
                  class="error-alert">Invalid</label>
         </div>
-        <input type="text"
-              matInput
+        <input type="tel"
+               matInput
                name="expDate"
+               maxlength="5"
                id="expDate"
                placeholder="01/25" 
                formControlName="expDate"
@@ -71,11 +75,12 @@
                  *ngIf="this.stepForm.controls['cvv'].invalid && this.stepForm.controls['cvv'].touched"
                  class="error-alert">Invalid</label>
         </div>
-        <input type="text"
+        <input type="tel"
               matInput
                name="cvv"
                id="cvv"
-               placeholder="025"
+               maxlength="3"
+               placeholder="000"
                formControlName="cvv"
                required>
         </div>
@@ -87,11 +92,12 @@
                  *ngIf="this.stepForm.controls['zipCode'].invalid && this.stepForm.controls['zipCode'].touched"
                  class="error-alert">Invalid</label>
         </div>
-        <input type="text"
+        <input type="tel"
                matInput
                name="zipcode"
                id="zipCode"
-               placeholder="90210"
+               maxlength="5"
+               placeholder="99999"
                formControlName="zipCode"
                required>
       </div>

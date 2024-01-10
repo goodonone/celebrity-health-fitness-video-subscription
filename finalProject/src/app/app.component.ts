@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
@@ -79,13 +79,7 @@ export class AppComponent implements OnInit {
     
   }
 
-  // UpdateStatus() {
-  //   if (this.userService.isloggedIn()) {
-  //     !this.userIsLoggedIn;
-  //     this.UserId = this.userService.getUserId() ?? "";
-  //   }
-    
-  // }
+
 
   logOut() {
     this.cartService.clearCart();

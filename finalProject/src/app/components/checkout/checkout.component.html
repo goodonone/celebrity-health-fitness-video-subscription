@@ -8,17 +8,12 @@
                 <mat-card-content class="cardContent">
                     <div class="innerCardContainer">
                         <mat-card class="innerCardTwo">
-                            <div class="column">
-                                <app-step-four-payment></app-step-four-payment>
-                            </div>
-                            <!-- <app-form [loggedIn]="userLoggedIn"></app-form>
-                            <app-progression-buttons [loggedIn]="userLoggedIn"></app-progression-buttons> -->
+                            <app-form  [checkout]="checkout"></app-form>
+                                <app-progression-buttons [checkout]="checkout"></app-progression-buttons>
                         </mat-card>
                     </div>
                 </mat-card-content>
             </mat-card>
         </div>
     </div>
-
 </div>
-

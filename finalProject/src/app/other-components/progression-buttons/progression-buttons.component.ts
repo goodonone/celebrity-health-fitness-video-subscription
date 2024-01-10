@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
 import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
+import { CartService } from 'src/app/services/cart.service';
 
 
 
@@ -12,17 +14,19 @@ import { UserService } from '../../services/user.service';
   // standalone: true,
 })
 export class ProgressionButtonsComponent implements OnInit {
+
   stepForm!: FormGroup;
   activeStep$: number = 0;
   planCost: number = 0;
 
   @Input() loggedIn!: boolean;
   @Input() payment!: boolean;
+  @Input() checkout!: boolean;
 
   // userIsLoggedIn : boolean = false;
   // UserId : string = "";
 
-  constructor(private formService: FormService, private user: UserService) { }
+  constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService) { }
 
   ngOnInit(): void {
     // this.UpdateStatus();
@@ -40,7 +44,6 @@ export class ProgressionButtonsComponent implements OnInit {
     //     console.log(this.stepForm.controls);
     //   });
 
-    console.log("progression" + this.payment);
   }
 
   nextStep() {
@@ -76,23 +79,15 @@ export class ProgressionButtonsComponent implements OnInit {
     this.formService.submit();
   }
 
+  purchase() {
+    this.formService.goToNextStep(this.activeStep$);
+    this.cartService.clearCart();
+    localStorage.removeItem("cart");
+    setInterval(()=>{
+      this.router.navigate(['cart']);
+    },3000)
 
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.user.isloggedIn();
-  //   if (this.userIsLoggedIn) {
-  //     this.UserId = this.user.getUserId() ?? "";
-  // }
+  }
 
-  // }
-
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.user.isloggedIn();
-  //   this.userIsLoggedIn = !this.userIsLoggedIn;
-  //   // console.log(this.userIsLoggedIn);
-  //   if (this.userIsLoggedIn) {
-  //     this.UserId = this.user.getUserId() ?? "";
-  //   }
-
-  // }
 
 }
