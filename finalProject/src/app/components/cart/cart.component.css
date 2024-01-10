@@ -45,7 +45,7 @@
     display: flex;
     flex-direction: row;
     position: relative;
-    background-color: rgb(220, 220, 220);
+    background-color: rgb(236, 236, 236);
     margin: 0.5rem 0 0.5rem 0;
     border-radius: 6px;
     padding: 0.4rem ;
@@ -129,7 +129,7 @@ p.totalPrice{
 }
 
 button.buttonCheckOut{
-    background-color: rgb(220, 220, 220);
+    background-color: rgb(236, 236, 236);
     width: 12rem;
     margin-left: 54rem;
     /* padding-bottom: 2rem; */
@@ -165,8 +165,11 @@ h1.thankYou{
 }
 
 p.payment{
+    margin: auto;
     font-size: 1rem;
+    width: 50%
 }
+
 
 
 

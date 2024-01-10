@@ -1,4 +1,4 @@
-<!-- <div class="background">
+<div class="background">
     <div class="containerFlex">
         <div class="textContainer">
             <h1 class="checkOutText">Checkout</h1>
@@ -8,15 +8,12 @@
                 <mat-card-content class="cardContent">
                     <div class="innerCardContainer">
                         <mat-card class="innerCardTwo">
-                            <div class="column">
-                                <app-step-four-payment></app-step-four-payment>
-                            </div> -->
-                        <!-- </mat-card>
+                            <app-form  [checkout]="checkout"></app-form>
+                                <app-progression-buttons [checkout]="checkout"></app-progression-buttons>
+                        </mat-card>
                     </div>
                 </mat-card-content>
             </mat-card>
         </div>
     </div>
-
-</div> -->
-<p>checkout page</p>
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MaterialModule } from 'src/app/material.module';
 
 @Component({
@@ -8,6 +8,8 @@ import { MaterialModule } from 'src/app/material.module';
 })
 export class StepFiveConfimComponent implements OnInit {
 loading = true;
+
+@Input() checkout!: boolean;
 
 ngOnInit() : void{
 //   setTimeout(()=> {this.loading = false}, 3000)

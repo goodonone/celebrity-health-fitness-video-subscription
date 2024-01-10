@@ -45,6 +45,7 @@ import { StepTrackerIconsUpgradeComponent } from './other-components/step-nav-up
 import { AuthGuard } from './auth.guard';
 import { AppPasswordDirective } from './app-password.directive';
 import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
+import { StepTrackerIconsCheckout } from './other-components/form/step-nav-checkout/step-tracker-icons-checkout.component';
 
 
 
@@ -79,6 +80,7 @@ import { StepTrackerIconsUpgradeComponentWithPayment } from './other-components/
     StepTrackerIconsUpgradeComponent,
     StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
+    StepTrackerIconsCheckout,
   
 
   ],

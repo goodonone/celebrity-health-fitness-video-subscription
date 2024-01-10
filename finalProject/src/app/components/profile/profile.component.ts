@@ -188,7 +188,6 @@ export class ProfileComponent implements OnInit {
       this.userService.logoutUser();
       this.UpdateStatus();
       this.router.navigate(['/home']);
-      
     }
   
 

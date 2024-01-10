@@ -1,13 +1,13 @@
 <div class="pageContainer">
    
     <mat-card class="cartContainer">
-        <h1 *ngIf="cartItem()" class="pageName">Cart</h1>
-        <h1 *ngIf="!cartItem()" class="pageName">Checkout</h1>
+        <h1 *ngIf="cartStatic" class="pageName">Cart</h1>
+        <h1 *ngIf="!cartItem() && !tierTwoThree" class="pageName">Cart</h1>
+        <h1 *ngIf="!cartItem() && tierTwoThree" class="pageName">Checkout</h1>
 
         <mat-card-content class="cardFlex">
             <mat-card class="cards" *ngFor="let cartItem of cart.items">
             <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-                <!-- <img [src]="currentProduct.productUrl"> -->
             </mat-card>
             <p class="name">{{cartItem.product.productName}}</p>
             <div class="quantity">
@@ -28,27 +28,22 @@
                 <p class="price">${{cartItem.price}}</p>
             </div>
             </mat-card>
-            <!-- <div clas="totalContainer"> -->
                 <div class="totalContainer" *ngIf="cart.totalCount !== 0">
                     <h1 class="totalText">Total:</h1>
-                    <!-- <div class="totalCountContainer">
-                        <p class="totalCount"><span class="totalSpan">{{cart.totalCount}}</span> &nbsp; items</p>
-                    </div> -->
                     <div class="totalPriceContainer">
                         <p class="totalPrice">${{cart.totalPrice}}</p>
                     </div>
                 </div>
                 <div class="buttonContainer" *ngIf="cart.totalCount !== 0">
-                    <button mat-button class="buttonCheckOut" (click)="checkoutCart()">Proceed to Checkout</button>
-                    <!-- <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button> -->
+                    <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
+                    <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
                 </div>
-
-            <!-- </div> -->
         <div class="emptyMessageContainer" *ngIf="cart.totalCount === 0">
-            <p *ngIf="cartItem()"class="emptyMessage">Your cart is empty</p>
-            <div  *ngIf="!cartItem()"class="thankYouMessage">
+            <p *ngIf="cartStatic" class="emptyMessage">Your cart is empty</p>
+            <p *ngIf="!cartItem() && !tierTwoThree"class="emptyMessage">Your cart is empty</p>
+            <div  *ngIf="!cartItem() && tierTwoThree"class="thankYouMessage">
                 <h1 class="thankYou">Thank You for your Purchase!</h1>
-                <p class="payment">Payment has been processed with Card Number on file</p>
+                <p class="payment">Payment has been processed with Card Number on file. You will receive a Confirmation Email shortly. If you do not, please feel free to reach out to our Support Team at support@hughjackedman.com</p>
             </div>
         </div>
         </mat-card-content>
@@ -58,45 +53,4 @@
 
 
 
-<!-- <h1>Cart</h1>
 
-<div *ngIf="cart.totalCount > 0">
-    <ul>
-        <li *ngFor="let cartItem of cart.items">
-            <div>
-                <img [src]="cartItem.product.productUrl" [alt]="cartItem.product.productName">
-            </div>
-            <div>
-                <a>{{cartItem.product.productName}}</a>
-            </div>
-            <div>
-                <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-
-                </select>
-            </div>
-            <div>
-                ${{cartItem.price}}
-            </div>
-            <div>
-                <button (click)="removeFromCart(cartItem)">
-                    Remove
-                </button>
-            </div>
-
-        </li>
-    </ul>
-    <div>
-        <div>{{cart.totalCount}}</div>
-        <div>${{cart.totalPrice}}</div>
-    </div>
-    <button routerLink="/checkout" (click)="checkoutCart()">Proceed to Checkout</button>
-</div>
-
-<div *ngIf="cart.totalCount === 0">
-    Your cart is empty
-</div> -->
