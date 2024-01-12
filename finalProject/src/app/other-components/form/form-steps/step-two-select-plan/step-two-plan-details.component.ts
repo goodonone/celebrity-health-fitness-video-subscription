@@ -41,7 +41,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   updatePlanType(plan: string, cost: number) {
     this.planType = plan;
     this.totalCost = cost;
-    // this.billing = billing;
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,

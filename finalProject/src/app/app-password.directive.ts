@@ -14,17 +14,17 @@ export class AppPasswordDirective {
     this._shown = !this._shown;
     if (this._shown) {
       this.el.nativeElement.setAttribute('type', 'text');
-      span.innerHTML = 'Hide password';
+      span.innerHTML = 'hide password';
     } else {
       this.el.nativeElement.setAttribute('type', 'password');
-      span.innerHTML = 'Show password';
+      span.innerHTML = 'show password';
     }
   }
   setup() {
     const parent = this.el.nativeElement.parentNode;
     const span = document.createElement('span');
     span.setAttribute('id', "showHide");
-    span.innerHTML = `Show password`;
+    span.innerHTML = `show password`;
     span.addEventListener('click', (event) => {
       this.toggle(span);
     });
