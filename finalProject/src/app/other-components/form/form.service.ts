@@ -63,8 +63,6 @@ export class FormService implements OnInit {
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
-    console.log(userInfo);
-
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
 
     if (!localStorage.getItem('userId')) {
