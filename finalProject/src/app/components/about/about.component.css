@@ -77,11 +77,19 @@ section.picture-bubbles {
   flex-wrap: wrap;
   /* margin-top: 20px; */
   margin: auto;
+  margin-bottom: 5rem;
+}
+
+.flexContainer{
+  display: flex;
+  justify-content: space-evenly;
+  /* width: 30%; */
+  margin: auto;
 }
 
 .bubble {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
 }
 
@@ -89,8 +97,9 @@ section.picture-bubbles {
   width: 13vw;
   height: 13vw;
   border-radius: 70%;
-  margin-bottom: 3rem;
+  /* margin-bottom: 3rem; */
   background-color: black;
+  margin: 2rem;
 }
 
 .ourTeam {
@@ -105,58 +114,64 @@ section.picture-bubbles {
 }
 
 p.teamText {
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
 }
 
 img#backgroundPicture {}
 
 .teamText-Paris {
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
-  padding-top: 3.8rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
+  /* padding-top: 3.8rem; */
 }
 
 .teamText-Soyeon{
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.3rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
-  padding-top: 1.8rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
+  /* padding-top: 1.8rem; */
 }
 
 .teamText-Jude {
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
-  padding-top: 2rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
+  /* padding-top: 2rem; */
 }
 
 .teamText-Allyshia {
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
-  padding-top: 3.5rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
+  /* padding-top: 3.5rem; */
 }
 
 .teamText-Gerrit {
+  text-align: center;
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  width: 37vw;
-  padding-left: 3rem;
-  padding-top: 3.6rem;
+  /* width: 37vw; */
+  /* padding-left: 3rem; */
+  /* padding-top: 3.6rem; */
 }
 
 #backgroundPictureParis{
