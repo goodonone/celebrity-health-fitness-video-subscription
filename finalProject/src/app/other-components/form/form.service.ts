@@ -1,7 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-// import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { PaymentService } from '../../services/payment.service';
 import { User } from '../../models/user';
@@ -22,6 +21,8 @@ export class FormService implements OnInit {
 
   ngOnInit(): void {
   }
+
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { }
 
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
@@ -49,8 +50,6 @@ export class FormService implements OnInit {
     return this.multiStepForm;
   }
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { }
-
   goToNextStep(number: number) {
     this.activeStepSubject.next(number + 1);
   }
@@ -63,6 +62,8 @@ export class FormService implements OnInit {
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
+
+    console.log(userInfo);
 
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
 

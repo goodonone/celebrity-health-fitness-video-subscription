@@ -47,8 +47,6 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
-
-    
   }
   
  
