@@ -9,7 +9,6 @@ import { ProductService } from 'src/app/services/product.service';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit{
-  // product!: Product;
   currentProduct: Product = new Product;
   constructor(private actRoute: ActivatedRoute, private productService: ProductService, private cartService: CartService, private router: Router) {
   }
@@ -18,7 +17,6 @@ export class ProductComponent implements OnInit{
     this.productService.getProductById(productId).subscribe(product => {
       if(product) {
       this.currentProduct = product;
-      console.log(product);
       }
     });
   }

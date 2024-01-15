@@ -34,7 +34,6 @@ export class UpgradeComponent implements OnInit, OnDestroy {
 
     if(tier == "Just Looking"){
       this.togglePayment();
-      console.log(tier + this.payment);
     }
 
   }

@@ -38,7 +38,6 @@ export class ContentComponent implements OnInit{
       this.currentUser = user;
       if(this.currentUser.tier === "Just Looking"){
         this.toggleHeading();
-        console.log(this.heading);
       }
     });
     this.startCountDownTierOneTwo();
@@ -137,14 +136,10 @@ export class ContentComponent implements OnInit{
     }, 1000);
   }
 
-  // Condition to display various items on page
   
-
   toggleBilling() {
     this.checked = !this.checked;
   }
-
-  // Upgrade Follow scroll 
 
 
   getVideos(videoId: string, videoArray: any[]): void {
