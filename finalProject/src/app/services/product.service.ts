@@ -104,7 +104,6 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getAllProducts(): Observable<Product[]> {
-    // return of(this.sampleProducts);
     return this.http.get<Product[]>(this.baseURL);
   };
 
@@ -113,9 +112,5 @@ export class ProductService {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
     }
     return this.http.get<Product>(`${this.baseURL}/${productId}`, {headers: reqHeaders});
-    // const id = parseInt(productId)
-    // const product = this.sampleProducts.find(p => p.productId === id)
-
-    // return of(product || null)
     };
 }

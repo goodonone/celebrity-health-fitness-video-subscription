@@ -8,9 +8,6 @@
         <div class="upgrade" *ngIf="loggedIn && payment && !checkout">
                 <a *ngIf="activeStep$ > 1 && activeStep$ <= 3" (click)="goBack()">Go Back</a>
         </div>
-        <!-- <div class="upgrade" *ngIf="checkout">
-                <a *ngIf="activeStep$ > 1 && activeStep$ <= 3" (click)="goBack()">Go Back</a>
-        </div> -->
 
         <!-- If New Subscriber -->
         <div class="upgrade" *ngIf="!loggedIn && !checkout">
@@ -47,14 +44,3 @@
                 <button class="btn btn-confirm" mat-button *ngIf="activeStep$ < 2"
                                 [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="purchase()">Confirm</button>
          </div>
-
-
-
-
-<!-- || activeStep$ === 3 && stepForm.controls['planDetails'].value !== 'Just Looking' -->
-
-<!-- | activeStep$ === 3 && planDetails.plan === 'Just Looking' -->
-
-<!-- || stepForm.controls['paymentDetails'].valid === false -->
-
-<!-- || activeStep$ === 3 && stepForm.controls['personalDetails'].value === 'Just Looking' -->

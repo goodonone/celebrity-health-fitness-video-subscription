@@ -1,31 +1,3 @@
-// interface Plan2{
-//   plan: string;
-//   icon: string;
-//   duration: string;
-//   price: string;
-//   addToTotal: number;
-//   promo: string;
-// }
-
-// export const planOptions2: Plan2[] = [
-//   {
-//     plan: 'monthly',
-//     icon: '/assets/images/icon-arcade.svg',
-//     duration: 'monthly',
-//     price: '$9/mo',
-//     addToTotal: 9,
-//     promo: '',
-//   },
-//   {
-//     plan: 'yearly',
-//     icon: '/assets/images/icon-arcade.svg',
-//     duration: 'yearly',
-//     price: '$90/yr',
-//     addToTotal: 90,
-//     promo: '2 months free',
-//   },
-// ];
-
 class Plan {
     plan: string = "";
     description: string = "";

@@ -12,8 +12,5 @@ loading = true;
 @Input() checkout!: boolean;
 
 ngOnInit() : void{
-//   setTimeout(()=> {this.loading = false}, 3000)
-// }
-// }
 }
 }

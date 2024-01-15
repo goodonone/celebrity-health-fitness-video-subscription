@@ -10,8 +10,6 @@ import { User } from '../models/user';
 })
 export class UserService {
 
-  // isLoggedIn$ : new BehaviorSubject;?
-
   baseURL: string = "http://localhost:3000/api/users"
   tokenKey: string = "token";
   tierKey: string = "tier";
@@ -74,7 +72,6 @@ getUser(userId: number): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
-  // console.log(this.baseURL + "/" + userId);
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   

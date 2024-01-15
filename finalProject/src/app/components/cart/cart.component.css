@@ -2,11 +2,6 @@
     font-family: 'Outfit', sans-serif;
 }
 
-/* a {
-    color: white;
-    text-align: center;
-} */
-
 .pageContainer {
     background-color: rgb(255, 255, 255);
     width: 100vw;
@@ -14,8 +9,6 @@
     margin-top: -10rem;
     overflow-x: hidden;
     height: 100vh;
-    /* box-sizing: border-box; */
-    /* overflow: hidden; */
 }
 
 .productImage{
@@ -38,7 +31,6 @@
     padding-top: 5rem;
     border-radius: 10px;
     margin-bottom: 2rem;
-    /* min-height: 40rem; */
 }
 
 .cards{
@@ -57,14 +49,10 @@
     text-align: left;
     font-size: 8vw;
     padding-left: 3rem;
-    /* padding-right: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 0rem; */
     font-weight: 600; 
 }
 
 p.name{
-    /* padding-top: 1.3rem; */
     padding: 1.3rem 0 0rem 1.3rem;
     font-size: 2.5rem;
 }
@@ -73,7 +61,6 @@ div.quantity{
     position: absolute;
     left: 60rem;
     top: 2rem;
-    /* margin-left: 10rem; */
 }
 
 div.removeButton{
@@ -101,12 +88,9 @@ h1.totalText{
 }
 
 .totalContainer{
-    /* position: absolute; */
     display:inline-flex;
-/* flex-direction: row; */
     justify-content: right;
     margin-right: 8rem;
-    /* background-color: aqua; */
 }
 
 .totalCountContainer{
@@ -132,7 +116,6 @@ button.buttonCheckOut{
     background-color: rgb(236, 236, 236);
     width: 12rem;
     margin-left: 54rem;
-    /* padding-bottom: 2rem; */
 }
 
 .buttonCheckOut:hover{

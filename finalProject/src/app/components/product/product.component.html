@@ -2,7 +2,6 @@
 <mat-card class="productContainer">
     <mat-card-content class="cardFlex">
         <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + currentProduct.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-            <!-- <img [src]="currentProduct.productUrl"> -->
         </mat-card>
         <div class="productInfo">
             <p class="name">{{currentProduct.productName}}</p>
@@ -20,14 +19,4 @@
     </mat-card-content>
 </mat-card>
 </div>
-
-
-<!-- <div>
-        <p>{{currentProduct.productName}}</p>
-        <p>{{currentProduct.productDescription}}</p>
-        <p>{{currentProduct.productPrice}}</p>
-        
-        <button (click)="addToCart()"> Add to Cart </button>
-
-</div> -->
 

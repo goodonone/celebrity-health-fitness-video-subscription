@@ -31,7 +31,6 @@
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home">Sign Out</h6>
 
-      <!-- Disable search if not implemented -->
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">
         <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search"
