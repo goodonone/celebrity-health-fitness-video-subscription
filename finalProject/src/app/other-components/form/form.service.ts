@@ -21,14 +21,6 @@ export class FormService implements OnInit {
   activeStep$ = this.activeStepSubject.asObservable();
 
   ngOnInit(): void {
-
-    // if (localStorage.getItem('userSignedIn')) {
-    //   !this.userIsLoggedIn;
-    //   console.log(this.userIsLoggedIn);
-    // }
-
-    console.log("Testing" + "Testing");
-    // this.UpdateStatus();
   }
 
   multiStepForm: FormGroup = this.fb.group({
@@ -38,8 +30,8 @@ export class FormService implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]]
     }),
     planDetails: this.fb.group({
-      plan: [ localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
-      billing: ['monthly', [Validators.required]],
+      plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+      billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
       planCost: [0],
       totalCost: []
     }),

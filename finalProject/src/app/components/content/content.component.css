@@ -7,7 +7,7 @@ div { text-align: center;}
  */
 
 
- * {
+* {
     font-family: 'Outfit', sans-serif;
 }
 
@@ -17,8 +17,8 @@ a {
 }
 
 .fieldset {
-    border: none; 
-  }
+    border: none;
+}
 
 .pageContainer {
     /* background-color: rgb(218, 0, 0); */
@@ -27,7 +27,7 @@ a {
     overflow-x: hidden;
     height: fit-content;
     /* box-sizing: border-box; */
-    /* overflow: hidden; */ 
+    /* overflow: hidden; */
 }
 
 /* For First tier content */
@@ -66,9 +66,10 @@ a {
     z-index: 1;
 } */
 
-div#timer.bannerFirstAndSecondTiers, div#timerTierThree.bannerThirdTier{
+div#timer.bannerFirstAndSecondTiers,
+div#timerTierThree.bannerThirdTier {
     width: 100vw;
-    max-width:100%;
+    max-width: 100%;
     overflow-x: hidden;
     /* overflow: hidden; */
 }
@@ -84,11 +85,11 @@ h1,
     /* padding-right: 5rem; */
 }
 
-mat-card-header{
+mat-card-header {
     justify-content: center;
 }
 
-mat-card-header.tierTwoThreeHeader{
+mat-card-header.tierTwoThreeHeader {
     justify-content: left;
 }
 
@@ -171,7 +172,7 @@ mat-content {
 }
 
 mat-card.cardVideosFirst {
-    background-color:  rgb(2, 2, 2);
+    background-color: rgb(2, 2, 2);
     width: 23rem;
     height: 10rem;
     margin: 2rem;
@@ -210,7 +211,7 @@ mat-card.cardVideosFirst {
     border-color: #C7FF20;
 }
 
-.btn-upgrade:hover{
+.btn-upgrade:hover {
     /* border:  !important; */
     border: none !important;
 }
@@ -271,13 +272,13 @@ div.cardSecondAndThirdTiers {
 } */
 
 
-p.loadingText{
+p.loadingText {
     color: white;
     text-align: center;
     margin-top: 5rem;
 }
 
-p.liveVideoLoadingText{
+p.liveVideoLoadingText {
     color: white;
     text-align: center;
     margin-top: 15rem;
@@ -309,12 +310,12 @@ mat-card.contentCardTwo,
     margin-top: 2rem;
 }
 
-.cardVideos{
-margin-top: 0.5rem;
+.cardVideos {
+    margin-top: 0.5rem;
 }
 
 mat-card.cardVideosSecondThird {
-    background-color:  rgb(0, 0, 0);
+    background-color: rgb(0, 0, 0);
     width: 23rem;
     height: 10rem;
     margin: 3rem;
@@ -326,11 +327,11 @@ mat-card.cardVideosSecondThird {
     background-size: cover;
 }
 
-a.videoTitle{
+a.videoTitle {
     padding-left: 1.5rem;
 }
 
-iframe{
+iframe {
     aspect-ratio: 16/9;
     min-width: 100%;
     border-radius: 0.2rem;
@@ -376,13 +377,13 @@ div.upgradeContainer {
 
 
 .upgradeContainer {
-   /* margin-top: 15%; */
+    /* margin-top: 15%; */
     display: flex;
     flex-wrap: wrap;
     position: absolute;
     padding-top: 0.2%;
     /* top: 0; */
-    top:250;
+    top: 250;
     right: 4%;
     /* height: 3rem; */
     width: 25rem;
@@ -397,7 +398,7 @@ div.upgradeContainer {
     } */
 }
 
-.smallerFont{
+.smallerFont {
     font-size: 2rem;
     line-height: 0rem;
 }
@@ -456,45 +457,53 @@ label {
     color: white;
 }
 
-.yearAndRecipes{
+.yearAndRecipes {
     display: flex;
     flex-direction: column;
     padding-top: 1rem;
     padding-left: 2rem;
     padding-right: 4rem;
- } 
+}
 
 p.recipes {
-color: white;
-font-size: larger;
-padding: 2rem 0rem 0 8rem ;
+    color: white;
+    font-size: larger;
+    padding: 2rem 0rem 0 8rem;
 }
 
-button.btn-recipes{
-width: 15rem;
-background-color: rgb(18, 17, 17);
-color: white;
-font-size: larger;
-margin-left: 3rem;
-margin-top: 2rem;
+button.btn-recipes {
+    width: 15rem;
+    background-color: rgb(18, 17, 17);
+    color: white;
+    font-size: larger;
+    margin-left: 3rem;
+    margin-top: 2rem;
 }
 
-.disable{
+button.btn-showMore {
+    width: 15rem;
+    background-color: rgb(18, 17, 17);
+    color: white;
+    font-size: larger;
+    margin-top: 2rem;
+}
+
+.disable {
     pointer-events: none;
 }
 
-button.btn-recipes:hover{
-background-color: white;
-color: black;
+button.btn-recipes:hover, button.btn-showMore:hover  {
+    background-color: white;
+    color: black;
 }
 
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
     background-color: black;
-  }
-  
+}
+
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
- }
+}
 
 /* ::ing-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch.mdc-switch--unselected:enabled .mdc-switch__icon {
     fill: rgba(165, 165, 165);

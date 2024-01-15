@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { planOptions } from './planDetails.model';
-// import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-step-two-plan-details',
@@ -41,7 +40,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   updatePlanType(plan: string, cost: number) {
     this.planType = plan;
     this.totalCost = cost;
-    // this.billing = billing;
     this.stepForm.patchValue({
       plan: plan,
       planCost: cost,

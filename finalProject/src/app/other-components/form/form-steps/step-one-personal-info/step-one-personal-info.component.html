@@ -13,7 +13,7 @@
       <mat-card-content class="form-controls">
         <!-- name input -->
         <div class="input-details">
-          <label for="name">Name</label>
+          <label class="label" for="name">Name</label>
           <label for="error"
                  id="error"
                  *ngIf="this.stepForm.controls['name'].invalid && this.stepForm.controls['name'].touched"
@@ -28,7 +28,7 @@
                required>
         <!-- email input -->
         <div class="input-details">
-          <label for="email">Email Address</label>
+          <label class="label" for="email">Email Address</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['email'].invalid && this.stepForm.controls['email'].touched"
                  class="error-alert">Email is required</label>
@@ -42,10 +42,13 @@
                required>
       <!-- password input -->
         <div class="input-details">
-          <label for="password">Password</label>
+          <label class="label" for="password">Password</label>
           <label for="error"
-                 *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched"
+                 *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched && !passwordMissmatch"
                  class="error-alert">Password is required</label>
+          <label for="error"
+                 *ngIf="passwordMissmatch"
+                 class="error-alert">Passwords do not match</label>
         </div>
         <input type="password"
                matInput
@@ -53,8 +56,26 @@
                id="password"
                appPassword
                placeholder="Enter Password"
-               formControlName="password"
                required>
+      <!-- confirm password -->
+      <div class="input-details-confirm">
+        <label class="label" for="password">Confirm Password</label>
+        <label for="error"
+               *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched && !passwordMissmatch"
+               class="error-alert">Password is required</label>
+        <label for="error"
+               *ngIf="passwordMissmatch"
+               class="error-alert">Passwords do not match</label>
+      </div>
+      <input type="password"
+             matInput
+             name="password"
+             id="confirmPassword"
+             appPassword
+             placeholder="Enter Password"
+             formControlName="password"
+             (keyup)="passwordCheck()"
+             required>
       </mat-card-content>
     </mat-card>
   </ng-container>
