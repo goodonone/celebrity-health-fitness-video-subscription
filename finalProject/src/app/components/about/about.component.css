@@ -10,8 +10,6 @@
   overflow-x: hidden;
   height: fit-content;
   position: relative;
-  /* box-sizing: border-box; */
-  /* overflow: hidden; */
 }
 
 .heading {
@@ -21,9 +19,6 @@
   font-size: 8vw;
   padding-left: 3rem;
   padding-top: 15rem;
-  /* padding-right: 1rem;
-  padding-top: 2rem;
-  padding-bottom: 0rem; */
   font-weight: 600;
 }
 
@@ -40,7 +35,6 @@
   background-size: cover;
   border-radius: 8px;
   background-position: center;
-  /* padding-left: 2rem; */
 }
 
 .pageContent {
@@ -52,7 +46,6 @@
 }
 
 .customText {
-  /* padding-top: 3rem; */
   font-size: 1.5rem;
   line-height: 1.8rem;
   font-weight: 500;
@@ -73,9 +66,7 @@ section.picture-bubbles {
   display: flex;
   justify-content: space-around;
   padding-top: 5rem;
-  /* margin-top: 5rem;/ */
   flex-wrap: wrap;
-  /* margin-top: 20px; */
   margin: auto;
   margin-bottom: 5rem;
 }
@@ -83,7 +74,6 @@ section.picture-bubbles {
 .flexContainer{
   display: flex;
   justify-content: space-evenly;
-  /* width: 30%; */
   margin: auto;
 }
 
@@ -97,7 +87,6 @@ section.picture-bubbles {
   width: 13vw;
   height: 13vw;
   border-radius: 70%;
-  /* margin-bottom: 3rem; */
   background-color: black;
   margin: 2rem;
 }
@@ -118,60 +107,6 @@ p.teamText {
   font-size: 1.5rem;
   line-height: 1.4rem;
   font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-}
-
-img#backgroundPicture {}
-
-.teamText-Paris {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.4rem;
-  font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-  /* padding-top: 3.8rem; */
-}
-
-.teamText-Soyeon{
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.3rem;
-  font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-  /* padding-top: 1.8rem; */
-}
-
-.teamText-Jude {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.4rem;
-  font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-  /* padding-top: 2rem; */
-}
-
-.teamText-Allyshia {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.4rem;
-  font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-  /* padding-top: 3.5rem; */
-}
-
-.teamText-Gerrit {
-  text-align: center;
-  font-size: 1.5rem;
-  line-height: 1.4rem;
-  font-weight: 500;
-  /* width: 37vw; */
-  /* padding-left: 3rem; */
-  /* padding-top: 3.6rem; */
 }
 
 #backgroundPictureParis{
@@ -181,91 +116,3 @@ img#backgroundPicture {}
 }
 
 
-/* .about-us-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-header {
-  position: relative;
-}
-.header-banner {
-  background-color: #C7FF20;
-  color: black;
-  padding: 5;
-  text-align: center;
-}
-.picture-bubbles {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-.bubble {
-  text-align: center;
-  margin: 10px;
-}
-.bubble img {
-  width: 160px;
-  border-radius: 70%;
-  margin-bottom: 10px;
-}
-p {
-    color: white;
-    margin : auto;
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    text-size-adjust: 50px;
-    position: relative; 
-    flex-direction: row;
-    align-content: center;
-    text-wrap: 10px;
-    padding-left: 110px;
-    padding-right: 110px;
-    padding-bottom: 50px; 
-    padding-top: 40px;    
- } 
-/* side picture banner */
-/* h1{
-    color: white;
-    margin : auto;
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    height: 5vh;
-    flex-direction: row;
-    align-content: center;
-    font-size: 40px;  
-    padding-top: 10px; 
-} 
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly; 
-    margin: 1px; 
-    text-align: center;
-    padding-left: 10px;
-    padding-top: 50px;
-    padding-bottom: 10px;
-}
-  .image {
-    display: block;
-    margin: 0 auto;
-    height: 400px;
-    padding-bottom: 10px; 
-    width: calc(20% - 15px); 
-    margin: 5px; 
-    box-sizing: border-box; 
-    border-radius: .4vw; 
-    border: 2px solid #C7FF20; 
-   } 
- .custom-text {
-  font-size: 15px; 
-  color: white; 
-}  */
-/* .bannerFour {
-    height: 75vh;
-    width: 100%;
-    background-color: #C7FF20;
-}  */

@@ -10,43 +10,20 @@ import { FormService } from '../form.service';
 })
 export class StepTrackerIconsCheckout implements OnInit {
 
-  // @Input() userIsLoggedIn = "true";
-
-  // userIsLoggedIn: boolean = false;
-  
-  // payment: boolean = false;
-  // user!: string;
   activeStep$?: number;
 
   constructor(private formService: FormService, private user: UserService) { }
 
   ngOnInit(): void {
 
-    // if(localStorage.getItem('userSignedIn')){
-    //   !this.userIsLoggedIn;
-    //   console.log("icons"+this.userIsLoggedIn);
-    // }
-
     this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
-
-    // console.log("Tracker icons"+"testing")
-    // this.UpdateStatus();
   }
 
   stepDetails: { step: number; description: string; }[] = [
     { step: 1, description: 'Payment' },
     { step: 2, description: 'Confirmation' },
   ]
-
-  // UpdateStatus() {
-  //   if (this.user.isloggedIn()) {
-  //     this.userIsLoggedIn = !this.userIsLoggedIn;
-  //     console.log("Upgrade"+this.userIsLoggedIn);
-  //     // this.UserId = this.user.getUserId() ?? "";
-  //   }
-
-  // }
 
 }
 

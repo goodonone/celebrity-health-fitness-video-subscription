@@ -11,7 +11,6 @@ import { UserService } from '../../services/user.service';
 export class StepTrackerIconsComponent implements OnInit {
 
   userIsLoggedIn : boolean = false;
-  // user!: string;
   activeStep$?: number;
   
   constructor(private formService: FormService, private user: UserService) { }
@@ -38,8 +37,6 @@ stepDetails: { step: number; description: string; }[] = [
     UpdateStatus() {
       if (this.user.isloggedIn()) {
         this.userIsLoggedIn = !this.userIsLoggedIn;
-        console.log("SignUp"+this.userIsLoggedIn);
-        // this.UserId = this.user.getUserId() ?? "";
       }
       
     }

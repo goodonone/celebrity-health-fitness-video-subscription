@@ -24,14 +24,7 @@ export class StepFourPaymentComponent implements OnInit {
       return seed + next;
     }, "");
 
-
-    // const input: number | any = document.getElementById("expDate");
-    // input.addEventListener("input", () => input.value = formatDate(input.value.replaceAll(" ", "")));;
-    // const formatDate = (number: string) => number.split("").reduce((seed, next, index) => {
-    //   if (index !== 0 && !(index % 2)) seed += "/ ";
-    //   return seed + next;
-    // }, "");
-
+  // Implement 00/00 format for date input
 
 
   }

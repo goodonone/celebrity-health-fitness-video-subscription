@@ -17,7 +17,6 @@ span.mat-button-toggle-label-content{
 }
 
 .mat-button-toggle-group {
-  /* @include variables.flexCenter(column); */
   flex-direction: column !important;
   border: none;
   width: 20.4rem;
@@ -31,13 +30,11 @@ mat-button-toggle {
   border: 0.1rem solid white;
   margin: 0.5rem 0;
   padding-right: 0.2rem;
-  /* background-color: blue; */
 }
 
 
 .mat-button-toggle-checked {
   border: 0.1rem solid #C7FF20;
-  /* background-color: rgb(219, 214, 224); */
 }
 
 #buttonToggle2.mat-button-toggle-checked  {
@@ -66,22 +63,6 @@ mat-button-toggle-label-content{
   width: 100%;
 }
 
-/* img {
-  width: 2.5rem;
-  height: 2.5rem;
-  margin: auto 1rem auto 0;
-} */
-
-/* #mat-button-toggle-1  { */
-
-/* background: url('src/assets/Images/JustLooking.svg'); */
-/* background-image: url('src/assets/Images/JustLooking.svg');; */
-
-/* background-color: rgb(194, 194, 194); */
-/* background-size: cover; */
-/* object-fit: contain; */
-/* }  */
-
 #buttonToggle1{
   background-color: rgb(194, 194, 194);
 }
@@ -101,13 +82,10 @@ mat-button-toggle-label-content{
 }
 
 #buttonToggle3 {
-  /* background: url('src/assets/Images/AllIn.svg'); */
   background-color: #C7FF20;
-  /* background-size: cover; */
 }
 
 .details {
-  /* font-family: 'Outfit', sans-serif;; */
   height: 8.25rem;
   padding-top: .1rem;
   text-align: left;
@@ -121,16 +99,12 @@ mat-button-toggle-label-content{
 }
 
 .plan_title {
-  /* font-family: 'Outfit', sans-serif; */
   font-size: 1.3rem;
   font-weight: 700;
   color: black;
-  /* @include variables.body-primary-xs; */
 }
 
 .price {
-  /* font-family: 'Outfit', sans-serif; */
-  /* @include variables.body-primary-l; */
   font-size: 1rem;
   font-weight: 600;
 }
@@ -140,8 +114,6 @@ span.price{
 }
 
 .promo {
-  /* font-family: 'Outfit', sans-serif;; */
-  /* @include variables.body-secondary-s; */
   color: rgb(0, 0, 0);
 }
 
@@ -152,14 +124,12 @@ span.promo{
 }
 
 .description{
-  /* font-family: 'Outfit', sans-serif;; */
   text-wrap: wrap;
   line-height: 0.8rem;
 }
 
 span.description{
   margin-top: 0.6rem;
-  /* height: 3rem; */
   width: 8.625rem;
 }
 
@@ -214,24 +184,14 @@ label {
   mat-button-toggle {
     width: 9.625rem;
     height: 12rem;
-    /* margin-right: 1.125rem; */
-
-
     align-items: baseline;
     text-align: left;
-    /* background-size: cover; */
-    /* margin: 0; */
   }
 
   .plan {
     height: 10rem;
-    /* @include variables.flexSpaceBetween(column); */
     align-items: baseline;
   }
-
-  /* img {
-    margin-top: 0;
-  } */
 
   .details {
     height: 4.25rem;

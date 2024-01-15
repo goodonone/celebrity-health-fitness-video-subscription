@@ -45,7 +45,6 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       planCost: cost,
       totalCost: cost,
     })
-    console.log(plan + cost);
   }
 
   updateBilling() {

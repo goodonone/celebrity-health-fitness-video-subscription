@@ -13,13 +13,8 @@
     background-image: url('https://images.unsplash.com/photo-1591741543032-bf439b4fd46c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
     background-size: cover;
     background-position:center;
-background-position-y:50%;
-    /* transform: scale(98%,98%); */
+    background-position-y:50%;
     zoom: 100%;
-    /* position: relative; */
-    /* box-sizing: border-box; */
-    /* overflow: hidden; */
-    /* padding-top:10rem; */
     position: relative;
 }
 
@@ -39,7 +34,6 @@ background-position-y:50%;
     display: flex;
     justify-content: space-around;
     padding-top: 4rem;
-  /* margin: auto */
 }
 
 .textContainer {
@@ -65,8 +59,6 @@ background-position-y:50%;
 
 p.findYourself:hover{
  background-color: white;
- /* border-width: 2px;
- border-color: black; */
  color: black;
  cursor: pointer;
 }

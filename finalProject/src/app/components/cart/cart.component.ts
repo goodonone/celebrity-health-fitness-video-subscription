@@ -71,14 +71,6 @@ export class CartComponent implements OnInit {
     this.cartStatic = !this.cartStatic;
   }
 
-  // checkoutCartTierOne(){
-  //   this.cartService.clearCart();
-  //   localStorage.removeItem("cart"); 
-  //   this.toggleTier();
-  //   console.log(this.tierOneCheckout);
-  // }
-
-
   cartItem(): boolean {
     const cartItem = localStorage.getItem("cart");
     return !!cartItem;
@@ -87,21 +79,5 @@ export class CartComponent implements OnInit {
   checkTier() {
     this.tierTwoThree = !this.tierTwoThree;
   }
-
-  // toggleTier(){
-  //   this.tierOneCheckout = !this.tierOneCheckout;
-  //   console.log("tierOneCheckout" + this.tierOneCheckout);
-  //   this.cartStatic = !this.cartStatic;
-  //   console.log("cartStatic" + this.cartStatic)
-  // }
-
-// cartStatic = false;
-// tierOneCheckout = true;
-
-// toggleTier(){
-//   this.cartStatic = !this.cartStatic;
-//   this.tierOneCheckout = !this.tierOneCheckout;
-// }
-
 
 }

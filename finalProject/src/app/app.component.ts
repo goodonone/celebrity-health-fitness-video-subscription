@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
 
-// Insert Service/Area where the search can Search and model here
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -61,8 +59,6 @@ export class AppComponent implements OnInit {
     var search = (<HTMLInputElement>document.getElementById('mySearch') ?? "").value;
     if (search !== '') {
       var input = search.charAt(0).toUpperCase() + search.slice(1);
-      // window.location.assign('/search/`input`');
-      // window.open("/search", "`input`");
       this.router.navigate(['/search', input]);
     }
     else {

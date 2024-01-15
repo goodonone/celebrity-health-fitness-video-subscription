@@ -22,26 +22,15 @@ export class ProgressionButtonsComponent implements OnInit {
   @Input() payment!: boolean;
   @Input() checkout!: boolean;
 
-  // userIsLoggedIn : boolean = false;
-  // UserId : string = "";
-
   constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService) { }
 
   ngOnInit(): void {
-    // this.UpdateStatus();
     this.stepForm = this.formService.stepForm;
     this.formService.activeStep$.subscribe(
       step => {
         this.activeStep$ = step;
         this.planCost = this.stepForm.controls['planDetails'].value.planCost;
       });
-
-    // this.formService.activeStep$.subscribe(
-    //   step => {
-    //     console.log(step);
-    //     console.log(this.stepForm.controls['planDetails'].value.planCost);
-    //     console.log(this.stepForm.controls);
-    //   });
 
   }
 

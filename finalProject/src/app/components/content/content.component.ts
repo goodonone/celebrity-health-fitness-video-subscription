@@ -36,12 +36,8 @@ export class ContentComponent implements OnInit{
     this.userId = parseInt(UserId);
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
-      // console.log(this.currentUser.tier);
-      // console.log(user);
       if(this.currentUser.tier === "Just Looking"){
-        // console.log(this.currentUser.tier);
         this.toggleHeading();
-        console.log(this.heading);
       }
     });
     this.startCountDownTierOneTwo();
@@ -51,8 +47,6 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
-
-    
   }
   
  
@@ -60,8 +54,7 @@ export class ContentComponent implements OnInit{
   showLiveVideo: boolean = false;
   
   checked: boolean = false;
-  // currentUser: User = new User;
-  // Add logic to only show one timer based on tier
+
 
   starterVideos: any[] = [];
   channel23Videos: any[] = [];
@@ -77,9 +70,6 @@ export class ContentComponent implements OnInit{
   hiitVideos: any[] = [];
 
   livestreamVideos: any[] = [];
-  // testCards: number[] = [1, 2, 3, 4, 5, 6, 7]
-  // testCardsTwo: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 43, 44, 45, 46, 47, 48, 49, 50]
-  // testCardsThree: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25]
   startCountDownTierOneTwo() {
     var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
 
@@ -144,14 +134,10 @@ export class ContentComponent implements OnInit{
     }, 1000);
   }
 
-  // Condition to display various items on page
   
-
   toggleBilling() {
     this.checked = !this.checked;
   }
-
-  // Upgrade Follow scroll 
 
 
   getVideos(videoId: string, videoArray: any[]): void {
@@ -233,8 +219,6 @@ export class ContentComponent implements OnInit{
       }
 
       addToNewest() {
-        
-        // this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "1", this.channel23Videos)
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel23Videos)
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel22Videos)
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel21Videos)

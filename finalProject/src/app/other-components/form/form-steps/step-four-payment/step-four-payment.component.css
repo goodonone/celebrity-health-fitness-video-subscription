@@ -46,22 +46,14 @@ input:valid {
   color: red;
   text-align: right;
   font-size: 0.875rem;
-  /* margin-left: -.1rem; */
-  /* line-height: 1rem; */
 }
 
 .error-alert .expCvvZip {
   color: red;
   text-align: right;
   font-size: 0.875rem;
-  /* margin-left: -.1rem; */
-  /* line-height: 1rem; */
   padding-left: .2rem;
 }
-
-/* .error-alert .nameCredit{
-  padding-left: .5rem;
-} */
 
 #nameOnCard{
   width: 14.4rem;
@@ -84,24 +76,12 @@ input:valid {
   width: 9.2rem;
 }
 
-/* .flex{ */
-  /* width:15rem; */
-  /* margin:auto;
-} */
-
-/* div.flex{
-  width: 9.5rem;
-  justify-content: left;
-} */
-
 .nameCredit{
 display: flex;
 flex-direction:row;
 justify-content:space-between;
 margin-top: 1rem;
 width: 100%;
-/* padding-right: 3rem; */
-/* align-items: left; */
 }
 
 .expCvvZip{

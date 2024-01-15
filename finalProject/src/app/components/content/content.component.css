@@ -1,12 +1,3 @@
-/* h1,h3,a {
-    color: white;
-}
-
-div { text-align: center;}
-
- */
-
-
 * {
     font-family: 'Outfit', sans-serif;
 }
@@ -21,13 +12,10 @@ a {
 }
 
 .pageContainer {
-    /* background-color: rgb(218, 0, 0); */
     width: 100vw;
     max-width: 100%;
     overflow-x: hidden;
     height: fit-content;
-    /* box-sizing: border-box; */
-    /* overflow: hidden; */
 }
 
 /* For First tier content */
@@ -51,27 +39,15 @@ a {
     color: black;
     height: 2rem;
     width: 100%;
-    /* margin-top: rem; */
     padding-bottom: 1rem;
     z-index: 1;
-    /* overflow:hidden; */
 }
-
-/* .bannerThirdTier {
-    background-color: white;
-    color: black;
-    height: 2rem;
-    width: 100%;
-    padding: 1rem;
-    z-index: 1;
-} */
 
 div#timer.bannerFirstAndSecondTiers,
 div#timerTierThree.bannerThirdTier {
     width: 100vw;
     max-width: 100%;
     overflow-x: hidden;
-    /* overflow: hidden; */
 }
 
 h1,
@@ -80,9 +56,7 @@ h1,
     font-weight: 500;
     text-align: center;
     font-size: 2vw;
-    /* padding: 1rem; */
     padding-top: 1.7rem;
-    /* padding-right: 5rem; */
 }
 
 mat-card-header {
@@ -96,16 +70,12 @@ mat-card-header.tierTwoThreeHeader {
 h1.tierOneHeader {
     font-size: 5rem;
     text-align: center;
-    /* font-style: italic; */
     color: white;
     padding-top: 2.5vw;
     padding-left: 1.2rem;
-    /* font-weight: 400; */
-    /* text-shadow: ; */
 }
 
 div.cardFirstTier {
-    /* margin-top: ; */
     width: 100%;
     margin: 10rem auto;
 }
@@ -118,7 +88,6 @@ div.cardFirstTier {
 h1.liveVideoText {
     justify-content: center;
     font-size: 8rem;
-
     font-weight: 700;
     width: 10rem;
     line-height: 10rem;
@@ -126,7 +95,6 @@ h1.liveVideoText {
     color: white;
     margin: auto;
     padding-top: 10rem;
-    /* padding-bottom: 5rem; */
 }
 
 .liveVideoContainer {
@@ -134,7 +102,6 @@ h1.liveVideoText {
     width: 50rem;
     color: black;
     border-radius: 6px;
-    /* justify-content: right; */
     margin: auto;
     margin-top: 10rem;
     background-color: rgb(1, 1, 1);
@@ -150,13 +117,9 @@ h1.liveVideoText {
     padding-bottom: 3rem;
 }
 
-/* .cardVideos {
-     padding: 1rem;
-} */
 
 mat-content {
     width: 100%;
-    /* padding:1rem; */
 }
 
 .cardVideos {
@@ -167,7 +130,6 @@ mat-content {
     height: 100%;
     width: 100%;
     color: black;
-    /* border-radius: 6px; */
     margin-top: 3rem;
 }
 
@@ -177,16 +139,7 @@ mat-card.cardVideosFirst {
     height: 10rem;
     margin: 2rem;
     margin-top: 4rem;
-    /* padding: 1rem; */
 }
-
-/* .upgradeButtonContainer{
-    position: relative; */
-/* background-color: aqua; */
-/* opacity: 0.8; */
-/* top: 2.6%;
-    z-index: 4;
-} */
 
 .btn-upgrade {
     position: fixed;
@@ -201,18 +154,12 @@ mat-card.cardVideosFirst {
     border: 1.5px solid rgb(0, 0, 0) !important;
 }
 
-/* mat-button.btn-upgrade{
-    border-color: rgb(0, 0, 0) !important;
-    border-width: 2px;
-} */
-
 .btn:hover {
     background-color: #C7FF20;
     border-color: #C7FF20;
 }
 
 .btn-upgrade:hover {
-    /* border:  !important; */
     border: none !important;
 }
 
@@ -251,25 +198,12 @@ div.cardSecondAndThirdTiers {
     height: fit-content;
     width: 80%;
     background-color: rgb(2, 2, 2);
-    /* border-radius: 10px; */
     margin: auto;
     margin-top: 2rem;
     padding: 2rem;
     padding-top: 5rem;
     padding-bottom: 5rem;
 }
-
-/* .contentCardTwo {
-    height: fit-content;
-    width: 80%;
-    background-color: rgb(2, 2, 2);
-    /* border-radius: 20px; */
-/* margin: auto;
-    margin-top: 2rem;
-    padding: 2rem;
-    padding-top: 5rem;
-    padding-bottom: 5rem
-} */
 
 
 p.loadingText {
@@ -306,7 +240,6 @@ mat-card.contentCardTwo,
     height: 100%;
     width: 100%;
     color: black;
-    /* border-radius: 6px; */
     margin-top: 2rem;
 }
 
@@ -320,10 +253,7 @@ mat-card.cardVideosSecondThird {
     height: 10rem;
     margin: 3rem;
     margin-top: 2rem;
-    /* padding: 1rem; */
     object-fit: fill;
-    /* max-width: 100%;
-    max-height: 100%; */
     background-size: cover;
 }
 
@@ -335,8 +265,6 @@ iframe {
     aspect-ratio: 16/9;
     min-width: 100%;
     border-radius: 0.2rem;
-    /* padding-top: 2rem; */
-    /* height: 30rem; */
 }
 
 .tierName {
@@ -354,9 +282,7 @@ iframe {
 .cardHeadertype {
     color: white;
     font-weight: 500;
-    /* text-align: left; */
     font-size: 6.5vw;
-    /* padding: 1rem; */
     padding-left: 0.8rem;
     padding-top: 4rem;
     width: 18rem;
@@ -377,25 +303,16 @@ div.upgradeContainer {
 
 
 .upgradeContainer {
-    /* margin-top: 15%; */
     display: flex;
     flex-wrap: wrap;
     position: absolute;
     padding-top: 0.2%;
-    /* top: 0; */
     top: 250;
     right: 4%;
-    /* height: 3rem; */
     width: 25rem;
     flex-direction: row;
     justify-content: space-between;
     z-index: 3;
-    /* #fixed{
-      position: fixed;  
-      top: 22%;
-      width: 25rem;
-      right: 4%
-    } */
 }
 
 .smallerFont {
@@ -410,15 +327,10 @@ div.upgradeContainer {
 }
 
 .btn-upgradeTierButton {
-    /* position: fixed;
-    right: 12%;
-    top: 11%; */
-    /* padding: 0.4rem; */
     height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
     border-radius: 6px;
-    /* z-index: 4; */
     cursor: pointer;
     font-weight: 600;
     background-color: white;
@@ -431,7 +343,6 @@ div.upgradeContainer {
     border-radius: 6px;
     background-color: rgb(18, 17, 17);
     width: 24rem;
-    /* height: rem; */
     margin: auto;
     margin-top: 3rem;
     padding: 1rem;
@@ -440,16 +351,11 @@ div.upgradeContainer {
 .toggle {
     padding-left: 1.8rem;
     width: 100%;
-    /* width: 11.4rem; */
-    /* @include variables.flexSpaceBetween(row); */
 }
 
 label {
     margin: 0 0.5rem 0 0.2rem;
-    /* height: 1rem; */
-    /* width: 3.4rem; */
     color: #6f6f6f;
-    /* @include variables.body-primary-xs; */
     font-size: 1rem;
 }
 
@@ -504,7 +410,3 @@ button.btn-recipes:hover, button.btn-showMore:hover  {
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
 }
-
-/* ::ing-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch.mdc-switch--unselected:enabled .mdc-switch__icon {
-    fill: rgba(165, 165, 165);
-} */

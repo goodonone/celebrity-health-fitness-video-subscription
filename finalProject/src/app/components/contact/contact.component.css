@@ -7,20 +7,16 @@
   margin-top: -10rem;
   width: 100%;
   height: 100vh;
-  /* height: 100vh; */
-  /* overflow: hidden; */
   background-image: url('/assets/Images/Contact Us Photo.jpeg');
   background-repeat: no-repeat;
   background-size: cover;
   zoom: 110%;
   background-attachment: fixed;
-  /* z-index: 1; */
 }
 
 
 h1.contactUs {
   position: relative;
-  /* z-index: 1; */
   color: rgb(255, 255, 255);
   font-weight: 500;
   text-align: left;
@@ -28,15 +24,11 @@ h1.contactUs {
   padding-left: 8rem;
   padding-top: 4rem;
   padding-bottom: 1rem;
-  /* padding-right: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 0rem; */
   font-weight: 600;
 }
 
 h1.findUs {
   position: relative;
-  /* z-index: 1; */
   color: rgb(255, 255, 255);
   font-weight: 500;
   text-align: left;
@@ -44,9 +36,6 @@ h1.findUs {
   padding-left: 8rem;
   padding-top: 2rem;
   padding-bottom: 4rem;
-  /* padding-right: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 0rem; */
   font-weight: 600;
 }
 
@@ -54,7 +43,6 @@ h1.findUs {
   position: relative;
   width: 35rem;
   height: 35rem;
-  /* margin-top: ; */
   margin: 4rem auto 7rem auto;
   border-radius: 8px;
 }
@@ -87,7 +75,6 @@ h1.findUs {
 .btn-submit {
   width: 4.3rem;
   background-color: black;
-  /* border-color: black */
   color: white !important;
 }
 
@@ -126,7 +113,6 @@ form {
 }
 
 input {
-  /* @include variables.body-primary-xs; */
   display: inline-block;
   width: 100%;
   height: 2rem;
@@ -142,7 +128,6 @@ input {
 
 mat-card-header {
   margin-bottom: 0.4rem;
-  /* margin-top: -0.2rem; */
 }
 
 mat-card-title {
@@ -163,32 +148,14 @@ input:valid {
 
 .tick {
   transform: scale(30%, 30%);
-  /* padding: 0; */
 }
 
 .formToggleOn {
-  /* display: flex;
-  /* flex-direction: column; * */
-  /* padding-bottom: 15rem; */
-  /* display: block; */
-  /* flex-direction: column; */
-  /* flex-direction: column; */
-  /* margin: auto; */
-  /* justify-content: center; */
-  /* margin: 0 auto 0 auto; */
-  /* margin-bottom: 15rem; */
-  /* padding-bottom: 15rem; */
-  /* padding: 0 5rem 10rem 5rem; */
-  /* margin: auto; */
   position: relative;
   width: 100%;
-  /* padding-bottom: 100rem; */
 }
 
 img.tick{
-  /* margin-left: auto;
-  margin-right: auto; */
-  /* width: 50%; */
   margin: auto;
   display: block;
  }
@@ -197,18 +164,9 @@ img.tick{
   margin: auto;
   display: block;
   text-align: center;
-  /* margin-top: -5rem; */
-  /* margin: ; */
   width: 70%;
   margin-top: -5rem;
-  /* margin-bottom: 10rem; */
-
-  /* padding-bottom: -5rem; */
 }
-
-/* .sentMessage{
-  text-align: center;
-} */
 
 .divAlign{
   display: block;
@@ -236,7 +194,6 @@ font-weight: 500;
   display: flex;
   justify-content: space-around;
   margin-top: 0.5rem;
-  /* padding-right: 2rem; */
 }
 
 .logoFlex{
@@ -269,66 +226,3 @@ a{
 }
 
 
-/* .thankYouMessage{
-  margin
-} */
-
-/* .cardTwo{
-  margin:9;
-} */
-
-
-/* body {
-  margin: 0;
-  padding: 0;
-  color: white;
-}
-.contact-container {
-  flex-direction: row;
-  text-align: center;
-}
-.contact-container2 {
-  flex-direction: row;
-  text-align: center;
-}
-.contact-banner h1 {
-  margin-bottom: 10px;
-  font-size: 2em; 
-}
-.contact-banner img {
-  width: 100%;
-  height: auto;
-  margin-top: 10px;
-}
-.map-and-social {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  margin-top: 30px;
-}
-.map-banner h2 {
-  margin-bottom: 10px;
-  font-size: 1.5em; 
-}
-.map-banner iframe {
-  border: 0;
-  margin-bottom: 20px;
-}
-.social-media {
-  margin-top: 20px;
-}
-.social-media h2 {
-  margin-bottom: 10px;
-  font-size: 1.5em; 
-}
-.social-media p {
-  margin-bottom: 10px;
-}
-.social-media a {
-  margin-right: 10px;
-}
-.social-media img {
-  width: 50px; 
-  height: auto;
-} */

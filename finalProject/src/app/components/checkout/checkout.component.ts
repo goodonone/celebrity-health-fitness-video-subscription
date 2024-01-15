@@ -25,12 +25,6 @@ export class CheckoutComponent implements OnInit{
 
   ngOnInit(): void {
     
-    // this.stepForm = this.formService.stepForm;
-
-    // this.formService.activeStep$.subscribe(
-    //   step => this.activeStep$ = step
-    // );
-
   }
 
   ngOnDestroy(): void {

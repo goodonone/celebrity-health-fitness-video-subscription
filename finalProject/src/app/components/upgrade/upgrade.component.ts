@@ -27,21 +27,14 @@ export class UpgradeComponent implements OnInit, OnDestroy {
     this.userId = parseInt(UserId);
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
-      // this.currentUser.userId
     });
-    // console.log(this.router.url);
     this.routeCheck();
 
     const tier = localStorage.getItem('tier')
 
     if(tier == "Just Looking"){
       this.togglePayment();
-      console.log(tier + this.payment);
     }
-
-  //   setTimeout(function(){
-  //     location.reload();
-  // }, 10000);
 
   }
 
@@ -53,7 +46,6 @@ export class UpgradeComponent implements OnInit, OnDestroy {
 
   routeCheck() {
     if (this.router.url.startsWith('/change-plan/')) {
-      // console.log("Change-plan");
       this.showOrHide = true;
     }
     else {
