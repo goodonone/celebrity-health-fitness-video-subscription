@@ -371,10 +371,6 @@ fieldset {
 
 @media screen and (min-width:500px) and (max-width: 1470px) {
 
-    /* .profilePictureContainer{
-        
-    } */
-
     .pageContainer {
         height: fit-content
     }
@@ -386,7 +382,6 @@ fieldset {
         background-color: #000000;
         border-radius: 10px;
         margin-bottom: 4rem;
-        /* padding-bottom: 2.5rem; */
     }
 
     .flexAllProfileData {
@@ -413,8 +408,6 @@ fieldset {
         display: inline-flex;
         flex-direction: column;
         width: 100%;
-        /* flex-wrap: nowrap; */
-        /* float: left; */
         position: relative;
         height: 18rem;
         width: 18rem;
@@ -436,28 +429,19 @@ fieldset {
     }
 
     .profileDataContainer {
-        /* text-align: left; */
         margin-top: 2rem;
         margin-left: 1rem;
-        /* margin-right: 3rem; */
     }
 
     .planContainer {
         display: flex;
-        /* flex-wrap: wrap;
-    justify-content:baseline; */
         width: 18rem;
     }
 
     .editButtonsContainer {
-        /* width: 40rem; */
-        /* margin: auto; */
         position: absolute;
         bottom: 3rem;
         left: 15rem;
-        /* width:auto; */
-        /* top: 0rem; */
-        /* margin-top: 50rem; */
     }
 
     .btn-editPhotoButton {
@@ -492,12 +476,10 @@ fieldset {
     .absoluteContainer {
         position: absolute;
         top: -10rem;
-        /* right: 0.5rem; */
         left: 5;
         right: -7.5rem;
         z-index: 1;
         width: 49rem;
-        /* padding: 1.5rem; */
         height: 50rem;
     }
 
@@ -540,7 +522,6 @@ fieldset {
             background-color: #000000;
             border-radius: 10px;
             margin-bottom: 4rem;
-            /* padding-bottom: 2.5rem; */
         }
 
         .profilePictureContainer {
@@ -554,41 +535,31 @@ fieldset {
         }
 
         .editButtonsContainer {
-            /* width: 40rem; */
-            /* margin: auto; */
             position: absolute;
             bottom: 1rem;
             left: 9.5rem;
-            /* width:auto; */
-            /* top: 0rem; */
-            /* margin-top: 50rem; */
         }
 
 
         .cancelSubscriptionButtonContainer {
             display: flex;
             justify-content: space-between;
-            /* flex-wrap: wrap; */
             width: 20rem;
             padding: 3rem 1rem 3rem 14rem;
         }
 
         .profileDataContainer {
-            /* text-align: left; */
             margin-top: 1.5rem;
             margin-left: 0.1rem;
-            /* margin-right: 3rem; */
         }
 
         .absoluteContainer {
             position: absolute;
             top: -10rem;
-            /* right: 0.5rem; */
             left: 5;
             right: -7.5rem;
             z-index: 1;
             width: 49rem;
-            /* padding: 1.5rem; */
             height: 50rem;
         }
 
