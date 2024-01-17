@@ -2,7 +2,7 @@
 
     <div class="flexContainer">
         <div class="nameTier">
-            <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier" *ngIf="tierOne">Hi {{firstName}}! <br> You're <br> {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier" *ngIf="tierTwo">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
             <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}} </h1>
         </div>
@@ -45,7 +45,7 @@
                         <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{currentUser.height}}ft</h3>
                         <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
                         <div class="planContainer">
-                            <h3 class="profileDetails" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <h3 class="profileDetails plan" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
                         <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>

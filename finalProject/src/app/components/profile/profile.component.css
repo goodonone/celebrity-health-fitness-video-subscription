@@ -54,7 +54,7 @@ h1.profileNameTier {
     opacity: 0;
 }
 
-#buttonDisappearEdit.active{
+#buttonDisappearEdit.active {
     opacity: 0;
 }
 
@@ -65,8 +65,6 @@ h1.profileNameTier {
     background-color: #000000;
     border-radius: 10px;
 }
-
-.profileImage {}
 
 h3.profileDetails {
     color: white;
@@ -97,21 +95,21 @@ h3.profileDetailsInputPhoto {
     margin-bottom: 0.8rem;
 }
 
-h3.profileDetailsInputWeight{
+h3.profileDetailsInputWeight {
     color: white;
     font-weight: 500;
     font-size: 1.9rem;
     margin-bottom: 0.9rem;
 }
 
-h3.profileDetailsInputHeight{
+h3.profileDetailsInputHeight {
     color: white;
     font-weight: 500;
     font-size: 1.9rem;
     margin-bottom: 0.8rem;
 }
 
-h3.profileDetailsInputObjective{
+h3.profileDetailsInputObjective {
     color: white;
     font-weight: 500;
     font-size: 1.9rem;
@@ -121,7 +119,7 @@ h3.profileDetailsInputObjective{
 .profileDataContainer {
     padding-left: 1.5rem;
     margin-top: .2rem;
-    width:fit-content;
+    width: fit-content;
 }
 
 .spanProfileCategory {
@@ -155,7 +153,7 @@ h3.profileDetailsInputObjective{
     margin-left: 1rem;
 }
 
-.btn-cancelSubscriptionButton{
+.btn-cancelSubscriptionButton {
     height: 3rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -182,7 +180,7 @@ h3.profileDetailsInputObjective{
     margin-left: 1rem;
 }
 
-.btn-signOutButton{
+.btn-signOutButton {
     height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -215,7 +213,7 @@ h3.profileDetailsInputObjective{
     margin-top: 1.3rem;
 }
 
-.btn-updateProfileButton{
+.btn-updateProfileButton {
     height: 2.4rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -227,7 +225,7 @@ h3.profileDetailsInputObjective{
     margin-top: 1.3rem;
 }
 
-.btn-backButton{
+.btn-backButton {
     height: 3rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -247,13 +245,12 @@ h3.profileDetailsInputObjective{
 .btn-updateProfileButton:hover,
 .btn-cancelSubscriptionButton:hover,
 .btn-backButton:hover,
-.btn-signOutButton:hover
-    {
+.btn-signOutButton:hover {
     background-color: white;
     color: black !important;
 }
 
-.btn-cancelSubscriptionButtonFinal{
+.btn-cancelSubscriptionButtonFinal {
     height: 3rem;
     padding-left: 0.6rem;
     padding-right: 0.6rem;
@@ -266,16 +263,16 @@ h3.profileDetailsInputObjective{
     margin-left: 1rem;
 }
 
-.btn-cancelSubscriptionButtonFinal:hover{
+.btn-cancelSubscriptionButtonFinal:hover {
     background-color: red;
     color: black !important;
 }
 
-.deleteProfileContainer{
+.deleteProfileContainer {
     position: relative;
 }
 
-.absoluteContainer{
+.absoluteContainer {
     position: absolute;
     top: -12rem;
     right: -1rem;
@@ -286,7 +283,7 @@ h3.profileDetailsInputObjective{
 }
 
 
-h1.deleteProfileText{
+h1.deleteProfileText {
     margin-top: -14rem;
     color: white;
     font-weight: 500;
@@ -294,27 +291,27 @@ h1.deleteProfileText{
     text-align: center;
 }
 
- .underline{
+.underline {
     text-decoration: underline;
- }
+}
 
- .cancelSubscriptionButtonContainer{
+.cancelSubscriptionButtonContainer {
     display: flex;
     justify-content: space-between;
     width: 30rem;
     padding: 1rem 10rem 3rem 10rem;
 }
 
-img.warningImg{
+img.warningImg {
     transform: scale(30%, 30%);
 }
 
-.avatar{
+.avatar {
     position: absolute;
     z-index: 1;
     background-size: cover;
-    background-position:center center;
-    transform:scale(10%,10%);
+    background-position: center center;
+    transform: scale(10%, 10%);
     left: -42.5rem;
     top: -54rem
 }
@@ -334,7 +331,8 @@ select {
     color: white;
 }
 
-input.name,input.email{
+input.name,
+input.email {
     padding-left: 0.3rem;
 }
 
@@ -344,7 +342,7 @@ input#weight,
     width: 10.2rem;
     height: 2.5rem;
     font-size: large;
-    font-weight:400;
+    font-weight: 400;
 }
 
 #gender,
@@ -362,12 +360,230 @@ input#weight,
     filter: blur(30px);
 }
 
-fieldset{
-        border-color: rgb(255, 255, 255);
-        border-style: solid;
+fieldset {
+    border-color: rgb(255, 255, 255);
+    border-style: solid;
 }
 
 ::placeholder {
-    text-align: center; 
+    text-align: center;
 }
 
+@media screen and (min-width:500px) and (max-width: 1470px) {
+
+    /* .profilePictureContainer{
+        
+    } */
+
+    .pageContainer {
+        height: fit-content
+    }
+
+    .profileInfo {
+        height: fit-content;
+        width: 35rem;
+        padding: 2.5rem;
+        background-color: #000000;
+        border-radius: 10px;
+        margin-bottom: 4rem;
+        /* padding-bottom: 2.5rem; */
+    }
+
+    .flexAllProfileData {
+        display: block
+    }
+
+    .btn-editProfileButton {
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
+
+    .btn-signOutButton {}
+
+    .btn-cancelSubscriptionButton {
+        margin-top: 0.5rem;
+    }
+
+    .flexAllProfileData {
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .profilePictureContainer {
+        display: inline-flex;
+        flex-direction: column;
+        width: 100%;
+        /* flex-wrap: nowrap; */
+        /* float: left; */
+        position: relative;
+        height: 18rem;
+        width: 18rem;
+        background-color: #C7FF20;
+        background-size: cover;
+        border-radius: 100rem;
+        align-items: right;
+        margin: auto;
+    }
+
+    .avatar {
+        position: absolute;
+        z-index: 1;
+        background-size: cover;
+        background-position: center center;
+        transform: scale(8%, 8%);
+        left: -44rem;
+        top: -55rem
+    }
+
+    .profileDataContainer {
+        /* text-align: left; */
+        margin-top: 2rem;
+        margin-left: 1rem;
+        /* margin-right: 3rem; */
+    }
+
+    .planContainer {
+        display: flex;
+        /* flex-wrap: wrap;
+    justify-content:baseline; */
+        width: 18rem;
+    }
+
+    .editButtonsContainer {
+        /* width: 40rem; */
+        /* margin: auto; */
+        position: absolute;
+        bottom: 3rem;
+        left: 15rem;
+        /* width:auto; */
+        /* top: 0rem; */
+        /* margin-top: 50rem; */
+    }
+
+    .btn-editPhotoButton {
+        margin-top: 22rem;
+    }
+
+    .btn-signOutButton {
+        margin-top: 0.5rem;
+    }
+
+    h3.profileDetails.plan {
+        color: white;
+        font-weight: 500;
+        font-size: 1.9rem;
+        margin-bottom: 0rem;
+    }
+
+
+    input {
+        width: 18rem;
+        height: 2.5rem;
+        font-size: large;
+        font-weight: 400;
+        /* Comment out following text if you want to revert to white background input and select */
+        background-color: rgb(25, 25, 25);
+        border-radius: 6px;
+        border-color: white;
+        border-width: 1px;
+        color: white;
+    }
+
+    .absoluteContainer {
+        position: absolute;
+        top: -10rem;
+        /* right: 0.5rem; */
+        left: 5;
+        right: -7.5rem;
+        z-index: 1;
+        width: 49rem;
+        /* padding: 1.5rem; */
+        height: 50rem;
+    }
+
+    @media screen and (min-width: 500px) and (max-width: 1243px) {
+        .flexContainer {}
+
+        .flexContainer {
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            padding-top: 1rem;
+        }
+
+        h1.profileNameTier {
+            font-size: 17vw;
+            font-weight: 1000;
+        }
+
+        .profileNameTier {
+            flex-wrap: wrap;
+            text-align: center;
+            width: 20rem;
+            line-height: 6.5rem;
+            padding-right: 0.5rem;
+        }
+
+        .nameTier {
+            padding-top: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profileInfo {
+            height: fit-content;
+            width: 90vw;
+            padding: 2rem;
+            background-color: #000000;
+            border-radius: 10px;
+            margin-bottom: 4rem;
+            /* padding-bottom: 2.5rem; */
+        }
+
+        .profilePictureContainer {
+            position: relative;
+            height: 45vw;
+            width: 45vw;
+            background-color: #C7FF20;
+            background-size: cover;
+            border-radius: 100rem;
+            align-items: right;
+        }
+
+        .editButtonsContainer {
+            /* width: 40rem; */
+            /* margin: auto; */
+            position: absolute;
+            bottom: 1rem;
+            left: 9.5rem;
+            /* width:auto; */
+            /* top: 0rem; */
+            /* margin-top: 50rem; */
+        }
+
+        .absoluteContainer {
+            position: absolute;
+            top: -10rem;
+            /* right: 0.5rem; */
+            left: 1;
+            right: -11.5rem;
+            z-index: 1;
+            width: 49rem;
+            /* padding: 1.5rem; */
+            height: 50rem;
+        }
+
+        .cancelSubscriptionButtonContainer {
+            display: flex;
+            justify-content: space-between;
+            /* flex-wrap: wrap; */
+            width: 20rem;
+            padding: 3rem 1rem 3rem 14rem;
+        }
+
+
+
+    }
+
+
+
+}
