@@ -501,25 +501,29 @@ fieldset {
         height: 50rem;
     }
 
-    @media screen and (min-width: 500px) and (max-width: 1243px) {
-        .flexContainer {}
+    @media screen and (min-width: 500px) and (max-width: 1233px) {
 
         .flexContainer {
             flex-wrap: wrap;
             justify-content: space-evenly;
             padding-top: 1rem;
         }
+    }
+
+    @media screen and (min-width: 500px) and (max-width: 642px) {
+        .flexContainer {}
+
 
         h1.profileNameTier {
             font-size: 17vw;
-            font-weight: 1000;
+            font-weight: 600;
         }
 
         .profileNameTier {
             flex-wrap: wrap;
             text-align: center;
-            width: 20rem;
-            line-height: 6.5rem;
+            width: 80vw;
+            line-height: 19vw;
             padding-right: 0.5rem;
         }
 
@@ -560,17 +564,6 @@ fieldset {
             /* margin-top: 50rem; */
         }
 
-        .absoluteContainer {
-            position: absolute;
-            top: -10rem;
-            /* right: 0.5rem; */
-            left: 1;
-            right: -11.5rem;
-            z-index: 1;
-            width: 49rem;
-            /* padding: 1.5rem; */
-            height: 50rem;
-        }
 
         .cancelSubscriptionButtonContainer {
             display: flex;
@@ -580,6 +573,24 @@ fieldset {
             padding: 3rem 1rem 3rem 14rem;
         }
 
+        .profileDataContainer {
+            /* text-align: left; */
+            margin-top: 1.5rem;
+            margin-left: 0.1rem;
+            /* margin-right: 3rem; */
+        }
+
+        .absoluteContainer {
+            position: absolute;
+            top: -10rem;
+            /* right: 0.5rem; */
+            left: 5;
+            right: -7.5rem;
+            z-index: 1;
+            width: 49rem;
+            /* padding: 1.5rem; */
+            height: 50rem;
+        }
 
 
     }
