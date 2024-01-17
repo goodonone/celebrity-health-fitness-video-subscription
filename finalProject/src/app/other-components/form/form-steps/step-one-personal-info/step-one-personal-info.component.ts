@@ -21,20 +21,45 @@ export class StepOnePersonalInfoComponent implements OnInit {
   ngOnInit(): void {
     this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
     const formVals = this.inputFormGroup.form.get('personalDetails')?.value;
+
+    this.passwordCheck();
   }
 
-  passwordCheck() {
-      const password = (document.getElementById("password") as HTMLInputElement).value;
-      const confirmPassword = (document.getElementById("confirmPassword") as HTMLInputElement).value;
-      if (password == confirmPassword) {
-        this.stepForm.patchValue({
-          password: confirmPassword
-        })
-      }
-      else {
-        this.passwordMissmatch = !this.passwordMissmatch;
-      }
+
+passwordCheck(){
+  let timer: any;
+    const input = document.querySelector('#confirmPassword');
+    input?.addEventListener("keyup",()=> {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+    const password = (document.getElementById("password") as HTMLInputElement).value;
+    const confirmPassword = (document.getElementById("confirmPassword") as HTMLInputElement).value;
+    if (password == confirmPassword) {
+            this.stepForm.patchValue({
+              password: confirmPassword
+            })
+          }
+          else {
+            this.passwordMissmatch = !this.passwordMissmatch;
+          }
+      }, 1000);
+    });
   }
+
+  // Simpler Password Check 
+  
+   // passwordCheck() {
+  //     const password = (document.getElementById("password") as HTMLInputElement).value;
+  //     const confirmPassword = (document.getElementById("confirmPassword") as HTMLInputElement).value;
+  //     if (password == confirmPassword) {
+  //       this.stepForm.patchValue({
+  //         password: confirmPassword
+  //       })
+  //     }
+  //     else {
+  //       this.passwordMissmatch = !this.passwordMissmatch;
+  //     }
+  // }
 
 // More specific password check
 
@@ -56,3 +81,5 @@ export class StepOnePersonalInfoComponent implements OnInit {
     // }
 
 }
+
+

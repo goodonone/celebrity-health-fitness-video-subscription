@@ -68,7 +68,7 @@ mat-card-header.tierTwoThreeHeader {
 }
 
 h1.tierOneHeader {
-    font-size: 5rem;
+    font-size: 5vw;
     text-align: center;
     color: white;
     padding-top: 2.5vw;
@@ -409,4 +409,12 @@ button.btn-recipes:hover, button.btn-showMore:hover  {
 
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
+}
+
+@media screen and (min-width: 500px) and (max-width: 500px) {
+    h1.tierOneHeader{
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+
 }
