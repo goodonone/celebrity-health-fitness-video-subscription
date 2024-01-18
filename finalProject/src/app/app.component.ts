@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.UpdateStatus();
-    this.minimize();
+
   }
 
 // Toggles the visiblity of the search input field
@@ -84,17 +84,11 @@ export class AppComponent implements OnInit {
     this.UpdateStatus();
   }
 
-  // Implement better hover/mouseout for hanburger menu where if the mouse is not on menu for a specified period of time it minimizes
-
   minimize(){
-    let timer: any;
     const toggle = document.querySelector("#toggle") as HTMLInputElement;
-    toggle?.addEventListener("click",()=> {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        toggle.checked = false;
-      }, 3000);
-    });
+    setTimeout(() => {
+      toggle.checked = false;
+    }, 2000);
   }
 
 }
