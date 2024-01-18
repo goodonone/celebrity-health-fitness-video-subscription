@@ -51,6 +51,9 @@ export class AppComponent implements OnInit {
     else {
       this.viewSearchBar = true;
     }
+    setTimeout(() => {
+       this.viewSearchBar = false;
+    }, 10000);
   }
 
 // Search Function(INCOMPLETE)

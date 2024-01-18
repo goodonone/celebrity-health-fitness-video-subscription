@@ -33,7 +33,7 @@
 
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">
-        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search"
+        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="Enter to Search"
           aria-label="Search" (keyup.enter)="search(searchString)">
       </form>
       <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>

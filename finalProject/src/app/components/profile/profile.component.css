@@ -393,8 +393,6 @@ fieldset {
         margin-bottom: 0;
     }
 
-    .btn-signOutButton {}
-
     .btn-cancelSubscriptionButton {
         margin-top: 0.5rem;
     }
@@ -430,7 +428,8 @@ fieldset {
 
     .profileDataContainer {
         margin-top: 2rem;
-        margin-left: 1rem;
+        /* margin-left: auto;
+        margin-right: auto; */
     }
 
     .planContainer {
@@ -458,7 +457,6 @@ fieldset {
         font-size: 1.9rem;
         margin-bottom: 0rem;
     }
-
 
     input {
         width: 18rem;
@@ -490,11 +488,15 @@ fieldset {
             justify-content: space-evenly;
             padding-top: 1rem;
         }
+
+        .nameTier {
+            /* padding-top: 1rem; */
+            margin-bottom: 2rem;
+            text-align: center;
+        }
     }
 
     @media screen and (min-width: 500px) and (max-width: 642px) {
-        .flexContainer {}
-
 
         h1.profileNameTier {
             font-size: 17vw;
@@ -551,6 +553,8 @@ fieldset {
         .profileDataContainer {
             margin-top: 1.5rem;
             margin-left: 0.1rem;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .absoluteContainer {
