@@ -46,21 +46,6 @@ passwordCheck(){
     });
   }
 
-  // Simpler Password Check 
-  
-   // passwordCheck() {
-  //     const password = (document.getElementById("password") as HTMLInputElement).value;
-  //     const confirmPassword = (document.getElementById("confirmPassword") as HTMLInputElement).value;
-  //     if (password == confirmPassword) {
-  //       this.stepForm.patchValue({
-  //         password: confirmPassword
-  //       })
-  //     }
-  //     else {
-  //       this.passwordMissmatch = !this.passwordMissmatch;
-  //     }
-  // }
-
 // More specific password check
 
      //   setTimeout(() => {
