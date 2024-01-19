@@ -231,10 +231,6 @@ iframe {
 @media screen and (min-width: 500px) and (max-width: 1135px) {
 
   div.heading.findUs {
-    /* display: block;
-    flex-direction: row; */
-    /* flex-wrap: nowrap; */
-    /* width: 25vw; */
     margin: auto;
     width: 80%;
   }
@@ -291,13 +287,8 @@ iframe {
 @media screen and (min-width: 500px) and (max-width: 695px) {
 
   div.heading.contactUs {
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* flex-wrap: wrap; */
     margin: auto;
-    /* margin-right: auto; */
     width: 80%;
-
   }
 
   h1.contactUs {

@@ -53,8 +53,6 @@
     border-radius: .2vw;
     width: 7vw;
     padding: .3vw .7vw .3vw .7vw;
-    /* animation: zoomIn 0.25s;
-    animation-iteration-count: infinite; */
 }
 
 p.getBack:hover{
@@ -66,15 +64,11 @@ p.getBack:hover{
 
 @media screen and (min-width: 500px) and (max-width: 1688px){
     .getBack {
-        /* margin-top: -200rem; */
         color: white;
         font-size: 1.2rem;
         border: solid;
         border-radius: .4vw;
-        /* width: 5vw; */
         padding: .3rem .7rem .3rem .7rem;
-        /* animation: zoomIn 0.25s;
-        animation-iteration-count: infinite; */
     }
 
     .overlayTwo {
