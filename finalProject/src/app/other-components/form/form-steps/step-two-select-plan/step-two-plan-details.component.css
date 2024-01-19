@@ -218,3 +218,9 @@ label {
  }
 
 }
+
+@media screen and (min-width: 500px) and (max-width: 892px){
+  .step-two{
+    margin: auto;
+  }
+}

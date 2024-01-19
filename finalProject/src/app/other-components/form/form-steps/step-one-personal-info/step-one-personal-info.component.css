@@ -103,3 +103,9 @@ padding-bottom: 10px;
     font-weight: 500;
   }
 }
+
+@media screen and (min-width: 500px) and (max-width: 892px){
+  .step-one{
+    margin: auto;
+  }
+}
