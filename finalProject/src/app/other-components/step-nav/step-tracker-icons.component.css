@@ -1,18 +1,16 @@
+:host {
+  height: 11rem;
+  position: relative;
+  top: -1rem;
+  justify-content: flex-start;
+}
 
-  :host {
-    height: 11rem;
-    position: relative;
-    top: -1rem;
-    justify-content: flex-start;
-  }
-
-  .step-display {
-    padding-left:5rem;
-    padding-top: 3rem;
-    color: black;
-    height: 6.25rem;
-  }
-
+.step-display {
+  padding-left: 5rem;
+  padding-top: 3rem;
+  color: black;
+  height: 6.25rem;
+}
 
 .step_number {
   width: 2.1rem;
@@ -81,23 +79,40 @@
 
 @media screen and (min-width: 500px) and (max-width: 892px) {
 
-.step-display{
-  padding-left:0;
-  padding-top: 6rem;
-  display: inline-flex;
+  .step-display {
+    padding-left: 0rem;
+    padding-top: 5.5rem;
+    display: inline-flex;
     flex-direction: row;
     justify-content: space-evenly;
     margin-left: auto;
     margin-right: auto;
-    width: 90%;
-    /* height: 1rem; */
-}
+    width: 85%;
+  }
 
-
-  .step_details{
+  .step_details {
     display: none;
   }
 
+  .step_number {
+    width: 3.1rem;
+    height: 3.1rem;
+    border: 0.063rem solid #C7FF20;
+    color: #C7FF20;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 3rem;
+  }
 
+  .step_number.selected {
+    background-color: #C7FF20;
+    border: 0.063rem solid #C7FF20;
+    color: black;
+    border-radius: 50%;
+    width: 3.1rem;
+    height: 3.1rem;
+    text-align: center;
+    line-height: 3rem;
+  }
 
 }

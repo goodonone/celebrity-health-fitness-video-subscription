@@ -196,9 +196,9 @@
 
 @media screen and (min-width: 500px) and (max-width: 1218px) {
 
-.background{
-    /* overflow: hidden; */
-}
+    .background {
+        /* overflow: hidden; */
+    }
 
     .videoBackground {
         object-fit: 100vh;
@@ -227,59 +227,34 @@
 }
 
 @media screen and (min-width: 500px) and (max-width: 892px) {
-    /* the signup page needs to flex here */
 
-mat-card-content{
-    width: 90%
-}
+    mat-card.card {
+        width: 32rem;
+        /* min-width: 80%; */
+        height: fit-content;
+         /* padding:1rem; */
+    }
 
-.card{
-    width: 90%
-}
+    /* .cardContent {
+        width: 100%
+    }
 
-.cardContent{
-    width: 100%
-}
-
-.innerCardContainer{
-    width: 90%
-}
+    .innerCardContainer {
+        width: 90%
+    } */
 
     .innerCardTwo {
-        /* justify-content: space-between; */
-        /* height: fit-content;
-        width: fit-content; */
         height: 55rem;
-        width: 90%;
+        width: 25rem;
         background-color: rgb(0, 0, 0);
         opacity: 100%;
     }
 
-.innerCardContainer{
-    width: 90%;
-}
+    /* .innerCardContainer {
+        width: 100%;
+    } */
 
-    /* .card { */
-        /* position: relative; */
-        /* background-color: #000000; */
-        /* left: 40%;
-        top: 18%;*/
-        /* height: 30rem;
-        width: 50rem;
-        border-radius: 1.4rem;
-        opacity: 100%; */
-        /* z-index: 3; */
-    /* } */
-
-    .card{
-        height: fit-content;
-    }
-
-    .cardContent{
-        
-    }
-
-    .alreadyMemberText{
+    .alreadyMemberText {
         position: absolute;
         top: 93%;
         left: 37%;
@@ -288,22 +263,8 @@ mat-card-content{
         padding: 0;
         z-index: 100;
     }
-   
+
 
 }
 
 
-@media screen and (min-width: 500px) and (max-width: 717px) {
-
-    /* .banner {
-        height: 100vh;
-        width: 100%;
-        overflow: hidden;
-    }
-
-    .videoBackground {
-        object-fit:cover;
-        height: 100vh;
-        overflow: hidden;
-    } */
-}
