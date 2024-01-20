@@ -2,6 +2,11 @@
   font-family: 'Outfit', sans-serif;
   }
 
+  mat-card{
+    width: 32.8rem;
+    margin-left: 0.2rem;
+  }
+
 input {
   display: inline-block;
   width: 100%;
@@ -25,17 +30,30 @@ input:valid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 17rem;
 }
 
-.nameCredit .input-details {
+.nameCredit  {
   display: flex;
   flex-direction: row;
   justify-content:space-between;
-  width: 14.6rem;
+  width: 20rem;
 }
 
-.expCvvZip .input-details {
+.input-details-name{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 15rem;
+}
+
+.input-details-cc{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 15rem;
+}
+
+.input-details-exp, .input-details-cvv, .input-details-zip{
   display: flex;
   flex-direction: row;
   justify-content:space-between;
@@ -52,7 +70,7 @@ input:valid {
   color: red;
   text-align: right;
   font-size: 0.875rem;
-  padding-left: .2rem;
+  padding-right: 1rem;
 }
 
 #nameOnCard{
@@ -62,7 +80,6 @@ input:valid {
 #ccNumber{
   width: 14.4rem;
 }
-
 
 #cvv{
   width: 9.2rem;
@@ -88,9 +105,11 @@ width: 100%;
 display: flex;
 flex-direction: row;
 justify-content:space-between;
+margin-right: 1rem;
+width: 100%;
 }
 
-@media (min-width: 37.5em) {
+@media (min-width: 30.5em) {
   label {
     margin-bottom: 0rem;
   }
@@ -108,4 +127,73 @@ justify-content:space-between;
   .error-alert {
     font-weight: 700;
   }
+}
+
+@media screen and (min-width: 500px) and (max-width: 892px) {
+
+  .step-four{
+    margin-top: 0;
+    padding-top: 0;
+    height: 22rem;
+    width: 28rem;
+  }
+
+  .expCvvZip{
+    margin-right: 0;
+  }
+  
+  .input-details-name{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 12.5rem;
+  }
+  
+  .input-details-cc{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 12.5rem;
+  }
+  
+  .input-details-exp, .input-details-cvv, .input-details-zip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 8rem;
+  }
+
+  #nameOnCard{
+    width: 11.5rem;
+  }
+  
+  #ccNumber{
+    width: 11.5rem;
+  }
+  
+  #cvv{
+    width: 7.2rem;
+  }
+  
+  #expDate{
+    width: 7.2rem;
+  }
+  
+  #zipCode{
+    width: 7.2rem;
+  }
+
+  .error-alert {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+  }
+  
+  .error-alert .expCvvZip {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    padding-left: 0rem;
+  }
+
 }

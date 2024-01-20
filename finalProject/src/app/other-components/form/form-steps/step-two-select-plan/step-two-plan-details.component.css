@@ -32,7 +32,6 @@ mat-button-toggle {
   padding-right: 0.2rem;
 }
 
-
 .mat-button-toggle-checked {
   border: 0.1rem solid #C7FF20;
 }
@@ -52,9 +51,6 @@ button .mat-button-toggle-button,
 
 mat-button-toggle-label-content {
   padding: 0;
-}
-
-mat-button-toggle-label-content {
   width: 7rem;
 }
 
@@ -220,15 +216,36 @@ label {
 }
 
 @media screen and (min-width: 500px) and (max-width: 892px) {
-  .step-one{
+/* mat-card{
+  padding-right: 2rem;
+} */
+
+  .step-two{
     margin-top: 0;
     padding-top: 0;
-    margin: auto;
+    /* margin: auto; */
     width: 28rem;
+    padding-right: 2rem;
+    /* margin-right: 2rem; */
   }
 
-  *{
-    transform: scale(97%, 97%)
+  mat-card-content{
+    width:100%;
+    margin: auto;
+  }
+
+  mat-card-header{
+    padding: 0.5rem 0 0 1rem;
+  }
+
+  /* mat-card-content{
+    margin: auto;
+  } */
+
+  mat-button-toggle-group  {
+    /* margin: auto;
+    margin-right: -1rem; */
+    transform: scale(88%, 88%)
   }
 
   mat-card{
@@ -239,8 +256,8 @@ label {
   .mat-button-toggle-group {
     flex-direction: row !important;
     border: none;
-    width: 29rem;
-    margin: 0 0 1rem 0;
+    width: 30rem;
+    margin: -0.5rem 0 1rem -2rem;
   }
 
   mat-card-content{

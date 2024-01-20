@@ -1,11 +1,11 @@
 .background {
-    /* position: relative; */
-    /* margin-top: -80px; */
     width: 100%;
-    height: fit-content;
-    /* overflow:visible; */
+    height: 100vh;
     margin-bottom: 12rem;
-    /* overflow-x: hidden; */
+}
+
+.card{
+    margin-left: 3rem;
 }
 
 .flexContainer {
@@ -197,7 +197,18 @@
 @media screen and (min-width: 500px) and (max-width: 1218px) {
 
     .background {
-        /* overflow: hidden; */
+        width: 100%;
+        height: fit-content;
+        margin-bottom: 12rem;
+    }
+
+    mat-card.card {
+        /* width: 32rem; */
+        /* min-width: 80%; */
+        /* height: fit-content; */
+        margin-left: auto;
+        margin-right: auto;
+         /* padding:1rem; */
     }
 
     .videoBackground {
@@ -208,12 +219,15 @@
 
     .flexContainer {
         flex-wrap: wrap;
+        flex-direction: column;
         padding-top: 0rem;
+       
     }
 
     .overlay {
         margin-top: 4rem;
         margin-bottom: 3rem;
+        text-align: center;
     }
 
     .welcome {
@@ -232,7 +246,16 @@
         width: 32rem;
         /* min-width: 80%; */
         height: fit-content;
+        margin-left: auto;
+        margin-right: auto;
          /* padding:1rem; */
+    }
+
+    .flexContainer {
+        /* margin: auto; */
+        flex-wrap: wrap;
+        flex-direction: column;
+        padding-top: 0rem;
     }
 
     /* .cardContent {

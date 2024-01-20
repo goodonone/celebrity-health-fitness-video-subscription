@@ -14,7 +14,7 @@
       <div class="nameCredit">
         <!-- name on card input -->
         <div>
-          <div class="input-details">
+          <div class="input-details-name">
             <label for="name">Name on Card</label>
             <label for="error"
                    id="error"
@@ -31,7 +31,7 @@
         </div>
         <!-- credit card number input -->
         <div>
-        <div class="input-details">
+        <div class="input-details-cc">
           <label for="ccNumber">Card Number</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
@@ -52,7 +52,7 @@
       <div class="expCvvZip">
       <!-- expiration date input -->
         <div>
-        <div class="input-details">
+        <div class="input-details-exp">
           <label for="expiration">Exp.</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
@@ -69,7 +69,7 @@
        </div>
        <!-- cvv number input -->
        <div>
-        <div class="input-details">
+        <div class="input-details-cvv">
           <label for="cvv">CVV</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['cvv'].invalid && this.stepForm.controls['cvv'].touched"
@@ -86,7 +86,7 @@
         </div>
       <!-- zipcode input -->
       <div>
-        <div class="input-details">
+        <div class="input-details-zip">
           <label for="zipcode">Zipcode</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['zipCode'].invalid && this.stepForm.controls['zipCode'].touched"
