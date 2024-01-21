@@ -136,6 +136,8 @@ div.cost{
   /* margin: auto; */
   width: 28rem;
   padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 table {
