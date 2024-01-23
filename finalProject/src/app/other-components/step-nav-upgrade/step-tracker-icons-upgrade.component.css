@@ -38,7 +38,7 @@
   display: none;
 }
 
-@media (min-width: 37.5em) {
+@media (min-width: 30.5em) {
   :host {
     height: 35.5rem;
     width: 274px;
@@ -76,4 +76,44 @@
     width: 86px;
     align-items: baseline;
   }
+}
+
+@media screen and (min-width: 500px) and (max-width: 892px) {
+
+  .step-display {
+    padding-left: 0rem;
+    padding-top: 5.5rem;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+  }
+
+  .step_details {
+    display: none;
+  }
+
+  .step_number {
+    width: 3.1rem;
+    height: 3.1rem;
+    border: 0.063rem solid #C7FF20;
+    color: #C7FF20;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 3rem;
+  }
+
+  .step_number.selected {
+    background-color: #C7FF20;
+    border: 0.063rem solid #C7FF20;
+    color: black;
+    border-radius: 50%;
+    width: 3.1rem;
+    height: 3.1rem;
+    text-align: center;
+    line-height: 3rem;
+  }
+
 }

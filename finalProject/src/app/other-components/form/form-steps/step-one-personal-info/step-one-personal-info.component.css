@@ -54,8 +54,8 @@ input:valid {
   line-height: 1.3rem;
 }
 
-span#showHide{
-padding-bottom: 10px;
+span #showHide{
+padding-bottom: 9px;
 }
 
 @media (min-width: 37.5em) {
@@ -103,3 +103,57 @@ padding-bottom: 10px;
     font-weight: 500;
   }
 }
+
+@media screen and (min-width: 500px) and (max-width: 892px){
+  .step-one{
+    margin-top: 0;
+    padding-top: 0;
+    margin: auto;
+    width: 28rem;
+  }
+
+  input {
+    height: 1.8rem;
+    width: 95%;
+  }
+
+  #password{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  } 
+
+  #confirmPassword{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  }
+
+  .input-details {
+    width: 100%;
+  }
+
+  .input-details-confirm{
+    width: 100%;
+  }
+
+  .error-alert {
+    font-weight: 500;
+  }
+}
+
+

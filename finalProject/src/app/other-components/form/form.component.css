@@ -1,5 +1,5 @@
 .container {
-  display: flex;
+    display: flex;
     background: rgb(255, 255, 255);
     border-radius: 1rem;
     padding-top: 1rem;
@@ -16,7 +16,7 @@
   }
 
   .row {
-    width: 20rem;
+    width: 30rem;
     height: 37.5rem;
     background: url("/assets/Images/alonso-reyes-0HlI76m4jxU-unsplash.jpg");
     border-radius: 8px;
@@ -41,3 +41,43 @@
     display: none;
   }
 
+  @media screen and (min-width: 500px) and (max-width: 892px) {
+
+ .container{
+  height: 53rem;
+  flex-wrap: wrap;
+  padding: 1rem 1rem 1rem 1rem;
+  width: 28rem;
+  min-width: 25rem;
+ }
+
+ .row {
+  width: 28rem;
+  min-width: 20rem;
+  height: 15rem;
+  background: url("/assets/Images/alonso-reyes-0HlI76m4jxU-unsplash.jpg");
+  border-radius: 8px;
+  background-size: cover;
+  background-position: 4% 45%;
+  background-repeat: no-repeat;
+  padding-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+form{
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  min-width: 5%;
+}
+
+.column{
+  padding-bottom: 0;
+  margin-top: 0;
+}
+
+
+
+
+}

@@ -10,7 +10,7 @@
     <label id="hamburger" for="toggle">&#9776;</label>
     <input type="checkbox" id="toggle">
 
-    <div class="menu">
+    <div class="menu" (mouseleave)="minimize()">
 
       <h6 class="navBarText" routerLink="/home">Home</h6>
 
@@ -33,7 +33,7 @@
 
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">
-        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="         Enter to Search"
+        <input class="formSearch" id="mySearch" name="search" type="input" placeholder="Enter to Search"
           aria-label="Search" (keyup.enter)="search(searchString)">
       </form>
       <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>

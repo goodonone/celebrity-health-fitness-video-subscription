@@ -18,7 +18,6 @@
 h1.contactUs {
   position: relative;
   color: rgb(255, 255, 255);
-  font-weight: 500;
   text-align: left;
   font-size: 7rem;
   padding-left: 8rem;
@@ -30,7 +29,6 @@ h1.contactUs {
 h1.findUs {
   position: relative;
   color: rgb(255, 255, 255);
-  font-weight: 500;
   text-align: left;
   font-size: 7rem;
   padding-left: 8rem;
@@ -68,7 +66,7 @@ h1.findUs {
   border-radius: 6px;
 }
 
-.cardTwo{
+.cardTwo {
   margin-top: 12rem;
 }
 
@@ -90,7 +88,6 @@ textarea {
   resize: none;
   display: inline-block;
   width: 100%;
-  /* height: 2.5rem; */
   border-radius: 0.25rem;
   border: 0.063rem solid black;
   margin-bottom: 1rem;
@@ -155,10 +152,10 @@ input:valid {
   width: 100%;
 }
 
-img.tick{
+img.tick {
   margin: auto;
   display: block;
- }
+}
 
 .thankYouMessage {
   margin: auto;
@@ -168,35 +165,35 @@ img.tick{
   margin-top: -5rem;
 }
 
-.divAlign{
+.divAlign {
   display: block;
   padding-bottom: 5rem;
 }
 
-.mapSocial{
+.mapSocial {
   width: 600px;
   height: 450px;
   border-radius: 8px;
   background-image: cover;
 }
 
-iframe{
+iframe {
   border-radius: 8px;
 }
 
-.location{
+.location {
   padding-left: 1rem;
-font-size: 3rem;
-font-weight: 500;
+  font-size: 3rem;
+  font-weight: 500;
 }
 
-.mapSocialFlex{
+.mapSocialFlex {
   display: flex;
   justify-content: space-around;
   margin-top: 0.5rem;
 }
 
-.logoFlex{
+.logoFlex {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -205,24 +202,110 @@ font-weight: 500;
   margin: auto;
 }
 
-.socialBusinessHeadingTwo{
+.socialBusinessHeadingTwo {
   padding-top: 2rem;
 }
 
-a{
+a {
   cursor: pointer;
 }
 
-.a2{
+.a2 {
   padding-top: 6px;
 }
 
-.a3{
+.a3 {
   padding-top: 6px;
 }
 
-.socialMedia{
+.socialMedia {
   padding-right: 2rem;
 }
 
+iframe {
+  width: 600px;
+  height: 450px;
+}
 
+@media screen and (min-width: 500px) and (max-width: 1135px) {
+
+  div.heading.findUs {
+    margin: auto;
+    width: 80%;
+  }
+
+  .location {
+    padding-left: 1.8rem;
+  }
+
+  h1.findUs {
+    text-align: center;
+    font-size: 7rem;
+    line-height: 5rem;
+    padding-left: 0;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    font-weight: 600;
+    width: 25rem;
+  }
+
+  .mapSocialContainer {
+    width: 28rem;
+    height: fit-content;
+    margin: auto;
+    margin-bottom: 5rem;
+    border-radius: 8px;
+    padding: 1.5rem 0 1.5rem 0rem;
+  }
+
+  .mapSocialFlex {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .mapSocial {
+    width: 25rem;
+    height: 35rem;
+  }
+
+  iframe {
+    width: 25rem;
+    height: 35rem;
+  }
+
+  .socialMedia {
+    padding-right: 0rem;
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+
+}
+
+@media screen and (min-width: 500px) and (max-width: 695px) {
+
+  div.heading.contactUs {
+    margin: auto;
+    width: 80%;
+  }
+
+  h1.contactUs {
+    text-align: center;
+    line-height: 6rem;
+    font-size: 7rem;
+    padding-left: 0;
+    padding-top: 4rem;
+    padding-bottom: 0rem;
+    font-weight: 600;
+    width: 25rem;
+  }
+
+  .contactForm {
+    width: 25rem;
+    height: 35rem;
+    margin: 4rem auto 5rem auto;
+    border-radius: 8px;
+  }
+
+}

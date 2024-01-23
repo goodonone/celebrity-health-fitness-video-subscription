@@ -1,40 +1,42 @@
 .background {
-    position: relative;
-    margin-top: -80px;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
+    margin-bottom: 12rem;
+}
+
+.card{
+    margin-left: 3rem;
+}
+
+.flexContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-top: 5rem;
 }
 
 .videoBackground {
-    position: absolute;
-    object-fit: fill;
-    z-index: 0;
-    background-size: cover;
-    top: 0;
-    left: 0;
-    height: 100vh;
+    position: fixed;
+    margin-top: -10rem;
     width: 100%;
-    margin-bottom: 5%;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    zoom: 110%;
+    background-attachment: fixed;
+    z-index: 0;
 }
 
 
 .overlay {
-    position: absolute;
-    top: 29%;
-    bottom: 45%;
-    left: 15%;
-    right: 0;
-    margin: auto;
-    z-index: 1;
+    margin-top: 6rem;
 }
-
 
 .textContainer {
     display: inline-flex;
     margin: auto;
     text-align: center;
-    justify-content: center;
 }
 
 .welcome {
@@ -42,10 +44,12 @@
     text-align: center;
     justify-content: center;
     color: white;
-    font-size: 5vw;
+    font-size: 5rem;
     margin: 0;
     padding: 0;
     animation: fade-in 2s linear;
+    animation-fill-mode: both;
+    z-index: 1;
 }
 
 @keyframes fade-in {
@@ -58,15 +62,17 @@
     }
 }
 
+.overlayTwo {
+    padding: 1rem;
+}
+
 .otherText {
     font-family: 'Outfit', sans-serif;
     text-align: center;
-    margin: auto;
     justify-content: center;
     color: white;
-    font-size: 5vw;
-    margin: 0 0 0 -5px;
-    padding: 0;
+    font-size: 5rem;
+    margin-top: 1rem;
     animation: zoomIn 0.25s;
     animation-iteration-count: infinite;
     line-height: 5vw;
@@ -74,63 +80,128 @@
     animation-delay: 3s;
     opacity: 0;
     animation-fill-mode: both;
+    z-index: 1;
 }
 
 @keyframes fade-in-two {
     0% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
     }
 }
 
-
-.overlayTwo {
-    position: absolute;
-    top: 45%;
-    bottom: 100%;
-    left: 1.5%;
-    z-index: 1;
-    width: 35vw;
-}
-
 .card {
-    position: absolute;
     background-color: #000000;
-    left: 40%;
-    top: 18%;
     height: 41.5rem;
     width: 55rem;
     border-radius: 1.4rem;
     opacity: 100%;
-    z-index: 3;
 }
 
-.innerCardTwo{
+.innerCardTwo {
     justify-content: space-between;
     height: 600px;
     width: 800px;
+    height: 30rem;
+    width: 50rem;
     background-color: rgb(0, 0, 0);
     opacity: 100%;
 }
 
-.alreadyMemberText{
-   position: absolute;
-   top:90%;
-   left:56%;
-   right: 0;
-   cursor: pointer;
-   padding: 0;
-   z-index: 100;
+.alreadyMemberText {
+    position: absolute;
+    top: 117%;
+    left: 56%;
+    right: 0;
+    cursor: pointer;
+    padding: 0;
+    z-index: 100;
 }
 
-.alreadyMemberText p{
+.alreadyMemberText p {
     color: black;
 }
 
-.highlight{
+.highlight {
     font-weight: bold;
-    color:#C7FF20;
+    color: #C7FF20;
 }
+
+@media screen and (min-width: 500px) and (max-width: 1218px) {
+
+    .background {
+        width: 100%;
+        height: fit-content;
+        margin-bottom: 12rem;
+    }
+
+    mat-card.card {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .videoBackground {
+        object-fit: 100vh;
+    }
+
+    .flexContainer {
+        flex-wrap: wrap;
+        flex-direction: column;
+        padding-top: 0rem;  
+    }
+
+    .overlay {
+        margin-top: 4rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .welcome {
+        font-size: 5rem;
+    }
+
+    .otherText {
+        font-size: 5rem;
+        line-height: 5rem;
+    }
+}
+
+@media screen and (min-width: 500px) and (max-width: 892px) {
+
+    mat-card.card {
+        width: 32rem;
+        height: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .flexContainer {
+        flex-wrap: wrap;
+        flex-direction: column;
+        padding-top: 0rem;
+    }
+
+    .innerCardTwo {
+        height: 55rem;
+        width: 25rem;
+        background-color: rgb(0, 0, 0);
+        opacity: 100%;
+    }
+
+    .alreadyMemberText {
+        position: absolute;
+        top: 93%;
+        left: 37%;
+        right: 0;
+        cursor: pointer;
+        padding: 0;
+        z-index: 100;
+    }
+
+
+}
+
 

@@ -23,7 +23,6 @@ a {
 
 h1 {
     color: Black;
-    font-weight: 500;
     text-align: left;
     font-size: 10vw;
     padding-left: 8rem;
@@ -142,3 +141,15 @@ background-color: black;
     cursor: pointer;
 }
 
+@media screen and (min-width: 500px) and (max-width: 1028px){
+
+    h1.pageName{
+        color: Black;
+        text-align: center;
+        font-size: 10rem;
+        padding-left: 0rem;
+        font-weight: 600;
+    }
+
+
+}

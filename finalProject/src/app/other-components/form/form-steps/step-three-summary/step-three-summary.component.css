@@ -2,6 +2,11 @@
   font-family: 'Outfit', sans-serif;
   }
 
+  mat-card{
+    width: 32.8rem;
+    margin-left: 0.2rem;
+  }
+
 span {
   display: contents;
   color: rgb(0, 0, 0);
@@ -95,7 +100,7 @@ div.cost{
   line-height: 1.25rem;
 }
 
-@media (min-width: 37.5em) {
+@media (min-width: 30.5em) {
 
   table {
     display: flex;
@@ -120,5 +125,33 @@ div.cost{
   tr {
     padding-bottom: 0;
   }
+
+}
+
+@media screen and (min-width: 500px) and (max-width: 892px) {
+
+.step-three{
+  margin-top: 0;
+  padding-top: 0;
+  width: 28rem;
+  padding-right: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+  display: flex;
+  flex-direction: row;
+  width: 26rem;
+}
+
+tr {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
+  width: 26rem;
+}
+
 
 }

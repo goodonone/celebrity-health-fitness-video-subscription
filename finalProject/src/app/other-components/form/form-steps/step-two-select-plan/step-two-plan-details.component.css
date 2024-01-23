@@ -1,18 +1,22 @@
 * {
-font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
-mat-card{
+mat-card {
   width: 32.8rem;
   margin-left: 0.2rem;
 }
 
-div.plan{
+mat-card-title{
+  margin-top: 0.5rem;
+}
+
+div.plan {
   padding-top: 0.5rem;
   padding-bottom: 0.2rem;
 }
 
-span.mat-button-toggle-label-content{
+span.mat-button-toggle-label-content {
   width: 8.625rem;
 }
 
@@ -32,16 +36,15 @@ mat-button-toggle {
   padding-right: 0.2rem;
 }
 
-
 .mat-button-toggle-checked {
   border: 0.1rem solid #C7FF20;
 }
 
-#buttonToggle2.mat-button-toggle-checked  {
+#buttonToggle2.mat-button-toggle-checked {
   border: 0.1rem solid #71BBF5;
 }
 
-#buttonToggle3.mat-button-toggle-checked  {
+#buttonToggle3.mat-button-toggle-checked {
   border: 0.1rem solid #000000;
 }
 
@@ -50,11 +53,8 @@ button .mat-button-toggle-button,
   height: 4.8rem;
 }
 
-mat-button-toggle-label-content{
+mat-button-toggle-label-content {
   padding: 0;
-}
-
-mat-button-toggle-label-content{
   width: 7rem;
 }
 
@@ -63,21 +63,21 @@ mat-button-toggle-label-content{
   width: 100%;
 }
 
-#buttonToggle1{
+#buttonToggle1 {
   background-color: rgb(194, 194, 194);
 }
 
 #buttonToggle2 {
   background-color: black;
   color: white;
-} 
+}
 
-#buttonToggle2 .plan_title{
+#buttonToggle2 .plan_title {
   font-size: 1.3rem;
   color: white;
 }
 
-#buttonToggle2 .promo{
+#buttonToggle2 .promo {
   color: white;
 }
 
@@ -109,26 +109,26 @@ mat-button-toggle-label-content{
   font-weight: 600;
 }
 
-span.price{
-  height:2rem;
+span.price {
+  height: 2rem;
 }
 
 .promo {
   color: rgb(0, 0, 0);
 }
 
-span.promo{
+span.promo {
   margin-top: -0.35rem;
   margin-bottom: 1.5rem;
   height: 1rem;
 }
 
-.description{
+.description {
   text-wrap: wrap;
   line-height: 0.8rem;
 }
 
-span.description{
+span.description {
   margin-top: 0.6rem;
   width: 8.625rem;
 }
@@ -161,16 +161,16 @@ label {
   color: black;
 }
 
-.mat-button-toggle{
-  color:black;
+.mat-button-toggle {
+  color: black;
 }
 
-.mat-slide-toggle-checked{
-  color:#C7FF20;
+.mat-slide-toggle-checked {
+  color: #C7FF20;
 }
 
 
-@media (min-width: 37.5em) {
+@media (min-width: 30.5em) {
 
   .mat-button-toggle-group {
     display: flex;
@@ -212,9 +212,52 @@ label {
   ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
     background-color: black;
   }
-  
-::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+
+  ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
- }
+  }
+
+}
+
+@media screen and (min-width: 500px) and (max-width: 892px) {
+
+  .step-two{
+    margin-top: 0;
+    padding-top: 0;
+    width: 28rem;
+    padding-right: 2rem;
+  }
+
+  mat-card-content{
+    width:100%;
+    margin: auto;
+  }
+
+  mat-card-header{
+    padding: 0.5rem 0 0 1rem;
+  }
+
+  .select{
+    transform: scale(100%, 100%);
+  }
+
+  mat-button-toggle-group  {
+    transform: scale(88%, 88%)
+  }
+
+  mat-card{
+    width: 29rem;
+    margin: auto;
+  }
+ 
+  .mat-button-toggle-group {
+    flex-direction: row !important;
+    border: none;
+    width: 30rem;
+    margin: -0.5rem 0 1rem -2rem;
+  }
+  
+
+
 
 }
