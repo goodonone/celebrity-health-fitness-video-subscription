@@ -220,17 +220,12 @@ label {
 }
 
 @media screen and (min-width: 500px) and (max-width: 892px) {
-/* mat-card{
-  padding-right: 2rem;
-} */
 
   .step-two{
     margin-top: 0;
     padding-top: 0;
-    /* margin: auto; */
     width: 28rem;
     padding-right: 2rem;
-    /* margin-right: 2rem; */
   }
 
   mat-card-content{
@@ -246,13 +241,7 @@ label {
     transform: scale(100%, 100%);
   }
 
-  /* mat-card-content{
-    margin: auto;
-  } */
-
   mat-button-toggle-group  {
-    /* margin: auto;
-    margin-right: -1rem; */
     transform: scale(88%, 88%)
   }
 
@@ -266,14 +255,6 @@ label {
     border: none;
     width: 30rem;
     margin: -0.5rem 0 1rem -2rem;
-  }
-
-  mat-card-content{
-    /* width: 2rem; */
-    /* margin-right: auto;
-    margin-left: auto; */
-    /* margin-right: 20rem; */
-    /* width: 50% */
   }
   
 

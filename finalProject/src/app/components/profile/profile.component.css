@@ -428,13 +428,12 @@ fieldset {
 
     .profileDataContainer {
         margin-top: 2rem;
-        /* margin-left: auto;
-        margin-right: auto; */
     }
 
     .planContainer {
         display: flex;
         width: 18rem;
+        margin-bottom: 1.5rem;
     }
 
     .editButtonsContainer {
@@ -490,7 +489,6 @@ fieldset {
         }
 
         .nameTier {
-            /* padding-top: 1rem; */
             margin-bottom: 2rem;
             text-align: center;
         }
@@ -501,6 +499,17 @@ fieldset {
         h1.profileNameTier {
             font-size: 17vw;
             font-weight: 600;
+
+        }
+
+        .avatar {
+            position: absolute;
+            z-index: 1;
+            background-size: cover;
+            background-position: center center;
+            transform: scale(8%, 8%);
+            left: -46rem;
+            top: -57rem
         }
 
         .profileNameTier {

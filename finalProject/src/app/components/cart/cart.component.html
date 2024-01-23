@@ -1,8 +1,7 @@
 <div class="pageContainer">
    
     <mat-card class="cartContainer">
-        <h1 *ngIf="cartStatic" class="pageName">Cart</h1>
-        <h1 *ngIf="!cartItem() && !tierTwoThree" class="pageName">Cart</h1>
+        <h1 *ngIf="(!cartItem() && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
         <h1 *ngIf="!cartItem() && tierTwoThree" class="pageName">Checkout</h1>
 
         <mat-card-content class="cardFlex">
@@ -39,12 +38,12 @@
                         <p class="totalPrice">${{cart.totalPrice}}</p>
                     </div>
                 </div>
+            
                 <div class="buttonContainer" *ngIf="cart.totalCount !== 0">
                     <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
                     <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
                 </div>
         <div class="emptyMessageContainer" *ngIf="cart.totalCount === 0">
-            <p *ngIf="cartStatic" class="emptyMessage">Your cart is empty</p>
             <p *ngIf="!cartItem() && !tierTwoThree"class="emptyMessage">Your cart is empty</p>
             <div  *ngIf="!cartItem() && tierTwoThree"class="thankYouMessage">
                 <h1 class="thankYou">Thank You for your Purchase!</h1>

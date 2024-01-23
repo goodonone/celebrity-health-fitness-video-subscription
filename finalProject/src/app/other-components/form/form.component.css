@@ -42,20 +42,13 @@
   }
 
   @media screen and (min-width: 500px) and (max-width: 892px) {
-    /* the signup page needs to flex here */
-
-/* :host{
-  width: 90%
-} */
 
  .container{
-  /* height: fit-content; */
   height: 53rem;
   flex-wrap: wrap;
   padding: 1rem 1rem 1rem 1rem;
   width: 28rem;
   min-width: 25rem;
-  /* margin: auto; */
  }
 
  .row {
@@ -76,19 +69,13 @@ form{
   margin-left: auto;
   margin-right: auto;
   padding: 0;
-  /* width: 80%; */
   min-width: 5%;
 }
 
 .column{
-  /* margin: auto; */
   padding-bottom: 0;
   margin-top: 0;
 }
-
-/* div.input-details-confirm{
-  width: 8%
-} */
 
 
 

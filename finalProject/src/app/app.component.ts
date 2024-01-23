@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
     const toggle = document.querySelector("#toggle") as HTMLInputElement;
     setTimeout(() => {
       toggle.checked = false;
-    }, 2000);
+    }, 1000);
   }
 
 }
