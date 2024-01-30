@@ -8,6 +8,6 @@ App Specifications: The frontend was developed using the Angular Framework utili
 The backend was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
 
 
-
+# Built With
 <i class="devicon-angularjs-plain colored"></i>
           
