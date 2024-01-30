@@ -38,7 +38,7 @@ export class FormService implements OnInit {
     }),
     paymentDetails: this.fb.group({
       nameOnCard: ['', [Validators.required, Validators.minLength(4)]],
-      ccNumber: ['', [Validators.required, Validators.minLength(16), Validators.maxLength(19)]],
+      ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19)]],
       expDate: ['', [Validators.required]],
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
       zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]]

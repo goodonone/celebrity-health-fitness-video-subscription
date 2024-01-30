@@ -23,7 +23,7 @@
           <mat-card-content>
             <div *ngFor="let video of livestreamVideos" >
               
-                  <iframe width="800" height="480" [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
+                  <iframe [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
                 
             </div>
           </mat-card-content>
