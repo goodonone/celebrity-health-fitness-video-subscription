@@ -1,3 +1,5 @@
+
+
 # Celebrity Health & Fitness App Frontend
 
 A platform that empowers a fitness personality/celebrity to generate revenue by distributing their brand specific workouts using a subscription pricing model. The videos can be hosted on any cloud platform easily accessible throughout the globe. 
@@ -7,3 +9,5 @@ The backend was developed using MVC based Node.js and Express.js, utilizing Sequ
 
 
 
+
+ANGULAR
