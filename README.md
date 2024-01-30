@@ -1,5 +1,5 @@
 # Celebrity Health & Fitness App Frontend
-![Design preview for the Calebrity Health & Fitness App](/src/assets/design/desktop-preview.jpg)
+![Design preview for the Calebrity Health & Fitness App](/src/assets/Design/Screenshots/Home/Title.png)
 
 A platform that empowers a fitness personality/celebrity to generate revenue by distributing their brand specific workouts using a subscription pricing model. The videos can be hosted on any cloud platform easily accessible throughout the globe. 
 
