@@ -9,5 +9,5 @@ The backend was developed using MVC based Node.js and Express.js, utilizing Sequ
 
 
 
-
-ANGULAR
+            <i class="devicon-angularjs-plain colored"></i>
+          
