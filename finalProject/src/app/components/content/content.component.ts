@@ -102,7 +102,7 @@ export class ContentComponent implements OnInit{
   }
 
   startCountDownTierThree() {
-    var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
+    var countDownDate = new Date("Jan 30, 2027 13:39:25").getTime();
     // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second

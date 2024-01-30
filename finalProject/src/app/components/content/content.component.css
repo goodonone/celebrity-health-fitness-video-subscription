@@ -81,7 +81,7 @@ div.cardFirstTier {
 
 .liveVideo {
     display: flex;
-    margin-top: 5rem;
+    margin-top: 10rem;
 }
 
 h1.liveVideoText {
@@ -93,7 +93,6 @@ h1.liveVideoText {
     text-align: left;
     color: white;
     margin: auto;
-    padding-top: 10rem;
 }
 
 .liveVideoContainer {
@@ -102,7 +101,7 @@ h1.liveVideoText {
     color: black;
     border-radius: 6px;
     margin: auto;
-    margin-top: 10rem;
+    /* margin-top: 10rem; */
     background-color: rgb(1, 1, 1);
 }
 

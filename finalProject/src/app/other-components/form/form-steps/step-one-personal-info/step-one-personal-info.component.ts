@@ -25,6 +25,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
     this.passwordCheck();
   }
 
+// Incomplete: Work on all edge cases
 
 passwordCheck(){
   let timer: any;
