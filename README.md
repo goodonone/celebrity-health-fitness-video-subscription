@@ -8,11 +8,20 @@ A platform that empowers a fitness personality/celebrity to generate revenue by 
 
 ## Home Page:
 
+The page is divided into banners, each banner with specific intent showcasing the features of the app/site. 
+
+### Motivation:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
+
+### Fresh Weekly Recipes To Keep Your Workouts Going
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
+
+### New Workouts By The Celebrity Posted Weekly and Live One-On-Ones For Highest Tier Members
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
+
+### A Carousel Showcasing The Current And Past Members Success Stories Using The App
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerSix.jpg)
+
 
 
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
