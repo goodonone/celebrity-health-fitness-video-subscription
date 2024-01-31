@@ -8,7 +8,7 @@ A platform that empowers a fitness personality/celebrity to generate revenue by 
 
 ## Home Page:
 
-The page is divided into banners, each banner with specific intent showcasing the features of the app/site. 
+The page is divided into banners, each banner with specific intent showcasing the features of the app. 
 
 ### Motivation:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
