@@ -52,7 +52,7 @@ The Password Field of Personal Info of the form has a level of password mismatch
 <br/>
 ![Design Personal Info Errors for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
-![Design Personal Info Errors for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg)
+![Design Personal Info Errors for the Celebrity Health & Fitness App]<img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 
 
 
