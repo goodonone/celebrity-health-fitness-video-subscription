@@ -24,6 +24,7 @@ The page is divided into banners, each banner with specific intent showcasing th
 
 
 
+### Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
 
 ## Backend: https://github.com/goodonone/celebrity-health-fitness-video-subscription-backend-nodejs
