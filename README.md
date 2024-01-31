@@ -87,26 +87,33 @@ Here we have the confirmation messsage displayed with support contact info and w
 
 ## Sign-Up Form Responsive:
 <br/>
+
 ### Personal Info Page Responsive
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 <br/>
+
 ### Plan Details Page Responsive
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
 <br/>
+
 ### Summary Page Responsive
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
 <br/>
+
 ### Payment Page Responsive
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 <br/>
+
 ### Confirmation Page Responsive
 <br/>
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 <br/>
+
+
 
 
 The Billing Frequency Toggle in the Plan Details Page changes the information seen on each plan and adjusts pricing accordingly providing an attractive promo. 
