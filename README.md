@@ -9,6 +9,12 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 ## Site Map:
    - [Home](#Home-Page)
    - [Sign-Up Form](#Sign-Up-Page)
+   - [Content](#Content-Page)
+   - [Store](#Store-Page)
+   - [Cart](#Cart-Page)
+   - [About](#About-Page)
+   - [Contact Us](#Contact-Us-Page)
+   - [404 Not Found Page](#Not-Found-Page)
 
 
 ## Home Page:
