@@ -35,16 +35,16 @@ The page is divided into banners, each banner with specific intent showcasing th
 ## Sign-Up Page:
 The Signup form here is an Angular multi-page form that can be broken down into three main parts:
 
-### The Progress Tracker: 
+### Part I The Progress Tracker: 
 Located on the left of the form, keeps track of the current step in the form.
 
-### The Next and Back Buttons: 
+### Part II The Next and Back Buttons: 
 The next and back buttons are enabled only when the inputs are filled and each filled to specifications unique to each input and when the requirements are fulfilled, the Next button is enabled. 
 
-### The Form Itself:
+### Part III The Form Itself:
 The form is divided into 5 steps, each step being its very own Angular Component which is navigated to with the afore mentioned Next & Confirm buttons, the current step is maintained using observables in the form.service.ts file.
 
-### Step 1: Personal Info Page
+### Form Step 1: Personal Info Page
 The inputs have a level error checking, errors messages are triggered when an error requirement is met. 
 The Password Field of the Personal Info page of the form has a level of password mismatch checking. *More work needs to be done here to cover all edge cases.
 <br/>
@@ -54,7 +54,7 @@ The Password Field of the Personal Info page of the form has a level of password
 ![Design Personal Info Errors for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
 
-### Step 2: Plan Details Page
+### Form Step 2: Plan Details Page
 The plans are laid out here for the prospective customer to make a choice.
 <br/>
 <br/>
@@ -64,21 +64,21 @@ The toggle switches the price from Monthly to Yearly billing and offers the clie
 ![Design Plan Details Yearly View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
 <br/>
 
-### Step 3: Summary Page
+### Form Step 3: Summary Page
 This step offers the customer a summary of what they will be paying monthly/yearly. 
 <br/>
 <br/>
 ![Design Summary View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/SummaryPage.jpg)
 <br/>
 
-### Step 4: Payment Page
+### Form Step 4: Payment Page
 This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form.
 <br/>
 <br/>
 ![Design Payment View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
 <br/>
 
-### Step 4: Payment Page
+### Form Step 4: Payment Page
 Here we have the confirmation messsage displayed with support contact info and will automatically route to the login page just as the customer finishes reading the text. 
 <br/>
 <br/>
