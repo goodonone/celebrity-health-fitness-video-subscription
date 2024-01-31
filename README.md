@@ -11,16 +11,16 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 The page is divided into banners, each banner with specific intent showcasing the features of the app. 
 
 ### Motivation:
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
+![Design Banner Two for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
 
 ### Fresh Weekly Recipes To Keep Workouts Going:
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
+![Design Banner Three for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
 
 ### New Celebrity Workouts, Posted Weekly and Live One-On-Ones For Highest Tier Members:
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
+![Design Banner Four for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
 
 ### A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
+![Design Banner Five the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
 
 ## Sign-Up Page:
 
@@ -36,6 +36,8 @@ The next and back buttons are enabled only when the inputs are filled and each f
 
 The inputs have some level error checking and error messages pop up when an error is triggered. 
 The Password Field of Personal Info of the form has a level of password mismatch checking. *More work needs to be done here to ensure all edge cases.
+![Design Personal Info for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/Personal:Info:Page.jpg)
+
 
 The Billing Frequency Toggle in the Plan Details Page changes the information seen on each plan and adjusts pricing accordingly providing an attractive promo. 
 Each page of the form forms its own Component in Angular. The toggle in the plan
