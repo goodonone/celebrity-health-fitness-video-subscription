@@ -16,7 +16,7 @@ The page is divided into banners, each banner with specific intent showcasing th
 ### Fresh Weekly Recipes To Keep Workouts Going:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
 
-### New Workouts By The Celebrity, Posted Weekly and Live One-On-Ones For Highest Tier Members:
+### New Celebrity Workouts, Posted Weekly and Live One-On-Ones For Highest Tier Members:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
 
 ### A Carousel Showcasing The Current And Past Members' 'Success Stories' Using The App:
