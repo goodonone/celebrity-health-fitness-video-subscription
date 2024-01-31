@@ -100,11 +100,11 @@ Here we have the confirmation messsage displayed with support contact info and w
 <br/>
 ### Payment Page Responsive
 <br/>
-<img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg">
+<img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 <br/>
 ### Confirmation Page Responsive
 <br/>
-<img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg">
+<img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 <br/>
 
 
