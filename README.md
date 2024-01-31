@@ -88,23 +88,23 @@ Here we have the confirmation messsage displayed with support contact info and w
 
 ## Sign-Up Form Responsive:
 
-### Personal Info Page Responsive
+### Personal Info Page Responsive:
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 
-### Plan Details Page Responsive
+### Plan Details Page Responsive:
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
 
-### Summary Page Responsive
+### Summary Page Responsive:
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
 
-### Payment Page Responsive
+### Payment Page Responsive:
 <br/>
 <img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 
-### Confirmation Page Responsive
+### Confirmation Page Responsive:
 <br/>
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
