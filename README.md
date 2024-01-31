@@ -13,13 +13,13 @@ The page is divided into banners, each banner with specific intent showcasing th
 ### Motivation:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
 
-### Fresh Weekly Recipes To Keep Your Workouts Going:
+### Fresh Weekly Recipes To Keep Workouts Going:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
 
-### New Workouts By The Celebrity Posted Weekly and Live One-On-Ones For Highest Tier Members:
+### New Workouts By The Celebrity, Posted Weekly and Live One-On-Ones For Highest Tier Members:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
 
-### A Carousel Showcasing The Current And Past Members 'Success Stories' Using The App:
+### A Carousel Showcasing The Current And Past Members' 'Success Stories' Using The App:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
 
 
