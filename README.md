@@ -60,7 +60,7 @@ The plans are laid out here for the prospective customer to make a choice.
 <br/>
 ![Design Plan Details for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsPage.jpg)
 <br/>
-The toggle switches the price from Monthly to Yearly billing and offers the client a promo (2 months free).
+The toggle switches the price from Monthly to Yearly billing and offers the client a promo (2 months free). The choices are retained in the UI in case the customer decides to change the selected plan after going to the next page. 
 ![Design Plan Details Yearly View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
 <br/>
 
