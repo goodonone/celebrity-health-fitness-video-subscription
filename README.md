@@ -87,7 +87,6 @@ Here we have the confirmation messsage displayed with support contact info and w
 ![Design Confirmation View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
 
 ## Sign-Up Form Responsive:
-<br/>
 
 ### Personal Info Page Responsive
 <br/>
