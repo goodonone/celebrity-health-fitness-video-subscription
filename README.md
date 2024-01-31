@@ -78,7 +78,7 @@ This is where the client inputs their card info so the subscription billing can 
 ![Design Payment View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
 <br/>
 
-### Form Step 4: Payment Page
+### Form Step 5: Confirmation Page
 Here we have the confirmation messsage displayed with support contact info and will automatically route to the login page just as the customer finishes reading the text. 
 <br/>
 <br/>
