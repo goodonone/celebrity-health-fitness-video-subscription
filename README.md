@@ -9,7 +9,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 ## Contents:
    - [Home](#Home-Page)
    - [Sign-Up Form](#Sign-Up-Page)
-     - [Sign-Up Form Responsive](#Sign-Up-Page-Responsive)
+     - [Sign-Up Form Responsive](#Sign--Up-Form-Responsive)
    - [Content](#Content-Page)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
