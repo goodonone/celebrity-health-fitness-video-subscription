@@ -36,7 +36,7 @@ The next and back buttons are enabled only when the inputs are filled and each f
 
 The inputs have some level error checking and error messages pop up when an error is triggered. 
 The Password Field of Personal Info of the form has a level of password mismatch checking. *More work needs to be done here to ensure all edge cases.
-![Design Personal Info for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/Personal:Info:Page.jpg)
+![Design Personal Info for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPage.jpg)
 
 
 The Billing Frequency Toggle in the Plan Details Page changes the information seen on each plan and adjusts pricing accordingly providing an attractive promo. 
