@@ -14,7 +14,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Cart](#Cart-Page)
    - [About](#About-Page)
    - [Contact Us](#Contact-Us-Page)
-   - [404 Not Found Page](#Not-Found-Page)
+   - [404/Not Found Page](#Not-Found-Page)
 
 ## Home Page:
 
