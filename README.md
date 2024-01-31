@@ -22,7 +22,23 @@ The page is divided into banners, each banner with specific intent showcasing th
 ### A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
 
+## Sign-Up Page:
 
+The signup form here is an Angular multi-page form that can be broken down into three main parts:
+
+### The Progress Tracker: 
+Located on the left of the form, keeps track of the current step in the form.
+
+### The Next and Back Buttons: 
+The next and back buttons are enabled only when the inputs are filled and each filled to specifications unique to each input and when the requirements are fulfilled, the Next button is enabled. 
+
+### The Form Itself:
+
+The inputs have some level error checking and error messages pop up when an error is triggered. 
+The Password Field of Personal Info of the form has a level of password mismatch checking. *More work needs to be done here to ensure all edge cases.
+
+The Billing Frequency Toggle in the Plan Details Page changes the information seen on each plan and adjusts pricing accordingly providing an attractive promo. 
+Each page of the form forms its own Component in Angular. The toggle in the plan
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
