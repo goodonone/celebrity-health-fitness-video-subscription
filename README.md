@@ -313,6 +313,8 @@ The Contact Us page provides the Customer or prospective customer with a Contact
 <br/>
 <br/>
 The Form will revert back to its original state in a set amount of time.
+<br/>
+<br/>
 ![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
 
 **Office Location and Social Media**
