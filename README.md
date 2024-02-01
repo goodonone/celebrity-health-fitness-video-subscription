@@ -14,6 +14,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
      - [Login Page Responsive](#Login-Page-Responsive)
    - [Content](#Content-Page)
    - [Profile](#Profile-Page)
+     - [Upgrade](#Upgrade)
      - [Profile Page Responsive](#Profile-Page-Responsive)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
@@ -190,6 +191,18 @@ This view comes with a message of warning to the customer as to what they are ab
 
 <img src="finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
 
+## Upgrade Page
+
+The customer can Upgrade their membership either using the Upgrade button within the Content/Workouts page or by using the Change button in the Profile Page. Here we reuse the same Multi-Page Sign-Up Form contextually, where we remove any unnecessary steps from the Form contextually, for the paid tiers we skip the Payment Page as we already have their card number on file but for the Free Tier we need to get the customers Card info and then proceed with the Upgrade. We use a different set of Progress Tracker Icons to cover only 2 steps for the Paid Tiers and 3 for the Free Tier (instead of the 5 from the Sign-Up Form). Downgrading can also be done through the same page and the content in the content page will change contextually. 
+
+### Free Tier Upgrade
+![Design Free Tier Upgrade for the Celebrity Health & Fitness App]
+finalProject/Design/Screenshots/Upgrade/FreeTierUpgradeView.jpg
+
+### Paid Tiers Upgrade
+![Design Paid Tiers Upgrade for the Celebrity Health & Fitness App]
+finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
+
 ## Store Page
 
 ### All Products View
@@ -204,7 +217,7 @@ This view comes with a message of warning to the customer as to what they are ab
 
 ## Cart Page
 
-The cart in this project was designed to be stored in Local Storage. The original intent was to store the cart in the backend, this feature is currently [In-Development]. For the Paid Tiers, the Proceed To Checkout button is just Checkout and on cliking it, the purchase is completed with the Card number on file. For the free First Tier, the Proceed to Checkout takes the customer through the process of inputting their information into the Form and then completing their purchase. Again, we can mount a customizable Credit Card Form directly into this page for seamless and secure payments.
+#### The cart in this project was designed to be stored in Local Storage. The original intent was to store the cart in the backend, this feature is currently [In-Development]. For the Paid Tiers, the Proceed To Checkout button is just Checkout and on cliking it, the purchase is completed with the Card number on file. For the free First Tier, the Proceed to Checkout takes the customer through the process of inputting their information into the Form and then completing their purchase. Again, we can mount a customizable Credit Card Form directly into this page for seamless and secure payments.
 
 ### Cart View 
 
@@ -218,7 +231,7 @@ The cart in this project was designed to be stored in Local Storage. The origina
 
 ![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
 
-#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps, instead of the 5 from the Sign-Up Form. 
+#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page Sign-Up form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps (instead of the 5 from the Sign-Up Form). 
 
 ![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
@@ -232,12 +245,12 @@ The cart in this project was designed to be stored in Local Storage. The origina
 <img src ="finalProject/Design/Screenshots/Store/ChekoutPaidTiersResponsiveView.jpg" width=50% height=50%>
 
 ## Future Development:
-- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
-- Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
-- Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
+#### - [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
+#### - Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
+#### - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
 
 # Backend
-The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
+#### The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
 
 ## Backend: https://github.com/goodonone/celebrity-health-fitness-video-subscription-backend-nodejs
