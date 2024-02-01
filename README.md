@@ -140,7 +140,7 @@ The free tier only gets a weeks worth of workouts and the rest of the page is hi
 
 ### Second Tier View
 
-Fresh weekly recipes can be accesssed from the button under the year. 
+Fresh weekly recipes can be accesssed from the button under the Year. 
 
 ![Design Second Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
 
