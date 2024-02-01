@@ -269,7 +269,8 @@ The Form will revert back to its original state in a set amount of time.
 
 <img src="finalProject/Design/Screenshots/Contact-Us/ContactFormResponsive.jpg" width=50% height=50%>
 
-Office Location and Social Media
+**Office Location and Social Media**
+<br/>
 <img src="finalProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
 
 <img src="finalProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
