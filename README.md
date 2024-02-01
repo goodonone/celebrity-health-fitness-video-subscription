@@ -189,7 +189,7 @@ For tier two and three, the workouts can also be categorized by 'Workout Type' b
 
 ![Design Tier Three View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/TierThreeView.jpg)
 
-When the timer hits 00:00:00s, the Live Workout begins.
+For Tier Three only, when the timer hits 00:00:00s, the Live Workout window appears and starts.
 
 ![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
