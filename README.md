@@ -212,7 +212,7 @@ The cart in this project was designed to be stored in Local Storage. [The origin
 #### The Checkout button for the paid tiers immediately processes the purchase with the Card on file. 
 ![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
 
-#### Since the First Tier being free, we need to take the customer through the checkout where they input their payment info to complete the purchase. 
+#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. 
 ![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
 #### Confirmation for First Tier Checkout
