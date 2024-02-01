@@ -11,6 +11,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Sign-Up](#Sign-Up-Page)
      - [Sign-Up Page Responsive](#Sign-Up-Page-Responsive)
    - [Login](#Login-Page)
+     - [Login Page Responsive](#Login-Page-Responsive)
    - [Content](#Content-Page)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
@@ -89,30 +90,30 @@ Here we have the confirmation messsage displayed with support contact info and w
 <br/>
 ![Design Confirmation View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
 
-## Sign-Up Page Responsive:
+## Sign-Up Page Responsive
 
-### Personal Info Page Responsive:
+### Personal Info Page Responsive
 <img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 
-### Plan Details Page Responsive:
+### Plan Details Page Responsive
 <img src="finalProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
 
-### Summary Page Responsive:
+### Summary Page Responsive
 <img src="finalProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
 
-### Payment Page Responsive:
+### Payment Page Responsive
 <img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 
-### Confirmation Page Responsive:
+### Confirmation Page Responsive
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
 ![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
 
-### Login Error:
+### Login Error
 ![Design Login Error for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginError.jpg)
 
-## Login Page Responsive:
+## Login Page Responsive
 Here the password is toggled to visible using an Angular directive. 
 <br />
 <br />
