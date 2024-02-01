@@ -37,17 +37,17 @@ The page is divided into banners, each banner with specific intent showcasing th
 **Fresh Weekly Recipes To Keep Workouts Going:**
 <br/>
 <br/>
-![Design Banner Three for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
+![Design Banner Three for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerThree.jpg)
 
 **New Celebrity Workouts, Posted Weekly and Live One-On-Ones For Highest Tier Members:**
 <br/>
 <br/>
-![Design Banner Four for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
+![Design Banner Four for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerFour.jpg)
 
 **A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:**
 <br/>
 <br/>
-![Design Banner Five the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
+![Design Banner Five the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerFive.jpg)
 
 ## Sign-Up Page
 The Signup form here is an Angular multi-page form that can be broken down into three main parts:
@@ -66,43 +66,43 @@ The inputs have a level error checking, errors messages are triggered when an er
 The Password Field of the Personal Info page of the form has a level of password mismatch checking. *More work needs to be done here to cover all edge cases.
 <br/>
 <br/>
-![Design Personal Info for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPage.jpg)
+![Design Personal Info for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoPage.jpg)
 <br/>
-![Design Personal Info Errors for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
+![Design Personal Info Errors for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
 
 _Form Step 2:_ Plan Details Page
 The plans are laid out here for the prospective customer to make a choice.
 <br/>
 <br/>
-![Design Plan Details for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsPage.jpg)
+![Design Plan Details for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PlanDetailsPage.jpg)
 <br/>
 <br/>
 The toggle switches the billing from Monthly to Yearly billing and offers the customer a promo (2 months free). The choices are retained in the UI in case the customer decides to change their mind after going to the next page. 
 <br/>
 <br/>
-![Design Plan Details Yearly View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
+![Design Plan Details Yearly View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
 <br/>
 
 _Form Step 3:_ Summary Page
 This step offers the customer a summary of what they will be paying monthly/yearly. 
 <br/>
 <br/>
-![Design Summary View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/SummaryPage.jpg)
+![Design Summary View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/SummaryPage.jpg)
 <br/>
 
 _Form Step 4:_ Payment Page
 This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form. The First Tier being free, the Next button on the Summary page will be a Confirm Button and will bypass the Payment Page altogether and go straight to the Confirmation Page. 
 <br/>
 <br/>
-![Design Payment View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
+![Design Payment View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
 <br/>
 
 _Form Step 5:_ Confirmation Page
 Here we have the confirmation messsage displayed with support contact info and will automatically route to the login page just as the customer finishes reading the text. 
 <br/>
 <br/>
-![Design Confirmation View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
+![Design Confirmation View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
 
 The background of the Sign-Up Page is a cool looped video. 
 
@@ -111,7 +111,7 @@ The background of the Sign-Up Page is a cool looped video.
 **Personal Info Page Responsive**
 <br/>
 <br/>
-<img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 
 **Plan Details Page Responsive**
 <br/>
