@@ -135,9 +135,13 @@ The background of the Sign-Up Page is a cool looped video.
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
+<br/>
+<br/>
 ![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
 
 **Login Error**
+<br/>
+<br/>
 ![Design Login Error for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginError.jpg)
 
 ## Login Page Responsive
