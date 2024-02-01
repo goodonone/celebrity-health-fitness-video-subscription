@@ -31,15 +31,23 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 The page is divided into banners, each banner with specific intent showcasing the features of the app. For an impactful first impression, the background of the landing page is a cool looped video.
 
 **Motivational Content:**
+<br/>
+<br/>
 ![Design Banner Two for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
 
 **Fresh Weekly Recipes To Keep Workouts Going:**
+<br/>
+<br/>
 ![Design Banner Three for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerThree.jpg)
 
 **New Celebrity Workouts, Posted Weekly and Live One-On-Ones For Highest Tier Members:**
+<br/>
+<br/>
 ![Design Banner Four for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFour.jpg)
 
 **A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:**
+<br/>
+<br/>
 ![Design Banner Five the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
 
 ## Sign-Up Page
