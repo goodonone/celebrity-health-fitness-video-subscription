@@ -233,7 +233,7 @@ This view comes with a message of warning to the customer as to what they are ab
 
 ## Profile Page Responsive
 
-**Profile View**
+**Profile View:**
 <br/>
 <br/>
 <img src="celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
