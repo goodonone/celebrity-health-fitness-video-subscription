@@ -208,7 +208,7 @@ finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
 ### All Products View
 ![Design All Products for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/AllProductsView.jpg)
 
-#### Specific Product Description
+### Specific Product Description
 ![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductView.jpg)
 
 ## Store Page Responsive
@@ -217,7 +217,7 @@ finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
 
 ## Cart Page
 
-#### The cart in this project was designed to be stored in Local Storage. The original intent was to store the cart in the backend, this feature is currently [In-Development]. For the Paid Tiers, the Proceed To Checkout button is just Checkout and on cliking it, the purchase is completed with the Card number on file. For the free First Tier, the Proceed to Checkout takes the customer through the process of inputting their information into the Form and then completing their purchase. Again, we can mount a customizable Credit Card Form directly into this page for seamless and secure payments.
+The cart in this project was designed to be stored in Local Storage. The original intent was to store the cart in the backend, this feature is currently [In-Development]. For the Paid Tiers, the Proceed To Checkout button is just Checkout and on cliking it, the purchase is completed with the Card number on file. For the free First Tier, the Proceed to Checkout takes the customer through the process of inputting their information into the Form and then completing their purchase. Again, we can mount a customizable Credit Card Form directly into this page for seamless and secure payments.
 
 ### Cart View 
 
@@ -231,11 +231,11 @@ finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
 
 ![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
 
-#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page Sign-Up form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps (instead of the 5 from the Sign-Up Form). 
+The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page Sign-Up form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps (instead of the 5 from the Sign-Up Form). 
 
 ![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
-#### Confirmation for First Tier Checkout
+### Confirmation for First Tier Checkout
 ![Design Confirmation Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutFreeTierView.jpg)
 
 ## Cart Page Responsive
@@ -244,13 +244,43 @@ finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
 ### Checkout For Paid Tiers View
 <img src ="finalProject/Design/Screenshots/Store/ChekoutPaidTiersResponsiveView.jpg" width=50% height=50%>
 
+## About Page
+
+The About page covers the most pertinent information about our Celebrity. 
+
+![Design About Page for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/About/AboutCelebrity.jpg)
+
+## Contact Us Page
+
+** The Contact Us page provides the Customer or prospective customer with a Contact Form and a map to locate the Offices and Business Hours of the Celebrity and links to His/Her Social Media accounts. 
+
+** Contact Form
+![Design Contact Form for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
+
+** Contact Form Submitted
+The Form will revert back to its original state in a set amount of time.
+![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
+
+** Office Location and Social Media
+![Design Offices and Social Media for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/MapandSocialInfo.jpg)
+
+## Contact Page Responsive
+
+<img src="finalProject/Design/Screenshots/Contact-Us/ContactFormResponsive.jpg" width=50% height=50%>
+
+Office Location and Social Media
+<img src="finalProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
+
+<img src="finalProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
+
+
 ## Future Development:
-#### - [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
-#### - Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
-#### - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
+- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
+- Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
+- Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
 
 # Backend
-#### The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
+The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
 
 ## Backend: https://github.com/goodonone/celebrity-health-fitness-video-subscription-backend-nodejs
