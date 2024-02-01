@@ -1,7 +1,0 @@
-<div *ngFor="let video of videos; let i=index">
-    <div *ngIf="selectedIndex === i">
-        <video class="cardVideo" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay playsinline> 
-            <source [src]="video.videoSrc" type="video/mp4" [ngClass]="{'image-active': selectedIndex === i}" class="fade"> 
-          </video>
-    </div>
-</div>
