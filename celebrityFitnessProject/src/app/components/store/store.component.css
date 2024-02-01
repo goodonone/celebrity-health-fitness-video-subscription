@@ -1,0 +1,155 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+a {
+    color: white;
+    text-align: center;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: fit-content;
+}
+
+.pageContent {
+    margin-top: 15rem;
+    height: fit-content;
+}
+
+h1 {
+    color: Black;
+    text-align: left;
+    font-size: 10vw;
+    padding-left: 8rem;
+    font-weight: 600;
+}
+
+.productsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    margin-top: 7rem;
+    height: fit-content;
+}
+
+div.cardsDiv {
+    position: relative;
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+mat-card.products {
+    background-color: rgb(18, 17, 17);
+    width: 23rem;
+    height: 35rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    margin-bottom: 10rem;
+    background-size: 80%;
+}
+
+.productDetails {
+    position: absolute;
+    top: 4%;
+    left: 3%;
+    z-index: 1;
+    height: 20rem;
+}
+
+.name {
+    font-weight: 500;
+    width: 25rem;
+    color: white;
+    font-size: 5rem;
+    height: 8rem;
+    margin-top:13rem;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    line-height: 4rem;
+}
+
+.price {
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 600;
+    width: 10rem;
+    color: white;
+    font-size: 10rem;
+    height: 10rem;
+    margin-top: 2rem;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-evenly;
+    height: 4rem;
+    width: 23rem;
+    margin-top: -4rem;
+    margin-left: -0.7rem;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0 0 8px 8px;
+    max-width: 23rem;
+}
+
+.buttonContainer:hover {
+background-color: black;
+}
+
+
+.buttonView{
+    font-size: 1rem;
+    color:black;
+    margin-right: 1rem;
+    border-radius: 0 0 0 8px;
+    margin-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 5rem;
+    padding-right: 3rem;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+.buttonAdd{
+    font-size: 1rem;
+    color: black;
+    letter-spacing: 0.5px;
+    border-radius: 0 0 8px 0;
+    margin-left: 1rem;
+    width: 7rem;
+    background-color: rgb(255, 255, 255) !important;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    padding-left: 4rem;
+    padding-right: 6.6rem;
+}
+
+.buttonView:hover {
+    background-color: black !important;
+    color: white !important;
+    cursor: pointer;
+}
+
+.buttonAdd:hover{
+    background-color: black !important;
+    color: white !important;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 500px) and (max-width: 1028px){
+
+    h1.pageName{
+        color: Black;
+        text-align: center;
+        font-size: 10rem;
+        padding-left: 0rem;
+        font-weight: 600;
+    }
+
+
+}

@@ -1,0 +1,19 @@
+<div class="background">
+    <div class="containerFlex">
+        <div class="textContainer">
+            <h1 class="checkOutText">Checkout</h1>
+        </div>
+        <div class="cardContainer">
+            <mat-card class="card">
+                <mat-card-content class="cardContent">
+                    <div class="innerCardContainer">
+                        <mat-card class="innerCardTwo">
+                            <app-form  [checkout]="checkout"></app-form>
+                                <app-progression-buttons [checkout]="checkout"></app-progression-buttons>
+                        </mat-card>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</div>
