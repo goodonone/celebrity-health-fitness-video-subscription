@@ -15,8 +15,11 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Content](#Content-Page)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
+     - [Cart Page Responsive](#Cart-Page-Responsive)
    - [About](#About-Page)
+     - [About Page Responsive](#Abput-Page-Responsive)
    - [Contact Us](#Contact-Us-Page)
+     - [Contact Page Responsive](#Abput-Page-Responsive)
    - [404/Not Found Page](#Not-Found-Page)
 
 ## Home Page
@@ -121,6 +124,23 @@ Here the password is toggled to visible using an Angular directive.
 <br />
 <img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
+## Content Page
+The concept behind the content page is, one free tier and two paid tiers. Only the highest tier can access the Monthly Live One-On-Ones. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
+
+### Free Tier View
+
+The free tier only gets a weeks worth of workouts and the rest of the page is hidden behind a blurred out paywall, encouraging the customer to upgrade to get access to all the content from weeks and years past. 
+![Design Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierView.jpg)
+
+#### Paywall
+
+![Design Free Tier Paywall for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallView.jpg)
+
+![Design Free Tier Paywall for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallViewcontinued.jpg)
+
+
+
+The workouts can also be categorized by workout type by switching the toggle. 
 
 
 # Backend
