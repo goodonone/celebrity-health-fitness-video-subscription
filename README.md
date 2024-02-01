@@ -156,7 +156,7 @@ The background of the Sign-Up Page is a cool looped video.
 ![Design Login Error for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/LoginError.jpg)
 
 ## Login Page Responsive
-Here the password is toggled to visible using an Angular directive. 
+Here the password is toggled to visible using an Angular Directive. 
 <br />
 <br />
 <img src="celebrityFitnessProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
