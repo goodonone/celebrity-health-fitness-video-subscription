@@ -1,7 +1,7 @@
 # Celebrity Health & Fitness App
 ![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerOne.jpg)
 
-A platform that empowers a Celebrity/Fitness Personality to generate revenue by distributing their brand specific workout videos using a Subscription-Pricing Model. The videos can be hosted on any Cloud platform easily accessible throughout the globe. 
+A platform that empowers a Celebrity/Fitness Personality to generate revenue by distributing their brand specific workout videos using a Subscription-Pricing Model. The videos can be hosted on any Cloud platform easily accessible throughout the globe. The App can be integrated with Stripe and will be ready for production. 
 
 ## Built with
 <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular icon" height="30" /> <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="Material UI icon" height="30" /> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript icon" height="30" /> <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript icon" height="30" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML icon" height="30" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS icon" height="30" /> <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma icon" height="30" />
@@ -125,7 +125,7 @@ Here the password is toggled to visible using an Angular directive.
 <img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
 ## Content Page
-The concept behind the content page is, one free tier and two paid tiers. Only the highest tier can access the Monthly Live One-On-Ones. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
+The concept behind the content page is, it is all One page, and the view for each tier is contextually loaded, for one free tier and two paid tiers. Only the highest tier has access to the Monthly Live One-On-Ones. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
 
 ### Free Tier View
 
@@ -136,12 +136,31 @@ The free tier only gets a weeks worth of workouts and the rest of the page is hi
 
 ![Design Free Tier Paywall for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallView.jpg)
 
-![Design Free Tier Paywall for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallViewcontinued.jpg)
+![Design Free Tier Paywall Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallViewcontinued.jpg)
 
+### Second Tier View
 
+Fresh weekly recipes can be accesssed from the button under the year. 
 
-The workouts can also be categorized by workout type by switching the toggle. 
+![Design Second Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
 
+For tier two and three, the workouts can also be categorized by workout type by switching the toggle. 
+
+![Design Workout by type Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/WorkoutsByType.jpg)
+
+![Design Workout by type Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/WorkoutsByTypeContinued.jpg)
+
+### Third Tier View
+
+![Design Tier Three View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeView.jpg)
+
+Apart from the tier name being reflected on the page, when the timer hits 00:00:00 the Live Video Begins.
+
+![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
+
+Future Work:
+ search functionlity 
+ password mismatch checks
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
