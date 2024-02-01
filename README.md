@@ -50,7 +50,7 @@ This card has video clips from the celebrity's workouts to whet the appetities o
 <br/>
 ![Design Banner Four for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerFour.jpg)
 
-**Testimonies Of Past/Current Members**
+**Testimonies Of Past/Current Members:**
 <br/>
 <br/>
 A carousel showcasing current and past members' 'Success Stories' of using the app; to inspire prospective customers.
