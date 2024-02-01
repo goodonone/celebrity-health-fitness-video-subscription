@@ -238,14 +238,12 @@ The customer can Upgrade their membership either using the Upgrade button within
 **Free Tier Upgrade**
 <br/>
 <br/>
-![Design Free Tier Upgrade for the Celebrity Health & Fitness App]
-finalProject/Design/Screenshots/Upgrade/FreeTierUpgradeView.jpg
+![Design Free Tier Upgrade for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Upgrade/FreeTierUpgradeView.jpg)
 
 **Paid Tiers Upgrade**
 <br/>
 <br/>
-![Design Paid Tiers Upgrade for the Celebrity Health & Fitness App]
-finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg
+![Design Paid Tiers Upgrade for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg)
 
 ## Store Page
 
