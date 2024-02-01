@@ -13,6 +13,8 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Login](#Login-Page)
      - [Login Page Responsive](#Login-Page-Responsive)
    - [Content](#Content-Page)
+   - [Profile](#Profile-Page)
+     - [Profile Page Responsive](#Profile-Page-Responsive)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
      - [Cart Page Responsive](#Cart-Page-Responsive)
@@ -160,23 +162,22 @@ When the timer hits 00:00:00 the Live Workout Begins.
 
 ## Profile Page
 
-The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the free tier, this functions as a personal "mantra". For example, Hi Jude, You are MOTIVATED! Or for the third tier, Hi Jude, You are ALL IN!
+The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the free tier, this functions as a personal "mantra". For example, Hi Shermon, You are MOTIVATED! Or for the third tier, Hi Shermon, You are ALL IN!
 
-### Profile Free Tier View 
+### Free Tier Profile View 
 ![Design Free Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierOne.jpg)
 
-### Profile Second Tier View
+### Second Tier Profile View
 ![Design Second Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierTwo.jpg)
 
-### Profile Third Tier View
+### Third Tier Profile View
 ![Design Third Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierThree.jpg)
 
 ### Edit Profile View 
 ![Design Edit Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/EditProfileView.jpg)
 
 ### Change picture
-![Design Change Picture for the Celebrity Health & Fitness App]
-finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg
+![Design Change Picture for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg)
 
 ### Cancel/Delete Subscription
 
@@ -185,7 +186,7 @@ This view comes with a small message of warning to the customer as to what they 
 
 ## Profile Page Responsive
 
-<img src = "finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
+<img src="finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
 
 
 
