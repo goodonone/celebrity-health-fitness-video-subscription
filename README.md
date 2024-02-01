@@ -195,11 +195,12 @@ This view comes with a message of warning to the customer as to what they are ab
 ### All Products View
 ![Design All Products for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/AllProductsView.jpg)
 
+#### Specific Product Description
 ![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductView.jpg)
 
 ## Store Page Responsive
 
-![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductResponsive.jpg)
+<img src ="finalProject/Design/Screenshots/Store/SpecificProductResponsive.jpg" height=50% width=50%>
 
 ## Cart Page
 
