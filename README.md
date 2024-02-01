@@ -155,6 +155,8 @@ The concept behind the content page is, it is all One page, and the view for eac
 <br/>
 <br/>
 The free tier only gets a weeks worth of workouts and the rest of the page is hidden behind a blurred out paywall, encouraging the customer to upgrade to get access to all the content from weeks and years past. 
+<br/>
+<br/>
 ![Design Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierView.jpg)
 
 **Paywall**
