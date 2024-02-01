@@ -194,7 +194,7 @@ This view comes with a message of warning to the customer as to what they are ab
 
 
 ## Future Development:
-- Complete Search functionlity, to be able to search for specific videos and items in the store.
+- Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
 - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
 # Backend
