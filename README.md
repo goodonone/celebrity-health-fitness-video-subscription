@@ -32,7 +32,7 @@ The page is divided into banners, each banner with specific intent showcasing th
 **Motivational Content:**
 <br/>
 <br/>
-![Design Banner Two for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
+![Design Banner Two for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerTwo.jpg)
 
 **Fresh Weekly Recipes To Keep Workouts Going:**
 <br/>
