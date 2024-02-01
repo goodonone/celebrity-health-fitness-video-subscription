@@ -158,6 +158,38 @@ When the timer hits 00:00:00 the Live Workout Begins.
 
 ![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
+## Profile Page
+
+The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the free tier, this functions as a personal "mantra". For example, Hi Jude, You are MOTIVATED! Or for the third tier, Hi Jude, You are ALL IN!
+
+### Profile Free Tier View 
+![Design Free Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierOne.jpg)
+
+### Profile Second Tier View
+![Design Second Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierTwo.jpg)
+
+### Profile Third Tier View
+![Design Third Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierThree.jpg)
+
+### Edit Profile View 
+![Design Edit Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/EditProfileView.jpg)
+
+### Change picture
+![Design Change Picture for the Celebrity Health & Fitness App]
+finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg
+
+### Cancel/Delete Subscription
+
+This view comes with a small message of warning to the customer as to what they are about to do. 
+![Design Cancel Subscription for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/CancelDeleteSubscriptionView.jpg)
+
+## Profile Page Responsive
+
+<img src = "finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
+
+
+
+
 ## Future Development:
 - Complete Search functionlity, to be able to search for specific videos and items in the store.
 - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
