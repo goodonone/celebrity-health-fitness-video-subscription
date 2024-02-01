@@ -306,14 +306,19 @@ The About page covers the most pertinent information about our Celebrity.
 The Contact Us page provides the Customer or prospective customer with a Contact Form and a map to locate the Offices and Business Hours of the Celebrity and links to His/Her Social Media accounts. 
 
 **Contact Form**
+<br/>
+<br/>
 ![Design Contact Form for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
 
 **Contact Form Submitted**
+<br/>
 <br/>
 The Form will revert back to its original state in a set amount of time.
 ![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
 
 **Office Location and Social Media**
+<br/>
+<br/>
 ![Design Offices and Social Media for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/MapandSocialInfo.jpg)
 
 ## Contact Page Responsive
@@ -321,6 +326,7 @@ The Form will revert back to its original state in a set amount of time.
 <img src="finalProject/Design/Screenshots/Contact-Us/ContactFormResponsive.jpg" width=50% height=50%>
 
 **Office Location and Social Media**
+<br/>
 <br/>
 <img src="finalProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
 
