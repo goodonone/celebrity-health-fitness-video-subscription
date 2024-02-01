@@ -62,7 +62,7 @@ The next and back buttons are enabled only when the inputs are filled and each f
 **Part III The Form Itself:**
 The form is divided into 5 steps, each step being its very own Angular Component which is navigated to with the afore mentioned Next & Confirm buttons, the current step is maintained using observables in the form.service.ts file.
 
-**Form Step 1: Personal Info Page**
+* *Form Step 1: Personal Info Page* *
 The inputs have a level error checking, errors messages are triggered when an error requirement is met. 
 The Password Field of the Personal Info page of the form has a level of password mismatch checking. *More work needs to be done here to cover all edge cases.
 <br/>
@@ -72,7 +72,7 @@ The Password Field of the Personal Info page of the form has a level of password
 ![Design Personal Info Errors for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
 
-**Form Step 2: Plan Details Page**
+* *Form Step 2: Plan Details Page* *
 The plans are laid out here for the prospective customer to make a choice.
 <br/>
 <br/>
@@ -85,21 +85,21 @@ The toggle switches the billing from Monthly to Yearly billing and offers the cu
 ![Design Plan Details Yearly View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
 <br/>
 
-**Form Step 3: Summary Page**
+* *Form Step 3: Summary Page* *
 This step offers the customer a summary of what they will be paying monthly/yearly. 
 <br/>
 <br/>
 ![Design Summary View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/SummaryPage.jpg)
 <br/>
 
-**Form Step 4: Payment Page**
+* *Form Step 4: Payment Page* *
 This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form. The First Tier being free, the Next button on the Summary page will be a Confirm Button and will bypass the Payment Page altogether and go straight to the Confirmation Page. 
 <br/>
 <br/>
 ![Design Payment View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
 <br/>
 
-**Form Step 5: Confirmation Page**
+* *Form Step 5: Confirmation Page* *
 Here we have the confirmation messsage displayed with support contact info and will automatically route to the login page just as the customer finishes reading the text. 
 <br/>
 <br/>
