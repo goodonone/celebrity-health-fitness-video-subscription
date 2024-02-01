@@ -252,7 +252,7 @@ The About page covers the most pertinent information about our Celebrity.
 
 ## Contact Us Page
 
-** The Contact Us page provides the Customer or prospective customer with a Contact Form and a map to locate the Offices and Business Hours of the Celebrity and links to His/Her Social Media accounts. 
+The Contact Us page provides the Customer or prospective customer with a Contact Form and a map to locate the Offices and Business Hours of the Celebrity and links to His/Her Social Media accounts. 
 
 **Contact Form**
 ![Design Contact Form for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
