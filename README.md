@@ -183,6 +183,7 @@ The Profile Page reflects the tier the customer is in, in a bold, large font. Ap
 
 This view comes with a message of warning to the customer as to what they are about to do. 
 <br/>
+<br/>
 ![Design Cancel Subscription for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/CancelDeleteSubscriptionView.jpg)
 
 ## Profile Page Responsive
