@@ -27,7 +27,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 
 ## Home Page
 
-The page is divided into banners, each banner with specific intent showcasing the features of the app. For an impactful first impression, the background of the landing page is a cool looped video.
+The page is divided into banners, each banner with specific intent showcasing the features of the app. For an powerful first impression, the background of the first banner of the landing/home page is a cool looped video.
 
 **Motivational Content:**
 <br/>
