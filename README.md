@@ -213,12 +213,12 @@ The Profile Page reflects the tier the customer is in, in a bold, large font. Ap
 <br/>
 ![Design Edit Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/EditProfileView.jpg)
 
-**Change Picture**
+**Change Picture View**
 <br/>
 <br/>
 ![Design Change Picture for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg)
 
-**Cancel/Delete Subscription**
+**Cancel/Delete Subscription View**
 <br/>
 <br/>
 
