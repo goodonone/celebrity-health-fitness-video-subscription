@@ -4,7 +4,7 @@
 A platform that empowers a Celebrity/Fitness Personality to generate revenue by distributing their brand specific workout videos using a Subscription-Pricing Model. The videos can be hosted on any Cloud platform easily accessible throughout the globe. The App can be integrated with Stripe and will be ready for production. 
 
 ## Built with
-<img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular icon" height="30" /> <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="Material UI icon" height="30" /> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript icon" height="30" /> <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript icon" height="30" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML icon" height="30" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS icon" height="30" /> <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma icon" height="30" />
+<img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular icon" height="30" /> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript icon" height="30" /> <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="Material UI icon" height="30" />  <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript icon" height="30" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML icon" height="30" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS icon" height="30" /> <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma icon" height="30" />
 
 ## Contents:
    - [Home](#Home-Page)
@@ -233,7 +233,15 @@ This view comes with a message of warning to the customer as to what they are ab
 
 ## Profile Page Responsive
 
+**Profile View**
+<br/>
+<br/>
 <img src="celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
+
+**Cancel/Delete Subscription View:**
+<br/>
+<br/>
+<img src="celebrityFitnessProject/Design/Screenshots/Profile/CancelDeleteSubscriptionResponsive.jpg" width=50% height=50%>
 
 ## Upgrade Page
 
@@ -332,9 +340,9 @@ The Form will revert back to its original state in a set amount of time.
 **Office Location and Social Media:**
 <br/>
 <br/>
-<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsive.jpg" width=50% height=50%>
 
-<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.jpg" width=50% height=50%>
 
 ## Not Found Page
 
@@ -344,7 +352,8 @@ The Form will revert back to its original state in a set amount of time.
 
 
 ## Future Development:
-- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
+- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added.
+- Stripe Payment Platform Integration.
 - Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
 - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
