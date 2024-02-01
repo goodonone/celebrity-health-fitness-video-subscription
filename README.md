@@ -134,7 +134,7 @@ The background of the Sign-Up Page is a cool looped video.
 <img src ="celebrityFitnessProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
-![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
+![Design Login for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/LoginPage.jpg)
 
 **Login Error**
 <br/>
@@ -156,37 +156,37 @@ The concept behind the content page is, it is all One page, and the view for eac
 The free tier only gets a weeks worth of workouts and the rest of the page is hidden behind a blurred out paywall, encouraging the customer to upgrade to get access to all the content from weeks and years past. 
 <br/>
 <br/>
-![Design Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierView.jpg)
+![Design Free Tier for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/FreeTierView.jpg)
 
 **Paywall**
 <br/>
 <br/>
-![Design Free Tier Paywall for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallView.jpg)
+![Design Free Tier Paywall for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/FreeTierPaywallView.jpg)
 
-![Design Free Tier Paywall Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/FreeTierPaywallViewcontinued.jpg)
+![Design Free Tier Paywall Continued for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/FreeTierPaywallViewcontinued.jpg)
 
 **Second Tier View**
 <br/>
 <br/>
 Fresh weekly recipes can be accesssed from the button under the Year. 
 
-![Design Second Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
+![Design Second Tier for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
 
 For tier two and three, the workouts can also be categorized by workout type by flipping the toggle. 
 
-![Design Workout by type Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/WorkoutsByType.jpg)
+![Design Workout by type Continued for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/WorkoutsByType.jpg)
 
-![Design Workout by type Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/WorkoutsByTypeContinued.jpg)
+![Design Workout by type Continued for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/WorkoutsByTypeContinued.jpg)
 
 **Third Tier View**
 <br/>
 <br/>
 
-![Design Tier Three View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeView.jpg)
+![Design Tier Three View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/TierThreeView.jpg)
 
 When the timer hits 00:00:00s, the Live Workout begins.
 
-![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
+![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
 ## Profile Page
 
@@ -195,27 +195,27 @@ The Profile Page reflects the tier the customer is in, in a bold, large font. Ap
 **Free Tier Profile View**
 <br/>
 <br/>
-![Design Free Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierOne.jpg)
+![Design Free Tier Profile for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageViewTierOne.jpg)
 
 **Second Tier Profile View**
 <br/>
 <br/>
-![Design Second Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierTwo.jpg)
+![Design Second Tier Profile for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageViewTierTwo.jpg)
 
 **Third Tier Profile View**
 <br/>
 <br/>
-![Design Third Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierThree.jpg)
+![Design Third Tier Profile for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageViewTierThree.jpg)
 
 **Edit Profile View**
 <br/>
 <br/>
-![Design Edit Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/EditProfileView.jpg)
+![Design Edit Profile for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/EditProfileView.jpg)
 
 **Change Picture View**
 <br/>
 <br/>
-![Design Change Picture for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg)
+![Design Change Picture for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg)
 
 **Cancel/Delete Subscription View**
 <br/>
@@ -224,11 +224,11 @@ The Profile Page reflects the tier the customer is in, in a bold, large font. Ap
 This view comes with a message of warning to the customer as to what they are about to do. 
 <br/>
 <br/>
-![Design Cancel Subscription for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/CancelDeleteSubscriptionView.jpg)
+![Design Cancel Subscription for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Profile/CancelDeleteSubscriptionView.jpg)
 
 ## Profile Page Responsive
 
-<img src="finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
 
 ## Upgrade Page
 
@@ -237,28 +237,28 @@ The customer can Upgrade their membership either using the Upgrade button within
 **Free Tier Upgrade**
 <br/>
 <br/>
-![Design Free Tier Upgrade for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Upgrade/FreeTierUpgradeView.jpg)
+![Design Free Tier Upgrade for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Upgrade/FreeTierUpgradeView.jpg)
 
 **Paid Tiers Upgrade**
 <br/>
 <br/>
-![Design Paid Tiers Upgrade for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg)
+![Design Paid Tiers Upgrade for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Upgrade/PaidTierUpgradeView.jpg)
 
 ## Store Page
 
 **All Products View**
 <br/>
 <br/>
-![Design All Products for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/AllProductsView.jpg)
+![Design All Products for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/AllProductsView.jpg)
 
 **Specific Product Description**
 <br/>
 <br/>
-![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductView.jpg)
+![Design Specific Product for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/SpecificProductView.jpg)
 
 ## Store Page Responsive
 
-<img src ="finalProject/Design/Screenshots/Store/SpecificProductResponsive.jpg" height=50% width=50%>
+<img src ="celebrityFitnessProject/Design/Screenshots/Store/SpecificProductResponsive.jpg" height=50% width=50%>
 
 ## Cart Page
 
@@ -267,38 +267,38 @@ The cart in this project was designed to be stored in Local Storage. The origina
 **Cart View**
 <br/>
 <br/>
-![Design Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartView.jpg)
+![Design Cart View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/CartView.jpg)
 
 **Empty Cart View**
 <br/>
 <br/>
-![Design Empty Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartEmptyView.jpg)
+![Design Empty Cart View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/CartEmptyView.jpg)
 
 **Checkout For Paid Tiers Confirmation Message**
 <br/>
 <br/>
-![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
+![Design Checkout Free Tier for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
 
 The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page Sign-Up form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps (instead of the 5 from the Sign-Up Form). 
 
-![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
+![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
 ### Confirmation for First Tier Checkout
-![Design Confirmation Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutFreeTierView.jpg)
+![Design Confirmation Free Tier for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Store/CheckoutFreeTierView.jpg)
 
 ## Cart Page Responsive
-<img src ="finalProject/Design/Screenshots/Store/CartResponsive.jpg" width=50% height=50%>
+<img src ="celebrityFitnessProject/Design/Screenshots/Store/CartResponsive.jpg" width=50% height=50%>
 
 **Checkout For Paid Tiers View**
 <br/>
 <br/>
-<img src ="finalProject/Design/Screenshots/Store/ChekoutPaidTiersResponsiveView.jpg" width=50% height=50%>
+<img src ="celebrityFitnessProject/Design/Screenshots/Store/ChekoutPaidTiersResponsiveView.jpg" width=50% height=50%>
 
 ## About Page
 
 The About page covers the most pertinent information about our Celebrity. 
 
-![Design About Page for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/About/AboutCelebrity.jpg)
+![Design About Page for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/About/AboutCelebrity.jpg)
 
 ## Contact Us Page
 
@@ -307,35 +307,35 @@ The Contact Us page provides the Customer or prospective customer with a Contact
 **Contact Form**
 <br/>
 <br/>
-![Design Contact Form for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
+![Design Contact Form for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
 
 **Contact Form Submitted**
 <br/>
 <br/>
 The Form will revert back to its original state in a set amount of time.
-![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
+![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
 
 **Office Location and Social Media**
 <br/>
 <br/>
-![Design Offices and Social Media for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/MapandSocialInfo.jpg)
+![Design Offices and Social Media for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Contact-Us/MapandSocialInfo.jpg)
 
 ## Contact Page Responsive
 
-<img src="finalProject/Design/Screenshots/Contact-Us/ContactFormResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/ContactFormResponsive.jpg" width=50% height=50%>
 
 **Office Location and Social Media**
 <br/>
 <br/>
-<img src="finalProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
 
-<img src="finalProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
 
 ## Not Found Page
 
 404 or Not Found Page
 
-![Design Not Found for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/NotFound.jpg)
+![Design Not Found for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/NotFound.jpg)
 
 
 ## Future Development:
