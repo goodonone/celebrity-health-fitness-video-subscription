@@ -125,7 +125,7 @@ Here the password is toggled to visible using an Angular directive.
 <img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
 ## Content Page
-The concept behind the content page is, it is all One page, and the view for each tier is contextually loaded, for one free tier and two paid tiers. Only the highest tier has access to the Monthly Live One-On-Ones. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
+The concept behind the content page is, it is all One page, and the view for each tier is contextually loaded, for one free tier and two paid tiers. Only the highest tier has access to the Monthly Live Workouts. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
 
 ### Free Tier View
 
@@ -154,13 +154,13 @@ For tier two and three, the workouts can also be categorized by workout type by 
 
 ![Design Tier Three View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeView.jpg)
 
-When the timer hits 00:00:00 the Live One-On-One Video Begins.
+When the timer hits 00:00:00 the Live Workout Begins.
 
 ![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
-Future Work:
- search functionlity 
- password mismatch checks
+## Future Development:
+- Complete Search functionlity, to be able to search for specific videos and items in the store.
+- Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
