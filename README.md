@@ -109,25 +109,25 @@ The background of the Sign-Up Page is a cool looped video.
 
 ## Sign-Up Page Responsive
 
-### Personal Info Page Responsive
+**Personal Info Page Responsive**
 <img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
 
-### Plan Details Page Responsive
+**Plan Details Page Responsive**
 <img src="finalProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
 
-### Summary Page Responsive
+**Summary Page Responsive**
 <img src="finalProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
 
-### Payment Page Responsive
+**Payment Page Responsive**
 <img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 
-### Confirmation Page Responsive
+**Confirmation Page Responsive**
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
 ![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
 
-### Login Error
+**Login Error**
 ![Design Login Error for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginError.jpg)
 
 ## Login Page Responsive
