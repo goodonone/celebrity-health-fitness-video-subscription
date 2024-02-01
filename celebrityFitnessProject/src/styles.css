@@ -1,0 +1,35 @@
+html, body { height: 100%; width: 100%; margin:0; box-sizing: border-box}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    min-height: 100%;
+    font-family: 'Outfit', sans-serif;
+    padding-top: 80px;
+    overflow:auto;
+    background:black;
+}
+
+::-webkit-scrollbar
+{
+    background: transparent;
+    width: 10px
+} 
+
+::-webkit-scrollbar-thumb {
+    background: rgb(64, 64, 64);
+    border-radius: 200px;
+    padding-right: 2px;
+    width: 3px;
+}
+
+::-webkit-scrollbar-corner {
+    background: black;
+    border-radius: 10px;
+}
+
+

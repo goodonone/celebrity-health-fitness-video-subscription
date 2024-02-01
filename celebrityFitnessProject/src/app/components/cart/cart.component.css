@@ -1,0 +1,232 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    margin-top: -10rem;
+    overflow-x: hidden;
+    height: 100vh;
+}
+
+.cartContainer{
+    margin: 10.5rem auto auto auto;
+    width: 80rem;
+    height: fit-content;
+    padding-top: 5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.pageName{
+    color: Black;
+    font-weight: 500;
+    text-align: left;
+    font-size: 8vw;
+    padding-left: 3rem;
+    font-weight: 600; 
+}
+
+p.name{
+    padding: 1.3rem 0 0rem 1.3rem;
+    font-size: 2.5rem;
+}
+
+.productImage{
+    width: 4rem;
+    height: 4rem;
+}
+
+.cardFlex{
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    margin-top: 3rem;
+    position: relative;
+}
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    background-color: rgb(236, 236, 236);
+    margin: 0.5rem 0 0.5rem 0;
+    border-radius: 6px;
+    padding: 0.4rem ;
+}
+
+div.quantity{
+    position: absolute;
+    left: 60rem;
+    top: 2rem;
+}
+
+div.removeButton{
+    position: absolute;
+    left: 71rem;
+    top: 1.5rem;
+}
+
+div.priceContainer{
+    position: absolute;
+    margin-left: 10rem;
+    top: 2rem;
+    left: 55rem;
+}
+
+p.price{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h1.totalText{
+    font-size: 3rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+/* .totalButton{
+    display: block;
+} */
+
+.totalContainer{
+    display:inline-flex;
+    justify-content: right;
+    margin-right: 8rem;
+}
+
+
+
+.totalCountContainer{
+    margin-top: 4rem;
+    margin-right: 2rem;
+}
+
+p.totalCount{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+p.totalPrice{
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.totalPriceContainer{
+    margin-top: 3.9rem;
+}
+
+button.buttonCheckOut{
+    background-color: rgb(236, 236, 236);
+    width: 12rem;
+    margin-left: 54rem;
+}
+
+.buttonCheckOut:hover{
+    background-color: rgb(0, 0, 0) !important;
+    color: white !important;
+}
+
+.buttonContainer{
+    margin-top: 1rem;
+    margin-left: 12rem;
+}
+
+div.emptyMessageContainer{
+    padding-top: 5rem;
+    text-align: center;
+    margin: auto;
+    padding-bottom: 10rem;
+}
+
+p.emptyMessage{
+    font-size: 2rem;
+}
+
+div.thankYouMessage{
+    margin-top: 2rem;
+}
+
+h1.thankYou{
+    font-weight: 500;
+}
+
+p.payment{
+    margin: auto;
+    font-size: 1rem;
+    width: 50%
+}
+
+@media screen and (min-width: 500px) and (max-width: 1286px){
+
+.cartContainer{
+    height: fit-content;
+    width: 50rem;
+}
+
+div.quantity{
+    position:absolute;
+    left: 28rem;
+    top: 2rem;
+}
+
+div.removeButton{
+    position: absolute;
+    left: 42rem;
+    top: 1.5rem;
+}
+
+div.priceContainer{
+    position: absolute;
+    margin-left: 10rem;
+    top: 2rem;
+    left: 25rem;
+}
+
+p.price{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h1.totalText{
+    font-size: 3rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.totalContainer{
+    display:inline-flex;
+    justify-content: right;
+    margin-right: 7rem;
+}
+
+.totalCountContainer{
+    margin-top: 4rem;
+    margin-right: 2rem;
+}
+
+p.totalCount{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+p.totalPrice{
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.totalPriceContainer{
+    margin-top: 3.9rem;
+}
+
+button.buttonCheckOut{
+    display: inline-flex;
+    background-color: rgb(236, 236, 236);
+    width: 12rem;
+    margin-left: 24rem;
+}
+
+}
+

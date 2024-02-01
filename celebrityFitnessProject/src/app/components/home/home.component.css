@@ -1,0 +1,385 @@
+/* Banner One Styling */
+
+.banner {
+    position: relative;
+    margin-top: -80px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.overlay {
+    position: absolute;
+    top: 45%;
+    bottom: 45%;
+    left: 38%;
+    right: 0;
+    margin: auto;
+    z-index: 1;
+}
+
+.textContainer {
+    display: inline-flex;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.heading {
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    font-size: 5vw;
+    margin: 0;
+    padding: 0;
+}
+
+.headingContd {
+    font-family: 'Outfit', sans-serif;
+    text-align: center;
+    margin: auto;
+    justify-content: center;
+    color: white;
+    font-size: 5vw;
+    margin: 0 0 0 -5px;
+    padding: 0;
+}
+
+@keyframes zoomIn {
+    from {
+        font-weight: 300;
+    }
+
+    to {
+        font-weight: 600;
+    }
+}
+
+
+.overlayTwo {
+    position: absolute;
+    top: 80%;
+    bottom: 100%;
+    left: 13%;
+    z-index: 1;
+}
+
+.startHere {
+    display: inline;
+    font-family: 'Outfit', sans-serif;
+    margin-top: -2vw;
+    color: white;
+    font-size: 1.2vw;
+    border: solid;
+    border-radius: .2vw;
+    width: 7vw;
+    padding: .3vw .3vw .5vw .3vw;
+    animation: zoomIn 0.25s;
+    animation-iteration-count: infinite;
+}
+
+.startHere:hover {
+    color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+}
+
+/* Beginning of Banner Two Styling */
+
+.bannerTwo {
+    height: 105vh;
+    margin: auto;
+    background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
+    background-size: cover;
+}
+
+.textOverlay {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    padding-top: 60px;
+    font-size: 150px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: white;
+    text-align: center;
+}
+
+/* Makes the page flexible */
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+
+    .banner {
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+    }
+
+
+    .videoBackground {
+        object-fit:cover;
+        height: 100vh;
+        /* zoom: 150%; */
+        overflow: hidden;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 45%;
+        bottom: 45%;
+        left: 24%;
+        right: 0;
+        margin: auto;
+        z-index: 1;
+    }
+
+    .overlayTwo {
+        position: absolute;
+        top: 49%;
+        bottom: 120%;
+        left: 25%;
+        z-index: 1;
+    }
+
+    .startHere {
+        display: inline;
+        font-family: 'Outfit', sans-serif;
+        color: white;
+        font-size: 2.4vw;
+        border: solid;
+        border-radius: .4vw;
+        width: 15vw;
+        padding: .3vw .3vw .5vw .3vw;
+    }
+
+
+    .bannerTwo {
+        position: relative;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position-x: center;
+    }
+
+    .heading {
+        font-size: 10vw;
+    }
+
+    .headingContd {
+        font-size: 10vw;
+    }
+
+    .textOverlay {
+        position: absolute;
+        padding: 200px 0 200px 0;
+        font-size: 97px;
+    }
+
+}
+
+/* Beginning of Banner Three Styling */
+
+.bannerThree {
+    height: 100vh;
+    width: 100%;
+    background-color: #C7FF20;
+    min-height: 100vh;
+}
+
+.containerOne {
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    height: 100vh;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+}
+
+.card {
+    height: 700px;
+    width: 500px;
+    background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
+    background-size: cover;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.cardText {
+    font-size: 30px;
+    margin: auto;
+    color: black;
+    line-height: 1.5;
+    padding-bottom: 190px;
+}
+
+.nutritionText {
+    width: 35%;
+}
+
+/* Beginning of Banner Four Styling */
+
+.bannerFour {
+    height: 100vh;
+    width: 100%;
+    background-color: #C7FF20;
+    min-height: 100vh;
+}
+
+.containerTwo {
+    display: flex;
+    justify-content: space-evenly;
+    margin: auto;
+    height: 100vh;
+    position: relative;
+    flex-direction: row;
+    align-content: center;
+}
+
+.cardTwo {
+    height: 700px;
+    width: 500px;
+    margin-top: 130px;
+    overflow: hidden;
+    border-radius: 8px;
+    padding-right: 20px;
+}
+
+.cardTextTwo {
+    font-size: 30px;
+    margin: auto;
+    color: black;
+    line-height: 1.5;
+    padding-top: 19rem;
+    padding-right: 100px;
+}
+
+.workoutText {
+    width: 35%;
+}
+
+.label {
+    display: flex;
+}
+
+#toggleView {
+    display: none;
+}
+
+label {
+    display: none;
+}
+
+#toggle {
+    display: none;
+}
+
+/* Makes the page flexible */
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+
+    .containerOne {
+        display: flex;
+        flex-wrap: wrap;
+        height: 80vh;
+        padding-top: 70px;
+    }
+
+    .card {
+        transform: scale(80%, 80%);
+    }
+
+
+    .nutritionText {
+        padding-bottom: 0;
+        padding-left: 10px;
+        text-align: left;
+        width: 80%;
+    }
+
+    .bannerFour {
+        height: 105vh;
+    }
+
+    .containerTwo {
+        display: flex;
+        flex-wrap: wrap-reverse;
+        height: 80vh;
+        padding-top: 110px;
+    }
+
+    .cardTwo {
+        transform: scale(80%, 80%);
+        margin-top: 0px;
+    }
+
+    .workoutText {
+        padding-bottom: 30px;
+        padding-left: 10px;
+        text-align: left;
+        width: 80%;
+        margin-top: 0px;
+    }
+
+    .cardTextTwo {
+        padding-top: 10px;
+        margin-top: -10px;
+    }
+
+    .label {
+        display: none;
+    }
+
+    #toggleView {
+        display: none;
+    }
+
+    label {
+        display: flex;
+    }
+
+    #toggle {
+        display: none;
+    }
+}
+
+
+/* Beginning of Banner Five Styling */
+
+.bannerFive {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    background: black;
+}
+
+.carouselHeading {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+    font-family: 'Outfit', sans-serif;
+    margin-top: 120px;
+    color: white;
+    font-size: 70px;
+    height: 3vw;
+}
+
+/* Makes the page flexible */
+
+@media screen and (min-width: 500px) and (max-width: 717px) {
+
+    .bannerFive {
+        height: 102vh;
+    }
+
+    .carouselHeading {
+        font-size: 50px;
+        margin-top: 100px;
+    }
+
+
+}

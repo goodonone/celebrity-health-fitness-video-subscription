@@ -1,0 +1,94 @@
+.carouselMain {
+    display: flex;
+    justify-content: center;
+    width: 80vw;
+    margin: 120px auto 0 auto;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.image-container {
+    transform: scale(85%, 90%);
+    min-width: 500px;
+    object-fit: cover;
+    overflow: overlay;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.text-container {
+    padding-bottom: 20px;
+    text-align: center;
+    width: 750px
+}
+
+
+p {
+    font-family: 'Outfit', sans-serif;
+    font-size: 30px;
+    line-height: 1.5;
+}
+
+.image-container img {
+    display: none;
+    border-radius: 8px;
+}
+
+.text-container p {
+    display: none;
+    border-radius: 8px;
+}
+
+.image-container img.image-active {
+    display: block;
+    width: 500px;
+    height: 700px;
+}
+
+.text-container p.image-active {
+    display: block;
+    margin: auto;
+    width: 50%;
+    text-align: left;
+    color: white;
+    padding-bottom: 180px;
+}
+
+@media screen and (min-width: 500px) and (max-width: 1120px) {
+
+    .image-container {
+        transform: scale(70%, 70%);
+        padding: 0;
+        margin: 0;
+    }
+
+    .textContainer {
+        margin: -300px 0 0 -30px;
+        margin-bottom: 0;
+    }
+
+    .text-container p.image-active {
+        margin-top: -100px;
+        width: 70vw;
+        text-align:unset;
+        padding-bottom: 0;
+    }
+
+    .carouselMain {
+        display: flex;
+        flex-wrap: wrap;
+        margin: auto;
+        position: absolute;
+        top: 6%;
+        right: 0;
+        left: 0;
+        bottom: 0;
+    }
+
+
+}
