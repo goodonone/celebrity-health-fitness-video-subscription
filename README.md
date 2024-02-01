@@ -167,7 +167,6 @@ The free tier only gets a weeks worth of workouts and the rest of the page is hi
 **Second Tier View**
 <br/>
 <br/>
-
 Fresh weekly recipes can be accesssed from the button under the Year. 
 
 ![Design Second Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
@@ -193,21 +192,33 @@ When the timer hits 00:00:00s, the Live Workout begins.
 The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the free tier, this functions as a personal "mantra". For example, Hi Shermon, You are MOTIVATED! Or for the third tier, Hi Shermon, You are ALL IN!
 
 **Free Tier Profile View**
+<br/>
+<br/>
 ![Design Free Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierOne.jpg)
 
 **Second Tier Profile View**
+<br/>
+<br/>
 ![Design Second Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierTwo.jpg)
 
 **Third Tier Profile View**
+<br/>
+<br/>
 ![Design Third Tier Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ProfilePageViewTierThree.jpg)
 
 **Edit Profile View**
+<br/>
+<br/>
 ![Design Edit Profile for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/EditProfileView.jpg)
 
 **Change Picture**
+<br/>
+<br/>
 ![Design Change Picture for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Profile/ChangeProfilePictureView.jpg)
 
 **Cancel/Delete Subscription**
+<br/>
+<br/>
 
 This view comes with a message of warning to the customer as to what they are about to do. 
 <br/>
