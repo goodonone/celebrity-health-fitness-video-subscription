@@ -43,8 +43,8 @@ The page is divided into banners, each banner with specific intent showcasing th
 ## Sign-Up Page
 The Signup form here is an Angular multi-page form that can be broken down into three main parts:
 
-### Part I The Progress Tracker: 
-Located on the left of the form, keeps track of the current step in the form.
+### Part I The Progress Tracker Icons: 
+Located on the left of the form, keeps track of the current step in the form using Observables.
 
 ### Part II The Next and Back Buttons: 
 The next and back buttons are enabled only when the inputs are filled and each filled to specifications unique to each input and when the requirements are fulfilled, the Next button is enabled. 
@@ -156,7 +156,7 @@ For tier two and three, the workouts can also be categorized by workout type by 
 
 ![Design Tier Three View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeView.jpg)
 
-When the timer hits 00:00:00 the Live Workout Begins.
+When the timer hits 00:00:00s, the Live Workout begins.
 
 ![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
@@ -204,24 +204,28 @@ This view comes with a message of warning to the customer as to what they are ab
 
 ## Cart Page
 
-The cart in this project was designed to be stored in Local Storage. [The original intent was to store the cart in the backend, this is currently In-Development] 
+The cart in this project was designed to be stored in Local Storage. The original intent was to store the cart in the backend, this feature is currently [In-Development]. For the Paid Tiers, the Proceed To Checkout button is just Checkout and on cliking it, the purchase is completed with the Card number on file. For the free First Tier, the Proceed to Checkout takes the customer through the process of inputting their information into the Form and then completing their purchase. Again, we can mount a customizable Credit Card Form directly into this page for seamless and secure payments.
+
+### Cart View 
 
 ![Design Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartView.jpg)
 
+### Empty Cart View
+
 ![Design Empty Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartEmptyView.jpg)
 
-#### The Checkout button for the paid tiers immediately processes the purchase with the Card on file. 
+### Checkout For Paid Tiers Confirmation Message
+
 ![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
 
-#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. 
+#### The First Tier being free, we need to take the customer through the checkout process where they input their payment info to complete the purchase. We reuse the same Multi-Page form contextually to remove unnecessary steps, with a different set of Progress Tracker Icons to cover only 2 steps, instead of the 5 from the Sign-Up Form. 
+
 ![Design Payment Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
 #### Confirmation for First Tier Checkout
 ![Design Confirmation Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutFreeTierView.jpg)
 
 ## Cart Page Responsive
-
-### Cart Page Responsive
 <img src ="finalProject/Design/Screenshots/Store/CartResponsive.jpg" width=50% height=50%>
 
 ### Checkout For Paid Tiers View
