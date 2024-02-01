@@ -21,7 +21,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 
 ## Home Page
 
-The page is divided into banners, each banner with specific intent showcasing the features of the app. 
+The page is divided into banners, each banner with specific intent showcasing the features of the app. For an impactful first impression, the background of the landing page is a cool looped video.
 
 ### Motivational Content:
 ![Design Banner Two for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
@@ -89,6 +89,8 @@ Here we have the confirmation messsage displayed with support contact info and w
 <br/>
 <br/>
 ![Design Confirmation View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
+
+The background of the Sign-Up Page is a cool looped video. 
 
 ## Sign-Up Page Responsive
 
