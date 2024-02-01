@@ -83,7 +83,7 @@ This step offers the customer a summary of what they will be paying monthly/year
 <br/>
 
 ### Form Step 4: Payment Page
-This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form.
+This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form. The First Tier being free, the Next button on the Summary page will be a Confirm Button and will bypass the Payment Page altogether and go straight to the Confirmation Page. 
 <br/>
 <br/>
 ![Design Payment View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
@@ -190,12 +190,48 @@ This view comes with a message of warning to the customer as to what they are ab
 
 <img src="finalProject/Design/Screenshots/Profile/ProfilePageResponsive.jpg" width=50% height=50%>
 
+## Store Page
+
+### All Products View
+![Design All Products for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/AllProductsView.jpg)
+
+![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductView.jpg)
+
+## Store Page Responsive
+
+![Design Specific Product for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/SpecificProductResponsive.jpg)
+
+## Cart Page
+
+The cart in this project was designed to be stored in Local Storage. [The original intent was to store the cart in the backend, this is currently In-Development] 
+
+![Design Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartView.jpg)
+
+![Design Empty Cart View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CartEmptyView.jpg)
+
+#### The Checkout button for the paid tiers immediately processes the purchase with the Card on file. 
+![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPaidTiersView.jpg)
+
+#### Since the First Tier being free, we need to take the customer through the checkout where they input their payment info to complete the purchase. 
+![Design Checkout Free Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutFreeTierView.jpg)
+
+#### Confirmation for First Tier Checkout
+![Design Confirmation Free Tier Payment for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Store/CheckoutPageFreeTierView.jpg)
 
 
+## Cart Page Responsive
+
+### Cart Page Responsive
+<img src ="finalProject/Design/Screenshots/Store/CartResponsive.jpg" width=50% height=50%>
+
+### Checkout For Paid Tiers View
+<img src ="finalProject/Design/Screenshots/Store/ChekoutPaidTiersResponsiveView.jpg" width=50% height=50%>
 
 ## Future Development:
+- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added. 
 - Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
 - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
+
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
