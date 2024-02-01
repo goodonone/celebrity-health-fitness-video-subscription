@@ -116,22 +116,22 @@ The background of the Sign-Up Page is a cool looped video.
 **Plan Details Page Responsive**
 <br/>
 <br/>
-<img src="finalProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Sign-Up/PlanDetailsResponsive.jpg" width=50% height=50%>
 
 **Summary Page Responsive**
 <br/>
 <br/>
-<img src="finalProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Sign-Up/SummaryPageResponsive.jpg" width=50% height=50%>
 
 **Payment Page Responsive**
 <br/>
 <br/>
-<img src="finalProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/Sign-Up/PaymentPageResponsive.jpg" width=50% height=50%>
 
 **Confirmation Page Responsive**
 <br/>
 <br/>
-<img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
+<img src ="celebrityFitnessProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
 ![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
@@ -139,13 +139,13 @@ The background of the Sign-Up Page is a cool looped video.
 **Login Error**
 <br/>
 <br/>
-![Design Login Error for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginError.jpg)
+![Design Login Error for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/LoginError.jpg)
 
 ## Login Page Responsive
 Here the password is toggled to visible using an Angular directive. 
 <br />
 <br />
-<img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
+<img src="celebrityFitnessProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
 ## Content Page
 The concept behind the content page is, it is all One page, and the view for each tier is contextually loaded, for one free tier and two paid tiers. Only the highest tier has access to the Monthly Live Workouts. There is a persistent fixed countdown timer ticking away reminding the lower tier members to upgrade. The workouts here are categorized by year of release, every video being released every week wihtin that year. 
