@@ -38,15 +38,22 @@ The page is divided into banners, each banner with specific intent showcasing th
 <br/>
 <br/>
 This card contains a beautiful image from one of the weekly recipes.
+<br/>
+<br/>
 ![Design Banner Three for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerThree.jpg)
 
 **New Celebrity Workouts, Posted Weekly and Live One-On-Ones For Highest Tier Members:**
 <br/>
 <br/>
 This card has video clips from the celebrity's workouts to whet the appetities of prospective customers.
+<br/>
+<br/>
 ![Design Banner Four for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerFour.jpg)
 
-**A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:**
+**Testimonies Of Past/Current Members**
+<br/>
+<br/>
+A carousel showcasing current and past members' 'Success Stories' of using the app; to inspire prospective customers.
 <br/>
 <br/>
 ![Design Banner Five the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerFive.jpg)
