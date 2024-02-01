@@ -21,7 +21,6 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Cart](#Cart-Page)
      - [Cart Page Responsive](#Cart-Page-Responsive)
    - [About](#About-Page)
-     - [About Page Responsive](#About-Page-Responsive)
    - [Contact Us](#Contact-Us-Page)
      - [Contact Page Responsive](#Contact-Page-Responsive)
    - [404/Not Found Page](#Not-Found-Page)
@@ -331,6 +330,12 @@ The Form will revert back to its original state in a set amount of time.
 <img src="finalProject/Design/Screenshots/Contact-Us/MapResponsive.png" width=50% height=50%>
 
 <img src="finalProject/Design/Screenshots/Contact-Us/MapResponsiveContinued.png" width=50% height=50%>
+
+## Not Found Page
+
+404 or Not Found Page
+
+![Design Not Found for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/NotFound.jpg)
 
 
 ## Future Development:
