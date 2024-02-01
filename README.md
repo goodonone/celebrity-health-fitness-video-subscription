@@ -113,6 +113,7 @@ Here we have the confirmation messsage displayed with support contact info and w
 ## Login Page Responsive:
 Here the password is toggled to visible using an Angular directive. 
 <br />
+<br />
 <img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
 
