@@ -14,7 +14,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
      - [Login Page Responsive](#Login-Page-Responsive)
    - [Content](#Content-Page)
    - [Profile](#Profile-Page)
-     - [Upgrade](#Upgrade-Page)
+    - [Upgrade](#Upgrade-Page)
      - [Profile Page Responsive](#Profile-Page-Responsive)
    - [Store](#Store-Page)
      - [Store Page Responsive](#Store-Page-Responsive)
