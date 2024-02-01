@@ -154,7 +154,7 @@ For tier two and three, the workouts can also be categorized by workout type by 
 
 ![Design Tier Three View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeView.jpg)
 
-Apart from the tier name being reflected on the page, when the timer hits 00:00:00 the Live Video Begins.
+When the timer hits 00:00:00 the Live One-On-One Video Begins.
 
 ![Design Tier Three Live Video Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierThreeLiveWorkoutView.jpg)
 
