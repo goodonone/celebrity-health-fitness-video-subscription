@@ -258,6 +258,7 @@ The About page covers the most pertinent information about our Celebrity.
 ![Design Contact Form for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactForm.jpg)
 
 **Contact Form Submitted**
+<br/>
 The Form will revert back to its original state in a set amount of time.
 ![Design Contact Page Form Submitted for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Contact-Us/ContactFormSend.jpg)
 
