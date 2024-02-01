@@ -144,7 +144,7 @@ Fresh weekly recipes can be accesssed from the button under the year.
 
 ![Design Second Tier for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/TierTwoPaidTierView.jpg)
 
-For tier two and three, the workouts can also be categorized by workout type by switching the toggle. 
+For tier two and three, the workouts can also be categorized by workout type by flipping the toggle. 
 
 ![Design Workout by type Continued for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Content/WorkoutsByType.jpg)
 
