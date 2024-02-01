@@ -8,8 +8,9 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 
 ## Contents:
    - [Home](#Home-Page)
-   - [Sign-Up Form](#Sign-Up-Page)
-     - [Sign-Up Form Responsive](#Sign-Up-Form-Responsive)
+   - [Sign-Up](#Sign-Up-Page)
+     - [Sign-Up Page Responsive](#Sign-Up-Page-Responsive)
+   - [Login](#Login-Page)
    - [Content](#Content-Page)
    - [Store](#Store-Page)
    - [Cart](#Cart-Page)
@@ -17,11 +18,11 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
    - [Contact Us](#Contact-Us-Page)
    - [404/Not Found Page](#Not-Found-Page)
 
-## Home Page:
+## Home Page
 
 The page is divided into banners, each banner with specific intent showcasing the features of the app. 
 
-### Motivation:
+### Motivational Content:
 ![Design Banner Two for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerTwo.jpg)
 
 ### Fresh Weekly Recipes To Keep Workouts Going:
@@ -33,7 +34,7 @@ The page is divided into banners, each banner with specific intent showcasing th
 ### A Carousel Showcasing Current And Past Members' 'Success Stories' Using The App:
 ![Design Banner Five the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerFive.jpg)
 
-## Sign-Up Page:
+## Sign-Up Page
 The Signup form here is an Angular multi-page form that can be broken down into three main parts:
 
 ### Part I The Progress Tracker: 
@@ -86,7 +87,7 @@ Here we have the confirmation messsage displayed with support contact info and w
 <br/>
 ![Design Confirmation View for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Sign-Up/ConfirmationPage.jpg)
 
-## Sign-Up Form Responsive:
+## Sign-Up Page Responsive:
 
 ### Personal Info Page Responsive:
 <img src="finalProject/Design/Screenshots/Sign-Up/PersonalInfoResponsive.jpg" width=50% height=50%>
@@ -103,12 +104,17 @@ Here we have the confirmation messsage displayed with support contact info and w
 ### Confirmation Page Responsive:
 <img src ="finalProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
+## Login Page
+![Design Login for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginPage.jpg)
+
+### Login Error:
+![Design Login Error for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/LoginError.jpg)
+
+## Login Page Responsive:
+Here the password is toggled to visible using an Angular directive. 
+<img src="finalProject/Design/Screenshots/ShowOrHidePassword.jpg" width=50% height=50%>
 
 
-
-
-The Billing Frequency Toggle in the Plan Details Page changes the information seen on each plan and adjusts pricing accordingly providing an attractive promo. 
-Each page of the form forms its own Component in Angular. The toggle in the plan
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
