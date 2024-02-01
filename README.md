@@ -1,5 +1,5 @@
 # Celebrity Health & Fitness App
-![Design preview for the Celebrity Health & Fitness App](finalProject/Design/Screenshots/Home/BannerOne.jpg)
+![Design preview for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Home/BannerOne.jpg/Design/Screenshots/Home/BannerOne.jpg)
 
 A platform that empowers a Celebrity/Fitness Personality to generate revenue by distributing their brand specific workout videos using a Subscription-Pricing Model. The videos can be hosted on any Cloud platform easily accessible throughout the globe. The App can be integrated with Stripe and will be ready for production. 
 
