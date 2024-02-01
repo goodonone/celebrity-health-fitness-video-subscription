@@ -195,7 +195,7 @@ For Tier Three only, when the timer hits 00:00:00s, the Live Workout window appe
 
 ## Profile Page
 
-The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the free tier, this functions as a personal "mantra". For example, Hi Shermon, You are MOTIVATED! Or for the third tier, Hi Shermon, You are ALL IN!
+The Profile Page reflects the tier the customer is in, in a bold, large font. Apart from the Free Tier, this functions as a personal "mantra". For example, Hi Shermon, You are MOTIVATED! Or for the Third Tier, Hi Shermon, You are ALL IN!
 
 **Free Tier Profile View:**
 <br/>
