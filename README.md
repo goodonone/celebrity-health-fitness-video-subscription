@@ -363,6 +363,7 @@ The Form will revert back to its original state in a set amount of time.
 ## Future Development:
 - [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added.
 - Stripe Payment Platform Integration.
+- OAuth
 - Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
 - Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
 
