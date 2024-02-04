@@ -85,7 +85,7 @@ The Password Field of the Personal Info page of the form has a level of password
 ![Design Personal Info Errors for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
 
-_Form Step 2:_ Plan Details Page
+**_Form Step 2:_ Plan Details Page**
 <br/>
 The plans are laid out here for the prospective customer to make a choice.
 <br/>
@@ -99,7 +99,7 @@ The toggle switches the billing from Monthly to Yearly billing and offers the cu
 ![Design Plan Details Yearly View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PlanDetailsYearlyViewPage.jpg)
 <br/>
 
-_Form Step 3:_ Summary Page
+**_Form Step 3:_ Summary Page**
 <br/>
 This step offers the customer a summary of what they will be paying monthly/yearly. 
 <br/>
@@ -107,7 +107,7 @@ This step offers the customer a summary of what they will be paying monthly/year
 ![Design Summary View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/SummaryPage.jpg)
 <br/>
 
-_Form Step 4:_ Payment Page
+**_Form Step 4:_ Payment Page**
 <br/>
 This is where the client inputs their card info so the subscription billing can begin. Here we are storing the card information as an example, but in production we will be using the Stripe JS to mount a customizable Credit Card Form directly into this page for seamless and secure payments. This page also has validation for each input and will throw errors similar to Step 1 of the form. The First Tier being free, the Next button on the Summary page will be a Confirm Button and will bypass the Payment Page altogether and go straight to the Confirmation Page. 
 <br/>
@@ -115,7 +115,7 @@ This is where the client inputs their card info so the subscription billing can 
 ![Design Payment View for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PaymentPage.jpg)
 <br/>
 
-_Form Step 5:_ Confirmation Page
+**_Form Step 5:_ Confirmation Page**
 <br/>
 Here we have the confirmation messsage displayed with support contact info and will automatically route to the login page just as the customer finishes reading the text. 
 <br/>
