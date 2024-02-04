@@ -70,7 +70,7 @@ The next and back buttons are enabled only when the inputs are filled and each f
 **Part III The Form Itself:**
 The form is divided into 5 steps, each step being its very own Angular Component which is navigated to with the afore mentioned Next & Confirm buttons, the current step is maintained using observables in the form.service.ts file.
 
-_Form Step 1:_ Personal Info Page
+**_Form Step 1:_ Personal Info Page**
 <br/>
 The inputs have a level error checking, errors messages are triggered when an error requirement is met. 
 The Password Field of the Personal Info page of the form has a level of password mismatch checking. *More work needs to be done here to cover all edge cases.
