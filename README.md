@@ -78,6 +78,9 @@ The Password Field of the Personal Info page of the form has a level of password
 <br/>
 ![Design Personal Info for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoPage.jpg)
 <br/>
+Error Handling:
+<br/>
+<br/>
 ![Design Personal Info Errors for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/Sign-Up/PersonalInfoPageErrors.jpg)
 <br/>
 
