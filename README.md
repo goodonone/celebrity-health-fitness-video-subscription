@@ -9,7 +9,7 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
 
 ## Contents:
 
-Select Routes protected by Auth Guard. 
+Secured Routes Protected by Angular Auth Guard. 
 
    - [Home](#Home-Page)
    - [Sign-Up](#Sign-Up-Page)
