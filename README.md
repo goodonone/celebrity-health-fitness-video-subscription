@@ -3,8 +3,11 @@
 
 A platform that empowers a Celebrity/Fitness Personality to generate revenue by distributing their brand specific workout video content using a Subscription Pricing Model. The videos can be hosted on any Cloud platform easily accessible throughout the globe. The App can be integrated with a payment API like Stripe and can be ready for production. 
 
+
 ## Built with
 <img src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular icon" height="30" /> <img src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white" alt="Material UI icon" height="30" /> <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript icon" height="30" />   <img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E" alt="JavaScript icon" height="30" /> <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML icon" height="30" /> <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS icon" height="30" /> <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma icon" height="30" />
+
+Ensured a secure navigation experience with protected routes. 
 
 ## Contents:
    - [Home](#Home-Page)
@@ -152,6 +155,9 @@ The background of the Sign-Up Page is a cool looped video.
 <img src ="celebrityFitnessProject/Design/Screenshots/Sign-Up/ConfirmationPageResponsive.jpg" width=50% height=50%>
 
 ## Login Page
+
+Implemented secure login with JWT tokens. 
+
 ![Design Login for the Celebrity Health & Fitness App](celebrityFitnessProject/Design/Screenshots/LoginPage.jpg)
 
 **Login Error:**
