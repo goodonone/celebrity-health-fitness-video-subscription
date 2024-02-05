@@ -14,14 +14,14 @@ A platform that empowers a Celebrity/Fitness Personality to generate revenue by 
      - [Sign-Up Page Responsive](#Sign-Up-Page-Responsive)
    - [Login](#Login-Page)
      - [Login Page Responsive](#Login-Page-Responsive)
-   - [Content](#Content-Page) [Protected Route]
-   - [Profile](#Profile-Page)  [Protected Route]
-     - [Upgrade](#Upgrade-Page)  [Protected Route]
-     - [Profile Page Responsive](#Profile-Page-Responsive)  [Protected Route]
-   - [Store](#Store-Page)  [Protected Route]
-     - [Store Page Responsive](#Store-Page-Responsive)  [Protected Route]
-   - [Cart](#Cart-Page)  [Protected Route]
-     - [Cart Page Responsive](#Cart-Page-Responsive)  [Protected Route]
+   - [Content](#Content-Page)
+   - [Profile](#Profile-Page)
+     - [Upgrade](#Upgrade-Page)
+     - [Profile Page Responsive](#Profile-Page-Responsive)
+   - [Store](#Store-Page)
+     - [Store Page Responsive](#Store-Page-Responsive)
+   - [Cart](#Cart-Page)
+     - [Cart Page Responsive](#Cart-Page-Responsive)
    - [About](#About-Page)
    - [Contact Us](#Contact-Us-Page)
      - [Contact Page Responsive](#Contact-Page-Responsive)
