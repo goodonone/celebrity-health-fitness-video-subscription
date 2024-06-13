@@ -1,0 +1,21 @@
+<div class="background">
+    <div class="containerFlex">
+        <div class="textContainer">
+            <h1 class="changeTierText" *ngIf="showOrHide">Change Plan</h1>
+            <h1 class="changeTierTextTwo" *ngIf="!showOrHide"> Upgrade Plan</h1>
+        </div>
+        <div class="cardContainer">
+            <mat-card class="card">
+                <mat-card-content class="cardContent">
+                    <!-- <div class="innerCardContainer"> -->
+                        <mat-card class="innerCardTwo">
+                            <app-form [loggedIn]="userLoggedIn" [payment]="payment"></app-form>
+                                <app-progression-buttons [loggedIn]="userLoggedIn" [payment]="payment"></app-progression-buttons>
+                        </mat-card>
+                    <!-- </div> -->
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+
+</div>

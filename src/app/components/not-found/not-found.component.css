@@ -1,0 +1,79 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+    background-color: rgb(255, 255, 255);
+    width: 100vw;
+    max-width: 100%;
+    overflow-x: hidden;
+    height: 85vh;
+    margin-top: -80px;
+    padding-top: 5rem;
+    background-image: url('https://images.unsplash.com/photo-1591741543032-bf439b4fd46c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    background-size: cover;
+    background-position:center;
+    background-position-y:50%;
+    zoom: 100%;
+    position: relative;
+}
+
+.heading{
+    padding-top:20rem;
+    text-align: center;
+    font-size: 10vw;
+    color: white;
+    font-weight: 500;
+}
+
+.homeButton{
+ color: white;
+}
+
+.overlayTwo {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 4rem;
+}
+
+.textContainer {
+    display: inline;
+    margin: auto;
+    text-align: center;
+    justify-content: center;
+}
+
+.getBack {
+    display: inline;
+    font-family: 'Outfit', sans-serif;
+    margin-top: -2vw;
+    color: white;
+    font-size: 1.2vw;
+    border: solid;
+    border-radius: .2vw;
+    width: 7vw;
+    padding: .3vw .7vw .3vw .7vw;
+}
+
+p.getBack:hover{
+ background-color: #ffffff;
+ color: black;
+ cursor: pointer;
+ border-color: white;
+}
+
+@media screen and (min-width: 500px) and (max-width: 1688px){
+    .getBack {
+        color: white;
+        font-size: 1.2rem;
+        border: solid;
+        border-radius: .4vw;
+        padding: .3rem .7rem .3rem .7rem;
+    }
+
+    .overlayTwo {
+        display: flex;
+        justify-content: space-around;
+        padding-top: 4vw;
+    }
+}
