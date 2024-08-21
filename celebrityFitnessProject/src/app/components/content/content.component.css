@@ -88,6 +88,7 @@ h1.liveVideoText {
     justify-content: center;
     font-size: 8rem;
     font-weight: 700;
+    font-style: italic;
     width: 10rem;
     line-height: 10rem;
     text-align: left;

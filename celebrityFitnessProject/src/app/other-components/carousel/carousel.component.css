@@ -9,11 +9,17 @@
     right: 0;
     left: 0;
     bottom: 0;
+    padding-top: 20px;
 }
 
 .image-container {
-    transform: scale(85%, 90%);
+    transform: scale(80%, 85%);
+    width: 500px;
+    height: 700px;
     min-width: 500px;
+    min-height: auto;
+    max-width: 700px;
+    max-height: auto;
     object-fit: cover;
     overflow: overlay;
     background-size: cover;
@@ -59,7 +65,19 @@ p {
     padding-bottom: 180px;
 }
 
-@media screen and (min-width: 500px) and (max-width: 1120px) {
+@media screen and (min-width: 300px) and (max-width: 1080px) {
+
+    .carouselMain {
+        display: flex;
+        flex-wrap: wrap;
+        margin: auto;
+        position: absolute;
+        top: 0%;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        padding-top: 0px;
+    }
 
     .image-container {
         transform: scale(70%, 70%);
@@ -69,26 +87,16 @@ p {
 
     .textContainer {
         margin: -300px 0 0 -30px;
-        margin-bottom: 0;
     }
 
     .text-container p.image-active {
-        margin-top: -100px;
-        width: 70vw;
-        text-align:unset;
+        margin-top: -200px;
+        width: 75vw;
+        text-align: unset;
         padding-bottom: 0;
     }
 
-    .carouselMain {
-        display: flex;
-        flex-wrap: wrap;
-        margin: auto;
-        position: absolute;
-        top: 6%;
-        right: 0;
-        left: 0;
-        bottom: 0;
-    }
+   
 
 
 }

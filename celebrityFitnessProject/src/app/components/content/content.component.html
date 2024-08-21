@@ -17,7 +17,7 @@
   <!-- Live Video Div Pops Up When Timer Expires For Highest Tier-->
     <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo">
       <h1 class="liveVideoText">
-          We are Live!
+         We are Live!
       </h1>
       <mat-card class="liveVideoContainer">
           <mat-card-content>
@@ -87,7 +87,7 @@
                   <h1 class="cardHeaderYear">2023</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
+              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <div>
                   <div>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
@@ -105,7 +105,7 @@
                   <h1 class="cardHeaderYear">2022</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
+              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <div>
                   <div>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
