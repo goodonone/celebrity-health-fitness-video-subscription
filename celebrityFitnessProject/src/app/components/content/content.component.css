@@ -195,6 +195,8 @@ div.cardSecondAndThirdTiers {
 .contentCardFive,
 .contentCardSix {
     height: fit-content;
+    min-height: 20rem;
+    position: relative;
     width: 80%;
     background-color: rgb(2, 2, 2);
     margin: auto;
@@ -255,6 +257,7 @@ mat-card.cardVideosSecondThird {
     object-fit: fill;
     background-size: cover;
 }
+
 
 a.videoTitle {
     padding-left: 1.5rem;
@@ -365,9 +368,12 @@ label {
 .yearAndRecipes {
     display: flex;
     flex-direction: column;
-    padding-top: 1rem;
+    position: absolute;
+    left:2rem;
+    top: 1rem;
+    /* padding-top: 1rem;
     padding-left: 2rem;
-    padding-right: 4rem;
+    padding-right: 4rem; */
 }
 
 p.recipes {
@@ -383,14 +389,20 @@ button.btn-recipes {
     font-size: larger;
     margin-left: 3rem;
     margin-top: 2rem;
+    cursor: pointer;
 }
 
 button.btn-showMore {
+    position: absolute;
     width: 15rem;
     background-color: rgb(18, 17, 17);
     color: white;
     font-size: larger;
     margin-top: 2rem;
+    cursor: pointer;
+    bottom: 2rem;
+    left: 50%;
+    transform: translate(-50%, 50%);
 }
 
 .disable {

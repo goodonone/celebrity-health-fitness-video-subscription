@@ -11,18 +11,37 @@ nav {
   border-radius: 6px;
   background-color: #C7FF20;
   height: 50px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
+
+/* Effect when navbar turns black */
+.navBar.black {
+  background-color: black !important;
+  color: white !important;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.navBar .navBarText.black {
+  color: white !important;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.navBar.black .logo {
+  filter: invert(1) brightness(10000%) contrast(100%);
+  transition: filter 0.3s ease-in-out;
+}
+/* End */
 
 .spacer {
   flex: 1 1 auto;
 }
-
 
 .navBarText {
   font-family: 'Outfit', sans-serif;
   font-size: smaller;
   padding: 0 6px 0 6px;
   cursor: pointer;
+  transition: color 0.3s ease-in-out;
 }
 
 .menu {

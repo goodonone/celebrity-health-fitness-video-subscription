@@ -100,22 +100,23 @@
               </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
+
           <mat-card class="contentCardTwo flexCards">
               <div class="yearAndRecipes">
-                  <h1 class="cardHeaderYear">2022</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
-              </div>
-              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+                <h1 class="cardHeaderYear">2022</h1>
+                <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+            </div>
+            <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+              <div>
                 <div>
-                  <div>
-                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-                  </div>
-                  <div >
-                    <h5 class="card-title mb-0">
-                    </h5>
-                  </div>
+                  <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                 </div>
-              </mat-card>
+                <div >
+                  <h5 class="card-title mb-0">
+                  </h5>
+                </div>
+              </div>
+            </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
 

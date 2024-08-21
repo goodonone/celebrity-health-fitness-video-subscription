@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener,OnInit } from '@angular/core';
 
 interface videoPlaylist {
   videoSrc: string;
@@ -10,7 +10,9 @@ interface videoPlaylist {
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
+  bannerThree!: HTMLElement | null;
+  bannerFour!: HTMLElement | null;
+  navbar!: HTMLElement | null;
 
   videos = [
     { videoSrc: "/assets/Videos/Man Video One.mp4" }, { videoSrc: "/assets/Videos/Man Video Two.mp4" },
@@ -28,9 +30,34 @@ export class HomeComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-
+    this.bannerThree = document.getElementById('bannerThree');
+    this.bannerFour = document.getElementById('bannerFour');
+    this.navbar = document.getElementById('navbar');
   }
 
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    const bannerThreePosition = this.bannerThree?.getBoundingClientRect().top;
+    const bannerFourPosition = this.bannerFour?.getBoundingClientRect().top;
+    const navbarHeight = this.navbar?.offsetHeight;
+
+    if (
+      (bannerThreePosition! <= navbarHeight! && bannerThreePosition! >= -this.bannerThree!.offsetHeight) ||
+      (bannerFourPosition! <= navbarHeight! && bannerFourPosition! >= -this.bannerFour!.offsetHeight)
+    ) {
+      this.navbar?.classList.add('black');
+      const navBarTextElements = document.querySelectorAll('.navBarText');
+      navBarTextElements.forEach((element) => {
+        element.classList.add('black');
+      });
+    } else {
+      this.navbar?.classList.remove('black');
+      const navBarTextElements = document.querySelectorAll('.navBarText');
+      navBarTextElements.forEach((element) => {
+        element.classList.remove('black');
+      });
+    }
+  }
 
 }
 
