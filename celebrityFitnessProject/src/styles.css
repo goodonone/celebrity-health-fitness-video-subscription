@@ -8,13 +8,17 @@ html, body { height: 100%; width: 100%; margin:0; box-sizing: border-box}
 
 body {
     min-height: 100%;
+    /* width: 100%; */
+    /* display: flex;
+    flex-direction: column;
+    margin: auto; */
     font-family: 'Outfit', sans-serif;
     padding-top: 80px;
     overflow:auto;
-    background:black;
+    background:rgb(0, 0, 0);
 }
 
-::-webkit-scrollbar
+/* ::-webkit-scrollbar
 {
     background: transparent;
     width: 10px
@@ -30,6 +34,6 @@ body {
 ::-webkit-scrollbar-corner {
     background: black;
     border-radius: 10px;
-}
+} */
 
 

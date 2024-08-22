@@ -1,4 +1,5 @@
-import { Component, HostListener,OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
 interface videoPlaylist {
   videoSrc: string;
@@ -9,10 +10,11 @@ interface videoPlaylist {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit {
   bannerThree!: HTMLElement | null;
   bannerFour!: HTMLElement | null;
   navbar!: HTMLElement | null;
+  menu!: HTMLElement | null;
 
   videos = [
     { videoSrc: "/assets/Videos/Man Video One.mp4" }, { videoSrc: "/assets/Videos/Man Video Two.mp4" },
@@ -33,7 +35,29 @@ export class HomeComponent implements OnInit {
     this.bannerThree = document.getElementById('bannerThree');
     this.bannerFour = document.getElementById('bannerFour');
     this.navbar = document.getElementById('navbar');
+    this.menu = document.querySelector('.menu'); 
+
+    // Reset navbar state when navigating away
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.resetNavbarState();
+      }
+    });
   }
+
+ngAfterViewInit(): void {
+  // Autoplay videos
+  const video = document.querySelector('video');
+    if (video) {
+      video.muted = true;
+      video.play().catch(error => {
+        console.error('Safari prevented the video from autoplaying:', error);
+      });
+    }
+  }
+
+
+  constructor(private router: Router){}
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
@@ -46,17 +70,30 @@ export class HomeComponent implements OnInit {
       (bannerFourPosition! <= navbarHeight! && bannerFourPosition! >= -this.bannerFour!.offsetHeight)
     ) {
       this.navbar?.classList.add('black');
+      this.menu?.classList.add('black'); 
+  
       const navBarTextElements = document.querySelectorAll('.navBarText');
       navBarTextElements.forEach((element) => {
         element.classList.add('black');
       });
     } else {
       this.navbar?.classList.remove('black');
+      this.menu?.classList.remove('black'); 
+  
       const navBarTextElements = document.querySelectorAll('.navBarText');
       navBarTextElements.forEach((element) => {
         element.classList.remove('black');
       });
     }
+  }
+
+  resetNavbarState(): void {
+    this.navbar?.classList.remove('black');
+    this.menu?.classList.remove('black'); 
+    const navBarTextElements = document.querySelectorAll('.navBarText');
+    navBarTextElements.forEach((element) => {
+      element.classList.remove('black');
+    });
   }
 
 }

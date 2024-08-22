@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, HostListener, OnInit} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
@@ -12,7 +12,7 @@ import { CartService } from './services/cart.service';
 export class AppComponent implements OnInit {
 
 
-  title = 'finalProject';
+  title = 'Hugh Jackedman';
 
   searchString: string = "";
 
@@ -24,6 +24,9 @@ export class AppComponent implements OnInit {
 
   cartQuantity=0;
 
+  navbar!: HTMLElement | null;
+
+  isWhiteNavbar = false;
 
   constructor(private actRoute: ActivatedRoute, private router: Router, private userService: UserService, private cartService: CartService) { 
     this.router.events.subscribe((event) =>{
@@ -31,15 +34,42 @@ export class AppComponent implements OnInit {
         this.UpdateStatus();
       }
     });
+
     this.cartService.getCartObservable().subscribe((newCart) => {
       this.cartQuantity = newCart.totalCount;
     });
   }
+    
+  
 
 
   ngOnInit(): void {
     this.UpdateStatus();
+  
 
+     // Listen for route changes
+     this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (!this.router.url.includes('home') || !this.router.url.includes('signin')) {
+          this.isWhiteNavbar = false; // Reset when navigating away from home
+        }
+      }
+    });
+  }
+
+  // Toggles Navbar Color When Over Content of same color
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const navbar = document.querySelector('.navBar');
+    const banners = document.querySelectorAll('.bannerThree, .bannerFour');
+    this.isWhiteNavbar = Array.from(banners).some(banner => {
+      const rect = banner.getBoundingClientRect();
+      return rect.top <= navbar!.clientHeight && rect.bottom >= 0;
+    });
+  }
+
+  onNavbarChangeColor(isWhiteNavbar: boolean) {
+    this.isWhiteNavbar = isWhiteNavbar;
   }
 
 // Toggles the visiblity of the search input field

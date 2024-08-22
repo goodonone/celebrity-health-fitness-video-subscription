@@ -1,9 +1,18 @@
+.appContainer{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 nav {
   padding-top: 10px;
   padding-left: 10px;
   position: fixed;
-  top: 0;
-  width: 99%;
+  top: 2rem;
+  left: 48.5%;
+  transform: translate(-49%, -50%);
+  width: 98%;
+  max-width: 2200px;
   z-index: 4;
 }
 
@@ -16,19 +25,8 @@ nav {
 
 /* Effect when navbar turns black */
 .navBar.black {
-  background-color: black !important;
-  color: white !important;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.navBar .navBarText.black {
-  color: white !important;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-}
-
-.navBar.black .logo {
-  filter: invert(1) brightness(10000%) contrast(100%);
-  transition: filter 0.3s ease-in-out;
+  box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
+  transition: box-shadow 0.3s ease-in-out;
 }
 /* End */
 
@@ -68,6 +66,7 @@ mat-icon:hover {
 
 img.logo{
   transform: scale(90%,90%);
+  transition: opacity 0.3s ease-in-out;
 }
 
 .logoImage{
@@ -108,11 +107,54 @@ label {
 }
 
 
+.content{
+  flex: 1;
+}
+
+
+/* Footer Starts Here */
+
+.footerContainer {
+  /* box-sizing: border-box; */
+  position: relative;
+  width: 100%;
+  margin: auto;
+  background-color: #C7FF20;
+  font-size: smaller;
+  height: 60px;
+  max-width: 2200px;
+  margin-bottom: -100px;
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  top: 10%;
+  right: 0;
+  bottom: 0;
+  padding-left: 10px;
+}
+
+.footer {
+  cursor: pointer;
+}
+
+.reddot {
+  border-radius: 100em;
+  border-style: hidden;
+  background-color: white;
+  padding: .1em 0.45em;
+}
+
+::placeholder {
+  text-align: center;
+}
+
 /* Makes Nav Flexible */
 
 @media screen and (min-width: 500px) and (max-width: 850px) {
 nav{
-  width: 94vw;
+  width: 97%;
 }
 
   label {
@@ -132,15 +174,20 @@ nav{
     clear: right;
     z-index: 100;
     right: 0;
-  }
-
-  .menu {
     margin-top: 65px;
     margin-right: 1px;
     color: Black;
     background-color: #C7FF20;
     opacity: 90%;
     border-radius: 6px; 
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+
+  .menu.black {
+    /* background-color: rgb(255, 255, 255) !important; */
+    /* color: #000000 !important; */
+    box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
+    transition: background-color 0.3s ease-in-out;
   }
 
   #toggle:checked + .menu {
@@ -150,38 +197,4 @@ nav{
   }
 
   
-}
-
-/* Footer Starts Here */
-
-.footerContainer {
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-  background-color: #C7FF20;
-  font-size: smaller;
-  height: 70px;
-  margin-bottom: -100px;
-}
-
-footer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding-left: 10px;
-}
-
-.footer {
-  cursor: pointer;
-}
-.reddot {
-  border-radius: 100em;
-  border-style: hidden;
-  background-color: white;
-  padding: .1em 0.45em;
-}
-
-::placeholder {
-  text-align: center;
 }

@@ -4,7 +4,8 @@
 
   mat-card{
     width: 32.8rem;
-    margin-left: 0.2rem;
+    max-width: 700px;
+    margin-left: 0.6rem;
   }
 
 input {

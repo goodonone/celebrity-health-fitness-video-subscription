@@ -1,18 +1,27 @@
 .background {
     width: 100%;
-    height: 100vh;
-    margin-bottom: 12rem;
+    /* height: 100vh; */
+    height: 82vh;
+    /* margin-bottom: 12rem; */
+    max-width: 2000px;
+    position: relative;
+    margin: auto;
 }
 
 .card{
     margin-left: 3rem;
 }
 
-.flexContainer {
+.container {
     display: flex;
     flex-direction: row;
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
     justify-content: space-evenly;
     padding-top: 5rem;
+    /* max-width: 1500px; */
 }
 
 .videoBackground {
@@ -28,9 +37,15 @@
     z-index: 0;
 }
 
-
 .overlay {
-    margin-top: 6rem;
+    /* position: absolute;
+    top: 0;
+    left: 10%; */
+    /* margin-top: 1rem; */
+    margin-right: 5rem;
+    flex-direction: column;
+    height: 100%;
+    max-height: 550px;
 }
 
 .textContainer {
@@ -50,6 +65,7 @@
     animation: fade-in 2s linear;
     animation-fill-mode: both;
     z-index: 1;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes fade-in {
@@ -68,6 +84,8 @@
 
 .otherText {
     font-family: 'Outfit', sans-serif;
+    height: 100%;
+    max-height: 550px;
     text-align: center;
     justify-content: center;
     color: white;
@@ -75,12 +93,13 @@
     margin-top: 1rem;
     animation: zoomIn 0.25s;
     animation-iteration-count: infinite;
-    line-height: 5vw;
+    line-height: 5rem;
     animation: fade-in-two 2s linear;
     animation-delay: 3s;
     opacity: 0;
     animation-fill-mode: both;
-    z-index: 1;
+    /* z-index: 1; */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 @keyframes fade-in-two {
@@ -94,28 +113,49 @@
 }
 
 .card {
-    background-color: #000000;
-    height: 41.5rem;
-    width: 55rem;
+    /* background-color: #000000; */
+    position:relative;
+    background-color: transparent !important;
+    box-shadow: none;
+    /* height: 41.5rem; */
+    height: 62vh;
+    max-height: 550px;
+    /* max-height: 700px; */
+    /* width: 55rem; */
+    width: 55vw;
+    max-width: 800px;
     border-radius: 1.4rem;
     opacity: 100%;
 }
 
 .innerCardTwo {
-    justify-content: space-between;
-    height: 600px;
-    width: 800px;
-    height: 30rem;
-    width: 50rem;
-    background-color: rgb(0, 0, 0);
+    position: absolute;
+    /* justify-content: space-between; */
+    bottom: 2rem;
+    right: 0;
+    /* transform: translate(-55%, 0%); */
+    /* height: 600px;
+    width: 800px; */
+    /* height: 30rem; */
+    height: 62vh;
+    max-height: 550px;
+    /* width: 50rem; */
+    width: 55vw;
+    max-width: 800px;
+    /* background-color: rgb(0, 0, 0); */
+    background-color: transparent !important;
+    border-radius: 1.4rem;
     opacity: 100%;
 }
 
 .alreadyMemberText {
     position: absolute;
-    top: 117%;
-    left: 56%;
-    right: 0;
+    /* top: 117%; */
+    bottom: -1.5rem;
+    /* bottom: 5%; */
+    /* left: 56%; */
+    /* right: 10rem; */
+    right: 20%;
     cursor: pointer;
     padding: 0;
     z-index: 100;
@@ -147,9 +187,9 @@
         object-fit: 100vh;
     }
 
-    .flexContainer {
+    .container {
         flex-wrap: wrap;
-        flex-direction: column;
+        /* flex-direction: column; */
         padding-top: 0rem;  
     }
 
@@ -178,7 +218,7 @@
         margin-right: auto;
     }
 
-    .flexContainer {
+    .container {
         flex-wrap: wrap;
         flex-direction: column;
         padding-top: 0rem;

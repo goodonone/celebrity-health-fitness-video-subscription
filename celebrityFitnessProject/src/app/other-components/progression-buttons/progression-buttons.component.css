@@ -1,17 +1,25 @@
 :host {
-  position: fixed;
-  bottom: 30%;
-  left: 45%;
-  background-color: rgb(255, 255, 255);
+  position: absolute;
+  /* bottom: 30%; */
+  bottom: 6.5rem;
+  /* left: 45%; */
+  left: 20rem;
+  background-color: rgb(255, 255, 255) transparent !important;
+  /* width: 100%; */
   border-radius: 0.5rem;
   padding-right: 2rem;
   padding-top: 2rem;
 }
 
 .container {
-  height: 72px;
-  width: 28.5rem;
+  /* height: 72px; */
+  height: 20px;
+  max-height: auto;
+  /* width: 28.5rem; */
+  /* width: 100%; */
+  max-width: auto;
   padding: 2rem;
+  width: 100px;
 }
 
 .btn {
@@ -39,9 +47,10 @@
 
 a {
   position: absolute;
-  top: 20%;
+  top: 40%;
   right: 84%;
   padding: 0.2rem;
+  cursor: pointer;
 }
 
 a:hover {

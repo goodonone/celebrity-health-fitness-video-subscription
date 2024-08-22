@@ -1,15 +1,24 @@
+.maxContainer{
+  height: auto;
+  width: auto;
+  max-width: 3000px;
+  margin: auto;
+}
+
 /* Banner One Styling */
 
 .banner {
   position: relative;
   margin-top: -80px;
   width: 100%;
+  height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
 .overlay {
   position: absolute;
-  top: 45%; 
+  top: 50%; 
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -59,7 +68,7 @@
   border: solid;
   border-radius: 0.3vw;
   width: 7vw;
-  padding: 0.3vw;
+  padding: 0.55vw;
   animation: pulse 0.25s;
   animation-iteration-count: infinite;
   cursor: pointer;
@@ -85,16 +94,18 @@
 
 .bannerTwo {
   height: 105vh;
+  /* max-height: 130vh; */
   margin: auto;
   background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
   background-size: cover;
+  background-position: center center;
 }
 
 .textOverlay {
   font-family: "Outfit", sans-serif;
   font-weight: 300;
   padding-top: 60px;
-  font-size: 150px;
+  font-size: 10rem;
   font-weight: 400;
   line-height: 1.6;
   color: white;
@@ -115,6 +126,8 @@
   justify-content: space-evenly;
   margin: auto;
   height: 100vh;
+  width: auto;
+  max-width: 3000px;
   position: relative;
   flex-direction: row;
   align-items: center;
@@ -122,7 +135,10 @@
 
 .card {
   height: 700px;
+  max-height: 800px;
+  aspect-ratio: 3/2.5;
   width: 500px;
+  max-width: 600px;
   background-image: url("/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg");
   background-size: cover;
   overflow: hidden;
@@ -155,6 +171,8 @@
   justify-content: space-evenly;
   margin: auto;
   height: 100vh;
+  width: auto;
+  max-width: 3000px;
   position: relative;
   flex-direction: row;
   align-content: center;
@@ -162,7 +180,10 @@
 
 .cardTwo {
   height: 700px;
+  max-height: 800px;
   width: 500px;
+  max-width: 600px;
+  aspect-ratio: 3/2.5;
   overflow: hidden;
   border-radius: 8px;
   padding-right: 20px;
@@ -174,7 +195,7 @@
   color: black;
   line-height: 1.5;
   padding-top: 19rem;
-  padding-right: 100px;
+  /* padding-right: 100px; */
 }
 
 .workoutText {
@@ -201,11 +222,14 @@ label {
 
 .bannerFive {
   display: flex;
+  flex-direction: row;
   align-items: center;
   position: relative;
   height: 100vh;
   width: 100%;
+  max-width: 3000px;
   background: black;
+  margin: auto;
 }
 
 .carouselHeading {
