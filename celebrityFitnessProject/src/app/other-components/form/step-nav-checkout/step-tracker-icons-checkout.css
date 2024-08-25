@@ -79,7 +79,7 @@
   }
 }
 
-@media screen and (min-width: 500px) and (max-width: 892px) {
+@media screen and (min-width: 360px) and (max-width: 892px) {
 
   .step-display {
     padding-left: 0rem;

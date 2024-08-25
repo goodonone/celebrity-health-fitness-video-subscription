@@ -5,6 +5,15 @@
   margin: auto;
 }
 
+.videoBackground{
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  overflow: hidden;
+  max-width: 3000px;
+  margin: auto;
+}
+
 /* Banner One Styling */
 
 .banner {
@@ -29,6 +38,7 @@
   margin: auto;
   text-align: center;
   justify-content: center;
+  width: 100rem;
 }
 
 .heading {
@@ -41,7 +51,7 @@
   padding: 0;
 }
 
-.headingContd {
+/* .headingContd {
   font-family: "Outfit", sans-serif;
   text-align: center;
   margin: auto;
@@ -50,7 +60,7 @@
   font-size: 5vw;
   margin: 0 0 0 -5px;
   padding: 0;
-}
+} */
 
 .overlayTwo {
   position: absolute;
@@ -99,15 +109,16 @@
   background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
   background-size: cover;
   background-position: center center;
+  box-sizing: border-box;
 }
 
 .textOverlay {
   font-family: "Outfit", sans-serif;
   font-weight: 300;
-  padding-top: 60px;
-  font-size: 10rem;
+  /* padding-top: 60px; */
+  font-size:  10rem;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 20vw;
   color: white;
   text-align: center;
 }
@@ -186,7 +197,7 @@
   aspect-ratio: 3/2.5;
   overflow: hidden;
   border-radius: 8px;
-  padding-right: 20px;
+  /* padding-right: 20px; */
 }
 
 .cardTextTwo {
@@ -194,7 +205,7 @@
   margin: auto;
   color: black;
   line-height: 1.5;
-  padding-top: 19rem;
+  padding-top: 10rem;
   /* padding-right: 100px; */
 }
 
@@ -225,7 +236,7 @@ label {
   flex-direction: row;
   align-items: center;
   position: relative;
-  height: 100vh;
+  height: 120vh;
   width: 100%;
   max-width: 3000px;
   background: black;
@@ -246,7 +257,6 @@ label {
   font-size: 70px;
   height: 3vw;
 }
-
 
 /* Media Queries */
 
@@ -270,7 +280,7 @@ label {
   }
 
   .overlayTwo {
-    top: 180%;
+    top: 200%;
     transform: translate(-50%, -50%);
   }
 
@@ -294,18 +304,29 @@ label {
     background-position-x: center;
   }
 
+  .textContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width:50rem;
+  }
+
   .heading {
     font-size: 3rem;
   }
 
-  .headingContd {
+  /* .headingContd {
     font-size: 3rem;
-  }
+  } */
 
   .textOverlay {
-    position: absolute;
+    /* position: absolute; */
     padding: 200px 0 200px 0;
-    font-size: 97px;
+    width: 100%;
+    font-size: 4rem;
+    line-height: 5rem;
   }
 
   .containerOne {
@@ -313,10 +334,17 @@ label {
     flex-wrap: wrap;
     height: 80vh;
     padding-top: 70px;
+    margin-bottom: 10rem;
   }
 
   .card {
     transform: scale(80%, 80%);
+    width: auto;
+    min-width: 250px;
+    max-width: 500px;
+    height: auto;
+    min-height: 600px;
+    max-height: 650px;
   }
 
   .nutritionText {
@@ -331,6 +359,12 @@ label {
     display: flex;
     flex-direction: column;
     font-size: 1.5rem;
+    padding-top: 10px;
+    padding-bottom: 90px;
+    padding-right: 0;
+    /* padding-left: 5rem; */
+    margin-top: 3rem;
+    width: auto;
   }
 
   .bannerFour {
@@ -347,15 +381,21 @@ label {
 
   .cardTwo {
     transform: scale(80%, 80%);
-    margin-top: 120px;
+    width: auto;
+    min-width: 250px;
+    max-width: 500px;
+    height: auto;
+    min-height: 600px;
+    max-height: 650px;
+    margin-top: 300px;
   }
 
   .workoutText {
-    padding-bottom: 30px;
+    padding-bottom: 0;
     padding-left: 10px;
     text-align: left;
     width: 75%;
-    margin-top: 0px;
+    margin-top: -50px;
   }
 
   .cardTextTwo {
@@ -363,8 +403,9 @@ label {
     flex-direction: column;
     font-size: 1.5rem;
     padding-top: 10px;
+    padding-bottom: 90px;
     padding-right: 0;
-    margin-top: -50px;
+    margin-top: 3rem;
   }
 
   .label {
@@ -385,10 +426,19 @@ label {
 
   .bannerFive {
     height: 150vh;
+    padding-top: 15rem;
   }
 
   .carouselHeading {
-    font-size: 50px;
-    margin-top: 100px;
+    font-size: 4rem;
+    z-index: 1;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    /* margin-top: 100px; */
+    width: 100%;
+    height: 15vw;
+    margin-bottom: 10rem;
+    line-height: 3rem;
   }
 }

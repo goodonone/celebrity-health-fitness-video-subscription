@@ -45,7 +45,7 @@ p {
   line-height: 1.5rem;
 }
 
-@media screen and (min-width: 500px) and (max-width: 893px){
+@media screen and (min-width: 360px) and (max-width: 893px){
   mat-card{
     margin-top: 0;
     padding-top: 0;

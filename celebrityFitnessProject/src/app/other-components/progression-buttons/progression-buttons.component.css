@@ -1,10 +1,12 @@
 :host {
   position: absolute;
+  width: 28.125em;
+  /* position: relative; */
   /* bottom: 30%; */
-  bottom: 6.5rem;
+  bottom: 3rem;
   /* left: 45%; */
-  left: 20rem;
-  background-color: rgb(255, 255, 255) transparent !important;
+  left: 21rem;
+  background-color: transparent !important;
   /* width: 100%; */
   border-radius: 0.5rem;
   padding-right: 2rem;
@@ -19,7 +21,9 @@
   /* width: 100%; */
   max-width: auto;
   padding: 2rem;
-  width: 100px;
+  /* width: 100px; */
+  width: 100%;
+  padding: 0;
 }
 
 .btn {
@@ -38,6 +42,12 @@
 .btn-next,
 .btn-confirm {
   margin: 1rem 0 1rem auto;
+  position: absolute;
+  top: 0%;
+  right: 9%;
+  background-color: #C7FF20;
+  border-color: #C7FF20;
+  cursor: pointer;
 }
 
 .btn-confirm {
@@ -66,45 +76,52 @@ a:hover {
 }
 
 @media (min-width: 30.5em) {
-  :host {
+  /* :host {
     width: 28.125em;
     position: relative;
-  }
+  } */
 
-  .container {
+  /* .container {
     width: 100%;
     padding: 0;
-  }
+  } */
 
-  .btn-next,
-  .btn-confirm {
-    position: absolute;
+  /* .btn-next,
+  .btn-confirm { */
+    /* position: absolute;
     top: 0%;
     right: 9%;
     background-color: #C7FF20;
     border-color: #C7FF20;
-    cursor: pointer;
-  } 
+    cursor: pointer; */
+  /* }  */
 }
 
-@media screen and (min-width: 500px) and (max-width: 892px) {
+@media screen and (min-width: 360px) and (max-width: 1079px) {
 
   :host {
-    width: 23rem;
+    /* width: 23rem; */
+    width: 70%;
     position: absolute;
-    bottom: 6%;
-    left: 4%;
-    background-color: rgb(255, 255, 255);
+    bottom: 4.5rem;
+    /* left: 10%; */
+    left: auto;
+    right: 2rem;
+    /* background-color: transparent !important; */
+    background-color: rgb(88, 25, 213);
     border-radius: 0.5rem;
-    padding-right: 1rem;
-    padding-top: 2.5rem;
-    padding-left: 5rem;
+    /* padding-right: 1rem; */
+    
+    /* padding-top: 2.5rem; */
+    /* padding-left: 5rem; */
   }
 
   .container {
+    background-color: rgb(88, 25, 213);
     height: 0;
     width: 100%;
-    padding: 2rem;
+    /* width: 60%; */
+    /* padding: 2rem; */
     margin-right: 1rem;
     /* background-color: #71BBF5; */
     /* min-width: 18rem; */
@@ -113,16 +130,21 @@ a:hover {
 
   a {
     position: absolute;
-    top: 20%;
+    top: 22%;
     right: 82%;
     padding: 0.2rem;
+  }
+
+  .btn {
+    padding: 1.3rem;
+    border-radius: 6px;
   }
 
   .btn-next,
   .btn-confirm {
     position: absolute;
     top: 0%;
-    right: 9%;
+    right: 0;
     background-color: #C7FF20;
     border-color: #C7FF20;
     cursor: pointer;

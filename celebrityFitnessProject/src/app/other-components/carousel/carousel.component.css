@@ -1,16 +1,17 @@
 .carouselMain {
     display: flex;
+    position: relative;
     justify-content: center;
     width: 80vw;
     max-width: 2000px;
-    margin: 120px auto 0 auto;
+    margin: 80px auto 0 auto;
     align-items: center;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
     bottom: 0;
-    padding-top: 20px;
+    /* padding-top: 50px; */
 }
 
 .image-container {
@@ -59,45 +60,136 @@ p {
 
 .text-container p.image-active {
     display: block;
+    position: absolute;
+    top: 30%;
+    left: 50%;
     margin: auto;
-    width: 50%;
+    width: 45%;
     text-align: left;
     color: white;
     padding-bottom: 180px;
 }
 
+
+/* Class added contextually based on Tier of Client */
+.motivatedClass {
+    background-color: white;
+    color: #000000;
+    padding: 0.2rem
+    /* font-style: italic; */
+}
+
+/* Class added contextually based on Tier of Client */
+.allInClass {
+    background-color: rgb(0, 0, 0);
+    color: #C7FF20;
+    padding: 0.2rem
+    /* font-style: italic; */
+}  
+
 @media screen and (min-width: 300px) and (max-width: 1080px) {
 
     .carouselMain {
         display: flex;
-        flex-wrap: wrap;
+        /* flex-wrap: wrap; */
+        /* justify-content: space-evenly; */
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         margin: auto;
         position: absolute;
-        top: 0%;
+        top: 0;
         right: 0;
         left: 0;
         bottom: 0;
-        padding-top: 0px;
+        height: 100%;
+        width: 100%;
+        /* padding-top: 2rem; */
     }
 
     .image-container {
-        transform: scale(70%, 70%);
-        padding: 0;
-        margin: 0;
+        /* height: auto;
+        width: 100%;
+        margin: auto;
+        margin-top: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); */
+
+        position: relative;
+        /* transform: scale(1); */
+        width: 70vw;
+        max-width: 100%;
+        height: auto;
+        /* width: 100%;
+        margin: auto; */
+        max-width: 700px;
+        margin-bottom: 20px
     }
 
-    .textContainer {
-        margin: -300px 0 0 -30px;
+    /* .image-container img.image-active {
+        width: 100%;
+        height: auto;
+        max-height: 700px;
+    } */
+
+    /* img.image-active{
+        height: auto;
+        max-height: 700px;
+        transform: scale(80%, 80%);
+    } */
+    
+    .image-container img {
+        width: 100%;
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 8px;
+        margin: auto;
+    }
+    /* .textContainer {
+        margin: -400px 0 0 0;
+        height: 500px;
+        width: 90vw;
+        min-width: 500px;
+        max-width: 500px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    } */
+
+    .text-container {
+        /* position: relative;
+        width: 80vw;
+        max-width: 700px;
+        text-align: center; */
+
+        position: relative;
+        width: 70vw;
+        max-width: 100%; 
+        text-align: center;
+        color: white;
     }
 
-    .text-container p.image-active {
-        margin-top: -200px;
-        width: 75vw;
+    /* .text-container p.image-active {
+        margin-top: -500px;
+        min-width: 350px;
         text-align: unset;
         padding-bottom: 0;
+    } */
+
+    .text-container p.image-active {
+        position: static;
+        margin: 0 auto;
+        width: 100%;
+        text-align: center;
     }
 
-   
+    .text-container p {
+        position: relative;
+        padding: 1rem;
+        font-size: 1.5rem;
+    }
 
 
 }

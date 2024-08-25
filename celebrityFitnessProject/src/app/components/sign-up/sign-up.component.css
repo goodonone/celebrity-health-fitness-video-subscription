@@ -1,15 +1,9 @@
 .background {
     width: 100%;
-    /* height: 100vh; */
     height: 82vh;
-    /* margin-bottom: 12rem; */
-    max-width: 2000px;
+    max-width: 3000px;
     position: relative;
     margin: auto;
-}
-
-.card{
-    margin-left: 3rem;
 }
 
 .container {
@@ -126,6 +120,7 @@
     max-width: 800px;
     border-radius: 1.4rem;
     opacity: 100%;
+    margin-left: 3rem;
 }
 
 .innerCardTwo {
@@ -170,33 +165,57 @@
     color: #C7FF20;
 }
 
-@media screen and (min-width: 500px) and (max-width: 1218px) {
+
+
+@media screen and (min-width: 1080px) and (max-width: 1367px) {
+
+    /* .videoBackground{
+        height: auto;
+        width: auto;
+        overflow: hidden;
+    } */
 
     .background {
         width: 100%;
-        height: fit-content;
-        margin-bottom: 12rem;
+        /* height: fit-content; */
+        height: 100vh;
+        margin-bottom: 20rem;
     }
 
     mat-card.card {
-        margin-left: auto;
-        margin-right: auto;
+      margin: auto;
     }
 
     .videoBackground {
         object-fit: 100vh;
     }
 
+    .card{
+        margin-left: 0rem;
+    }
+
     .container {
         flex-wrap: wrap;
-        /* flex-direction: column; */
-        padding-top: 0rem;  
+        margin: auto;
+        flex-direction: column;
+        justify-content: space-between;
+        position: absolute;
+        /* top:0; */
+        /* bottom: 1; */
+        left: 50%;
+        /* top: 150%;
+        left: 50%; */
+        /* transform: translate(-50%, -50%); */
+        padding-top: 12rem;  
+        /* margin-top: 12rem; */
     }
 
     .overlay {
-        margin-top: 4rem;
-        margin-bottom: 3rem;
+        margin-right: 0rem;
         text-align: center;
+        margin: auto;
+        margin-bottom: 4rem;
+        margin-top: 4rem;
     }
 
     .welcome {
@@ -209,33 +228,88 @@
     }
 }
 
-@media screen and (min-width: 500px) and (max-width: 892px) {
+@media screen and (min-width: 360px) and (max-width: 1079px) {
 
-    mat-card.card {
-        width: 32rem;
+/* max-width: 892px */
+    .videoBackground{
+        height: 120vh;
+        width: 100%;
+    }
+
+    .background{
+        width: 100%;
         height: fit-content;
-        margin-left: auto;
-        margin-right: auto;
+        margin-bottom: 0;
     }
 
     .container {
+        display: flex;
+        position: relative;
         flex-wrap: wrap;
         flex-direction: column;
-        padding-top: 0rem;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        min-height: 100vh;
+        width: 100%;
+        min-width: 20rem;
+        box-sizing: border-box;
+        transform: translate(-50%, 0%);
+        margin: 0 auto 1rem auto; 
+        padding: 0 20px;
+    }
+
+    .overlay {
+        text-align: center;
+        margin: 5rem auto 20rem auto;
+    }
+
+    mat-card.card {
+        max-width: 32rem;
+        width: 90%;
+        margin: 1rem auto;
+        box-sizing: border-box;
+        left: 0;
+        right: 0;
+        /* right: auto; */
+    }
+
+    .card {
+        /* margin-left: 0; */
+        height: 45rem;
+        width: 100%;
+        /* margin: 0 auto; */
+        /* transform: none; */
+        /* margin-left: auto;
+        margin-right: auto; */
+        /* margin: auto; */
+        /* height: auto; */
+        /* height: 700px; */
+        /* max-height: 550px; */
     }
 
     .innerCardTwo {
-        height: 55rem;
-        width: 25rem;
-        background-color: rgb(0, 0, 0);
+        height: 46rem;
+        max-height: 800px;
+        width: 100%;
+        min-width: 20rem;
+        max-width: 25rem;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%); 
+        /* margin-left: auto;
+        margin-right: auto; */
+        background-color: transparent !important;
         opacity: 100%;
+        box-sizing: border-box;
     }
 
     .alreadyMemberText {
         position: absolute;
-        top: 93%;
-        left: 35%;
-        right: 0;
+        top: auto;
+        left: 20%;
+        bottom: 0.1%;
+        /* right: 0; */
         cursor: pointer;
         padding: 0;
         z-index: 100;

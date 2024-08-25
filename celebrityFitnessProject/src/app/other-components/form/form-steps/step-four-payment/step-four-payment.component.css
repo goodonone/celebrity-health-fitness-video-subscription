@@ -110,6 +110,18 @@ margin-right: 1rem;
 width: 100%;
 }
 
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
+}
+
+
 @media (min-width: 30.5em) {
   label {
     margin-bottom: 0rem;
@@ -130,7 +142,7 @@ width: 100%;
   }
 }
 
-@media screen and (min-width: 500px) and (max-width: 892px) {
+@media screen and (min-width: 360px) and (max-width: 892px) {
 
   .step-four{
     margin-top: 0;

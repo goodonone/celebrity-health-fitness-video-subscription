@@ -5,7 +5,14 @@
     </div>
     <div *ngIf="images && images.length > 0" class="text-container">
         <p *ngFor="let image of images; let i=index" [ngClass]="{'image-active': selectedIndex === i}">
-            <strong [innerHTML]="image.manName"></strong><br><br> <i>{{image.imageText}}</i>
+            <!-- <strong [innerHTML]="image.manName"></strong><br><br> 
+            <i>{{image.imageText}}</i> -->
+            <strong>
+                {{ image.manNameBefore }}
+                <span  [ngClass]="image.highlightClass">{{ image.manNameHighlighted }}</span>
+                {{ image.manNameAfter }}
+            </strong><br><br>
+            <i>{{ image.imageText }}</i>
         </p>
     </div>
 </div>

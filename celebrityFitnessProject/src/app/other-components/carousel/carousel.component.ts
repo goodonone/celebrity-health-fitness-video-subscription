@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-interface carouselImage {
+export interface carouselImage {
   imageSrc: string;
   imageAlt: string;
-  manName: string;
+  manNameBefore: string;
+  manNameHighlighted: string;
+  manNameAfter: string;
+  highlightClass: 'motivatedClass' | 'allInClass';
   imageText: string;
 }
 
@@ -20,10 +23,13 @@ export class CarouselComponent implements OnInit {
 
   selectedIndex = 0;
 
+  tierName?: string;
+
   ngOnInit(): void {
     if (this.autoSlide) {
       this.autoSlideImages();
     }
+
   }
 
   autoSlideImages(): void {

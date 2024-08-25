@@ -38,6 +38,10 @@ mat-card-title{
   font-size: large;
 }
 
+input:focus{
+  border-color: #dcde50
+}
+
 input:focus,
 input:valid {
   color: rgb(0, 0, 0);
@@ -67,6 +71,17 @@ input:valid {
 
 span #showHide{
 padding-bottom: 9px;
+}
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
 }
 
 @media (min-width: 37.5em) {
@@ -118,12 +133,22 @@ padding-bottom: 9px;
   }
 }
 
-@media screen and (min-width: 500px) and (max-width: 892px){
+@media screen and (min-width: 360px) and (max-width: 892px){
+  
+  mat-card{
+    height: 25rem;
+  }
+
+  mat-card-subtitle {
+    display: none;
+  }
+  
   .step-one{
     margin-top: 0;
     padding-top: 0;
     margin: auto;
-    width: 28rem;
+    /* width: 28rem; */
+    width: 98%;
   }
 
   input {

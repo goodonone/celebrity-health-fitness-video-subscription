@@ -21,7 +21,7 @@
     }
 }
 
-@media screen and (min-width: 500px) and (max-width: 717px) {
+@media screen and (min-width: 300px) and (max-width: 717px) {
     .videoBackground {
         object-fit: none;
         height: 100vh;

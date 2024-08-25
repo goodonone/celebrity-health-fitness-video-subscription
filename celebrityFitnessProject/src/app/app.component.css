@@ -13,7 +13,7 @@ nav {
   transform: translate(-49%, -50%);
   width: 98%;
   max-width: 2200px;
-  z-index: 4;
+  z-index: 10;
 }
 
 .navBar {
@@ -26,7 +26,7 @@ nav {
 /* Effect when navbar turns black */
 .navBar.black {
   box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
-  transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.1s ease-in-out;
 }
 /* End */
 
@@ -117,6 +117,8 @@ label {
 .footerContainer {
   /* box-sizing: border-box; */
   position: relative;
+  bottom: 0;
+  left: 0;
   width: 100%;
   margin: auto;
   background-color: #C7FF20;
@@ -124,12 +126,16 @@ label {
   height: 60px;
   max-width: 2200px;
   margin-bottom: -100px;
+  margin-top: 2rem;
+  z-index: 10;
+  margin-top: 0px;
 }
 
 footer {
   position: absolute;
   left: 0;
   top: 10%;
+  z-index: 10;
   right: 0;
   bottom: 0;
   padding-left: 10px;
@@ -152,9 +158,10 @@ footer {
 
 /* Makes Nav Flexible */
 
-@media screen and (min-width: 500px) and (max-width: 850px) {
+@media screen and (min-width: 360px) and (max-width: 850px) {
 nav{
-  width: 97%;
+  width: 95%;
+  /* min-width: 97%; */
 }
 
   label {
@@ -180,14 +187,14 @@ nav{
     background-color: #C7FF20;
     opacity: 90%;
     border-radius: 6px; 
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    transition: background-color 0.1s ease-in-out, color 0.3s ease-in-out;
   }
 
   .menu.black {
     /* background-color: rgb(255, 255, 255) !important; */
     /* color: #000000 !important; */
     box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
-    transition: background-color 0.3s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
   }
 
   #toggle:checked + .menu {
@@ -196,5 +203,8 @@ nav{
     top: 0;
   }
 
-  
+  .footerContainer{
+    position: relative;
+  }
+
 }
