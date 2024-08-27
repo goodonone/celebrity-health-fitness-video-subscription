@@ -9,31 +9,36 @@
          alt="Hugh-Jackedman-Logo" routerLink="/home">
       </div>
     </a>
+    <!-- &#9776; -->
     
     <span class="spacer"></span>
-    <label id="hamburger" for="toggle">&#9776;</label>
-    <input type="checkbox" id="toggle">
+    <label id="hamburger" for="toggle">
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+    </label>
+    <input type="checkbox" id="toggle" #toggle (change)="menuToggle()">
 
-    <div class="menu" (mouseleave)="minimize()">
+    <div class="menu" id="menu" (mouseenter)="onMenuMouseEnter()" (mouseleave)="onMenuMouseLeave()">
 
-      <h6 class="navBarText" routerLink="/home">Home</h6>
+      <h6 class="navBarText" routerLink="/home" (click)="clearMenu()">Home</h6>
 
-      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup">Sign Up</h6>
-      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signin">Log In</h6>
+      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup" (click)="clearMenu()">Sign Up</h6>
+      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/sign-in" (click)="clearMenu()">Log In</h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]">Workouts</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]" (click)="clearMenu()">Workouts</h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]">Profile</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/profile/', UserId]" (click)="clearMenu()">Profile</h6>
 
-      <h6 class="navBarText" routerLink="/about">About</h6>
+      <h6 class="navBarText" routerLink="/about" (click)="clearMenu()">About</h6>
 
-      <h6 class="navBarText" routerLink="/contact">Contact</h6>
+      <h6 class="navBarText" routerLink="/contact" (click)="clearMenu()">Contact</h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store">Store</h6>
-      <h6 *ngIf="userIsLoggedIn && cartQuantity >= 1" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity">{{cartQuantity}}</span></h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store" (click)="clearMenu()">Store</h6>
+      <h6 *ngIf="userIsLoggedIn && cartQuantity >= 1" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity" (click)="clearMenu()">{{cartQuantity}}</span></h6>
 
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home">Sign Out</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home" (click)="clearMenu()">Sign Out</h6>
 
 
       <form class="form" *ngIf="viewSearchBar" #form="ngForm">

@@ -3,30 +3,31 @@
     position: relative;
     justify-content: center;
     width: 80vw;
-    max-width: 2000px;
-    margin: 80px auto 0 auto;
+    max-width: 3000px;
+    margin: auto auto 0 auto;
     align-items: center;
     position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    /* padding-top: 50px; */
+    top: 50%;
+    /* right: 0; */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* bottom: 0; */
+    height: 100%;
+    width: 100%;
 }
 
 .image-container {
-    transform: scale(80%, 85%);
-    width: 500px;
-    height: 700px;
-    min-width: 500px;
-    min-height: auto;
-    max-width: 700px;
-    max-height: auto;
-    object-fit: cover;
-    overflow: overlay;
+    transform: scale(0.8, 0.8);
+    /* width: 100%; */
+    /* height: auto; */
+    max-height: 700px;
+    min-width: 300px;
+    max-width: 500px;
+    aspect-ratio: 5/7;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+    /* overflow: hidden; */
 }
 
 .text-container {
@@ -38,7 +39,8 @@
 
 p {
     font-family: 'Outfit', sans-serif;
-    font-size: 30px;
+    /* font-size: 30px; */
+    font-size: clamp(1rem, 1.5vw, 2rem);
     line-height: 1.5;
 }
 
@@ -54,8 +56,11 @@ p {
 
 .image-container img.image-active {
     display: block;
-    width: 500px;
-    height: 700px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    aspect-ratio: 3/5;
 }
 
 .text-container p.image-active {
@@ -63,8 +68,9 @@ p {
     position: absolute;
     top: 30%;
     left: 50%;
+    transition: translate(-50%);
     margin: auto;
-    width: 45%;
+    width: 50%;
     text-align: left;
     color: white;
     padding-bottom: 180px;
@@ -73,103 +79,111 @@ p {
 
 /* Class added contextually based on Tier of Client */
 .motivatedClass {
-    background-color: white;
-    color: #000000;
-    padding: 0.2rem
+    background-color: black;
+    color: #ffffff;
+    padding: 0.2rem 0.5rem 0.3rem 0.5rem;
+    border: 0.063rem solid white;
     /* font-style: italic; */
 }
 
 /* Class added contextually based on Tier of Client */
 .allInClass {
-    background-color: rgb(0, 0, 0);
-    color: #C7FF20;
-    padding: 0.2rem
+    background-color: #C7FF20;
+    color: black;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
     /* font-style: italic; */
 }  
 
-@media screen and (min-width: 300px) and (max-width: 1080px) {
+@media screen and (min-width: 300px) and (max-width: 872px) {
 
     .carouselMain {
         display: flex;
-        /* flex-wrap: wrap; */
-        /* justify-content: space-evenly; */
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        margin-top:0;
         margin: auto;
         position: absolute;
-        top: 0;
-        right: 0;
-        left: 0;
-        bottom: 0;
-        height: 100%;
+        top:60%;
+        /* right: 0; */
+        left: 50%;
+        /* bottom: 0; */
+        transform: translate(-50%, -60%);
+        /* height: auto;
+        min-height: 100vh; */
         width: 100%;
-        /* padding-top: 2rem; */
+        /* height: auto; */
+        /* overflow: hidden; */
     }
 
     .image-container {
-        /* height: auto;
-        width: 100%;
-        margin: auto;
-        margin-top: 0;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); */
-
         position: relative;
-        /* transform: scale(1); */
-        width: 70vw;
-        max-width: 100%;
-        height: auto;
-        /* width: 100%;
-        margin: auto; */
-        max-width: 700px;
-        margin-bottom: 20px
+        transform: scale(0.8);
+        width: 100%;
     }
 
-    /* .image-container img.image-active {
-        width: 100%;
+    img.image-active{
         height: auto;
-        max-height: 700px;
-    } */
-
-    /* img.image-active{
-        height: auto;
-        max-height: 700px;
-        transform: scale(80%, 80%);
-    } */
-    
-    .image-container img {
+        /* max-height: 700px; */
         width: 100%;
-        height: auto; /* Maintain aspect ratio */
+        /* max-width: 400px; */
+        display: block;
+        /* transform: scale(100%, 100%); */
+    }
+     
+    .image-container img.image-active {
+        display: block;
+        /* transform: scale(85%, 85%); */
+        /* width: 100%; */
+        width: auto;
+        min-width: 250px;
+       
+        height: auto;
+        min-height: 600px;
+        max-height: 650px;
+        aspect-ratio: 3/5;
+        /* width: 60%; */
+        /* height: 700px; */
+        /* height: 85vh; */
+        /* height: auto;
+        max-height: 700px; */
+        /* min-height: 600px; */
+        max-width: 400px;
+        margin: 0 auto;
         border-radius: 8px;
-        margin: auto;
+        margin-bottom: 0.5rem;
     }
-    /* .textContainer {
-        margin: -400px 0 0 0;
-        height: 500px;
-        width: 90vw;
-        min-width: 500px;
-        max-width: 500px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    } */
 
     .text-container {
-        /* position: relative;
-        width: 80vw;
-        max-width: 700px;
-        text-align: center; */
-
+        width: 90%;
+        max-width: 400px;
         position: relative;
-        width: 70vw;
-        max-width: 100%; 
+        padding: 1rem;
+        padding: 0 1rem
+    }
+
+    .text-container p.image-active {
+        position: relative;
+        width: 90%;
+        /* max-width: 500px; */
+        /* max-width: 100%; */
         text-align: center;
         color: white;
+        font-size: 1.5rem;
+        margin: 0.5rem auto;
+        padding: 0;
+        left: 0;
+        right: 0;
+        top: 0rem;
     }
+
+    /* .text-container {
+        position: relative;
+        width:100%;
+        max-width: 100%; 
+        text-align: center;
+        color: white; 
+    } */
 
     /* .text-container p.image-active {
         margin-top: -500px;
@@ -178,18 +192,27 @@ p {
         padding-bottom: 0;
     } */
 
-    .text-container p.image-active {
-        position: static;
-        margin: 0 auto;
-        width: 100%;
-        text-align: center;
-    }
+  
 
-    .text-container p {
+    /* .text-container p {
         position: relative;
         padding: 1rem;
         font-size: 1.5rem;
+        margin: 0 auto;
+        left:0;
+        right:0;
     }
+
+    .text-container p.image-active {
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        text-align: center;
+        left:0;
+        right:0;
+        top:auto;
+        padding-bottom: 20px;
+    } */
 
 
 }

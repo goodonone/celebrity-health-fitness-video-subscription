@@ -156,13 +156,46 @@ footer {
   text-align: center;
 }
 
+/* Hamburger menu styles */
+/* Hamburger menu styles */
+
 /* Makes Nav Flexible */
 
-@media screen and (min-width: 360px) and (max-width: 850px) {
-nav{
-  width: 95%;
-  /* min-width: 97%; */
-}
+@media screen and (min-width: 300px) and (max-width: 842px) {
+    nav{
+      width: 95%;
+      /* min-width: 97%; */
+    }
+
+    #hamburger {
+      display: inline-block;
+      cursor: pointer;
+      width: 35px;
+      height: 24px;
+      position: relative;
+    }
+
+    .bar1, .bar2, .bar3 {
+      width: 65%;
+      height: 3px;
+      background-color: black;
+      margin: 5px 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+
+    #hamburger.active .bar1 {
+      transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    #hamburger.active .bar2 {
+      opacity: 0;
+    }
+
+    #hamburger.active .bar3 {
+      transform: rotate(45deg) translate(-5px, -6px);
+    }
+
 
   label {
     display: block;
@@ -185,9 +218,9 @@ nav{
     margin-right: 1px;
     color: Black;
     background-color: #C7FF20;
-    opacity: 90%;
+    opacity: 100%;
     border-radius: 6px; 
-    transition: background-color 0.1s ease-in-out, color 0.3s ease-in-out;
+    transition: background-color 0.3ss ease-in-out, color 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
 
   .menu.black {
@@ -198,13 +231,29 @@ nav{
   }
 
   #toggle:checked + .menu {
-    display: flex; flex-direction: column;
+    display: flex; 
+    flex-direction: column;
     position: absolute;
     top: 0;
   }
 
   .footerContainer{
     position: relative;
+  }
+
+  #menu {
+    opacity: 0;
+    transform: translateY(-10px); /* Small upward shift for effect */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    pointer-events: none;
+  }
+  
+  /* Show the menu when the toggle is checked with delay */
+  #toggle:checked ~ #menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 0.3s; /* Adjust the delay as needed */
   }
 
 }

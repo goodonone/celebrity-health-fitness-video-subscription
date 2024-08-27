@@ -107,8 +107,7 @@ a:hover {
     /* left: 10%; */
     left: auto;
     right: 2rem;
-    /* background-color: transparent !important; */
-    background-color: rgb(88, 25, 213);
+    background-color: transparent !important;
     border-radius: 0.5rem;
     /* padding-right: 1rem; */
     
@@ -117,7 +116,7 @@ a:hover {
   }
 
   .container {
-    background-color: rgb(88, 25, 213);
+    /* background-color: rgb(88, 25, 213); */
     height: 0;
     width: 100%;
     /* width: 60%; */
@@ -130,8 +129,9 @@ a:hover {
 
   a {
     position: absolute;
-    top: 22%;
-    right: 82%;
+    top: 70%;
+    /* bottom: -20rem; */
+    left: -1rem;
     padding: 0.2rem;
   }
 

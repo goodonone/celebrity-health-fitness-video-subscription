@@ -1,10 +1,15 @@
 <div class="container">
+        <!-- If New Subscriber and free tier -->
         <div class="signUp" *ngIf="!loggedIn && !checkout">
                 <a *ngIf="activeStep$ > 1 && activeStep$ <= 4" (click)="goBack()">Go Back</a>
         </div>
+
+        <!-- If logged in and upgrading/changing tier from free tier -->
         <div class="upgrade" *ngIf="loggedIn && !payment && !checkout">
                 <a *ngIf="activeStep$ > 1 && activeStep$ <= 2" (click)="goBack()">Go Back</a>
         </div>
+
+        <!-- If logged in and upgrading/changing tier from paid tier -->
         <div class="upgrade" *ngIf="loggedIn && payment && !checkout">
                 <a *ngIf="activeStep$ > 1 && activeStep$ <= 3" (click)="goBack()">Go Back</a>
         </div>

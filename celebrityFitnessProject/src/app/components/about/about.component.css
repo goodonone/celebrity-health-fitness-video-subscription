@@ -3,12 +3,13 @@
 }
 
 .pageContainer {
-  background-color: rgb(255, 255, 255);
+  background-color: #ffffff;
   width: 100vw;
+  /* height: 100vh; */
   max-width: 100%;
-  margin-top: -10rem;
+  /* margin-top: -10rem; */
   overflow-x: hidden;
-  height: fit-content;
+  /* height: fit-content; */
   position: relative;
 }
 
@@ -18,7 +19,7 @@
   text-align: left;
   font-size: 8vw;
   padding-left: 3rem;
-  padding-top: 15rem;
+  padding-top: 8rem;
   font-weight: 600;
 }
 
@@ -38,7 +39,7 @@
 }
 
 .pageContent {
-  padding-top: 5rem;
+  padding-top: 3rem;
 }
 
 .description {

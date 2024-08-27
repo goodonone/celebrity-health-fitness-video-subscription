@@ -1,107 +1,245 @@
 * {
-    font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
-.background {
+/* .background {
     position: relative;
     background-color: #C7FF20;
-    margin-top: -80px;
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    min-height: 100vh;
+} */
+
+.background {
+  position: fixed;
+  /* margin-top: -10rem; */
+  width: 100%;
+  height: 100vh;
+  /* background-image: url("https://images.unsplash.com/photo-1591741543032-bf439b4fd46c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    background-repeat: no-repeat;
+    background-size: cover;
+    zoom: 110%;
+    background-attachment: fixed;
+    background-position-y: 50%; */
+  background-color: #c7ff20;
+  max-width: 3000px;
+  margin-left: auto;
+  margin-right: auto;
+
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* height: auto;
+
+    width: auto; */
 }
 
-.overlay{
-    position: absolute;
+.overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+  /* display: flex;
+    justify-content: center;
+    align-items: center; */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
+
+  /* display: flex;
+    justify-content: space-evenly; */
+
+  /* display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto; */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 mat-card {
-    width: 25rem;
-    height: 25rem;
-    border-radius: 8px;
+  position: relative;
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+  width: 30%;
+  min-width: 400px;
+  max-width: 500px;
+  height: auto;
+  min-height: 400px;
+  max-height: 500px;
+  border-radius: 8px;
+  padding: 1rem;
+  box-sizing: border-box;
+  aspect-ratio: 1/1;
 }
 
-.logo{
-    font-size: 1.5rem;
+form{
+    position: relative;
+}
+
+.logo {
+  font-size: 1.5rem;
 }
 
 input {
-    display: inline-block;
-    width: 21.8rem;
-    height: 2rem;
-    border-radius: 0.25rem;
-    border: 0.063rem solid black;
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 0 0.5rem 1rem;
-    color: black;
-    background-color: white;
-    font-size: 1rem;
+  display: inline-block;
+  /* width: 21.8rem; */
+  width: 95%;
+  height: 2rem;
+  border-radius: 0.25rem;
+  border: 0.063rem solid black;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0 0.5rem 0.5rem;
+  color: black;
+  background-color: white;
+  font-size: 1rem;
 }
 
-input#password{
-    margin-bottom: 0.4rem; 
+input#password {
+  margin-bottom: 0.4rem;
 }
 
 input:focus,
 input:valid {
-    color: rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
 }
 
 .input-details {
-    display: flex;
-    justify-content: space-between;
-    width: 15.437rem;
+  display: flex;
+  justify-content: space-between;
+  width: 15.437rem;
 }
 
 .btn {
-    border-radius: 6px;
+  border-radius: 6px;
 }
 
 .btn-submit:disabled {
-    background-color: rgb(174, 174, 174);
-    border-color: rgb(174, 174, 174);
-    color: rgb(113, 113, 113);
+  background-color: rgb(174, 174, 174);
+  border-color: rgb(174, 174, 174);
+  color: rgb(113, 113, 113);
 }
 
 .btn-submit {
+  background-color: #c7ff20;
+  border-color: #c7ff20;
+  color: black;
+}
+
+.logoImage {
+  width: 13rem;
+  height: 4rem;
+  margin-top: 15px;
+}
+
+.showHide {
+  padding-left: 20%;
+}
+
+span.buttonSpan {
+  padding-left: 19rem;
+}
+
+.errorSpan {
+  text-align: center;
+  padding-top: 3rem, 1rem, 1rem, 1rem;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: 100%;
+
+}
+
+.errorSpan p{
+  color: red;
+  /* font-size: 0.875rem; */
+  font-weight: 500;
+  /* font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  line-height: clamp(0.8rem, 1.5vw, 1.1rem); */
+}
+
+::placeholder {
+  font-size: 1rem;
+}
+
+p {
+  margin-top: 0.3rem;
+}
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
+}
+
+.buttonSpan {
+    display: flex;
+    justify-content: flex-end; /* Right justify the button */
+    padding-right: 1rem; /* Add some padding to the right to ensure it's not too close to the edge */
+}
+
+span.buttonSpan {
+    position: absolute;
+    top: 120%; 
+    left: 48%;
+    transform: translate(-50%);
+    /* width: 100%; 
+    text-align: center; */
+    width: calc(100%); /* Adjust width to fit within card padding */
+    text-align: center;
+    padding: 0 10px; /* Add padding to ensure it doesn't touch the card edges */
+    /* background-color: black; */
+}
+
+button.btn-submit {
+    width: auto;
+    max-width: 200px;
+    padding: 10px 20px;
+    border-radius: 6px;
     background-color: #C7FF20;
-    border-color: #C7FF20;
     color: black;
 }
 
-.logoImage{
-    width: 13rem;
-    height: 4rem;
-    margin-top: 15px;
+@media screen and (min-width: 300px) and (max-width: 862px) {
+  mat-card {
+    width: 95%;
+    min-width: 200px;
+    max-width: 300px;
+    /* min-height: 200px; */
+    max-height: 300px;
+    height: auto;
+    aspect-ratio: 1/1;
+    padding-top: 0.5rem;
+  }
+
+  mat-card-header{
+    padding: 0;
+  }
+
+  mat-card-content {
+    margin-top: 1rem;
+  }
+
+  .logoImage {
+    width: 60%;
+    height: auto;
+    /* margin-top: 15px; */
+  }
+
+  .errorSpan p{
+    color: red;
+    /* font-size: 0.875rem; */
+    font-weight: 500;
+    font-size: clamp(0.7rem, 1.5vw, 1.1rem);
+    line-height: clamp(0.8rem, 1.5vw, 1.1rem);
+  }
 }
-
-.showHide{
-    padding-left: 20%;
-}
-      
-span.buttonSpan{
-    padding-left: 19rem;
-}
-
-.errorSpan{
-    text-align: center;
-    padding-top: 3rem, 1rem, 1rem, 1rem;
-}
-
-::placeholder{
-    font-size: 1rem;
-}
-
-p{
-    margin-top: 0.3rem;
-}
-
-
-

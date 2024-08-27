@@ -20,7 +20,7 @@ export class SignInComponent implements OnInit {
 
   ngOnInit(): void {
     if (localStorage.getItem('userId')) {
-      this.router.navigateByUrl(`/signin`);
+      this.router.navigateByUrl(`/sign-in`);
     }
 
     this.navbar = document.getElementById('navbar');
@@ -36,7 +36,7 @@ export class SignInComponent implements OnInit {
     });
   }
 
-  signin() {
+  signIn() {
     this.userService.login(this.email, this.password).subscribe(
       (response: any) => {
         const userId = response.userId;

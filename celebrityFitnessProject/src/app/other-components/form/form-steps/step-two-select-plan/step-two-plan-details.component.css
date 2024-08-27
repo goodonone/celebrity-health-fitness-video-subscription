@@ -183,7 +183,6 @@ input[matInput]:focus::placeholder {
 }
 
 
-
 @media (min-width: 30.5em) {
 
   .mat-button-toggle-group {
@@ -197,6 +196,7 @@ input[matInput]:focus::placeholder {
 
   mat-button-toggle {
     width: 9.625rem;
+    /* width: 28%; */
     height: 12rem;
     align-items: baseline;
     text-align: left;
@@ -233,17 +233,27 @@ input[matInput]:focus::placeholder {
 
 }
 
+
 @media screen and (min-width: 360px) and (max-width: 1079px) {
+
+  mat-card{
+    /* width: 29rem; */
+    height: 25rem;
+    margin: auto;
+    /* overflow: hidden; */
+  }
 
   .step-two{
     margin-top: 0;
     padding-top: 0;
-    width: 28rem;
-    padding-right: 2rem;
+    /* width: 28rem; */
+    width: 98%;
+    margin: auto;
+    /* padding-right: 2rem; */
   }
 
   mat-card-content{
-    width:100%;
+    width:20rem;
     margin: auto;
   }
 
@@ -256,22 +266,38 @@ input[matInput]:focus::placeholder {
   }
 
   mat-button-toggle-group  {
-    transform: scale(88%, 88%)
-  }
-
-  mat-card{
-    width: 29rem;
-    margin: auto;
+    /* transform: scale(90%, 90%); */
+    width: 100%;
+    height: 100%;
   }
  
+
+  /* .mat-button-toggle-group {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    width: 35.125em;
+    margin: 1rem 0 2rem 0;
+    flex-direction: row !important;
+  } */
+
   .mat-button-toggle-group {
     flex-direction: row !important;
     border: none;
     width: 30rem;
+    height: auto;
+    /* width: 100vw; */
+    /* width: 100%;; */
     margin: -0.5rem 0 1rem -2rem;
   }
   
+  mat-button-toggle{
+    width: 40%;
+  }
 
-
+  .toggle{
+    margin: auto;
+    padding-left: 0;
+  }
 
 }

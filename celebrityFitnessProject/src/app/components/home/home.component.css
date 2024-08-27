@@ -18,7 +18,7 @@
 
 .banner {
   position: relative;
-  margin-top: -80px;
+  /* margin-top: -80px; */
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -103,13 +103,15 @@
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
-  height: 105vh;
+  height: 100%;
+  min-height: 105vh;
   /* max-height: 130vh; */
   margin: auto;
   background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
   background-size: cover;
   background-position: center center;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .textOverlay {
@@ -126,30 +128,37 @@
 /* Beginning of Banner Three Styling */
 
 .bannerThree {
-  height: 100vh;
+  display:flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100%;
+  min-height: 100vh;
   width: 100%;
   background-color: #c7ff20;
-  min-height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .containerOne {
   display: flex;
   justify-content: space-evenly;
   margin: auto;
-  height: 100vh;
-  width: auto;
+  height: 100%;
+  width: 100%;
   max-width: 3000px;
   position: relative;
   flex-direction: row;
   align-items: center;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .card {
-  height: 700px;
-  max-height: 800px;
-  aspect-ratio: 3/2.5;
-  width: 500px;
-  max-width: 600px;
+  height: auto;
+  max-height: 650px;
+  aspect-ratio: 5/7;
+  width: 35vw;
+  max-width: 500px;
   background-image: url("/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg");
   background-size: cover;
   overflow: hidden;
@@ -157,11 +166,13 @@
 }
 
 .cardText {
-  font-size: 30px;
+  font-size: clamp(15px, 2.5vw, 30px);
   margin: auto;
   color: black;
   line-height: 1.5;
-  padding-bottom: 190px;
+  width: 100%;
+  /* padding-top: 10rem; */
+  /* padding-bottom: 190px; */
 }
 
 .nutritionText {
@@ -171,41 +182,61 @@
 /* Beginning of Banner Four Styling */
 
 .bannerFour {
-  height: 100vh;
+  /* height: 100vh;
   width: 100%;
   background-color: #c7ff20;
+  min-height: 100vh; */
+  display:flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100%;
   min-height: 100vh;
+  width: 100%;
+  background-color: #c7ff20;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .containerTwo {
   display: flex;
   justify-content: space-evenly;
-  margin: auto;
-  height: 100vh;
-  width: auto;
+  margin:auto;
+  /* height: 100vh;
+  width: auto; */
+  height: 100%;
+  width: 100%;
   max-width: 3000px;
   position: relative;
   flex-direction: row;
   align-content: center;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .cardTwo {
-  height: 700px;
-  max-height: 800px;
+  /* height: 80vh;
+  max-height: 700px;
   width: 500px;
   max-width: 600px;
-  aspect-ratio: 3/2.5;
+  aspect-ratio: 3/5;
+  overflow: hidden;
+  border-radius: 8px; */
+  height: auto;
+  max-height: 650px;
+  aspect-ratio: 5/7;
+  width: 35vw;
+  max-width: 500px;
   overflow: hidden;
   border-radius: 8px;
-  /* padding-right: 20px; */
 }
 
 .cardTextTwo {
-  font-size: 30px;
+  font-size: clamp(15px, 2.5vw, 30px);
   margin: auto;
   color: black;
   line-height: 1.5;
   padding-top: 10rem;
+  width: 100%;
   /* padding-right: 100px; */
 }
 
@@ -236,11 +267,13 @@ label {
   flex-direction: row;
   align-items: center;
   position: relative;
-  height: 120vh;
+  height: 100%;
+  min-height: 110vh;
   width: 100%;
   max-width: 3000px;
   background: black;
   margin: auto;
+  overflow: hidden;
 }
 
 .carouselHeading {
@@ -252,15 +285,33 @@ label {
   text-align: center;
   margin: auto;
   font-family: "Outfit", sans-serif;
-  margin-top: 120px;
+  margin-top: 5rem;
   color: white;
   font-size: 70px;
   height: 3vw;
 }
 
+.app-carousel {
+  max-height: 100%;
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 /* Media Queries */
 
-@media screen and (min-width: 300px) and (max-width: 1080px) {
+@media screen and (min-width: 2000px) and (max-width: 6000px) {
+  
+  .textOverlay{
+    padding-top: 5rem;
+    font-size:  clamp(20rem, 1.5vw, 30rem);
+    line-height: 20rem;
+  }
+
+}
+
+@media screen and (min-width: 300px) and (max-width: 872px) {
 
   .banner {
     height: 100vh;
@@ -329,22 +380,30 @@ label {
     line-height: 5rem;
   }
 
+  .bannerThree {
+    height: 100%;
+    min-height: 120vh;
+    /* padding-top: 10rem; */
+  }
+
   .containerOne {
     display: flex;
     flex-wrap: wrap;
-    height: 80vh;
-    padding-top: 70px;
-    margin-bottom: 10rem;
+    height: 100%;
+    padding-top: 0rem;
+    padding-bottom: 0;
+    margin-bottom: 0rem;
   }
 
   .card {
-    transform: scale(80%, 80%);
+    transform: scale(85%, 85%);
     width: auto;
     min-width: 250px;
-    max-width: 500px;
+    max-width: 400px;
     height: auto;
     min-height: 600px;
     max-height: 650px;
+    aspect-ratio: 3/5;
   }
 
   .nutritionText {
@@ -368,26 +427,31 @@ label {
   }
 
   .bannerFour {
-    height: 120vh;
+    height: 100%;
     min-height: 120vh;
-    padding-top: 10rem;
+    /* padding-top: 10rem; */
   }
 
   .containerTwo {
     display: flex;
     flex-wrap: wrap-reverse;
-    height: 80vh;
+    height: 100%;
+    padding-top: 0;
+    padding-bottom: 5rem;
+    margin-bottom: 0;
   }
 
   .cardTwo {
-    transform: scale(80%, 80%);
+    transform: scale(85%, 85%);
     width: auto;
     min-width: 250px;
-    max-width: 500px;
+    max-width: 400px;
     height: auto;
     min-height: 600px;
     max-height: 650px;
-    margin-top: 300px;
+    aspect-ratio: 3/5;
+    margin-top: 7rem;
+    overflow: hidden;
   }
 
   .workoutText {
@@ -403,7 +467,7 @@ label {
     flex-direction: column;
     font-size: 1.5rem;
     padding-top: 10px;
-    padding-bottom: 90px;
+    /* padding-bottom: 90px; */
     padding-right: 0;
     margin-top: 3rem;
   }
@@ -425,12 +489,13 @@ label {
   }
 
   .bannerFive {
-    height: 150vh;
-    padding-top: 15rem;
+    height: 100%;
+    min-height: 150vh;
+    /* padding-top: 15rem; */
   }
 
   .carouselHeading {
-    font-size: 4rem;
+    font-size: clamp(3rem, 10vw, 4rem);
     z-index: 1;
     top: 1rem;
     left: 0;
@@ -438,7 +503,7 @@ label {
     /* margin-top: 100px; */
     width: 100%;
     height: 15vw;
-    margin-bottom: 10rem;
+    /* margin-bottom: 10rem; */
     line-height: 3rem;
   }
 }
