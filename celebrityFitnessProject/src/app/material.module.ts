@@ -9,21 +9,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatSlideToggleModule,
-    MatFormFieldModule,
-    MatButtonToggleModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatListModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTableModule
-  ],
   exports: [
     MatSlideToggleModule,
     MatFormFieldModule,
@@ -31,8 +24,13 @@ import { MatInputModule } from '@angular/material/input';
     MatCheckboxModule,
     MatCardModule,
     MatListModule,
-    MatFormFieldModule,
     MatInputModule,
-    MatTableModule]
+    MatTableModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatSelectModule,
+    MatStepperModule,
+    MatIconModule
+  ]
 })
 export class MaterialModule { }

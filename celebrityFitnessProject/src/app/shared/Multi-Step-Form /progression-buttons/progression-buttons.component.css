@@ -1,0 +1,174 @@
+:host {
+  position: absolute;
+  width: 28.125em;
+  /* position: relative; */
+  /* bottom: 30%; */
+  bottom: 3rem;
+  /* left: 45%; */
+  left: 21rem;
+  background-color: transparent !important;
+  /* width: 100%; */
+  border-radius: 0.5rem;
+  padding-right: 2rem;
+  padding-top: 2rem;
+}
+
+.container {
+  /* height: 72px; */
+  height: 20px;
+  max-height: auto;
+  /* width: 28.5rem; */
+  /* width: 100%; */
+  max-width: auto;
+  padding: 2rem;
+  /* width: 100px; */
+  width: 100%;
+  padding: 0;
+}
+
+.btn {
+  padding: 0.3rem;
+  border-radius: 6px;
+}
+
+.btn-next {
+  letter-spacing: 0.9px;
+}
+
+.btn-confirm {
+  padding: 0.58rem;
+}
+
+.btn-next,
+.btn-confirm {
+  margin: 1rem 0 1rem auto;
+  position: absolute;
+  top: 0%;
+  right: 9%;
+  background-color: #C7FF20;
+  border-color: #C7FF20;
+  cursor: pointer;
+}
+
+.btn-confirm {
+  background-color: #C7FF20;
+  color: black;
+}
+
+a {
+  position: absolute;
+  top: 40%;
+  right: 84%;
+  padding: 0.2rem;
+  cursor: pointer;
+}
+
+a:hover {
+  text-shadow: 0 0 7px #71BBF5;
+  cursor: pointer;
+}
+
+.btn-next:disabled,
+.btn-confirm:disabled {
+  background-color: rgb(174, 174, 174);
+  border-color: rgb(174, 174, 174);
+  color: rgb(113, 113, 113);
+}
+
+@media (min-width: 30.5em) {
+  /* :host {
+    width: 28.125em;
+    position: relative;
+  } */
+
+  /* .container {
+    width: 100%;
+    padding: 0;
+  } */
+
+  /* .btn-next,
+  .btn-confirm { */
+    /* position: absolute;
+    top: 0%;
+    right: 9%;
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer; */
+  /* }  */
+}
+
+@media screen and (min-width: 872px) and (max-width: 1300px){
+
+  :host {
+    width: 23vw;
+  }
+
+  a {
+    position: absolute;
+    top: 40%;
+    right:28%;
+    width: 100%;
+    /* padding: 0.2rem; */
+    height: 0;
+    cursor: pointer;
+  }
+
+
+}
+
+@media screen and (min-width: 300px) and (max-width: 938px) {
+
+  :host {
+    /* width: 23rem; */
+    width: 70%;
+    position: absolute;
+    bottom: 4.5rem;
+    /* left: 10%; */
+    left: auto;
+    right: 2rem;
+    background-color: transparent !important;
+    border-radius: 0.5rem;
+    /* padding-right: 1rem; */
+    
+    /* padding-top: 2.5rem; */
+    /* padding-left: 5rem; */
+  }
+
+  .container {
+    /* background-color: rgb(88, 25, 213); */
+    height: 0;
+    width: 100%;
+    /* width: 60%; */
+    /* padding: 2rem; */
+    margin-right: 1rem;
+    /* background-color: #71BBF5; */
+    /* min-width: 18rem; */
+    /* padding: 2rem; */
+  }
+
+  a {
+    position: absolute;
+    top: 70%;
+    /* bottom: -20rem; */
+    left: -1rem;
+    padding: 0.2rem;
+  }
+
+  .btn {
+    padding: 1.3rem;
+    border-radius: 6px;
+  }
+
+  .btn-next,
+  .btn-confirm {
+    position: absolute;
+    top: 0%;
+    right: 0;
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+  }
+
+
+}
+

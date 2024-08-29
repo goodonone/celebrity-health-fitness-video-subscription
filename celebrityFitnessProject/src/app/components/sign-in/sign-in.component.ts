@@ -25,8 +25,8 @@ export class SignInComponent implements OnInit {
 
     this.navbar = document.getElementById('navbar');
     this.menu = document.querySelector('.menu'); 
-    this.navbar?.classList.add('black');
-    this.menu?.classList.add('black'); 
+    this.navbar?.classList.add('shadow');
+    this.menu?.classList.add('shadow'); 
 
     // Reset navbar state when navigating away
     this.router.events.subscribe((event) => {

@@ -209,7 +209,7 @@ button.btn-submit {
     color: black;
 }
 
-@media screen and (min-width: 300px) and (max-width: 862px) {
+@media screen and (min-width: 300px) and (max-width: 872px) {
   mat-card {
     width: 95%;
     min-width: 200px;

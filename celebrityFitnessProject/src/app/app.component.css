@@ -24,7 +24,7 @@ nav {
 }
 
 /* Effect when navbar turns black */
-.navBar.black {
+.navBar.shadow {
   box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
   transition: box-shadow 0.1s ease-in-out;
 }
@@ -161,10 +161,15 @@ footer {
 
 /* Makes Nav Flexible */
 
-@media screen and (min-width: 300px) and (max-width: 842px) {
+@media screen and (min-width: 300px) and (max-width: 938px) {
     nav{
-      width: 95%;
+      width: 95vw;
+
       /* min-width: 97%; */
+    }
+
+    .navBarText{
+      margin: 0.5rem 0 0.5rem 0;
     }
 
     #hamburger {
@@ -209,23 +214,24 @@ footer {
   .menu {
     position: absolute;
     text-align: center;
-    width: 200px;
+    width: 95vw;
     display: none;
     clear: right;
     z-index: 100;
     right: 0;
     margin-top: 65px;
-    margin-right: 1px;
+    /* top: 40rem; */
+    /* margin-right: 1px; */
     color: Black;
     background-color: #C7FF20;
     opacity: 100%;
     border-radius: 6px; 
     transition: background-color 0.3ss ease-in-out, color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    padding-top: 1rem;
+    padding-bottom: 1rem
   }
 
-  .menu.black {
-    /* background-color: rgb(255, 255, 255) !important; */
-    /* color: #000000 !important; */
+  .menu.shadow {
     box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
     transition: background-color 0.1s ease-in-out;
   }

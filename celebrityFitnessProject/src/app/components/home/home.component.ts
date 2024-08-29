@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { carouselImage } from 'src/app/other-components/carousel/carousel.component';
+import { carouselImage } from 'src/app/components/home/carousel/carousel.component';
 
 interface videoPlaylist {
   videoSrc: string;
@@ -125,30 +125,30 @@ ngAfterViewInit(): void {
       (bannerThreePosition! <= navbarHeight! && bannerThreePosition! >= -this.bannerThree!.offsetHeight) ||
       (bannerFourPosition! <= navbarHeight! && bannerFourPosition! >= -this.bannerFour!.offsetHeight)
     ) {
-      this.navbar?.classList.add('black');
-      this.menu?.classList.add('black'); 
+      this.navbar?.classList.add('shadow');
+      this.menu?.classList.add('shadow'); 
   
       const navBarTextElements = document.querySelectorAll('.navBarText');
       navBarTextElements.forEach((element) => {
-        element.classList.add('black');
+        element.classList.add('shadow');
       });
     } else {
-      this.navbar?.classList.remove('black');
-      this.menu?.classList.remove('black'); 
+      this.navbar?.classList.remove('shadow');
+      this.menu?.classList.remove('shadow'); 
   
       const navBarTextElements = document.querySelectorAll('.navBarText');
       navBarTextElements.forEach((element) => {
-        element.classList.remove('black');
+        element.classList.remove('shadow');
       });
     }
   }
 
   resetNavbarState(): void {
-    this.navbar?.classList.remove('black');
-    this.menu?.classList.remove('black'); 
+    this.navbar?.classList.remove('shadow');
+    this.menu?.classList.remove('shadow'); 
     const navBarTextElements = document.querySelectorAll('.navBarText');
     navBarTextElements.forEach((element) => {
-      element.classList.remove('black');
+      element.classList.remove('shadow');
     });
   }
 

@@ -109,7 +109,7 @@ p.getBack:hover {
    }
   }
 
-@media screen and (min-width: 300px) and (max-width: 862px) {
+@media screen and (min-width: 300px) and (max-width: 872px) {
   .getBack {
     color: white;
     font-size: clamp(1rem, 1.2vw, 1.2vw);

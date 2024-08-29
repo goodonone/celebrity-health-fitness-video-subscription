@@ -1,6 +1,7 @@
 .background {
     width: 100%;
-    height: 82vh;
+    height: 100%;
+    min-height: 100vh;
     max-width: 3000px;
     position: relative;
     margin: auto;
@@ -10,23 +11,30 @@
     display: flex;
     flex-direction: row;
     position: absolute;
+    margin: auto;
     left: 50%;
-    top: 45%;
+    top: 50%;
     transform: translate(-50%, -50%);
     justify-content: space-evenly;
     padding-top: 5rem;
+    width: fit-content;
+    /* width: 100%; */
+    height: 100%;
+    align-items: center;
     /* max-width: 1500px; */
+    box-sizing: border-box;
 }
 
 .videoBackground {
     position: fixed;
-    margin-top: -10rem;
+    /* margin-top: -10rem; */
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     background-repeat: no-repeat;
     background-size: cover;
     object-fit: cover;
-    zoom: 110%;
+    /* zoom: 110%; */
     background-attachment: fixed;
     z-index: 0;
 }
@@ -53,12 +61,13 @@
     text-align: center;
     justify-content: center;
     color: white;
-    font-size: 5rem;
+    /* font-size: 5rem; */
+    font-size: clamp(3.5rem, 5vw, 5rem);
     margin: 0;
     padding: 0;
     animation: fade-in 2s linear;
     animation-fill-mode: both;
-    z-index: 1;
+    /* z-index: 1; */
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
 }
 
@@ -83,14 +92,15 @@
     text-align: center;
     justify-content: center;
     color: white;
-    font-size: 5rem;
+    font-size: clamp(3.5rem, 5vw, 5rem);
     margin-top: 1rem;
     animation: zoomIn 0.25s;
     animation-iteration-count: infinite;
-    line-height: 5rem;
+    line-height: clamp(4rem, 5vw, 5rem);
     animation: fade-in-two 2s linear;
     animation-delay: 3s;
     opacity: 0;
+    /* z-index: 1; */
     animation-fill-mode: both;
     /* z-index: 1; */
     text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
@@ -117,6 +127,7 @@
     /* max-height: 700px; */
     /* width: 55rem; */
     width: 55vw;
+    min-width: 20vw;
     max-width: 800px;
     border-radius: 1.4rem;
     opacity: 100%;
@@ -132,10 +143,10 @@
     /* height: 600px;
     width: 800px; */
     /* height: 30rem; */
-    height: 62vh;
+    height: fit-content;
     max-height: 550px;
     /* width: 50rem; */
-    width: 55vw;
+    width: fit-content;
     max-width: 800px;
     /* background-color: rgb(0, 0, 0); */
     background-color: transparent !important;
@@ -146,7 +157,10 @@
 .alreadyMemberText {
     position: absolute;
     /* top: 117%; */
-    bottom: -1.5rem;
+
+    /* bottom: -1.5rem; */
+    bottom: 0;
+
     /* bottom: 5%; */
     /* left: 56%; */
     /* right: 10rem; */
@@ -167,17 +181,10 @@
 
 
 
-@media screen and (min-width: 1080px) and (max-width: 1367px) {
-
-    /* .videoBackground{
-        height: auto;
-        width: auto;
-        overflow: hidden;
-    } */
+/* @media screen and (min-width: 1080px) and (max-width: 1367px) {
 
     .background {
         width: 100%;
-        /* height: fit-content; */
         height: 100vh;
         margin-bottom: 20rem;
     }
@@ -200,14 +207,8 @@
         flex-direction: column;
         justify-content: space-between;
         position: absolute;
-        /* top:0; */
-        /* bottom: 1; */
         left: 50%;
-        /* top: 150%;
-        left: 50%; */
-        /* transform: translate(-50%, -50%); */
         padding-top: 12rem;  
-        /* margin-top: 12rem; */
     }
 
     .overlay {
@@ -226,9 +227,23 @@
         font-size: 5rem;
         line-height: 5rem;
     }
+} */
+
+@media screen and (min-width: 872px) and (max-width: 1300px){
+
+    /* .card{
+        width: auto;
+        height: fit-content;
+    }*/
+
+    .innerCardTwo{
+        width: auto;
+        height: fit-content;
+    }
+
 }
 
-@media screen and (min-width: 360px) and (max-width: 862px) {
+@media screen and (min-width: 300px) and (max-width: 938px) {
 
 /* max-width: 892px */
     .videoBackground{
@@ -238,8 +253,13 @@
 
     .background{
         width: 100%;
-        height: fit-content;
+        height: 100%;
         margin-bottom: 0;
+    }
+
+    .welcome, .otherText {
+        font-size: 4.5rem;
+        line-height: 5rem;
     }
 
     .container {
@@ -256,12 +276,12 @@
         box-sizing: border-box;
         transform: translate(-50%, 0%);
         margin: 0 auto 1rem auto; 
-        padding: 0 20px;
+        /* padding: 0 20px; */
     }
 
     .overlay {
         text-align: center;
-        margin: 5rem auto 20rem auto;
+        margin: 5rem auto 15rem auto;
     }
 
     mat-card.card {
@@ -269,23 +289,21 @@
         width: 90%;
         margin: 1rem auto;
         box-sizing: border-box;
-        left: 0;
-        right: 0;
+        /* left: 0;
+        right: 0; */
         /* right: auto; */
     }
 
     .card {
-        /* margin-left: 0; */
+    
         height: 45rem;
-        width: 100%;
-        /* margin: 0 auto; */
-        /* transform: none; */
-        /* margin-left: auto;
-        margin-right: auto; */
-        /* margin: auto; */
-        /* height: auto; */
-        /* height: 700px; */
-        /* max-height: 550px; */
+        width: 90%;
+
+        /* height: auto;
+        width: 90%;
+        margin: 0 auto;
+        box-sizing: border-box; */
+     
     }
 
     .innerCardTwo {
@@ -295,7 +313,8 @@
         min-width: 20rem;
         max-width: 25rem;
         right: auto;
-        left: 50%;
+        /* left: 0; */
+        left: 50%; 
         transform: translateX(-50%); 
         /* margin-left: auto;
         margin-right: auto; */

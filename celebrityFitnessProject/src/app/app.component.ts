@@ -197,7 +197,23 @@ export class AppComponent implements OnInit, AfterViewInit {
       toggle.checked = false;
       hamburger!.classList.remove('active');
       // console.log('Menu auto-closed after hover exit.');
-    }, 2000);
+    }, 100);
+  }
+
+  onMenuMouseLeaveHamburger() {
+    this.isMenuHovered = false;
+    // console.log('Menu hover exited.');
+    const toggle = document.querySelector('#toggle') as HTMLInputElement;
+    const hamburger = document.getElementById('hamburger');
+
+    // Set a timer to auto-close the menu if the mouse leaves without clicking
+    this.hoverTimer = setTimeout(() => {
+      if (!this.isMenuOpen) return;
+      this.isMenuOpen = false;
+      toggle.checked = false;
+      hamburger!.classList.remove('active');
+      // console.log('Menu auto-closed after hover exit.');
+    }, 1000);
   }
 
   clearMenu() {
