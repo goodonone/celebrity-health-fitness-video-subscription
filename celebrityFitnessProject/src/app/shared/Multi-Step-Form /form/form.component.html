@@ -39,8 +39,8 @@
             <app-step-three-summary *ngIf="activeStep$ == 3"
                                        [stepForm]="stepForm"></app-step-three-summary>                                
             <app-step-four-payment *ngIf="activeStep$ == 4" 
-                                      formGroupName="paymentDetails"></app-step-four-payment> 
-            <app-step-five-confim *ngIf="activeStep$ == 5"></app-step-five-confim>
+                                      formGroupName="paymentDetails" ></app-step-four-payment> 
+            <app-step-five-confirm *ngIf="activeStep$ == 5"></app-step-five-confirm>
             </div>
 
             <!-- Form steps for for users who are changing their membership and are already paying members -->
@@ -67,9 +67,9 @@
                         name="stepForm" 
                         *ngIf="checkout">
           <div class="skipStep" *ngIf="checkout">             
-            <app-step-four-payment *ngIf="activeStep$ == 1" 
+            <app-step-four-payment [shipping]="shipping" *ngIf="activeStep$ == 1" 
                                   formGroupName="paymentDetails"></app-step-four-payment>  
-            <app-step-five-confim [checkout]="checkout" *ngIf="activeStep$ == 2"></app-step-five-confim>
+            <app-step-five-confirm [checkout]="checkout" *ngIf="activeStep$ == 2"></app-step-five-confirm>
           </div>
           </ng-container> 
           

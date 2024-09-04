@@ -16,15 +16,20 @@ export class FormService implements OnInit {
   UserId?: string;
   userId?: number;
   currentUser: User = new User();
+  shipping?: boolean;
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
   ngOnInit(): void {
+    const userId = localStorage.getItem('userId');
   }
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { }
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { 
+  }
 
+
+  // if(this.userId){
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
@@ -42,9 +47,24 @@ export class FormService implements OnInit {
       ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19)]],
       expDate: ['', [Validators.required]],
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3)]],
-      zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]]
+      zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
+      billingAddress: ['', [Validators.required, Validators.minLength(15)]],
+      billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
     }),
   })
+  
+
+  updateFormFields(shipping: boolean) {
+    const paymentDetailsGroup = this.multiStepForm.get('paymentDetails') as FormGroup;
+  
+    if (shipping) {
+      paymentDetailsGroup.addControl('shippingAddress', this.fb.control('', [Validators.required, Validators.minLength(30)]));
+      paymentDetailsGroup.addControl('shippingZip', this.fb.control('', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]));
+    } else {
+      paymentDetailsGroup.removeControl('shippingAddress');
+      paymentDetailsGroup.removeControl('shippingZip');
+    }
+  }
 
 
   get stepForm(): FormGroup {

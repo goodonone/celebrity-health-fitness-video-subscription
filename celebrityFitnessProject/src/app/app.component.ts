@@ -17,6 +17,7 @@ import { CartService } from './services/cart.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  
   title = 'Hugh Jackedman';
 
   searchString: string = '';

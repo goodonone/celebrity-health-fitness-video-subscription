@@ -19,10 +19,11 @@
   max-height: auto;
   /* width: 28.5rem; */
   /* width: 100%; */
-  max-width: auto;
-  padding: 2rem;
-  /* width: 100px; */
   width: 100%;
+  max-width: auto;
+  /* padding: 2rem; */
+  /* width: 100px; */
+  
   padding: 0;
 }
 
@@ -75,7 +76,7 @@ a:hover {
   color: rgb(113, 113, 113);
 }
 
-@media (min-width: 30.5em) {
+/* @media (min-width: 30.5em) { */
   /* :host {
     width: 28.125em;
     position: relative;
@@ -94,25 +95,41 @@ a:hover {
     background-color: #C7FF20;
     border-color: #C7FF20;
     cursor: pointer; */
-  /* }  */
-}
+  /* } 
+} */
 
 @media screen and (min-width: 872px) and (max-width: 1300px){
 
   :host {
-    width: 23vw;
+    width: clamp(25vw, 5vw, 28vw); 
+    max-width: 300px;
+    left: 50%;
+    right: 1vw;
+    /* padding-left: 5rem; */
   }
 
   a {
     position: absolute;
     top: 40%;
-    right:28%;
+    right: 80px;
     width: 100%;
-    /* padding: 0.2rem; */
+    min-width: 270px;
+    max-width:330px;
     height: 0;
     cursor: pointer;
   }
 
+  .btn-next,
+  .btn-confirm {
+    position: absolute;
+    top: 0%;
+    right: 1vw;
+    background-color: #C7FF20;
+    border-color: #C7FF20;
+    cursor: pointer;
+  }
+
+  
 
 }
 
@@ -150,8 +167,9 @@ a:hover {
     position: absolute;
     top: 70%;
     /* bottom: -20rem; */
-    left: -1rem;
+    left: 0;
     padding: 0.2rem;
+    width: 100%;
   }
 
   .btn {

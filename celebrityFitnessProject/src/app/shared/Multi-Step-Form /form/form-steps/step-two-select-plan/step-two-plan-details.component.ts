@@ -11,9 +11,9 @@ import { planOptions } from './planDetails.model';
 export class StepTwoPlanDetailsComponent implements OnInit {
 
   stepForm!: FormGroup;
-  planType: string = 'Just Looking' || 'Motivated' || 'All In!';
+  planType: string = 'Just Looking';
   chosenPlan : string = "";
-  typeOfBilling: string = 'monthly' || 'yearly';
+  typeOfBilling: string = 'monthly';
   totalCost: number = 0;
   checked: boolean = false;
   planOptions: any[] = planOptions;

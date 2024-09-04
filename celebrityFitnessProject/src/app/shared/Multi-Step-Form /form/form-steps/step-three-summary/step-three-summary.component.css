@@ -3,10 +3,17 @@
   }
 
   mat-card{
+    /* display: flex;
+    flex-direction: column;
+    width: 100%; */
+    /* max-width: 32.8rem;
+    height: auto;
+    max-height: 26rem; */
     width: 32.8rem;
     max-width: 700px;
     height: 26rem;
     margin-left: 0.6rem;
+
   }
 
 span {
@@ -17,6 +24,7 @@ span {
   line-height: 1.25rem;
   letter-spacing: 0;
 }
+
 mat-card-content{
   height: 16rem;
 }
@@ -25,7 +33,8 @@ table {
   height: fit-content;
   margin: 2rem auto 2rem auto;
   padding: 1.3rem;
-  width: 35.4rem;
+  width: 100%;
+  max-width: 32.8rem;
   background-color: rgb(231, 230, 230);
   border-radius: .5rem;
 }
@@ -52,7 +61,10 @@ tr {
   justify-content: space-between;
   align-items: flex-start;
   height: 100%;
-  width: 31rem;
+  width: 100%;
+  min-width: 31rem;
+  /* min-width: 0; */
+  max-width: 31rem;
 }
 
 .type {
@@ -72,7 +84,6 @@ button {
   text-decoration-line: underline;
   letter-spacing: 0;
 }
-
 
 .btn-change:hover {
   color: rgb(0, 0, 0);
@@ -102,24 +113,17 @@ div.cost{
   line-height: 1.25rem;
 }
 
-input[matInput]:focus {
-  border-color: #000000 !important; /* Change the border color when focused */
-  outline: none; /* Remove the default outline */
-  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
-  color: #000000 !important; /* Change the text color when focused */
-}
 
-input[matInput]:focus::placeholder {
-  color: #000000 !important; /* Change the placeholder color when focused */
-}
+@media (min-width: 37.5em) {
 
-
-@media (min-width: 30.5em) {
+  /* 30.5em */
 
   table {
     display: flex;
     flex-direction: row;
-    width: 30.7rem;
+    width: 100%;
+    max-width: 30.7rem;
+    /* width: 30.7rem; */
   }
 
   th {
@@ -142,30 +146,94 @@ input[matInput]:focus::placeholder {
 
 }
 
-@media screen and (min-width: 300px) and (max-width: 872px) {
+@media screen and (min-width: 939px) and (max-width: 1300px){
+
+  mat-card{
+    /* width: 27rem; */
+    width: auto;
+    height: fit-content;
+    max-height: 27rem;
+    /* overflow: hidden; */
+  }
+
+  
+  tr {
+    display: flex;
+    /* justify-content: space-between; */
+    align-items: flex-start;
+    flex-direction: row;
+    height: fit-content;
+    /* width: auto; */
+    width: 100%;
+    /* min-width: 9rem; */
+    min-width: clamp(20rem, calc(5rem + 22.5vw), 27rem);
+    /* max-width: 31rem; */
+  }
+
+  div.cost{
+    width: auto;
+    max-width: 9.3rem;
+  }
+
+}
+
+@media screen and (min-width: 0px) and (max-width: 938px) {
+
+mat-card{
+  height: 25rem;
+  width: 100%;
+}
+
+mat-card-header {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+/* mat-card-header{
+  padding: 0.5rem 0 0 1rem;
+} */
+
+mat-card-subtitle{
+  display: none;
+}
 
 .step-three{
-  margin-top: 0;
-  padding-top: 0;
-  width: 28rem;
-  padding-right: 2rem;
-  margin-left: auto;
-  margin-right: auto;
+  /* margin-top: 0; */
+  /* padding-top: 0; */
+  margin: auto;
+  /* width: 98%; */
+  width: 99%;
+  /* min-width: 20rem; */
+  max-width: clamp(20rem, 80vw, 22rem); 
+  /* padding-right: 2rem; */
+  /* margin-left: auto;
+  margin-right: auto; */
 }
 
 table {
   display: flex;
   flex-direction: row;
-  width: 26rem;
+  width: 100%;
+  padding: 1rem 1rem 1rem 0.8rem;
+  /* min-width: 2rem; */
 }
 
 tr {
   display: flex;
+  font-size: 0.8rem;
   justify-content: space-between;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   height: 100%;
-  width: 26rem;
+  width: 100%;
+  min-width: clamp(18rem, 80vw, 21rem);
+  max-width: auto;
+  /* padding-left: 1rem;
+  padding-right: 1rem; */
+  /* margin: auto; */
 }
 
+.cost{
+  font-size: 0.8rem;
+}
 
 }

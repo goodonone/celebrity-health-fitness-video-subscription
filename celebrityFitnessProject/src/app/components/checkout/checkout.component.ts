@@ -14,6 +14,7 @@ export class CheckoutComponent implements OnInit{
   userLoggedIn = true;
   showOrHide!: boolean;
   userId?: number;
+  shipping: boolean = true;
 
   currentUser: User = new User;
   stepForm: any;
@@ -24,7 +25,7 @@ export class CheckoutComponent implements OnInit{
  
 
   ngOnInit(): void {
-    
+    this.formService.updateFormFields(this.shipping);
   }
 
   ngOnDestroy(): void {

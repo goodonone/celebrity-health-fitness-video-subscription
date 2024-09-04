@@ -8,10 +8,11 @@ mat-card-header {
 }
 
 mat-card{
+  position: relative;
   width: 32.8rem;
   max-width: 700px;
   margin-left: 0.6rem;
-  height: 25rem;
+  height: 26rem;
 }
 
 img {
@@ -28,11 +29,11 @@ mat-card-header{
   right: 38.5%;
 }
 
-mat-card-header.checkout{
+/* mat-card-header.checkout{
   position: absolute;
   top: 50%;
   right: 8rem;
-}
+} */
 
 
 mat-card-content{
@@ -45,27 +46,95 @@ p {
   line-height: 1.5rem;
 }
 
-@media screen and (min-width: 360px) and (max-width: 872px){
+@media screen and (min-width: 939px) and (max-width: 1300px){
+
+  /* mat-card {
+    width: auto;
+    height: fit-content;
+    max-height: 27rem;
+  } */
+
   mat-card{
+    width: auto;
+    max-width: 32.8rem;
+    margin-left: 0.6rem;
+    height: 26rem;
+  }
+
+  mat-card-header{
+    position: absolute;
+    top: 50%;
+    right: 34.5%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  mat-card-header.checkout{
+    position: absolute;
+    top: 43%;
+    right: 0rem;
+    left: 50%;
+    transform: translateX(-50%);
+    /* left: 2.5rem; */
+    /* margin: auto; */
+    /* width: 100%; */
+  }
+
+  img {
+    /* right: 15%;
+    transform: translateX(-15%); */
+    /* right: clamp(9%, 110vw, 10%); */
+    /* right: clamp(5%, 15vw, 13%); */
+    /* right: calc(9% + (25vw - 67%)); */
+    /* right: clamp(8%, calc(5% + 1.5vw), 200%); */
+    /* position: absolute;
+    left:clamp(5%, 80vw, 7%);
+    right: 0%;
+    bottom: 30%;
+    transform: scale(clamp(30%, 5vw, 35%), clamp(30%, 5vw, 35%)); */
+    position: absolute;
+    left: 50%;
+    bottom: 56%;
+    transform: translateX(-54%);
+    width: clamp(6.5rem, 15vw, 7rem);
+  }
+
+}
+
+
+@media screen and (min-width: 0px) and (max-width: 938px){
+  /* mat-card{
     margin-top: 0;
     padding-top: 0;
     height: 23rem;
     width: 28rem;
     margin-left: auto;
     margin-right: auto;
+  } */
+
+  mat-card{
+    height: 25rem;
+    width: 100%;
+    scrollbar-color: black white;
+  }
+
+  .confirm{
+    margin: auto;
+    width: 99%;
+    max-width: clamp(20rem, 80vw, 22.5rem); 
   }
 
   img {
     position: absolute;
-    right: 14%;
+    left: 50%;
     bottom: 30%;
-    transform:scale(35%, 35%);
+    transform:translateX(-50%) scale(35%, 35%);
   }
 
   mat-card-header{
     position: absolute;
     top: 45%;
-    right: 38.5%;
+    right: 32.5%;
   }
 
   mat-card-content{
@@ -76,6 +145,7 @@ p {
   mat-card-header.checkout{
     position: absolute;
     top: 45%;
-    right: 5rem;
+    left: 1.8rem;
+    width: 100%;
   }
 }
