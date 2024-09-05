@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
+import { expirationDateValidator } from 'src/app/shared/expiry-date-validator';
 
 @Component({
   selector: 'app-step-four-payment',
@@ -19,7 +20,7 @@ export class StepFourPaymentComponent implements OnInit {
   showShipping = false;
   zipText = true;
   
-  constructor(private rootFormGroup: FormGroupDirective) { }
+  constructor(private rootFormGroup: FormGroupDirective, private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get(this.formGroupName) as FormGroup;
@@ -48,6 +49,19 @@ export class StepFourPaymentComponent implements OnInit {
       return seed + next;
     }, "");
 
+    
+    // Add the custom validator to the expDate form control
+  //   this.stepForm.get('expDate')?.setValidators([
+  //   Validators.required, 
+  //   Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/),
+  //   expirationDateValidator()
+  // ]);
+  this.stepForm.get('expDate')?.setValidators([
+    Validators.required, 
+    Validators.pattern(/^\d{2}\/\d{2}$/),
+    expirationDateValidator()
+  ]);
+
   // Implement 00/00 format for date input
 }
     toggleShipping() {
@@ -56,6 +70,112 @@ export class StepFourPaymentComponent implements OnInit {
       // Update form fields based on toggle state
       this.updateShippingFields(this.isChecked);
       
+    }
+
+    // formatExpirationDate(event: any) {
+    //   let input = event.target.value.replace(/\D/g, '').substring(0, 4);
+    //   let month = input.substring(0, 2);
+    //   let year = input.substring(2);
+  
+    //   if (input.length > 2) {
+    //     this.stepForm.get('expDate')?.setValue(`${month}/${year}`);
+    //   } else if (input.length === 2) {
+    //     this.stepForm.get('expDate')?.setValue(`${month}/`);
+    //   } else {
+    //     this.stepForm.get('expDate')?.setValue(input);
+    //   }
+    // }
+
+    // formatExpirationDate(event: any) {
+    //   const input = event.target;
+    //   const trimmed = input.value.replace(/\s+/g, '');
+    //   const numbers = trimmed.replace(/[^0-9]/g, '');
+      
+    //   if (numbers.length > 4) {
+    //     input.value = numbers.slice(0, 4);
+    //   }
+  
+    //   let formatted = '';
+    //   if (numbers.length > 0) {
+    //     formatted += numbers.slice(0, 2);
+    //     if (numbers.length > 2) {
+    //       formatted += '/' + numbers.slice(2);
+    //     }
+    //   }
+  
+    //   input.value = formatted;
+    //   this.stepForm.get('expDate')?.setValue(formatted);
+    // }
+    // formatExpirationDate(event: any) {
+    //   const input = event.target;
+    //   let value = input.value.replace(/\D/g, '');
+      
+    //   if (value.length > 4) {
+    //     value = value.slice(0, 4);
+    //   }
+  
+    //   if (value.length > 2) {
+    //     value = value.slice(0, 2) + '/' + value.slice(2);
+    //   }
+  
+    //   input.value = value;
+    //   this.stepForm.get('expDate')?.setValue(value);
+    //   this.stepForm.get('expDate')?.updateValueAndValidity();
+    // }
+
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value && expDateControl.value.length === 2) {
+    //     expDateControl.setErrors({'invalidFormat': true});
+    //   }
+    // }
+
+    // formatExpirationDate(event: any) {
+    //   const input = event.target;
+    //   let value = input.value.replace(/\D/g, '');
+      
+    //   if (value.length > 4) {
+    //     value = value.slice(0, 4);
+    //   }
+  
+    //   if (value.length > 2) {
+    //     value = value.slice(0, 2) + '/' + value.slice(2);
+    //   }
+  
+    //   input.value = value;
+    //   this.stepForm.get('expDate')?.setValue(value);
+    //   this.stepForm.get('expDate')?.updateValueAndValidity();
+    // }
+  
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value && expDateControl.value.length === 2) {
+    //     expDateControl.setErrors({'invalidFormat': true});
+    //   }
+    // }
+
+    formatExpirationDate(event: any) {
+      const input = event.target;
+      let value = input.value.replace(/\D/g, '');
+      
+      if (value.length > 4) {
+        value = value.slice(0, 4);
+      }
+  
+      if (value.length > 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+      }
+  
+      input.value = value;
+      this.stepForm.get('expDate')?.setValue(value);
+      this.stepForm.get('expDate')?.updateValueAndValidity();
+    }
+  
+    validateExpDate() {
+      const expDateControl = this.stepForm.get('expDate');
+      if (expDateControl?.value && expDateControl.value.length === 2) {
+        expDateControl.setErrors({'invalid': true});
+      }
     }
 
     // updateShippingFields(isChecked: boolean) {

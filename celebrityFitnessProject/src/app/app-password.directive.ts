@@ -1,33 +1,50 @@
-import { Directive, ElementRef } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  Renderer2,
+} from '@angular/core';
 
 @Directive({
-  selector: '[appPassword]'
+  selector: '[appShowHidePassword]',
 })
 export class AppPasswordDirective {
-  private _shown = false;
+  @Input() targetInputs: string[] = [];
 
-  constructor(private el: ElementRef) {
-    this.setup();
-  }
+  private isPasswordVisible: boolean = false;
 
-  toggle(span: HTMLElement) {
-    this._shown = !this._shown;
-    if (this._shown) {
-      this.el.nativeElement.setAttribute('type', 'text');
-      span.innerHTML = 'hide password';
-    } else {
-      this.el.nativeElement.setAttribute('type', 'password');
-      span.innerHTML = 'show password';
-    }
-  }
-  setup() {
-    const parent = this.el.nativeElement.parentNode;
-    const span = document.createElement('span');
-    span.setAttribute('id', "showHide");
-    span.innerHTML = `show password`;
-    span.addEventListener('click', (event) => {
-      this.toggle(span);
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  @HostListener('click') togglePassword() {
+    this.isPasswordVisible = !this.isPasswordVisible;
+
+    this.targetInputs.forEach((selector) => {
+      const inputElement = document.querySelector(selector) as HTMLInputElement;
+      if (inputElement) {
+        this.renderer.setProperty(
+          inputElement,
+          'type',
+          this.isPasswordVisible ? 'text' : 'password'
+        );
+      }
     });
-    parent.appendChild(span);
+
+    //   this.renderer.setProperty(
+    //     this.el.nativeElement,
+    //     'textContent',
+    //     this.isPasswordVisible ? 'Hide Password' : 'Show Password'
+    //   );
+    // }
+
+    // Change the icon class to show/hide the eye icon
+    //  Toggle between 'fa-eye' and 'fa-eye-slash' classes for the icon
+  //   if (this.isPasswordVisible) {
+  //     this.renderer.removeClass(this.el.nativeElement, 'fa-eye');
+  //     this.renderer.addClass(this.el.nativeElement, 'fa-eye-slash');
+  //   } else {
+  //     this.renderer.removeClass(this.el.nativeElement, 'fa-eye-slash');
+  //     this.renderer.addClass(this.el.nativeElement, 'fa-eye');
+  //   }
   }
 }

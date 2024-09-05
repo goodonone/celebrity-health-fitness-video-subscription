@@ -13,7 +13,7 @@ mat-card{
   max-width: 32.8rem;
   /* height: 26rem; */
   height: auto;
-  max-height: 26rem;
+  max-height: 27rem;
   margin-left: 0.6rem;
 }
   
@@ -29,7 +29,7 @@ input {
   margin-bottom: 0.3rem;
   padding: 0.5rem 0 0.5rem 1rem;
   color: black;
-  background-color: white;
+  background-color: white !important;
   font-size: 1rem;
 }
 
@@ -58,11 +58,68 @@ input:valid {
   /* width: 100%; */
 }
 
+.passwordRelative{
+  position: relative;
+  /* margin-bottom: 20px; */
+}
+
+.passwordInput{
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+#password,
+#confirmPassword {
+  padding-right: 30px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.eye-icon:hover {
+  color: #333; /* darken on hover */
+}
+
+.popup {
+  position: absolute;
+  bottom: 20px;
+  left: 0px;
+  width: 250px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: background-color 0.5s ease-in;
+}
+
+.popup p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.popup ul {
+  padding-left: 20px;
+  margin: 5px 0 0;
+}
+
+.popup li {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
 .input-details-confirm{
   display: flex;
   justify-content: space-between;
   width: 15.437rem;
-  margin-top: 0.2rem;
+  margin-top: 0.4rem;
 }
 
 .error-alert {
@@ -72,8 +129,9 @@ input:valid {
   line-height: 1.3rem;
 }
 
-span #showHide{
-padding-bottom: 9px;
+#showHide {
+
+font-weight: 600;
 }
 
 input[matInput]:focus {
@@ -136,17 +194,23 @@ input[matInput]:focus::placeholder {
 
 @media screen and (min-width: 939px) and (max-width: 1300px){
 
-  mat-card-header{
+  mat-card-header {
     margin: 0;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
   }
 
   mat-card{
     /* width: 27rem; */
     width: auto;
-    height: fit-content;
+    height: auto;
+    min-height: 26rem;
     max-height: 27rem;
     /* overflow: hidden; */
+  }
+
+  mat-card-subtitle{
+    font-size: clamp(0.75rem, 1.1vw, 1.4rem);
+    line-height: 1rem;
   }
 
   input {
@@ -182,6 +246,25 @@ input[matInput]:focus::placeholder {
     color: black;
     background-color: white;
     font-size: 1rem;
+  }
+
+  .input-details, .input-details-confirm{
+    width: 99.5%;
+  }
+
+  .popup {
+    position: absolute;
+    /* top: 15px; */
+    bottom: 18px;
+    left: 0px;
+    width: 250px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: background-color 0.5s ease-in;
   }
 
 }
@@ -246,6 +329,20 @@ input[matInput]:focus::placeholder {
 
   .error-alert {
     font-weight: 500;
+  }
+
+  .popup {
+    position: absolute;
+    bottom: 18px;
+    left: 0px;
+    width: 250px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: background-color 0.5s ease-in;
   }
 }
 

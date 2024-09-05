@@ -32,15 +32,15 @@
                         name="stepForm"
                         (submit)="confirmAndSubmitForm()" *ngIf="!checkout">
            <div class="skipStep" *ngIf="!loggedIn">
-            <app-step-one-personal-info *ngIf="activeStep$ == 1"
+            <app-step-one-personal-info *ngIf="activeStep$ == 0"
                                            formGroupName="personalDetails"></app-step-one-personal-info>
-            <app-step-two-plan-details *ngIf="activeStep$ == 2"
+            <app-step-two-plan-details *ngIf="activeStep$ == 0"
                                            formGroupName="planDetails"></app-step-two-plan-details>
-            <app-step-three-summary *ngIf="activeStep$ == 3"
+            <app-step-three-summary *ngIf="activeStep$ == 0"
                                        [stepForm]="stepForm"></app-step-three-summary>                                
-            <app-step-four-payment *ngIf="activeStep$ == 4" 
+            <app-step-four-payment *ngIf="activeStep$ == 1" 
                                       formGroupName="paymentDetails" ></app-step-four-payment> 
-            <app-step-five-confirm *ngIf="activeStep$ == 5"></app-step-five-confirm>
+            <app-step-five-confirm *ngIf="activeStep$ == 0"></app-step-five-confirm>
             </div>
 
             <!-- Form steps for for users who are changing their membership and are already paying members -->

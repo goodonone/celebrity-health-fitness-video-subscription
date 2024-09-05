@@ -3,6 +3,7 @@ import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service'; 
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -49,15 +50,11 @@ export class SignUpComponent implements OnInit {
     otherTextAnimation?.classList.add('skipVisitAnimation');
   }
 
-  // resetAnimations() {
-  //   const otherTextAnimation = document.querySelector('.otherText') as HTMLElement;
-  //   otherTextAnimation.style.display = 'block';
-  // }
 
   signUp() {
     this.userService.signUp(this.newUser).subscribe(() => {
         window.alert("User Registered Successfully");
-        this.router.navigate(['signin']);
+        this.router.navigate(['sign-in']);
     }, error => {
         window.alert("User Registration Error");
         console.log('Error: ', error)

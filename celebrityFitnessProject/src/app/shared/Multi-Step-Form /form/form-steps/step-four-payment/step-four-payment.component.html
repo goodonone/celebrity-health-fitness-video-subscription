@@ -54,9 +54,15 @@
         <div>
         <div class="input-details-exp">
           <label for="expiration">Exp.</label>
-          <label for="error"
+          <!-- <label for="error"
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
-                 class="error-alert">Invalid</label>
+                 class="error-alert">Invalid</label> -->
+          <label for="error" 
+                  *ngIf="stepForm.get('expDate')!.invalid && stepForm.get('expDate')?.touched && !stepForm.get('expDate')?.hasError('expiredDate')" class="error-alert">
+                  Invalid</label>   
+          <label for="error" 
+                  *ngIf="stepForm.get('expDate')?.hasError('expiredDate') && stepForm.get('expDate')?.touched" class="error-alert">
+                  Expired</label>       
         </div>
         <input type="tel"
                matInput
@@ -65,6 +71,8 @@
                id="expDate"
                placeholder="01/25" 
                formControlName="expDate"
+               (input)="formatExpirationDate($event)"
+               (blur)="validateExpDate()"
                required>
        </div>
        <!-- cvv number input -->
@@ -107,7 +115,7 @@
                name="zipcode"
                id="zipCode"
                maxlength="5"
-               placeholder="00000"
+               placeholder="12345"
                formControlName="zipCode"
                required>
       </div>
@@ -153,19 +161,12 @@
                name="zipcodeBilling"
                id="zipCodeBilling"
                maxlength="5"
-               placeholder="00000"
+               placeholder="12345"
                formControlName="billingZip"
                required>
       </div>  
     </div>
-    <!-- Show Shipping Address Field Toggle -->
-    <mat-slide-toggle 
-          class="shippingToggle"
-          [checked]="isChecked"
-          (change)="toggleShipping()"
-          *ngIf="shipping">
-          Shipping Address same as Billing Address
-    </mat-slide-toggle>
+   
 
     <!-- Shipping & Zipcode input -->
     <div class="shippingZip" *ngIf="showShipping">
@@ -177,7 +178,6 @@
                class="error-alert">Invalid</label>
       </div>
       <input type="tel"
-             matInput
              name="shippingAddress"
              id="shippingAddress"
              maxlength="30"
@@ -207,11 +207,19 @@
                name="zipcodeShipping"
                id="zipCodeShipping"
                maxlength="5"
-               placeholder="00000"
+               placeholder="12345"
                formControlName="shippingZip"
                required>
-      </div>    
+      </div>   
     </div>
+    <!-- Show Shipping Address Field Toggle -->
+    <mat-slide-toggle 
+    class="shippingToggle"
+    [checked]="isChecked"
+    (change)="toggleShipping()"
+    *ngIf="shipping">
+    Shipping Address same as Billing Address
+    </mat-slide-toggle> 
       </mat-card-content>
     </mat-card>
   </ng-container>

@@ -14,7 +14,8 @@ import { ProgressionButtonsComponent } from './Multi-Step-Form /progression-butt
 import { StepTrackerIconsCheckout } from './Multi-Step-Form /step-nav-checkout/step-tracker-icons-checkout.component';
 import { StepTrackerIconsUpgradeComponent } from './Multi-Step-Form /step-nav-upgrade/step-tracker-icons-upgrade.component';
 import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form /step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
-
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form /
     ReactiveFormsModule,
     FormsModule,
     MaterialModule,
+    FontAwesomeModule,
   ],
   exports: [
     CommonModule,
@@ -53,7 +55,16 @@ import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form /
     AppPasswordDirective,
     StepTrackerIconsCheckout,
     StepTrackerIconsUpgradeComponent,
-    StepTrackerIconsUpgradeComponentWithPayment
+    StepTrackerIconsUpgradeComponentWithPayment,
+    FontAwesomeModule
   ] 
 })
-export class SharedModule { }
+export class SharedModule { 
+
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faEye, faEyeSlash);
+  }
+
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+}

@@ -151,9 +151,14 @@ div.cost{
   mat-card{
     /* width: 27rem; */
     width: auto;
-    height: fit-content;
+    height: 27rem;
     max-height: 27rem;
     /* overflow: hidden; */
+  }
+
+  mat-card-header {
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
   }
 
   

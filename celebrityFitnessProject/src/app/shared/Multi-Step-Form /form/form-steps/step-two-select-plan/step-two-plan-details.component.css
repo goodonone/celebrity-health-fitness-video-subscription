@@ -257,12 +257,12 @@ input[matInput]:focus::placeholder {
 
   mat-card-header {
     margin: 0;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
   }
 
   mat-card {
     width: auto;
-    height: fit-content;
+    height: 27rem;
     max-height: 27rem;
   }
 

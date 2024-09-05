@@ -13,7 +13,8 @@ import { VideoPlayerModule } from './components/home/video-player/video-player.m
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 import { MaterialModule } from './material.module';
 import { CommonModule } from '@angular/common';
-import { AboutModule } from './components/about/about.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { AboutModule } from './components/about/about.module';
     ReactiveFormsModule,
     MaterialModule,
     AppRoutingModule,
+    FontAwesomeModule,
   ],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent]
