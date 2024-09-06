@@ -1,4 +1,4 @@
-.appContainer{
+.appContainer {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -18,9 +18,23 @@ nav {
 
 .navBar {
   border-radius: 6px;
-  background-color: #C7FF20;
+  background-color: #c7ff20;
   height: 50px;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+  &.firstVisitAnimation {
+    animation: fadeIn 0.5s cubic-bezier(0.47, 0, 0.745, 0.715);
+    animation-delay: 0.5s;
+    animation-fill-mode: both;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 /* Effect when navbar turns black */
@@ -35,7 +49,7 @@ nav {
 }
 
 .navBarText {
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: smaller;
   padding: 0 6px 0 6px;
   cursor: pointer;
@@ -56,31 +70,31 @@ mat-icon {
 }
 
 h6:hover {
-  text-shadow: 0 0 7px #71BBF5;
+  text-shadow: 0 0 7px #71bbf5;
   cursor: pointer;
 }
 
 mat-icon:hover {
-  color: #71BBF5;
+  color: #71bbf5;
 }
 
-img.logo{
-  transform: scale(90%,90%);
+img.logo {
+  transform: scale(90%, 90%);
   transition: opacity 0.3s ease-in-out;
 }
 
-.logoImage{
-    width: 13rem;
-    height: 4rem;
-    margin-top: 23px;
-    cursor: pointer;
+.logoImage {
+  width: 13rem;
+  height: 4rem;
+  margin-top: 23px;
+  cursor: pointer;
 }
 
 #mySearch {
   border-radius: 3px;
   margin-right: 2px;
   border-color: black;
-  background-color: #C7FF20;
+  background-color: #c7ff20;
   padding-top: 3px;
   margin-bottom: 2px;
   cursor: pointer;
@@ -96,7 +110,6 @@ img.logo{
 }
 
 label {
-
   display: none;
 }
 
@@ -106,11 +119,9 @@ label {
   display: none;
 }
 
-
-.content{
+.content {
   flex: 1;
 }
-
 
 /* Footer Starts Here */
 
@@ -121,11 +132,12 @@ label {
   left: 0;
   width: 100%;
   margin: auto;
-  background-color: #C7FF20;
+  background-color: #c7ff20;
   font-size: smaller;
-  height: 60px;
+  // height: 60px;
+  height: var(--footer-height);
   max-width: 2200px;
-  margin-bottom: -100px;
+  // margin-bottom: -100px;
   margin-top: 2rem;
   z-index: 10;
   margin-top: 0px;
@@ -149,7 +161,7 @@ footer {
   border-radius: 100em;
   border-style: hidden;
   background-color: white;
-  padding: .1em 0.45em;
+  padding: 0.1em 0.45em;
 }
 
 ::placeholder {
@@ -162,45 +174,45 @@ footer {
 /* Makes Nav Flexible */
 
 @media screen and (min-width: 300px) and (max-width: 938px) {
-    nav{
-      width: 95vw;
+  nav {
+    width: 95vw;
 
-      /* min-width: 97%; */
-    }
+    /* min-width: 97%; */
+  }
 
-    .navBarText{
-      margin: 0.5rem 0 0.5rem 0;
-    }
+  .navBarText {
+    margin: 0.5rem 0 0.5rem 0;
+  }
 
-    #hamburger {
-      display: inline-block;
-      cursor: pointer;
-      width: 35px;
-      height: 24px;
-      position: relative;
-    }
+  #hamburger {
+    display: inline-block;
+    cursor: pointer;
+    width: 35px;
+    height: 24px;
+    position: relative;
+  }
 
-    .bar1, .bar2, .bar3 {
-      width: 65%;
-      height: 3px;
-      background-color: black;
-      margin: 5px 0;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
+  .bar1,
+  .bar2,
+  .bar3 {
+    width: 65%;
+    height: 3px;
+    background-color: black;
+    margin: 5px 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
 
+  #hamburger.active .bar1 {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
 
-    #hamburger.active .bar1 {
-      transform: rotate(-45deg) translate(-5px, 6px);
-    }
+  #hamburger.active .bar2 {
+    opacity: 0;
+  }
 
-    #hamburger.active .bar2 {
-      opacity: 0;
-    }
-
-    #hamburger.active .bar3 {
-      transform: rotate(45deg) translate(-5px, -6px);
-    }
-
+  #hamburger.active .bar3 {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
 
   label {
     display: block;
@@ -208,7 +220,7 @@ footer {
     font-size: 26px;
     width: 40px;
     padding-bottom: 4px;
-    float:left;
+    float: left;
   }
 
   .menu {
@@ -223,12 +235,13 @@ footer {
     /* top: 40rem; */
     /* margin-right: 1px; */
     color: Black;
-    background-color: #C7FF20;
+    background-color: #c7ff20;
     opacity: 100%;
-    border-radius: 6px; 
-    transition: background-color 0.3ss ease-in-out, color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    border-radius: 6px;
+    transition: background-color 0.3ss ease-in-out, color 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
     padding-top: 1rem;
-    padding-bottom: 1rem
+    padding-bottom: 1rem;
   }
 
   .menu.shadow {
@@ -237,13 +250,13 @@ footer {
   }
 
   #toggle:checked + .menu {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     position: absolute;
     top: 0;
   }
 
-  .footerContainer{
+  .footerContainer {
     position: relative;
   }
 
@@ -253,7 +266,7 @@ footer {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     pointer-events: none;
   }
-  
+
   /* Show the menu when the toggle is checked with delay */
   #toggle:checked ~ #menu {
     opacity: 1;
@@ -261,5 +274,4 @@ footer {
     pointer-events: auto;
     transition-delay: 0.3s; /* Adjust the delay as needed */
   }
-
 }

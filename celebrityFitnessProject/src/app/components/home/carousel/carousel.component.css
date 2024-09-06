@@ -46,12 +46,12 @@ p {
 
 .image-container img {
     display: none;
-    border-radius: 8px;
+    border-radius: 1rem;
 }
 
 .text-container p {
     display: none;
-    border-radius: 8px;
+    border-radius: 1rem;
 }
 
 .image-container img.image-active {
@@ -59,7 +59,7 @@ p {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 1rem;
     aspect-ratio: 3/5;
 }
 
@@ -150,7 +150,7 @@ p {
         /* min-height: 600px; */
         max-width: 400px;
         margin: 0 auto;
-        border-radius: 8px;
+        border-radius: 1rem;
         margin-bottom: 0.5rem;
     }
 

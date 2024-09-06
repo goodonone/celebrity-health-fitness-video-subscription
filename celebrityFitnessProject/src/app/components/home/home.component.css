@@ -162,7 +162,7 @@
   background-image: url("/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg");
   background-size: cover;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 .cardText {
@@ -227,7 +227,7 @@
   width: 35vw;
   max-width: 500px;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 .cardTextTwo {

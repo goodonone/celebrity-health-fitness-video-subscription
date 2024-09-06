@@ -44,6 +44,10 @@ logoutUser() {
   localStorage.removeItem("cart");
 }
 
+checkEmail(email: string): Observable<{exists: boolean, message: string}> {
+  return this.http.post<{exists: boolean, message: string}>(`${this.baseURL}/check-email`, { email });
+}
+
 getUserId() {
   if (this.isloggedIn()) {
     return localStorage.getItem(this.userIdKey) ?? "";

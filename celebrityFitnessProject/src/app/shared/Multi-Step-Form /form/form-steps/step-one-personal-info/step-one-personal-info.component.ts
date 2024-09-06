@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormGroupDirective } from '@angular/forms';
 import { FormService } from '../../form.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { UserService } from 'src/app/services/user.service';
 
 
 @Component({
@@ -21,11 +22,12 @@ export class StepOnePersonalInfoComponent implements OnInit {
   passwordMismatch: boolean = false;
   isPopupVisible: boolean = false;
   passwordVisible = false;
+  emailExists: boolean = false;
 
   private destroy$ = new Subject<void>();
 
 
-  constructor(private inputFormGroup: FormGroupDirective, private fb: FormBuilder, public formService: FormService, private cdr: ChangeDetectorRef) { }
+  constructor(private inputFormGroup: FormGroupDirective, private fb: FormBuilder, public formService: FormService, private cdr: ChangeDetectorRef, private userService: UserService) { }
 
 
   ngOnInit(): void {
@@ -55,6 +57,26 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.cdr.detectChanges();
+  }
+
+  checkEmail() {
+    const email = this.stepForm.get('email')?.value;
+    if (email) {
+      this.userService.checkEmail(email).subscribe(
+        (response: {exists: boolean, message: string}) => {
+          if (response.exists) {
+            this.emailExists = true;
+            this.stepForm.get('email')?.setErrors({'emailExists': true});
+          } else {
+            this.emailExists = false;
+            this.stepForm.get('email')?.setErrors(null);
+          }
+        },
+        (error) => {
+          console.error('Error checking email:', error);
+        }
+      );
+    }
   }
 
   // validatePasswords(): void {

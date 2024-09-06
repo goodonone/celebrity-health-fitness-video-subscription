@@ -30,8 +30,11 @@
         <div class="input-details focusedInput">
           <label class="label" for="email">Email Address</label>
           <label for="error"
-                 *ngIf="this.stepForm.controls['email']?.invalid && this.stepForm.controls['email'].touched"
+                 *ngIf="this.stepForm.controls['email']?.invalid && this.stepForm.controls['email'].touched && !this.stepForm.get('email')?.hasError('emailExists')"
                  class="error-alert">Email is required</label>
+           <label for="error"
+                 *ngIf="this.stepForm.get('email')?.hasError('emailExists')"
+                 class="error-alert">Email already exists</label>      
         </div>
         <input type="text"
                matInput
@@ -39,6 +42,7 @@
                id="email"
                placeholder="hugh@hughjackedman.com"
                formControlName="email"
+               (blur)="checkEmail()"
                required>
       <!-- password input -->
        <div>

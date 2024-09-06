@@ -13,7 +13,8 @@
   position: fixed;
   /* margin-top: -10rem; */
   width: 100%;
-  height: 100vh;
+  /* height: 100vh; */
+  min-height: calc(110vh - var(--footer-height));
   /* background-image: url("https://images.unsplash.com/photo-1591741543032-bf439b4fd46c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-repeat: no-repeat;
     background-size: cover;
@@ -69,7 +70,8 @@ mat-card {
   height: auto;
   min-height: 400px;
   max-height: 500px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
+  border-radius: 1rem;
   padding: 1rem;
   box-sizing: border-box;
   aspect-ratio: 1/1;

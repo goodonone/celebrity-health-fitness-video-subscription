@@ -6,10 +6,13 @@
     background-color: rgb(255, 255, 255);
     width: 100vw;
     max-width: 100%;
+    max-width: 3000px;
     overflow-x: hidden;
     height: 100vh;
     margin-top: -80px;
     padding-top: 5rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .flexContainer {
@@ -36,6 +39,7 @@
 
 .flexAllProfileData {
     display: flex;
+    position: relative;
 }
 
 h1.profileNameTier {
@@ -59,11 +63,14 @@ h1.profileNameTier {
 }
 
 .profileInfo {
-    height: 52rem;
+    /* height: 52rem; */
+    position: relative;
+    height: auto;
     width: 50rem;
+    max-width: 50rem;
     padding: 1.5rem;
     background-color: #000000;
-    border-radius: 10px;
+    border-radius: 1rem;
 }
 
 h3.profileDetails {
@@ -369,15 +376,20 @@ fieldset {
     text-align: center;
 }
 
-@media screen and (min-width:500px) and (max-width: 1470px) {
+@media screen and (min-width:500px) and (max-width: 1450px) {
 
     .pageContainer {
-        height: fit-content
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
     }
 
     .profileInfo {
-        height: fit-content;
-        width: 35rem;
+        max-height: fit-content;
+        height: auto;
+        /* width: 40rem; */
+        width: 100%;
+        max-width: 50rem;
         padding: 2.5rem;
         background-color: #000000;
         border-radius: 10px;
@@ -480,7 +492,7 @@ fieldset {
         height: 50rem;
     }
 
-    @media screen and (min-width: 500px) and (max-width: 1233px) {
+    /* @media screen and (min-width: 642px) and (max-width: 1233px) {
 
         .flexContainer {
             flex-wrap: wrap;
@@ -492,9 +504,9 @@ fieldset {
             margin-bottom: 2rem;
             text-align: center;
         }
-    }
+    } */
 
-    @media screen and (min-width: 500px) and (max-width: 642px) {
+    @media screen and (min-width: 300px) and (max-width: 642px) {
 
         h1.profileNameTier {
             font-size: 17vw;
@@ -527,8 +539,9 @@ fieldset {
         }
 
         .profileInfo {
-            height: fit-content;
-            width: 90vw;
+            height: 52rem;
+            height: auto;
+            width: 90rem;
             padding: 2rem;
             background-color: #000000;
             border-radius: 10px;

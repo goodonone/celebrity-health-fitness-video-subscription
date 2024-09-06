@@ -14,7 +14,7 @@ import { CartService } from './services/cart.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   
@@ -63,12 +63,24 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.UpdateStatus();
 
+      // Check if the user has visited the page before to serve animations or not
+      const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
+      if (!hasVisited) {
+        // Trigger animations
+        this.triggerAnimations();
+        // Store the flag in localStorage
+        localStorage.setItem('hasVisitedHomeBefore', 'true');
+      } else {
+        // Skip animations
+        this.skipAnimations();
+      }
+
     // Listen for route changes
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         if (
           !this.router.url.includes('home') ||
-          !this.router.url.includes('signin')
+          !this.router.url.includes('sign-in')
         ) {
           this.isVisibleNavbar = false; // Reset when navigating away from home
           this.isMenuOpen = false;
@@ -82,6 +94,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     hamburger!.addEventListener('click', () => {
       hamburger!.classList.toggle('active');
     });
+  }
+
+  triggerAnimations(){
+    const navBar = document.querySelector('.navBar') as HTMLElement;
+    navBar?.classList.add('firstVisitAnimation');
+  }
+  skipAnimations(){
+    const navBar = document.querySelector('.navBar') as HTMLElement;
+    navBar?.classList.remove('firstVisitAnimation');
+  }
 
 
     // Add event listener for the hamburger button
@@ -89,7 +111,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     // if (hamburger) {
     //   hamburger.addEventListener('click', () => this.toggleMenu());
     // }
-  }
 
   ngAfterViewInit() {
     // Ensure the toggle element is available
