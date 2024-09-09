@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
-import { AppPasswordDirective } from '../app-password.directive';
+import { AppPasswordDirective } from './app-password.directive';
 import { FormComponent } from './Multi-Step-Form /form/form.component';
 import { StepTrackerIconsComponent } from './Multi-Step-Form /step-nav/step-tracker-icons.component';
 import { StepOnePersonalInfoComponent } from './Multi-Step-Form /form/form-steps/step-one-personal-info/step-one-personal-info.component';

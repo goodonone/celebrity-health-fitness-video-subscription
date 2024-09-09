@@ -62,9 +62,41 @@ export class FormService implements OnInit {
       ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
       expDate: ['', [Validators.required], Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)],
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
-      zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+      zipCode: ['', [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(5),
+        Validators.pattern(/^\d{5}$/), // Ensures it's exactly 5 digits
+        (control: AbstractControl) => {
+          const value = control.value;
+          const numValue = parseInt(value, 10);
+    
+          // Check if the value is between 00501 and 99950
+          if (numValue < 501 || numValue > 99950) {
+            return { zipCodeOutOfRange: true }; // Return error object if out of range
+          }
+    
+          return null; // Valid
+        }
+      ]],
       billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
-      billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+      billingZip: ['', [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(5),
+        Validators.pattern(/^\d{5}$/), // Ensures it's exactly 5 digits
+        (control: AbstractControl) => {
+          const value = control.value;
+          const numValue = parseInt(value, 10);
+    
+          // Check if the value is between 00501 and 99950
+          if (numValue < 501 || numValue > 99950) {
+            return { zipCodeOutOfRange: true }; // Return error object if out of range
+          }
+    
+          return null; // Valid
+        }
+      ]],
     }),
   });
   
@@ -74,7 +106,23 @@ export class FormService implements OnInit {
   
     if (shipping) {
       paymentDetailsGroup.addControl('shippingAddress', this.fb.control('', [Validators.required, Validators.minLength(30)]));
-      paymentDetailsGroup.addControl('shippingZip', this.fb.control('', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]));
+      paymentDetailsGroup.addControl('shippingZip', this.fb.control('',  [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(5),
+        Validators.pattern(/^\d{5}$/), // Ensures it's exactly 5 digits
+        (control: AbstractControl) => {
+          const value = control.value;
+          const numValue = parseInt(value, 10);
+    
+          // Check if the value is between 00501 and 99950
+          if (numValue < 501 || numValue > 99950) {
+            return { zipCodeOutOfRange: true }; // Return error object if out of range
+          }
+    
+          return null; // Valid
+        }
+      ]));
     } else {
       paymentDetailsGroup.removeControl('shippingAddress');
       paymentDetailsGroup.removeControl('shippingZip');

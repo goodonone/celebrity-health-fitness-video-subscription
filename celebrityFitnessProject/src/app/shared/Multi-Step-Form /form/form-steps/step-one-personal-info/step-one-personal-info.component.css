@@ -129,10 +129,10 @@ input:valid {
   line-height: 1.3rem;
 }
 
-#showHide {
+/* #showHide {
 
 font-weight: 600;
-}
+} */
 
 input[matInput]:focus {
   border-color: #000000 !important; /* Change the border color when focused */

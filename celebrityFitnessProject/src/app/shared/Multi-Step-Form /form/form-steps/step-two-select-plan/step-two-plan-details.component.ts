@@ -83,6 +83,16 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     }
   }
 
+  // Disable if the first plan is selected
+  // get isPlanDisabled(): boolean {
+  //   return this.planOptions[0].plan === this.planType; // Disable if the first plan is selected
+  // }
+  
+  // toggleFirstPlan() {
+  //   if (!this.isPlanDisabled) {
+  //     this.checked = !this.checked; // Toggle only if it's not disabled
+  //   }
+  // }
 
   
 }

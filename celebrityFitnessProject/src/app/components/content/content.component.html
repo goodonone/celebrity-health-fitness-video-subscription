@@ -90,16 +90,16 @@
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
-                <div>
-                  <div class="iframe">
-                    <p class="loadingText">Loading...</p>
+                <p class="loadingText">Loading...</p>
+                <!-- <div> -->
+                  <!-- <div class="iframe"> -->
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-                  </div>
-                  <div >
-                    <h5 class="card-title mb-0">
-                    </h5>
-                  </div>
-                </div>
+                  <!-- </div> -->
+                  <!-- <div > -->
+                    <!-- <h5 class="card-title mb-0"> -->
+                    <!-- </h5> -->
+                  <!-- </div> -->
+                <!-- </div> -->
               </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>

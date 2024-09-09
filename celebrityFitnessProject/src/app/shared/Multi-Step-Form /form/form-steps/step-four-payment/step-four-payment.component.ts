@@ -240,6 +240,21 @@ export class StepFourPaymentComponent implements OnInit {
       }, "");
     }
 
+    hideCreditCardNumber() {
+      const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
+      
+      if (ccNumberInput && ccNumberInput.value) {
+        // Remove spaces and format the card number
+        const cleanCCNumber = ccNumberInput.value.replaceAll(" ", "");
+    
+        // Only show the last 4 digits, replace the rest with dots
+        const maskedCCNumber = cleanCCNumber.slice(0, -4).replace(/\d/g, "•") + cleanCCNumber.slice(-4);
+    
+        // Update the input field with the masked credit card number
+        ccNumberInput.value = maskedCCNumber;
+      }
+    }
+
 
   }
 
