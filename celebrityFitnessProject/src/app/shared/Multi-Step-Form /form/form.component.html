@@ -1,0 +1,81 @@
+<div class="container">
+
+  <!-- Tracker Icons Contextually Displayed -->
+    <!-- Form steps for New Users signing up for a membership all steps are available to them, for potential customers
+     who have chosen the free tier the payment step is not shown to them -->
+    <div class="row" *ngIf="!loggedIn && !checkout">
+      <app-step-tracker-icons class="nav"> </app-step-tracker-icons>
+    </div>
+
+    <!-- Form steps for for users who are changing their membership and are already paying members -->
+    <div class="row" *ngIf="loggedIn && !payment && !checkout">
+      <app-step-tracker-icons-upgrade class="nav"> </app-step-tracker-icons-upgrade>
+    </div>
+
+    <!-- Form steps for users upgrading from a free membership, they need to imput payment info for the first time -->
+    <div class="row" *ngIf="loggedIn && payment && !checkout">
+      <app-step-tracker-icons-upgrade-with-payment class="nav"></app-step-tracker-icons-upgrade-with-payment>
+    </div>
+
+    <!-- Progress icons for users who are checking out items from the store  -->
+    <div class="row" *ngIf="checkout">
+      <app-step-tracker-icons-checkout class="nav"></app-step-tracker-icons-checkout>
+    </div>
+
+
+   <!-- Form steps contextally displayed -->
+    <!-- Form steps for New Users signing up for a membership all steps are available to them, for potential customers
+     who have chosen the free tier the payment step is not shown to them -->
+      <div class="column">
+        <form>
+          <ng-container [formGroup]="stepForm"
+                        name="stepForm"
+                        (submit)="confirmAndSubmitForm()" *ngIf="!checkout">
+           <div class="skipStep" *ngIf="!loggedIn">
+            <app-step-one-personal-info *ngIf="activeStep$ == 1"
+                                           formGroupName="personalDetails"></app-step-one-personal-info>
+            <app-step-two-plan-details *ngIf="activeStep$ == 2"
+                                           formGroupName="planDetails"></app-step-two-plan-details>
+            <app-step-three-summary *ngIf="activeStep$ == 3"
+                                       [stepForm]="stepForm"></app-step-three-summary>                                
+            <app-step-four-payment *ngIf="activeStep$ == 5" 
+                                      formGroupName="paymentDetails" ></app-step-four-payment> 
+            <app-step-five-confirm *ngIf="activeStep$ == 5"></app-step-five-confirm>
+            </div>
+
+            <!-- Form steps for for users who are changing their membership and are already paying members -->
+            <div class="skipStep" *ngIf="loggedIn && !payment">
+            <app-step-two-plan-details *ngIf="activeStep$ == 1"
+                                       formGroupName="planDetails"></app-step-two-plan-details>
+            <app-step-three-summary *ngIf="activeStep$ == 2"
+                                   [stepForm]="stepForm"></app-step-three-summary>
+            </div>
+
+            <!-- Form steps for users upgrading from a free membership, they need to imput payment info for the first time -->
+            <div class="skipStep" *ngIf="loggedIn && payment">
+            <app-step-two-plan-details *ngIf="activeStep$ == 1"
+                                       formGroupName="planDetails"></app-step-two-plan-details>
+            <app-step-three-summary *ngIf="activeStep$ == 2"
+                                    [stepForm]="stepForm"></app-step-three-summary>             
+            <app-step-four-payment *ngIf="activeStep$ == 3" 
+                                  formGroupName="paymentDetails"></app-step-four-payment>  
+          </div>
+          </ng-container>
+
+          <!-- Form steps for users who are checking out items from the store -->
+          <ng-container [formGroup]="stepForm"
+                        name="stepForm" 
+                        *ngIf="checkout">
+          <div class="skipStep" *ngIf="checkout">             
+            <app-step-four-payment [shipping]="shipping" *ngIf="activeStep$ == 1" 
+                                  formGroupName="paymentDetails"></app-step-four-payment>  
+            <app-step-five-confirm [checkout]="checkout" *ngIf="activeStep$ == 2"></app-step-five-confirm>
+          </div>
+          </ng-container> 
+          
+        </form>
+        <app-progression-buttons class="progress"></app-progression-buttons>
+      </div>
+    
+  
+</div>

@@ -1,3 +1,5 @@
+<div class="background"></div>
+
 <div class="pageContainer">
   <!-- Upgrade button for Tier Two and Three -->
   <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
@@ -17,11 +19,11 @@
   <!-- Live Video Div Pops Up When Timer Expires For Highest Tier-->
     <div class="liveVideo" *ngIf="currentUser.tier === 'All In' && showLiveVideo">
       <h1 class="liveVideoText">
-          We are Live!
+         We are Live!
       </h1>
       <mat-card class="liveVideoContainer">
           <mat-card-content>
-            <div *ngFor="let video of livestreamVideos" >
+            <div *ngFor="let video of livestreamVideos" class="liveVideoInnerContainer" >
               
                   <iframe [src]="video.sanitizedURL" frameborder="0" controls="0" allowfullscreen></iframe>
                 
@@ -87,35 +89,38 @@
                   <h1 class="cardHeaderYear">2023</h1>
                   <button mat-button class="btn-recipes">Fresh Recipes Here</button>
               </div>
-              <mat-card *ngFor="let video of channel23Videos" class="cardVideosSecondThird">
-                <div>
-                  <div>
+              <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+                <p class="loadingText">Loading...</p>
+                <!-- <div> -->
+                  <!-- <div class="iframe"> -->
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-                  </div>
-                  <div >
-                    <h5 class="card-title mb-0">
-                    </h5>
-                  </div>
-                </div>
+                  <!-- </div> -->
+                  <!-- <div > -->
+                    <!-- <h5 class="card-title mb-0"> -->
+                    <!-- </h5> -->
+                  <!-- </div> -->
+                <!-- </div> -->
               </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
+
           <mat-card class="contentCardTwo flexCards">
               <div class="yearAndRecipes">
-                  <h1 class="cardHeaderYear">2022</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
-              </div>
-              <mat-card *ngFor="let video of channel22Videos" class="cardVideosSecondThird">
-                <div>
-                  <div>
-                    <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-                  </div>
-                  <div >
-                    <h5 class="card-title mb-0">
-                    </h5>
-                  </div>
+                <h1 class="cardHeaderYear">2022</h1>
+                <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+            </div>
+            <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
+              <div>
+                <div class="iframe">
+                  <p class="loadingText">Loading...</p>
+                  <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                 </div>
-              </mat-card>
+                <div >
+                  <h5 class="card-title mb-0">
+                  </h5>
+                </div>
+              </div>
+            </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
 
@@ -126,7 +131,8 @@
               </div>
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
+                  <div class="iframe">
+                    <p class="loadingText">Loading...</p>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
@@ -145,7 +151,8 @@
               </div>
               <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
                 <div>
-                  <div >
+                  <div class="iframe">
+                    <p class="loadingText">Loading...</p>
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
                   </div>
                   <div >
@@ -160,32 +167,44 @@
 
       <div class="toggleWorkoutsByCategory" *ngIf="checked">
           <mat-card class="contentCardOne flexCards">
+            <div class="yearAndRecipes">
               <h1 class="cardHeadertype">Abs</h1>
+            </div>
               <mat-card *ngFor="let video of absVideos" class="cardVideosSecondThird">
+                <p class="loadingText">Loading...</p>
                     <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               </mat-card>
               <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
+            <div class="yearAndRecipes">
               <h1 class="cardHeadertype">Full Body Workouts</h1>
+            </div>
               <mat-card *ngFor="let video of fullBodyVideos" class="cardVideosSecondThird"> 
+                <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
           <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
+            <div class="yearAndRecipes">
               <h1 class="cardHeadertype">Upper Body Workouts</h1>
+            </div>
               <mat-card *ngFor="let video of upperBodyVideos" class="cardVideosSecondThird">
+                <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
           <button mat-button class="btn-showMore">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
+            <div class="yearAndRecipes">
               <h1 class="cardHeadertype">HIIT Workouts</h1>
+            </div>
               <mat-card *ngFor="let video of hiitVideos" class="cardVideosSecondThird">
+                <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
           <button mat-button class="btn-showMore">Show More Videos</button>

@@ -1,385 +1,509 @@
+.maxContainer{
+  height: auto;
+  width: auto;
+  max-width: 3000px;
+  margin: auto;
+}
+
+.videoBackground{
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  overflow: hidden;
+  max-width: 3000px;
+  margin: auto;
+}
+
 /* Banner One Styling */
 
 .banner {
-    position: relative;
-    margin-top: -80px;
-    width: 100%;
-    box-sizing: border-box;
+  position: relative;
+  /* margin-top: -80px; */
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .overlay {
-    position: absolute;
-    top: 45%;
-    bottom: 45%;
-    left: 38%;
-    right: 0;
-    margin: auto;
-    z-index: 1;
+  position: absolute;
+  top: 50%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .textContainer {
-    display: inline-flex;
-    margin: auto;
-    text-align: center;
-    justify-content: center;
+  display: inline-flex;
+  margin: auto;
+  text-align: center;
+  justify-content: center;
+  width: 100rem;
 }
 
 .heading {
-    font-family: 'Outfit', sans-serif;
-    text-align: center;
-    justify-content: center;
-    color: white;
-    font-size: 5vw;
-    margin: 0;
-    padding: 0;
+  font-family: "Outfit", sans-serif;
+  text-align: center;
+  justify-content: center;
+  color: white;
+  font-size: 5vw;
+  margin: 0;
+  padding: 0;
 }
 
-.headingContd {
-    font-family: 'Outfit', sans-serif;
-    text-align: center;
-    margin: auto;
-    justify-content: center;
-    color: white;
-    font-size: 5vw;
-    margin: 0 0 0 -5px;
-    padding: 0;
-}
-
-@keyframes zoomIn {
-    from {
-        font-weight: 300;
-    }
-
-    to {
-        font-weight: 600;
-    }
-}
-
+/* .headingContd {
+  font-family: "Outfit", sans-serif;
+  text-align: center;
+  margin: auto;
+  justify-content: center;
+  color: white;
+  font-size: 5vw;
+  margin: 0 0 0 -5px;
+  padding: 0;
+} */
 
 .overlayTwo {
-    position: absolute;
-    top: 80%;
-    bottom: 100%;
-    left: 13%;
-    z-index: 1;
+  position: absolute;
+  top:170%; 
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
 .startHere {
-    display: inline;
-    font-family: 'Outfit', sans-serif;
-    margin-top: -2vw;
-    color: white;
-    font-size: 1.2vw;
-    border: solid;
-    border-radius: .2vw;
-    width: 7vw;
-    padding: .3vw .3vw .5vw .3vw;
-    animation: zoomIn 0.25s;
-    animation-iteration-count: infinite;
+  display: inline;
+  font-family: "Outfit", sans-serif;
+  color: white;
+  font-size: 1.2vw;
+  border: solid;
+  border-radius: 0.3vw;
+  width: 7vw;
+  padding: 0.55vw;
+  animation: pulse 0.25s;
+  animation-iteration-count: infinite;
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  from {
+    font-weight: 300;
+  }
+
+  to {
+    font-weight: 600;
+  }
 }
 
 .startHere:hover {
-    color: #C7FF20;
-    border-color: #C7FF20;
-    cursor: pointer;
+  color: #c7ff20;
+  border-color: #c7ff20;
+  cursor: pointer;
 }
 
 /* Beginning of Banner Two Styling */
 
 .bannerTwo {
-    height: 105vh;
-    margin: auto;
-    background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
-    background-size: cover;
+  height: 100%;
+  min-height: 105vh;
+  /* max-height: 130vh; */
+  margin: auto;
+  background: url("src/assets/Images/Edit-steven-erixon-FxlYmu_To7o-unsplash.jpg");
+  background-size: cover;
+  background-position: center center;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .textOverlay {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 300;
-    padding-top: 60px;
-    font-size: 150px;
-    font-weight: 400;
-    line-height: 1.6;
-    color: white;
-    text-align: center;
-}
-
-/* Makes the page flexible */
-
-@media screen and (min-width: 500px) and (max-width: 717px) {
-
-    .banner {
-        height: 100vh;
-        width: 100%;
-        overflow: hidden;
-    }
-
-
-    .videoBackground {
-        object-fit:cover;
-        height: 100vh;
-        /* zoom: 150%; */
-        overflow: hidden;
-    }
-
-    .overlay {
-        position: absolute;
-        top: 45%;
-        bottom: 45%;
-        left: 24%;
-        right: 0;
-        margin: auto;
-        z-index: 1;
-    }
-
-    .overlayTwo {
-        position: absolute;
-        top: 49%;
-        bottom: 120%;
-        left: 25%;
-        z-index: 1;
-    }
-
-    .startHere {
-        display: inline;
-        font-family: 'Outfit', sans-serif;
-        color: white;
-        font-size: 2.4vw;
-        border: solid;
-        border-radius: .4vw;
-        width: 15vw;
-        padding: .3vw .3vw .5vw .3vw;
-    }
-
-
-    .bannerTwo {
-        position: relative;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position-x: center;
-    }
-
-    .heading {
-        font-size: 10vw;
-    }
-
-    .headingContd {
-        font-size: 10vw;
-    }
-
-    .textOverlay {
-        position: absolute;
-        padding: 200px 0 200px 0;
-        font-size: 97px;
-    }
-
+  font-family: "Outfit", sans-serif;
+  font-weight: 300;
+  /* padding-top: 60px; */
+  font-size:  10rem;
+  font-weight: 400;
+  line-height: 20vw;
+  color: white;
+  text-align: center;
 }
 
 /* Beginning of Banner Three Styling */
 
 .bannerThree {
-    height: 100vh;
-    width: 100%;
-    background-color: #C7FF20;
-    min-height: 100vh;
+  display:flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #c7ff20;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .containerOne {
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    height: 100vh;
-    position: relative;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  justify-content: space-evenly;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  max-width: 3000px;
+  position: relative;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .card {
-    height: 700px;
-    width: 500px;
-    background-image: url('/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg');
-    background-size: cover;
-    overflow: hidden;
-    border-radius: 8px;
+  height: auto;
+  max-height: 650px;
+  aspect-ratio: 5/7;
+  width: 35vw;
+  max-width: 500px;
+  background-image: url("/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg");
+  background-size: cover;
+  overflow: hidden;
+  border-radius: 1rem;
 }
 
 .cardText {
-    font-size: 30px;
-    margin: auto;
-    color: black;
-    line-height: 1.5;
-    padding-bottom: 190px;
+  font-size: clamp(15px, 2.5vw, 30px);
+  margin: auto;
+  color: black;
+  line-height: 1.5;
+  width: 100%;
+  /* padding-top: 10rem; */
+  /* padding-bottom: 190px; */
 }
 
 .nutritionText {
-    width: 35%;
+  width: 35%;
 }
 
 /* Beginning of Banner Four Styling */
 
 .bannerFour {
-    height: 100vh;
-    width: 100%;
-    background-color: #C7FF20;
-    min-height: 100vh;
+  /* height: 100vh;
+  width: 100%;
+  background-color: #c7ff20;
+  min-height: 100vh; */
+  display:flex;
+  flex-direction: column;
+  margin: auto;
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #c7ff20;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .containerTwo {
-    display: flex;
-    justify-content: space-evenly;
-    margin: auto;
-    height: 100vh;
-    position: relative;
-    flex-direction: row;
-    align-content: center;
+  display: flex;
+  justify-content: space-evenly;
+  margin:auto;
+  /* height: 100vh;
+  width: auto; */
+  height: 100%;
+  width: 100%;
+  max-width: 3000px;
+  position: relative;
+  flex-direction: row;
+  align-content: center;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .cardTwo {
-    height: 700px;
-    width: 500px;
-    margin-top: 130px;
-    overflow: hidden;
-    border-radius: 8px;
-    padding-right: 20px;
+  /* height: 80vh;
+  max-height: 700px;
+  width: 500px;
+  max-width: 600px;
+  aspect-ratio: 3/5;
+  overflow: hidden;
+  border-radius: 8px; */
+  height: auto;
+  max-height: 650px;
+  aspect-ratio: 5/7;
+  width: 35vw;
+  max-width: 500px;
+  overflow: hidden;
+  border-radius: 1rem;
 }
 
 .cardTextTwo {
-    font-size: 30px;
-    margin: auto;
-    color: black;
-    line-height: 1.5;
-    padding-top: 19rem;
-    padding-right: 100px;
+  font-size: clamp(15px, 2.5vw, 30px);
+  margin: auto;
+  color: black;
+  line-height: 1.5;
+  padding-top: 10rem;
+  width: 100%;
+  /* padding-right: 100px; */
 }
 
 .workoutText {
-    width: 35%;
+  width: 35%;
 }
 
 .label {
-    display: flex;
+  display: flex;
 }
 
 #toggleView {
-    display: none;
+  display: none;
 }
 
 label {
-    display: none;
+  display: none;
 }
 
 #toggle {
-    display: none;
+  display: none;
 }
-
-/* Makes the page flexible */
-
-@media screen and (min-width: 500px) and (max-width: 717px) {
-
-    .containerOne {
-        display: flex;
-        flex-wrap: wrap;
-        height: 80vh;
-        padding-top: 70px;
-    }
-
-    .card {
-        transform: scale(80%, 80%);
-    }
-
-
-    .nutritionText {
-        padding-bottom: 0;
-        padding-left: 10px;
-        text-align: left;
-        width: 80%;
-    }
-
-    .bannerFour {
-        height: 105vh;
-    }
-
-    .containerTwo {
-        display: flex;
-        flex-wrap: wrap-reverse;
-        height: 80vh;
-        padding-top: 110px;
-    }
-
-    .cardTwo {
-        transform: scale(80%, 80%);
-        margin-top: 0px;
-    }
-
-    .workoutText {
-        padding-bottom: 30px;
-        padding-left: 10px;
-        text-align: left;
-        width: 80%;
-        margin-top: 0px;
-    }
-
-    .cardTextTwo {
-        padding-top: 10px;
-        margin-top: -10px;
-    }
-
-    .label {
-        display: none;
-    }
-
-    #toggleView {
-        display: none;
-    }
-
-    label {
-        display: flex;
-    }
-
-    #toggle {
-        display: none;
-    }
-}
-
 
 /* Beginning of Banner Five Styling */
 
 .bannerFive {
-    display: flex;
-    align-items: center;
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    background: black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  min-height: 110vh;
+  width: 100%;
+  max-width: 3000px;
+  background: black;
+  margin: auto;
+  overflow: hidden;
 }
 
 .carouselHeading {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    margin: auto;
-    font-family: 'Outfit', sans-serif;
-    margin-top: 120px;
-    color: white;
-    font-size: 70px;
-    height: 3vw;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+  font-family: "Outfit", sans-serif;
+  margin-top: 5rem;
+  color: white;
+  font-size: 70px;
+  height: 3vw;
 }
 
-/* Makes the page flexible */
+.app-carousel {
+  max-height: 100%;
+  height: auto;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
 
-@media screen and (min-width: 500px) and (max-width: 717px) {
+/* Media Queries */
 
-    .bannerFive {
-        height: 102vh;
-    }
+@media screen and (min-width: 2000px) and (max-width: 6000px) {
+  
+  .textOverlay{
+    padding-top: 5rem;
+    font-size:  clamp(20rem, 1.5vw, 30rem);
+    line-height: 20rem;
+  }
 
-    .carouselHeading {
-        font-size: 50px;
-        margin-top: 100px;
-    }
+}
 
+@media screen and (min-width: 300px) and (max-width: 872px) {
 
+  .banner {
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .videoBackground {
+    object-fit: cover;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .overlay {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .overlayTwo {
+    top: 200%;
+    transform: translate(-50%, -50%);
+  }
+
+  .startHere {
+    display: inline;
+    font-family: "Outfit", sans-serif;
+    color: white;
+    font-size: 1.3rem;
+    border: solid;
+    border-radius: 0.3rem;
+    margin-top: 0;
+    width: 6rem;
+    padding: 1vw;
+    cursor: pointer;
+  }
+
+  .bannerTwo {
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-x: center;
+  }
+
+  .textContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width:50rem;
+  }
+
+  .heading {
+    font-size: 3rem;
+  }
+
+  /* .headingContd {
+    font-size: 3rem;
+  } */
+
+  .textOverlay {
+    /* position: absolute; */
+    padding: 200px 0 200px 0;
+    width: 100%;
+    font-size: 4rem;
+    line-height: 5rem;
+  }
+
+  .bannerThree {
+    height: 100%;
+    min-height: 120vh;
+    /* padding-top: 10rem; */
+  }
+
+  .containerOne {
+    display: flex;
+    flex-wrap: wrap;
+    height: 100%;
+    padding-top: 0rem;
+    padding-bottom: 0;
+    margin-bottom: 0rem;
+  }
+
+  .card {
+    transform: scale(85%, 85%);
+    width: auto;
+    min-width: 250px;
+    max-width: 400px;
+    height: auto;
+    min-height: 600px;
+    max-height: 650px;
+    aspect-ratio: 3/5;
+  }
+
+  .nutritionText {
+    padding-bottom: 0;
+    padding-left: 10px;
+    text-align: left;
+    width: 75%;
+    margin-top: -50px;
+  }
+
+  .cardText{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    padding-top: 10px;
+    padding-bottom: 90px;
+    padding-right: 0;
+    /* padding-left: 5rem; */
+    margin-top: 3rem;
+    width: auto;
+  }
+
+  .bannerFour {
+    height: 100%;
+    min-height: 120vh;
+    /* padding-top: 10rem; */
+  }
+
+  .containerTwo {
+    display: flex;
+    flex-wrap: wrap-reverse;
+    height: 100%;
+    padding-top: 0;
+    padding-bottom: 5rem;
+    margin-bottom: 0;
+  }
+
+  .cardTwo {
+    transform: scale(85%, 85%);
+    width: auto;
+    min-width: 250px;
+    max-width: 400px;
+    height: auto;
+    min-height: 600px;
+    max-height: 650px;
+    aspect-ratio: 3/5;
+    margin-top: 7rem;
+    overflow: hidden;
+  }
+
+  .workoutText {
+    padding-bottom: 0;
+    padding-left: 10px;
+    text-align: left;
+    width: 75%;
+    margin-top: -50px;
+  }
+
+  .cardTextTwo {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    padding-top: 10px;
+    /* padding-bottom: 90px; */
+    padding-right: 0;
+    margin-top: 3rem;
+  }
+
+  .label {
+    display: none;
+  }
+
+  #toggleView {
+    display: none;
+  }
+
+  label {
+    display: flex;
+  }
+
+  #toggle {
+    display: none;
+  }
+
+  .bannerFive {
+    height: 100%;
+    min-height: 150vh;
+    /* padding-top: 15rem; */
+  }
+
+  .carouselHeading {
+    font-size: clamp(3rem, 10vw, 4rem);
+    z-index: 1;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    /* margin-top: 100px; */
+    width: 100%;
+    height: 15vw;
+    /* margin-bottom: 10rem; */
+    line-height: 3rem;
+  }
 }

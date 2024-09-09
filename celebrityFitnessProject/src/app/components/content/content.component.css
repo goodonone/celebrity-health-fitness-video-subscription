@@ -2,6 +2,20 @@
     font-family: 'Outfit', sans-serif;
 }
 
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: #000000;
+    max-width: 3000px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+  }
+
 a {
     color: white;
     text-align: center;
@@ -27,6 +41,7 @@ a {
     color: black;
     height: 2rem;
     width: 100%;
+    max-width: 3000px;
     padding-bottom: 1rem;
     z-index: 2;
 }
@@ -54,7 +69,7 @@ h1,
 #timerTierThree {
     font-weight: 500;
     text-align: center;
-    font-size: 2vw;
+    font-size: clamp(2rem, 1.5vw, 3rem);
     padding-top: 1.7rem;
 }
 
@@ -67,7 +82,9 @@ mat-card-header.tierTwoThreeHeader {
 }
 
 h1.tierOneHeader {
-    font-size: 5vw;
+    /* font-size: 5vw; */
+    font-size: 4rem;
+
     text-align: center;
     color: white;
     padding-top: 2.5vw;
@@ -81,13 +98,20 @@ div.cardFirstTier {
 
 .liveVideo {
     display: flex;
-    margin-top: 10rem;
+    flex-direction: row;
+    justify-content: space-around;
+    /* margin-top: 20rem; */
+    max-width: 1500px;
+    margin: 15rem auto auto auto;
+    /* margin-left: auto;
+    margin-right: auto; */
 }
 
 h1.liveVideoText {
     justify-content: center;
     font-size: 8rem;
     font-weight: 700;
+    font-style: italic;
     width: 10rem;
     line-height: 10rem;
     text-align: left;
@@ -97,17 +121,27 @@ h1.liveVideoText {
 
 .liveVideoContainer {
     height: 30rem;
+    /* width: 50rem; */
     width: 50rem;
+    /* max-width: 1000px; */
     color: black;
-    border-radius: 6px;
+    border-radius: 1rem;
     margin: auto;
     /* margin-top: 10rem; */
     background-color: rgb(1, 1, 1);
+    padding: 1rem;
+    background-color: rgb(18, 17, 17);
 }
+
+/* .liveVideoInnerContainer{
+    padding: 1rem;
+} */
 
 .cardContainer {
     height: fit-content;
+    min-height: 50rem;
     width: 80%;
+    max-width: 1000px;
     background-color: rgb(18, 17, 17);
     border-radius: 1rem;
     margin: auto;
@@ -164,13 +198,15 @@ mat-card.cardVideosFirst {
 /* For tier Two and Three content */
 
 div.cardSecondAndThirdTiers {
-    margin-top: 10rem;
+    /* margin-top: 3rem; */
+    margin-top: 15rem;
 }
 
 .cardContainerTwo {
     position: relative;
-    height: fit-content;
+    max-height: fit-content;
     width: 90%;
+    max-width: 2000px;
     background-color: rgb(18, 17, 17);
     border-radius: 1rem;
     padding-top: 1rem;
@@ -193,14 +229,17 @@ div.cardSecondAndThirdTiers {
 .contentCardFour,
 .contentCardFive,
 .contentCardSix {
-    height: fit-content;
+    max-height: fit-content;
+    min-height: 50rem;
+    position: relative;
     width: 80%;
     background-color: rgb(2, 2, 2);
     margin: auto;
     margin-top: 2rem;
-    padding: 2rem;
+    /* padding: 2rem;
     padding-top: 5rem;
-    padding-bottom: 5rem;
+    padding-bottom: 5rem; */
+    padding: 5rem 2rem 5rem 2rem;
 }
 
 
@@ -222,7 +261,7 @@ mat-card.contentCardTwo,
 .contentCardFour,
 .contentCardFive,
 .contentCardSix {
-    margin-top: 8rem;
+    /* margin-top: 8rem; */
 }
 
 .flexCards.contentCardOne {
@@ -246,30 +285,54 @@ mat-card.contentCardTwo,
 }
 
 mat-card.cardVideosSecondThird {
-    background-color: rgb(0, 0, 0);
-    width: 23rem;
-    height: 10rem;
-    margin: 3rem;
-    margin-top: 2rem;
-    object-fit: fill;
-    background-size: cover;
+    background-color: rgb(14, 205, 23);
+    width: auto;
+    height: auto;
+    aspect-ratio: 16/9;
+    /* width: 23rem;
+    height: 10rem; */
+    /* margin: 3rem; */
+    /* margin-top: 2rem; */
+    /* object-fit: cover;
+    background-size: cover; */
+    /* padding: 0 5rem 1rem 5rem; */
+    padding:0;
+    margin:auto;
 }
+
 
 a.videoTitle {
     padding-left: 1.5rem;
 }
 
-iframe {
-    aspect-ratio: 16/9;
+iframe{
+    width: 100%;
+    max-width: 20rem;
+    height: 100%;
+    max-height: 15rem;
+    border-radius: 0.5rem;
+    background-color: rgb(238, 15, 15);
+}
+
+/* iframe, .iframe {
+    aspect-ratio: 4/3;
     min-width: 100%;
-    border-radius: 0.2rem;
+    height: auto;
+    border-radius: 0.5rem;
+    background-color: rgb(238, 15, 15);
+    color: white;
+} */
+
+.loadingText{
+    font-size: clamp(1rem, 1.2vw, 3vw);
+    color: white;
 }
 
 .tierName {
     color: white;
     font-weight: 500;
     text-align: left;
-    font-size: 7vw;
+    font-size: 8rem;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 2rem;
@@ -280,7 +343,7 @@ iframe {
 .cardHeadertype {
     color: white;
     font-weight: 500;
-    font-size: 6.5vw;
+    font-size: 4rem;
     padding-left: 0.8rem;
     padding-top: 4rem;
     width: 18rem;
@@ -353,7 +416,7 @@ div.upgradeContainer {
 
 label {
     margin: 0 0.5rem 0 0.2rem;
-    color: #6f6f6f;
+    color: #555454;
     font-size: 1rem;
 }
 
@@ -364,9 +427,9 @@ label {
 .yearAndRecipes {
     display: flex;
     flex-direction: column;
-    padding-top: 1rem;
-    padding-left: 2rem;
-    padding-right: 4rem;
+    position: absolute;
+    left:2rem;
+    top: 1rem;
 }
 
 p.recipes {
@@ -382,14 +445,20 @@ button.btn-recipes {
     font-size: larger;
     margin-left: 3rem;
     margin-top: 2rem;
+    cursor: pointer;
 }
 
 button.btn-showMore {
+    position: absolute;
     width: 15rem;
     background-color: rgb(18, 17, 17);
     color: white;
     font-size: larger;
     margin-top: 2rem;
+    cursor: pointer;
+    bottom: 2rem;
+    left: 50%;
+    transform: translate(-50%, 50%);
 }
 
 .disable {

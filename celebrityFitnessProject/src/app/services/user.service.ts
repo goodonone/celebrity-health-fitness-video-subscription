@@ -44,6 +44,10 @@ logoutUser() {
   localStorage.removeItem("cart");
 }
 
+checkEmail(email: string): Observable<{exists: boolean, message: string}> {
+  return this.http.post<{exists: boolean, message: string}>(`${this.baseURL}/check-email`, { email });
+}
+
 getUserId() {
   if (this.isloggedIn()) {
     return localStorage.getItem(this.userIdKey) ?? "";
@@ -58,6 +62,19 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
   }
 
+  checkPassword(userId: number, password: string): Observable<boolean> {
+    let reqHeaders = {
+      Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+    }
+    return this.http.post<boolean>(`${this.baseURL}/check-password/${userId}`, { password }, { headers: reqHeaders });
+  }
+
+  updatePassword(userId: number, newPassword: string): Observable<any> {
+    let reqHeaders = {
+      Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+    }
+    return this.http.put<any>(`${this.baseURL}/update-password/${userId}`, { newPassword }, { headers: reqHeaders });
+  }
 
 
 updateUser2(updatedUser2: User): Observable<User> {

@@ -1,0 +1,78 @@
+<ng-container [formGroup]="stepForm">
+    <mat-card class="step-two">
+      <mat-card-header>
+        <mat-card-title-group class="title">
+          <mat-card-title role="heading"
+                          aria-level="1"
+                          class="select">Select your plan</mat-card-title>
+          <mat-card-subtitle role="heading"
+                             aria-level="2">Choose between Monthly & Yearly Plans</mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content>
+  
+        <mat-button-toggle-group name="options"
+                                 #group="matButtonToggleGroup"
+                                 aria-label="planOptions"
+                                 [value]="group.value"
+                                 (change)="onPlanChange(group.value)">
+                                
+          <mat-button-toggle 
+                             [value]="planOptions[0].plan"
+                             [checked]="planOptions[0].plan === planType"
+                             (click)="updatePlanType(planOptions[0].plan, planOptions[0].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[0]}}"
+                             [ngClass]="{'checked':chosenPlan}">
+                             
+            <div class="plan">
+              <div class="details">
+                <span class="plan_title">{{ planOptions[0].plan | titlecase }}</span>
+                <span class="price">{{ planOptions[0].billing[typeOfBilling].price }}</span>
+                <span class="promo">{{ planOptions[0].billing[typeOfBilling].promo }}</span>
+                <span class="description">{{planOptions[0].description}}</span>
+              </div>
+            </div>
+          </mat-button-toggle>
+          <mat-button-toggle 
+                             [value]="planOptions[1].plan"
+                             [checked]="planOptions[1].plan === planType"
+                             (click)="updatePlanType(planOptions[1].plan, planOptions[1].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[1]}}" 
+                             [ngClass]="{'checked':chosenPlan}">
+                            
+            <div class="plan">
+              <div class="details">
+                <span class="plan_title">{{ planOptions[1].plan | titlecase}}</span>
+                <span class="price">{{ planOptions[1].billing[typeOfBilling].price }}</span>
+                <span class="promo">{{ planOptions[1].billing[typeOfBilling].promo }}</span>
+                <span class="description">{{planOptions[1].description}}</span>
+              </div>
+            </div>
+          </mat-button-toggle>
+          <mat-button-toggle 
+                             [value]="planOptions[2].plan"
+                             [checked]="planOptions[2].plan === planType"
+                             (click)="updatePlanType(planOptions[2].plan, planOptions[2].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[2]}}"
+                             [ngClass]="{'checked':chosenPlan}">
+            <div class="plan">
+              <div class="details">
+                <span class="plan_title">{{ planOptions[2].plan | titlecase}}</span>
+                <span class="price">{{ planOptions[2].billing[typeOfBilling].price }}</span>
+                <span class="promo">{{ planOptions[2].billing[typeOfBilling].promo }}</span>
+                <span class="description">{{planOptions[2].description}}</span>
+              </div>
+            </div>
+          </mat-button-toggle>
+          
+        </mat-button-toggle-group>
+  
+        <div class="toggle-area">
+          <div class="toggle">
+            <label [ngClass]="{'checked':!checked}">Monthly</label>
+            <mat-slide-toggle [checked]="checked"
+                              (change)="toggleBilling()" color="primary" [disabled]="planOptions[0].plan === planType">
+            </mat-slide-toggle>
+            <label [ngClass]="{'checked':checked}">Yearly</label>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+</ng-container>

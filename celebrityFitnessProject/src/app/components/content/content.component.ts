@@ -71,7 +71,7 @@ export class ContentComponent implements OnInit{
 
   livestreamVideos: any[] = [];
   startCountDownTierOneTwo() {
-    var countDownDate = new Date("Jan 2, 2027 16:45:25").getTime();
+    var countDownDate = new Date("September 17, 2024 16:45:25").getTime();
 
     // Update the count down every 1 second
     var x = setInterval( () => {
@@ -102,7 +102,7 @@ export class ContentComponent implements OnInit{
   }
 
   startCountDownTierThree() {
-    var countDownDate = new Date("Jan 30, 2027 13:39:25").getTime();
+    var countDownDate = new Date("September 17, 2024 13:39:25").getTime();
     // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second
@@ -124,7 +124,7 @@ export class ContentComponent implements OnInit{
       this.timerValThree = "Next Live Workout in:" + " " + days + "d " + hours + "h "
         + minutes + "m " + seconds + "s. ";
 
-      // If the count down is finished, write some text
+      // If the count down is finished, displayed text
       if (distance < 0) {
         clearInterval(x);
         this.timerValThree = "Live Video In Progress...";

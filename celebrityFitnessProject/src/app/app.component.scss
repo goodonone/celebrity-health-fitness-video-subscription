@@ -1,0 +1,277 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+nav {
+  padding-top: 10px;
+  padding-left: 10px;
+  position: fixed;
+  top: 2rem;
+  left: 48.5%;
+  transform: translate(-49%, -50%);
+  width: 98%;
+  max-width: 2200px;
+  z-index: 10;
+}
+
+.navBar {
+  border-radius: 6px;
+  background-color: #c7ff20;
+  height: 50px;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+  &.firstVisitAnimation {
+    animation: fadeIn 0.5s cubic-bezier(0.47, 0, 0.745, 0.715);
+    animation-delay: 0.5s;
+    animation-fill-mode: both;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+/* Effect when navbar turns black */
+.navBar.shadow {
+  box-shadow: 0 0 10px rgba(20, 20, 20, 0.9);
+  transition: box-shadow 0.1s ease-in-out;
+}
+/* End */
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.navBarText {
+  font-family: "Outfit", sans-serif;
+  font-size: smaller;
+  padding: 0 6px 0 6px;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  z-index: 100;
+}
+
+mat-icon {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+h6:hover {
+  text-shadow: 0 0 7px #71bbf5;
+  cursor: pointer;
+}
+
+mat-icon:hover {
+  color: #71bbf5;
+}
+
+img.logo {
+  transform: scale(90%, 90%);
+  transition: opacity 0.3s ease-in-out;
+}
+
+.logoImage {
+  width: 13rem;
+  height: 4rem;
+  margin-top: 23px;
+  cursor: pointer;
+}
+
+#mySearch {
+  border-radius: 3px;
+  margin-right: 2px;
+  border-color: black;
+  background-color: #c7ff20;
+  padding-top: 3px;
+  margin-bottom: 2px;
+  cursor: pointer;
+}
+
+.formSearch {
+  padding-bottom: 3px;
+  margin-left: 5px;
+}
+
+.form {
+  margin-bottom: 3px;
+}
+
+label {
+  display: none;
+}
+
+/* hamburger icon */
+
+#toggle {
+  display: none;
+}
+
+.content {
+  flex: 1;
+}
+
+/* Footer Starts Here */
+
+.footerContainer {
+  /* box-sizing: border-box; */
+  position: relative;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: auto;
+  background-color: #c7ff20;
+  font-size: smaller;
+  // height: 60px;
+  height: var(--footer-height);
+  max-width: 2200px;
+  // margin-bottom: -100px;
+  margin-top: 2rem;
+  z-index: 10;
+  margin-top: 0px;
+}
+
+footer {
+  position: absolute;
+  left: 0;
+  top: 10%;
+  z-index: 10;
+  right: 0;
+  bottom: 0;
+  padding-left: 10px;
+}
+
+.footer {
+  cursor: pointer;
+}
+
+.reddot {
+  border-radius: 100em;
+  border-style: hidden;
+  background-color: white;
+  padding: 0.1em 0.45em;
+}
+
+::placeholder {
+  text-align: center;
+}
+
+/* Hamburger menu styles */
+/* Hamburger menu styles */
+
+/* Makes Nav Flexible */
+
+@media screen and (min-width: 300px) and (max-width: 938px) {
+  nav {
+    width: 95vw;
+
+    /* min-width: 97%; */
+  }
+
+  .navBarText {
+    margin: 0.5rem 0 0.5rem 0;
+  }
+
+  #hamburger {
+    display: inline-block;
+    cursor: pointer;
+    width: 35px;
+    height: 24px;
+    position: relative;
+  }
+
+  .bar1,
+  .bar2,
+  .bar3 {
+    width: 65%;
+    height: 3px;
+    background-color: black;
+    margin: 5px 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  #hamburger.active .bar1 {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+
+  #hamburger.active .bar2 {
+    opacity: 0;
+  }
+
+  #hamburger.active .bar3 {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+
+  label {
+    display: block;
+    cursor: pointer;
+    font-size: 26px;
+    width: 40px;
+    padding-bottom: 4px;
+    float: left;
+  }
+
+  .menu {
+    position: absolute;
+    text-align: center;
+    width: 95vw;
+    display: none;
+    clear: right;
+    z-index: 100;
+    right: 0;
+    margin-top: 65px;
+    /* top: 40rem; */
+    /* margin-right: 1px; */
+    color: Black;
+    background-color: #c7ff20;
+    opacity: 100%;
+    border-radius: 6px;
+    transition: background-color 0.3ss ease-in-out, color 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .menu.shadow {
+    box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
+    transition: background-color 0.1s ease-in-out;
+  }
+
+  #toggle:checked + .menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+  }
+
+  .footerContainer {
+    position: relative;
+  }
+
+  #menu {
+    opacity: 0;
+    transform: translateY(-10px); /* Small upward shift for effect */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    pointer-events: none;
+  }
+
+  /* Show the menu when the toggle is checked with delay */
+  #toggle:checked ~ #menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition-delay: 0.3s; /* Adjust the delay as needed */
+  }
+}

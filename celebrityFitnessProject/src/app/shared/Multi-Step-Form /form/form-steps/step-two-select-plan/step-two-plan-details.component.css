@@ -1,0 +1,501 @@
+* {
+  font-family: 'Outfit', sans-serif;
+}
+
+mat-card {
+  width: 32.8rem;
+  max-width: 700px;
+  height: 26rem;
+  margin-left: 0.6rem;
+}
+
+mat-card-title{
+  margin-top: 0.5rem;
+}
+
+div.plan {
+  padding-top: 0.5rem;
+  padding-bottom: 0.2rem;
+}
+
+span.mat-button-toggle-label-content {
+  width: 8.625rem;
+}
+
+.mat-button-toggle-group {
+  flex-direction: column !important;
+  border: none;
+  width: 20.4rem;
+  /* min-width: 19rem; */
+  margin: 0 0 1rem 0;
+}
+
+mat-button-toggle {
+  width: 100%;
+  height: 4.8rem;
+  border-radius: 0.625rem;
+  border: 0.1rem solid white;
+  margin: 0.5rem 0;
+  padding-right: 0.2rem;
+}
+
+.mat-button-toggle-checked {
+  border: 0.1rem solid #C7FF20;
+}
+
+#buttonToggle2.mat-button-toggle-checked {
+  border: 0.1rem solid #71BBF5;
+}
+
+#buttonToggle3.mat-button-toggle-checked {
+  border: 0.1rem solid #000000;
+}
+
+button .mat-button-toggle-button,
+.plan {
+  height: 4.8rem;
+}
+
+mat-button-toggle-label-content {
+  padding: 0;
+  width: 7rem;
+}
+
+.plan {
+  padding: 1rem 0;
+  width: 100%;
+}
+
+#buttonToggle1 {
+  background-color: rgb(194, 194, 194);
+}
+
+#buttonToggle2 {
+  background-color: black;
+  color: white;
+}
+
+#buttonToggle2 .plan_title {
+  /* font-size: 1.3rem; */
+  color: white;
+}
+
+#buttonToggle2 .promo {
+  color: white;
+}
+
+#buttonToggle3 {
+  background-color: #C7FF20;
+}
+
+.details {
+  height: 8.25rem;
+  padding-top: .1rem;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 9.5rem;
+}
+
+.details * {
+  display: block;
+}
+
+.plan_title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: black;
+}
+
+.price {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+span.price {
+  height: 2rem;
+}
+
+.promo {
+  color: rgb(0, 0, 0);
+}
+
+span.promo {
+  margin-top: -0.35rem;
+  margin-bottom: 1.5rem;
+  height: 1rem;
+}
+
+.description {
+  text-wrap: wrap;
+  line-height: 0.8rem;
+}
+
+span.description {
+  margin-top: 0.6rem;
+  width: 8.625rem;
+}
+
+.toggle-area {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  height: 3rem;
+  border-radius: .5rem;
+  border-radius: 0.625rem;
+  background-color: rgb(255, 255, 255);
+}
+
+.toggle {
+  padding-left: 1.8rem;
+  width: 100%;
+  width: 11.4rem;
+}
+
+label {
+  margin: 0 0.3rem 0 0.5rem;
+  height: 1rem;
+  width: 3.4rem;
+  color: #aeaeae;
+  font-size: .875rem;
+}
+
+.checked {
+  color: black;
+}
+
+.mat-button-toggle {
+  color: black;
+}
+
+.mat-slide-toggle-checked {
+  color: #C7FF20;
+}
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+  background-color: black;
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+  background-color: rgb(46, 46, 46) !important;
+}
+
+
+@media (min-width: 37.5em) {
+
+  .mat-button-toggle-group {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    width: 35.125em;
+    margin: 1rem 0 2rem 0;
+    flex-direction: row !important;
+  }
+
+  mat-button-toggle {
+    width: 9.625rem;
+    /* width: 28%; */
+    height: 12rem;
+    align-items: baseline;
+    text-align: left;
+  }
+
+  .plan {
+    height: 10rem;
+    align-items: baseline;
+  }
+
+  .details {
+    height: 4.25rem;
+  }
+
+  .toggle {
+    height: 100%;
+  }
+
+  label {
+    width: 3.4rem;
+  }
+
+  mat-slide-toggle {
+    width: 2rem;
+  }
+/* 
+  ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+    background-color: black;
+  }
+
+  ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+    background-color: rgb(46, 46, 46) !important;
+  } */
+
+}
+
+@media screen and (min-width: 939px) and (max-width: 1300px){
+
+  /* mat-card-header{
+    margin: 0;
+    padding: 0.5rem;
+  }
+
+  mat-card{
+    width: auto;
+    height: fit-content;
+    max-height: 27rem;
+  } */
+
+  mat-card-header {
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+  }
+
+  mat-card {
+    width: auto;
+    height: 27rem;
+    max-height: 27rem;
+  }
+
+  .mat-button-toggle-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  mat-button-toggle {
+    width: 32%; /* Adjust this value to control the spacing between toggles */
+    /* min-width: 130px; */
+    height: auto;
+    min-height: 13rem;
+    padding-bottom: 0.5rem;
+    /* max-height: 17rem; */
+
+    /* display: flex;
+    flex-direction: column; */
+  }
+
+  .mat-button-toggle-label-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .mat-button-toggle-button {
+    height: 100%;
+  }
+
+  .plan {
+    height: 100%;
+    width: 100%;
+  }
+
+  .details {
+    /* height: auto;
+    width: 100%; */
+    
+    width: 100%;
+    /* height */
+  }
+
+  .plan_title,
+  .price,
+  .promo,
+  .description {
+    /* transform: scale(0.95); */
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    word-wrap: break-word;
+  }
+
+  #buttonToggle1 .plan_title, #buttonToggle2 .plan_title, #buttonToggle3 .plan_title {
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    font-weight: 800;
+  }
+
+  span.description{
+    width: 100%;
+  }
+
+
+}
+
+
+@media screen and (min-width: 0px) and (max-width: 938px) {
+
+  mat-card{
+    
+    height: 25rem;
+    width: 100%;
+    margin: auto;
+    
+  }
+
+  mat-card-subtitle {
+    display: none;
+  }
+
+  .step-two{
+    margin-top: 0;
+    padding-top: 0;
+    /* width: 28rem; */
+    width: 99%;
+    /* width: 98%; */
+    margin: auto;
+    /* padding-right: 2rem; */
+  }
+
+  mat-card-content{
+    width: 100%;
+    min-width: 18rem;
+    max-width: clamp(18rem, 80vw, 22rem);
+    display: flex;
+    flex-direction: column;
+    /* margin: auto; */
+    justify-content: space-between;
+
+    /* display: flex;
+    flex-direction: column;*/
+    margin: 0 auto;
+    box-sizing: border-box; 
+    overflow: visible;
+    
+  }
+
+  mat-card-header{
+    padding: 0.5rem 0 0 1rem;
+  }
+
+  .select{
+    transform: scale(100%, 100%);
+  }
+
+  mat-button-toggle-group  {
+    /* transform: scale(95%, 95%); */
+    width: 100%;
+    /* min-width: 20rem; */
+    height: auto;
+    margin: auto;
+    /* display: flex; */
+    /* justify-content: space-between; */
+    flex-direction: row !important;
+    /* box-sizing: border-box; */
+    overflow: initial;
+  }
+ 
+
+  /* .mat-button-toggle-group {
+    display: flex;
+    justify-content: space-between;
+    border: none;
+    width: 35.125em;
+    margin: 1rem 0 2rem 0;
+    flex-direction: row !important;
+  } */
+
+  /* span.mat-button-toggle-label-content {
+    height: 100%;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0rem;
+    box-sizing: border-box;
+  } */
+
+  .mat-button-toggle-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    /* justify-content: flex-start; */
+    flex-direction: row !important;
+
+    height: auto;
+    /* border: none;
+    width: 30rem;
+    height: auto;
+    margin: -0.5rem 0 1rem -2rem; */
+  }
+  
+  mat-button-toggle{
+    width: 100%;
+    max-width: 31%;
+    padding-right: 0.3rem;
+    padding-bottom: 1.5rem;
+    height: auto;
+    overflow: hidden;
+
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; */
+  }
+
+  .mat-button-toggle-label-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .toggle{
+    margin: auto;
+    padding-left: 0;
+    width: auto;
+  }
+
+  #buttonToggle1 .plan_title, #buttonToggle2 .plan_title, #buttonToggle3 .plan_title {
+    font-size: clamp(0.9rem, 1.5vw, 1.3rem);
+    width: auto;
+    font-weight: 800;
+    width: auto;
+  }
+
+  #buttonToggle1 .plan_title{
+    margin-left: -0.3rem;
+  }
+
+  span.description{
+    width: 50%;
+  }
+
+  .promo{
+    font-size: clamp(0.7rem, 1.5vw, 1.3rem);
+  }
+
+  .description{
+    font-size: clamp(0.8rem, 1.5vw, 1.3rem);
+  }
+
+  span.mat-button-toggle-label-content {
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  #buttonToggle1 .plan_title{
+    font-size: clamp(0.85rem, 1.5vw, 1.3rem);
+    font-weight: 900;
+  }
+}

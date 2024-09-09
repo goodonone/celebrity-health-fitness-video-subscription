@@ -1,0 +1,576 @@
+* {
+  font-family: 'Outfit', sans-serif;
+  }
+
+  mat-card{
+    width: 32.8rem;
+    max-width: 700px;
+    height: 26rem;
+    margin-left: 0.6rem;
+   
+    /* scrollbar-color: black white; */
+  }
+
+input {
+  display: inline-block;
+  width: 100%;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 0.063rem solid black;
+  /* margin-bottom: 1rem; */
+  padding: 0.2rem 0.2rem 0.2rem 0.5rem;
+  color: black;
+  background-color: white;
+  font-size: 0.9rem;
+}
+
+input:focus,
+input:valid {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+}
+
+.input-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.nameCredit  {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  /* width: 20rem; */
+  width: 100%;
+  margin-top: 0.8rem;
+} 
+
+.input-details-name{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 15rem;
+  padding-right: 0.5rem;
+}
+
+.input-details-cc{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 15rem;
+}
+
+.input-details-exp, .input-details-cvv, .input-details-zip{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 10rem;
+  padding-right: 0.28rem;
+}
+
+.input-details-billing, .input-details-shipping{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 20.2rem;
+  padding-right: 0.5rem;
+}
+
+#billingAddress, #shippingAddress{
+  width: 19.6rem;
+}
+
+#zipCodeBilling, #zipCodeShipping{
+  width: 9.2rem;
+  /* padding-left: 0.28rem; */
+}
+
+/* .input-details-shipping{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 19.6rem;
+} */
+
+.input-details-billing-zip{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 10rem;
+}
+
+.input-details-shipping-zip{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  width: 10rem;
+}
+
+
+.error-alert {
+  color: red;
+  text-align: right;
+  font-size: 0.875rem;
+}
+
+.error-alert .expCvvZip {
+  color: red;
+  text-align: right;
+  font-size: 0.875rem;
+  padding-right: 1rem;
+}
+
+.error-alert .billingZip{
+  color: red;
+  text-align: right;
+  font-size: 0.875rem;
+  padding-right: 0.8rem;
+}
+
+#nameOnCard{
+  width: 14.4rem;
+}
+
+#ccNumber{
+  width: 14.4rem;
+}
+
+#cvv{
+  width: 9.2rem;
+}
+
+#expDate{
+  width: 9.2rem;
+}
+
+#zipCode{
+  width: 9.2rem;
+}
+
+
+.expCvvZip{
+display: flex;
+flex-direction: row;
+justify-content:space-between;
+/* margin-right: 1rem; */
+width: 100%;
+gap: 0.1rem;
+}
+
+.billingZip{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  margin-right: 1rem;
+  width: 100%;
+}
+
+.shippingZip{
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+  margin-right: 1rem;
+  width: 100%;
+  /* margin-top: 1rem; */
+}
+
+.label-zipcode {
+  display: inline;
+}
+
+.label-zip {
+  display: none;
+}
+
+.shippingToggle{
+  margin-top: 0.1rem;
+}
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+  background-color: black;
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+  background-color: rgb(46, 46, 46) !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle .mdc-label{
+  font-family:'Outfit', sans-serif !important; 
+  font-size: 0.8rem !important;
+  /* font-weight: bold !important; Optional: make the text bold */
+  /* color: black; */
+}
+
+@media (min-width: 37.5em) {
+
+  label {
+    margin-bottom: 0rem;
+  }
+
+  input {
+    width: 100%;
+    height: 3rem;
+    display: inline-block;
+    width: auto;
+    /* margin-bottom: 1.5rem; */
+  }
+
+  .input-details {
+    width: 3.2rem;
+  }
+
+  .error-alert {
+    font-weight: 700;
+  }
+}
+
+@media screen and (min-width: 939px) and (max-width: 1300px){
+
+  mat-card-header {
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+  }
+
+  mat-card {
+    width: auto;
+    height: 27rem;
+    max-height: 27rem;
+    overflow-y: scroll;
+  }
+
+  .nameCredit  {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    /* grid-template-columns: 50% 50%; */
+    /* flex: 1; */
+    width:100%;
+    gap:0.25rem;
+    /* max-width: 45rem; */
+    box-sizing: border-box;
+    /* padding-right: 2.5rem; */
+    /* background-color: #000000; */
+    /* max-width: 30rem; */
+    /* max-width: 24.5rem; */
+  }
+  
+  #nameOnCard{
+    /* width: clamp(9.3rem, 14vw, 11rem); */
+    /* width: 90%; */
+    width: clamp(9.8rem, 14.8vw, 16.4rem);
+  }
+
+  #ccNumber{
+    width: clamp(10.4rem, 14vw, 16.4rem);
+    /* margin-right: 0.5rem; */
+  }
+
+  /* #nameOnCard{
+    padding-right: 3rem;
+  } */
+  
+  .input-details-name, .input-details-cc{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    /* width: 100%;
+    max-width: 15rem;
+    padding-right: 0.5rem; */
+    width: 100%;
+    /* max-width: 14rem; */
+    /* max-width: 15rem; */
+  }
+
+  .expCvvZip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-evenly;
+    /* margin-right: 1rem; */
+    width: 100%;
+    gap:0.25rem;
+    }
+  
+  .input-details-exp, .input-details-cvv, .input-details-zip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    /* width: 100%; */
+    width: 100%;
+    /* max-width: 10rem; */
+    /* width: 10rem; */
+    /* padding-right: 0.28rem; */
+  }
+
+  #cvv, #expDate, #zipCode{
+    width: 85%;
+    /* min-width: 5rem; */
+    max-width: 9.2rem;
+    padding-right: 0.5rem;
+    margin-right: 0.5rem;
+    /* width: 9.2rem; */
+  }
+  
+  .input-details-billing, .input-details-shipping{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 100%;
+    /* max-width: 20.2rem; */
+    /* width: 20.2rem; */
+    /* padding-right: 0.5rem; */
+  }
+  
+  #billingAddress, #shippingAddress{
+    /* width: 100%;
+    min-width: 14rem;
+    max-width: 19.6rem; */
+    width: clamp(14.2rem, 23vw, 20rem);
+  }
+  
+  #zipCodeBilling, #zipCodeShipping{
+    width: 85%;
+    max-width: 9.2rem;
+    /* width: 9.2rem; */
+    /* padding-left: 0.28rem; */
+  }
+  
+  .input-details-billing-zip, .input-details-shipping-zip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 100%;
+    max-width: 10rem;
+  }
+
+  .label-zipcode {
+    display: none;
+  }
+  
+  .label-zip {
+    display: inline;
+  }
+  
+  .error-alert {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+  
+  .error-alert .expCvvZip {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    padding-right: 1rem;
+  }
+  
+  .error-alert .billingZip{
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    padding-right: 0.8rem;
+  }
+
+  
+  .billingZip, .shippingZip {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0.25rem;
+  }
+  
+  
+
+  
+  /* .nameCredit{
+  display: flex;
+  flex-direction:row;
+  justify-content:space-between;
+  margin-top: 1rem;
+  width: 100%;
+  } */
+
+  
+  /* .billingZip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    margin-right: 1rem;
+    width: 100%;
+  }
+  
+  .shippingZip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    margin-right: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+  } */
+
+
+
+}
+
+@media screen and (min-width: 0px) and (max-width: 938px) {
+
+  mat-card{
+    height: 25rem;
+    width: 100%;
+    scrollbar-color: black white;
+    overflow-y: scroll;
+  }
+  
+  mat-card-header {
+    margin: 0;
+    padding: 0.5rem;
+  }
+
+  mat-card-subtitle{
+    display: none;
+  }
+
+  .step-four{
+    margin: auto;
+    width: 99%;
+    max-width: clamp(20rem, 80vw, 22.5rem); 
+  }
+
+
+  .expCvvZip{
+    margin-right: 0;
+  }
+  
+  .input-details-name{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 99%;
+  }
+  
+  .input-details-cc{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 99%;
+  }
+  
+  .input-details-exp, .input-details-cvv, .input-details-zip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 96%;
+  }
+
+  .nameCredit{
+    display: block;
+    margin-top: 0.5rem
+  }
+
+  input{
+    margin-bottom: 0.5rem;
+  }
+
+  #nameOnCard, #ccNumber{
+    width: 95.5%;
+    min-width: 11.5rem;
+    height: 2.5rem;
+  }
+  
+  .expCvvZip{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  #cvv, #expDate, #zipCode{
+    width: 85%;
+    min-width: 4.2rem;
+    height: 2.5rem;
+  }
+
+  .input-details-billing, .input-details-shipping{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 100%;
+  }
+
+  .billingZip, .shippingZip{
+    /* display: block; */
+    display: flex;
+    justify-content: space-between;
+    gap: 0.2rem;
+    width: 100%;
+  }
+
+  #billingAddress, #shippingAddress{
+    /* width: 90%; */
+    width: clamp(11.5rem, 16vw, 14.8rem);
+    /* width: calc(8%-5rem); */
+    /* width: clamp(11.5rem, 16vw, 1000px); */
+    /* min-width: 11.5rem; */
+    height: 2.5rem;
+  }
+
+  .input-details-billing-zip, .input-details-shipping-zip{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    width: 96%;
+  }
+
+  #zipCodeBilling, #zipCodeShipping{
+    width: clamp(4.5rem, 15vw, 6.8rem);
+    /* min-width: 4.2rem; */
+    height: 2.5rem;
+    /* margin-left: 0.75rem; */
+    margin-right: 0.3rem;
+  }
+
+  .label-zipcode {
+    display: none;
+  }
+  
+  .label-zip {
+    display: inline;
+  }
+
+ 
+  
+  /* #expDate{
+    width: 7.2rem;
+  }
+  
+  #zipCode{
+    width: 7.2rem;
+  } */
+
+  .error-alert {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+  
+  .error-alert .expCvvZip {
+    color: red;
+    text-align: right;
+    font-size: 0.875rem;
+    padding-left: 0rem;
+  }
+
+}

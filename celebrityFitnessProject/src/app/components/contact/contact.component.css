@@ -4,7 +4,7 @@
 
 .background {
   position: fixed;
-  margin-top: -10rem;
+  /* margin-top: -10rem; */
   width: 100%;
   height: 100vh;
   background-image: url('/assets/Images/Contact Us Photo.jpeg');
@@ -21,8 +21,8 @@ h1.contactUs {
   text-align: left;
   font-size: 7rem;
   padding-left: 8rem;
-  padding-top: 4rem;
-  padding-bottom: 1rem;
+  padding-top: 8rem;
+  /* padding-bottom: 1rem; */
   font-weight: 600;
 }
 
@@ -42,7 +42,7 @@ h1.findUs {
   width: 35rem;
   height: 35rem;
   margin: 4rem auto 7rem auto;
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 .mapSocialContainer {
@@ -51,7 +51,7 @@ h1.findUs {
   height: 35rem;
   margin: auto;
   margin-bottom: 5rem;
-  border-radius: 8px;
+  border-radius: 1rem;
   padding: 1.5rem 0 3rem 0.5rem;
 }
 
@@ -67,7 +67,7 @@ h1.findUs {
 }
 
 .cardTwo {
-  margin-top: 12rem;
+  margin-top: 8rem;
 }
 
 .btn-submit {
@@ -173,12 +173,12 @@ img.tick {
 .mapSocial {
   width: 600px;
   height: 450px;
-  border-radius: 8px;
+  border-radius: 1rem;
   background-image: cover;
 }
 
 iframe {
-  border-radius: 8px;
+  border-radius: 1rem;
 }
 
 .location {
@@ -197,7 +197,8 @@ iframe {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 18rem;
+  width: 100%;
+  max-width: 20rem;
   padding-top: 0rem;
   margin: auto;
 }
@@ -254,7 +255,7 @@ iframe {
     height: fit-content;
     margin: auto;
     margin-bottom: 5rem;
-    border-radius: 8px;
+    border-radius: 1rem;
     padding: 1.5rem 0 1.5rem 0rem;
   }
 
@@ -305,7 +306,7 @@ iframe {
     width: 25rem;
     height: 35rem;
     margin: 4rem auto 5rem auto;
-    border-radius: 8px;
+    border-radius: 1rem;
   }
 
 }

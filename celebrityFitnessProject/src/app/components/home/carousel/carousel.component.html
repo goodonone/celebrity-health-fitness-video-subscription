@@ -1,0 +1,18 @@
+<div class="carouselMain">
+    <div *ngIf="images && images.length > 0" class="image-container">
+        <img *ngFor="let image of images; let i=index" [src]="image.imageSrc" [alt]="image.imageAlt"
+            [ngClass]="{'image-active': selectedIndex === i}">
+    </div>
+    <div *ngIf="images && images.length > 0" class="text-container">
+        <p *ngFor="let image of images; let i=index" [ngClass]="{'image-active': selectedIndex === i}">
+            <!-- <strong [innerHTML]="image.manName"></strong><br><br> 
+            <i>{{image.imageText}}</i> -->
+            <strong>
+                {{ image.manNameBefore }}
+                <span  [ngClass]="image.highlightClass">{{ image.manNameHighlighted }}</span>
+                <br> {{ image.manNameAfter }}
+            </strong><br><br>
+            <i>{{ image.imageText }}</i>
+        </p>
+    </div>
+</div>

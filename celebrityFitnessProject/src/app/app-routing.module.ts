@@ -1,39 +1,73 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AboutComponent } from './components/about/about.component';
-import { ContactComponent } from './components/contact/contact.component';
-import { ContentComponent } from './components/content/content.component';
 import { HomeComponent } from './components/home/home.component';
-import { ProfileComponent } from './components/profile/profile.component';
-import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { SignInComponent } from './components/sign-in/sign-in.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { SearchComponent } from './components/search/search.component';
-import { StoreComponent } from './components/store/store.component';
-import { ProductComponent } from './components/product/product.component';
-import { CartComponent } from './components/cart/cart.component';
-import { CheckoutComponent } from './components/checkout/checkout.component';
-import { UpgradeComponent } from './components/upgrade/upgrade.component';
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "home", component: HomeComponent },
-  { path: "about", component: AboutComponent },
-  { path: "contact", component: ContactComponent },
-  { path: "content/:id", component: ContentComponent, canActivate: [AuthGuard]},
-  { path: "profile/:id", component: ProfileComponent, canActivate: [AuthGuard]},
-  { path: "signup", component: SignUpComponent },
-  { path: "signin", component: SignInComponent },
-  { path: "store/product/:id", component: ProductComponent, canActivate: [AuthGuard]},
-  { path: "cart", component: CartComponent, canActivate: [AuthGuard]},
-  { path: "checkout", component: CheckoutComponent, canActivate: [AuthGuard]},
   { path: "search", component: SearchComponent },
-  { path: "upgrade", component: UpgradeComponent, canActivate: [AuthGuard]},
-  { path: "store", component: StoreComponent, canActivate: [AuthGuard]},
-  { path: "upgrade/:id", component: UpgradeComponent, canActivate: [AuthGuard]},
-  { path: "change-plan/:id", component: UpgradeComponent, canActivate: [AuthGuard]},
-  { path: "**", component: NotFoundComponent },
+  {
+    path: "about",
+    loadChildren: () => import('./components/about/about.module').then((m) => m.AboutModule),
+  },
+  { 
+    path: "contact", 
+    loadChildren: () => import('./components/contact/contact.module').then((m) => m.ContactModule) 
+  },
+  {
+    path: "signup", 
+    loadChildren: () => import('./components/sign-up/signup.module').then((m) => m.SignupModule) 
+  },
+  { path: "checkout", 
+    loadChildren: () => import('./components/checkout/checkout.module').then((m) => m.CheckoutModule),
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: "content/:id", 
+    loadChildren: () => import('./components/content/content.module').then((m) => m.ContentModule),
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: "profile/:id", 
+    loadChildren: () => import('./components/profile/profile.module').then((m) => m.ProfileModule),
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: "sign-in", 
+    loadChildren: () => import('./components/sign-in/sign-in.module').then((m) => m.SignInModule)
+  },
+  { 
+    path: "store", 
+    loadChildren: () => import('./components/store/store.module').then((m) => m.StoreModule), 
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "store/product/:id", 
+    loadChildren: () => import('./components/product/product.module').then((m) => m.ProductModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "cart", 
+    loadChildren: () => import('./components/cart/cart.module').then((m) => m.CartModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "upgrade/:id",
+    loadChildren: () => import('./components/upgrade/upgrade.module').then((m) => m.UpgradeModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "change-plan/:id",
+    loadChildren: () => import('./components/upgrade/upgrade.module').then((m) => m.UpgradeModule),
+    canActivate: [AuthGuard]
+  },
+  { 
+    path: "**", component: NotFoundComponent 
+  },
+  
 ];
 
 @NgModule({

@@ -1,0 +1,1058 @@
+* {
+  font-family: "Outfit", sans-serif;
+}
+
+.pageContainer {
+  background-color: rgb(255, 255, 255);
+  width: 100vw;
+  max-width: 100%;
+  max-width: 3000px;
+  overflow-x: hidden;
+  height: 100vh;
+  /* margin-top: -80px; */
+  padding-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.flexContainer {
+  display: flex;
+  justify-content: space-evenly;
+  /* padding-top: 1.8rem; */
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.nameTier {
+  padding-top: 5rem;
+  padding-left: 2rem;
+  text-align: center;
+}
+
+.profilePictureAndButtonsContainer {
+  /* display: flex;
+    flex-direction: column; */
+  /* flex-wrap: wrap; */
+  position: relative;
+  height: 100%;
+
+  /* justify-content: center; */
+  /* height: 60%; */
+  /* min-height: 10rem; */
+  max-height: 100%;
+  /* max-height: 52rem; */
+  width: 100%;
+  /* width: 60%; */
+  /* min-width: 10rem; */
+  max-width: 21rem;
+  align-items: center;
+  /* overflow: hidden; */
+}
+
+.profilePictureAndButtons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  min-width: 21rem;
+  margin: auto;
+}
+
+.profilePicture {
+  position: relative;
+  width: 21rem;
+  height: 42rem;
+  width: 300px;
+  max-width: 500px;
+  /* height: 42rem; */
+  height: 300px;
+  min-height: auto;
+  max-height: 500px;
+  max-width: 21rem;
+  aspect-ratio: 2/1;
+  background-color: #c7ff20;
+  background-size: cover;
+  border-radius: 100rem;
+  margin-bottom: 1rem;
+
+  // &.tierThreeStyle {
+  //   box-shadow: 0 0 40px #C7FF20;
+  // }
+
+  // &.animateBoxShadow {
+  //   animation: boxShadowExpand 0.5s ease-in forwards;
+  // }
+}
+
+//   @keyframes boxShadowExpand {
+//     0% {
+//       box-shadow: 0 0 0 #c7ff20;
+//     }
+//     50% {
+//       box-shadow: 0 0 60px #c7ff20;
+//     }
+//     100% {
+//       box-shadow: 0 0 40px #c7ff20;
+//     }
+
+// .boxShadow{
+//     box-shadow: 0 0 40px #C7FF20;
+// }
+
+// #profilePicture {
+//   &.firstTimeAnimation {
+//     @keyframes boxShadowExpand {
+//       0% {
+//         box-shadow: 0 0 0 #c7ff20;
+//         // box-shadow: 0 0 0 0 #C7FF20;
+//       }
+//       100% {
+//         // box-shadow: 0 0 0 9px #C7FF20;
+//         box-shadow: 0 0 40px #c7ff20;
+//       }
+//     }
+//   }
+// }
+
+//     .profilePicture.animateBoxShadow {
+//       animation: boxShadowExpand 0.5s ease-in forwards;
+//     }
+//   }
+// }
+
+#profilePicture {
+  &.animateBoxShadow {
+    animation: boxShadowExpand 0.5s ease-in forwards;
+    @keyframes boxShadowExpand {
+      0% {
+        box-shadow: 0 0 0 #c7ff20;
+      }
+      50% {
+        box-shadow: 0 0 60px #c7ff20;
+      }
+      100% {
+        box-shadow: 0 0 40px #c7ff20;
+      }
+    }
+  }
+}
+
+// .profilePicture {
+
+//     &.tierThreeStyle {
+//       box-shadow: 0 0 40px #C7FF20;
+//     }
+
+//     &.animateBoxShadow {
+//       animation: boxShadowExpand 0.5s ease-in forwards;
+//     }
+//   }
+
+//   @keyframes boxShadowExpand {
+//     0% {
+//       box-shadow: 0 0 0 #c7ff20;
+//     }
+//     50% {
+//       box-shadow: 0 0 50px #c7ff20;
+//     }
+//     100% {
+//       box-shadow: 0 0 40px #c7ff20;
+//     }
+//   }
+
+.flexAllProfileData {
+  display: flex;
+  position: relative;
+}
+
+h1.profileNameTier {
+  font-size: 7.5rem;
+  font-weight: 1000;
+}
+
+.profileNameTier {
+  text-align: center;
+  width: 40rem;
+  line-height: 9rem;
+  padding-right: 0.5rem;
+}
+
+#buttonDisappear.active {
+  opacity: 0;
+}
+
+#buttonDisappearEdit.active {
+  opacity: 0;
+}
+
+.profileInfo {
+  /* height: 52rem; */
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  /* height: 52rem; */
+  /* width: 50rem; */
+  width: 50vw;
+  max-width: 43rem;
+  /* height: 80vh;*/
+  min-height: fit-content;
+  max-height: 51rem;
+  height: fit-content;
+  /* min-height: 80vh; */
+  /* max-height: 52rem; */
+  aspect-ratio: 3/5;
+  padding: 1.5rem;
+  background-color: #000000;
+  border-radius: 1rem;
+}
+
+h3.profileDetails {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 1.8rem;
+}
+
+h3.profileDetailsInput {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+}
+
+// h3.profileDetailsInput.name {
+//     color: white;
+//     font-weight: 500;
+//     font-size: 1.9rem;
+//     margin-bottom: 1.1rem;
+// }
+
+h3.profileDetails.name {
+  width: 18rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  //   overflow: visible;
+  /* background-color: #C7FF20; */
+}
+
+h3.profileDetails.email {
+  width: 18rem;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+    white-space: nowrap;
+//   overflow-y: visible;
+//   box-sizing: border-box;
+//   background-color: #C7FF20; 
+  padding-bottom: 0.2rem;
+  //   height: auto;
+  //   background-color: #c7ff20;
+}
+
+h3.profileDetailsInputGender {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.8rem;
+}
+
+h3.profileDetailsInputGender,
+h3.profileDetailsInputPhoto {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.8rem;
+}
+
+h3.profileDetailsInputPhoto {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+.profilePictureLinkContainer{
+    padding: 0;
+    height: 0;
+    width: auto;
+    height: auto;
+}
+
+h3.profileDetailsChangePassword{
+    color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.5rem;
+}
+
+h3.profileDetailsInputWeight {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.9rem;
+}
+
+h3.profileDetailsInputHeight {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+}
+
+h3.profileDetailsInputObjective {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.profileDataContainer {
+  position: relative;
+  width: 100%;
+  max-width: 21rem;
+  height: 100%;
+  padding-left: 1rem;
+  margin-top: 0.2rem;
+  width: fit-content;
+}
+
+.spanProfileCategory {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.editProfilePictureButtonsContainer {
+  /* display: flex;
+    flex-direction: column; */
+  justify-content: center;
+  text-align: center;
+  /* position: relative; */
+  /* flex-wrap: wrap; */
+  width: 100%;
+  /* max-width: 20rem; */
+  /* height: 30rem; */
+  height: fit-content;
+  /* justify-content: center; */
+  margin: auto;
+}
+
+.editProfileButtonsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  bottom: 0.8rem;
+  /* bottom: 2rem; */
+  /* top: 0; */
+  transform: translateX(-50%);
+  /* justify-items: center;
+    justify-content: center; */
+  text-align: center;
+  width: 100%;
+  max-width: 21rem;
+  /* height: 100%; */
+  /* margin: auto; */
+}
+
+.btn-editProfileButton {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  border-color: rgb(73, 73, 73);
+  width: 10rem;
+  text-align: center;
+  /* margin-top: 8rem; */
+  /* margin-left: 1rem; */
+}
+
+.btn-cancelSubscriptionButton {
+  height: 3rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 10rem;
+  margin-top: 1rem;
+  /* margin-left: 1rem; */
+}
+
+.btn-editPhotoButton, .btn-savePhotoButton {
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  border-color: rgb(73, 73, 73);
+  width: 10rem;
+  /* margin-top: 22rem; */
+  /* margin-left: 1rem; */
+}
+
+.btn-signOutButton,
+.btn-changePasswordButton {
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  border-color: rgb(73, 73, 73);
+  width: 10rem;
+  margin-top: 1rem;
+  /* margin-left: 1rem; */
+}
+
+.planContainer {
+  display: flex;
+  // justify-content: space-between;
+  width: auto;
+  gap: 1rem;
+}
+
+.btn-change {
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 5rem;
+  margin-top: 1.3rem;
+}
+
+.btn-updateProfileButton {
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 10rem;
+//   margin-top: 1.3rem;
+}
+
+.btn-backButton {
+  height: 3rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 10rem;
+  margin-top: 1.3rem;
+  margin-left: 1rem;
+}
+
+.btn-change:hover,
+.btn-editPhotoButton:hover,
+.btn-editProfileButton:hover,
+.btn-updateProfileButton:hover,
+.btn-cancelSubscriptionButton:hover,
+.btn-backButton:hover,
+.btn-signOutButton:hover,
+.btn-changePasswordButton:hover,
+.btn-backPasswordButton:hover,
+.btn-updatePasswordButton:hover,
+.btn-savePhotoButton:hover {
+  background-color: white;
+  color: black !important;
+}
+
+.btn-cancelSubscriptionButtonFinal {
+  height: 3rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 10rem;
+  margin-top: 1.3rem;
+  margin-left: 1rem;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-40%);
+  cursor: pointer;
+  color: white;
+}
+
+.eye-icon:hover {
+  color: #c7ff20;
+}
+
+.popup {
+  position: absolute;
+  bottom: 20px;
+  left: 0px;
+  width: 250px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: background-color 0.5s ease-in;
+}
+
+.popup p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.popup ul {
+  padding-left: 20px;
+  margin: 5px 0 0;
+}
+
+.popup li {
+  font-size: 0.9em;
+  // margin-bottom: 5px;
+}
+
+.passwordRelative {
+  position: relative;
+  /* margin-bottom: 20px; */
+}
+
+.passwordInput {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-details-confirm {
+  display: flex;
+  justify-content: space-between;
+  // width: 15.437rem;
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+input:disabled::placeholder {
+  color: rgb(49, 49, 49) !important;
+}
+
+/* For older browsers */
+input:disabled::-webkit-input-placeholder {
+  color: rgb(49, 49, 49) !important;
+}
+
+input:disabled::-moz-placeholder {
+  color: rgb(49, 49, 49) !important;
+  opacity: 1; /* Firefox sometimes needs this */
+}
+
+input:disabled:-ms-input-placeholder {
+  color: rgb(49, 49, 49) !important;
+}
+
+input:disabled:-moz-placeholder {
+  color: rgb(49, 49, 49) !important;
+}
+
+.error-alert {
+  color: red;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1.3rem;
+}
+
+.label {
+  display: inline-block;
+  color: white;
+}
+
+#password,
+#oldPassword,
+#confirmPassword {
+  display: inline-block;
+  width: 17rem;
+  height: 2.5rem;
+  // height: 1.8rem;
+  font-size: large;
+  font-weight: 400;
+  border-radius: 6px;
+  // border: 0.063rem solid black;
+  background-color: rgb(25, 25, 25);
+  border-radius: 6px;
+  border-color: white;
+  border-width: 1px;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.fas-eye,
+.fas-eye-slash {
+  color: white;
+}
+
+.btn-cancelSubscriptionButtonFinal:hover {
+  background-color: red;
+  color: black !important;
+}
+
+.btn-backPasswordButton,
+.btn-updatePasswordButton {
+  height: 2.6rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 7.5rem;
+  margin-top: 0.5rem;
+  // margin-left: 1rem;
+}
+
+.btn-updatePasswordButton:disabled {
+  background-color: rgb(62, 61, 61);
+  color: rgb(116, 115, 115) !important;
+}
+
+.profileContainer {
+  position: relative;
+  /* width: 100%;
+    max-width: ;
+    height: 100%; */
+  /* width: 50vw;
+    max-width: 43rem; */
+  /* height: 80vh;*/
+  width: 50vw;
+  max-width: 43rem;
+  /* height: 80vh;*/
+  max-height: 51rem;
+  height: fit-content;
+  /* max-height: 51rem; */
+  transform: scale(0.9);
+}
+
+/* .deleteProfileContainer {
+    position: relative;
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    /* max-height: 50rem; */
+/* } */
+
+.absoluteContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin: auto;
+  /* top: 100%; */
+  /* left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); */
+  z-index: 1;
+  width: 100%;
+  /* max-width: 49rem; */
+  /* padding: 1.5rem; */
+  height: fit-content;
+  max-height: 51rem;
+  overflow: hidden;
+}
+
+.cancelSubscription {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* vertical-align: middle; */
+  /* position: absolute; */
+  margin: auto 0;
+  height: 100%;
+  width: 100%;
+  padding-bottom: 20rem;
+
+  /* top: 100%; */
+  /* left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%); */
+}
+
+h1.deleteProfileText {
+  margin-top: -14rem;
+  color: white;
+  font-weight: 500;
+  font-size: large;
+  text-align: center;
+}
+
+.underline {
+  text-decoration: underline;
+  color: red;
+}
+
+// .tierColor{
+//     font-family: inherit;
+//     font-size: inherit;
+//     font-weight: inherit;
+//     color:#C7FF20;
+// }
+
+.cancelSubscriptionButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 30rem;
+  padding: 1rem 10rem 3rem 10rem;
+}
+
+img.warningImg {
+  transform: scale(30%, 30%);
+  margin-bottom: 2rem;
+}
+
+.avatar {
+  position: absolute;
+  z-index: 1;
+  background-size: cover;
+  background-position: center center;
+  transform: scale(10%, 10%);
+  left: -42.5rem;
+  top: -54rem;
+}
+
+input,
+select {
+  // width: 20rem;
+  width: 17rem;
+  height: 2.5rem;
+  font-size: large;
+  font-weight: 400;
+  /* Comment out following text if you want to revert to white background input and select */
+  background-color: rgb(25, 25, 25);
+  border-radius: 6px;
+  border-color: white;
+  border-width: 1px;
+  color: white;
+}
+
+/* input{
+    padding-left: 0.5rem;
+} */
+
+input::content {
+  padding-left: 0.3rem;
+}
+
+// input.name, input.imgUrl, input.email {
+//     width: 17rem;
+// }
+
+.imgUrl{
+    margin-bottom: 0.8rem;
+}
+
+/* input.name{
+ 
+} */
+
+input#weight,
+#height,
+#dob {
+  width: 10.2rem;
+  height: 2.5rem;
+  font-size: large;
+  font-weight: 400;
+  padding-left: 0;
+  /* padding-left: 0.3rem; */
+}
+
+#gender,
+#objective {
+  width: 10.5rem;
+  height: 2.7rem;
+}
+
+.updatePassword{
+// position: relative;
+  width: 100%;
+  max-width: 21rem;
+  height: 100%;
+  padding-left: 1rem;
+  margin-top: 0.2rem;
+  width: fit-content;
+}
+
+.updatePasswordButtonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: auto;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+}
+
+#deleteProfile.active {
+  border-radius: 6px;
+  -webkit-filter: blur(30px);
+  -moz-filter: blur(30px);
+  -o-filter: blur(30px);
+  -ms-filter: blur(30px);
+  filter: blur(30px);
+}
+
+fieldset {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-color: rgb(255, 255, 255);
+  border-style: solid;
+}
+
+::placeholder {
+  text-align: left;
+}
+
+@media screen and (min-width: 500px) and (max-width: 1450px) {
+  .pageContainer {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+  }
+
+  .profileInfo {
+    max-height: 50rem;
+    height: 50rem;
+    /* width: 40rem; */
+    width: 100%;
+    max-width: 50rem;
+    padding: 2.5rem;
+    background-color: #000000;
+    border-radius: 10px;
+    margin-bottom: 4rem;
+  }
+
+  .flexAllProfileData {
+    display: block;
+  }
+
+  .btn-editProfileButton {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .btn-cancelSubscriptionButton {
+    margin-top: 0.5rem;
+  }
+
+  .flexAllProfileData {
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  .profilePictureContainer {
+    display: inline-flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    height: 18rem;
+    width: 18rem;
+    background-color: #c7ff20;
+    background-size: cover;
+    border-radius: 100rem;
+    align-items: right;
+    margin: auto;
+  }
+
+  .avatar {
+    position: absolute;
+    z-index: 1;
+    background-size: cover;
+    background-position: center center;
+    transform: scale(8%, 8%);
+    left: -44rem;
+    top: -55rem;
+  }
+
+  .profileDataContainer {
+    margin-top: 2rem;
+  }
+
+  .planContainer {
+    display: flex;
+    width: 18rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .editButtonsContainer {
+    position: absolute;
+    /* top:0; */
+    bottom: 3rem;
+    left: 15rem;
+  }
+
+  .btn-editPhotoButton {
+    margin-top: 22rem;
+  }
+
+  .btn-signOutButton {
+    margin-top: 0.5rem;
+  }
+
+  h3.profileDetails.plan {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0rem;
+  }
+
+  input {
+    width: 18rem;
+    height: 2.5rem;
+    font-size: large;
+    font-weight: 400;
+    /* Comment out following text if you want to revert to white background input and select */
+    background-color: rgb(25, 25, 25);
+    border-radius: 6px;
+    border-color: white;
+    border-width: 1px;
+    color: white;
+  }
+
+  .absoluteContainer {
+    position: absolute;
+    top: -10rem;
+    left: 5;
+    right: -7.5rem;
+    z-index: 1;
+    width: 49rem;
+    height: 50rem;
+  }
+
+  /* @media screen and (min-width: 642px) and (max-width: 1233px) {
+
+        .flexContainer {
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            padding-top: 1rem;
+        }
+
+        .nameTier {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+    } */
+
+  @media screen and (min-width: 300px) and (max-width: 642px) {
+    h1.profileNameTier {
+      font-size: 17vw;
+      font-weight: 600;
+    }
+
+    .avatar {
+      position: absolute;
+      z-index: 1;
+      background-size: cover;
+      background-position: center center;
+      transform: scale(8%, 8%);
+      left: -46rem;
+      top: -57rem;
+    }
+
+    .profileNameTier {
+      flex-wrap: wrap;
+      text-align: center;
+      width: 80vw;
+      line-height: 19vw;
+      padding-right: 0.5rem;
+    }
+
+    .nameTier {
+      padding-top: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .profileInfo {
+      height: 52rem;
+      height: auto;
+      width: 90rem;
+      padding: 2rem;
+      background-color: #000000;
+      border-radius: 10px;
+      margin-bottom: 4rem;
+    }
+
+    .profilePictureContainer {
+      position: relative;
+      height: 45vw;
+      width: 45vw;
+      background-color: #c7ff20;
+      background-size: cover;
+      border-radius: 100rem;
+      align-items: right;
+    }
+
+    .editButtonsContainer {
+      position: absolute;
+      bottom: 1rem;
+      left: 9.5rem;
+    }
+
+    .cancelSubscriptionButtonContainer {
+      display: flex;
+      justify-content: space-between;
+      width: 20rem;
+      padding: 3rem 1rem 3rem 14rem;
+    }
+
+    .profileDataContainer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin-top: 1.5rem;
+      margin-left: 0.1rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .absoluteContainer {
+      position: absolute;
+      top: -10rem;
+      left: 5;
+      right: -7.5rem;
+      z-index: 1;
+      width: 49rem;
+      height: 50rem;
+    }
+  }
+}
