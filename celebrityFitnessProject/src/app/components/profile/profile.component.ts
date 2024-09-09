@@ -8,13 +8,26 @@ import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 
+enum ProfileState {
+  Viewing,
+  EditingProfile,
+  ChangingPicture,
+  ChangingPassword,
+  DeletingProfile
+}
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
+
+
 export class ProfileComponent implements OnInit {
   currentUser: User = new User();
+  ProfileState = ProfileState; 
+  currentState: ProfileState = ProfileState.Viewing;
+  pictureForm!: FormGroup;
   UserId: string = '';
   monthOrYear!: string;
 
@@ -23,13 +36,13 @@ export class ProfileComponent implements OnInit {
   tierThree = false;
   freeTier = true;
   firstName?: string;
-  editProfileToggle = false;
-  saveOrChange = false;
-  editOrUpdate = false;
-  disappear = false;
-  classApplied = false;
-  classAppliedTwo = false;
-  onlyProfilePicture = true;
+  // editProfileToggle = false;
+  // saveOrChange = false;
+  // editOrUpdate = false;
+  // disappear = false;
+  // classApplied = false;
+  // classAppliedTwo = false;
+  // onlyProfilePicture = true;
   userIsLoggedIn: boolean = false;
   cartQuantity = 0;
 
@@ -73,7 +86,7 @@ export class ProfileComponent implements OnInit {
       const toggleDiv = document.getElementById('deleteProfile');
       if (event.key === 'Escape' && toggleDiv?.classList.contains('active')) {
         toggleDiv.classList.toggle('active');
-        this.toggleDelete();
+        this.currentState = ProfileState.Viewing;
       }
       // else if(this.updatePassword){
       //   this.goBack();
@@ -88,7 +101,7 @@ export class ProfileComponent implements OnInit {
         toggleDiv.classList.contains('active')
       ) {
         toggleDiv.classList.toggle('active');
-        this.toggleDelete();
+        this.currentState = ProfileState.Viewing;
       }
     };
   }
@@ -110,6 +123,8 @@ export class ProfileComponent implements OnInit {
  
 
     this.loadProfile();
+
+    this.initializePictureForm();
 
     // Subscribe to router events
     // this.router.events.subscribe((event) => {
@@ -347,6 +362,35 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  initializePictureForm() {
+    this.pictureForm = this.fb.group({
+      imgUrl: [this.currentUser.imgUrl]
+    });
+  }
+
+  // changePicture() {
+  //   this.currentState = ProfileState.ChangingPicture;
+  //   this.initializePictureForm(); // Reset form with current URL
+  // }
+
+  saveProfilePicture() {
+    if (this.currentState === ProfileState.ChangingPicture) {
+      const newImgUrl = this.pictureForm.get('imgUrl')?.value;
+      this.currentUser.imgUrl = newImgUrl;
+      this.userService.updateUser(this.currentUser).subscribe(
+        () => {
+          this.currentState = ProfileState.Viewing;
+          // Optionally, reload the user data or update the view
+        },
+        error => {
+          console.error('Error updating profile picture:', error);
+          // Handle error (e.g., show error message)
+        }
+      );
+    }
+    // ... handle other states if needed
+  }
+
   preloadImage(imgUrl: string) {
     const img = new Image();
     img.onload = () => {
@@ -368,10 +412,36 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  editProfile() {
-    this.userService.updateUser2(this.currentUser).subscribe(() => {
-      this.reloadProfile();
-    });
+  // editProfile() {
+  //   this.userService.updateUser2(this.currentUser).subscribe(() => {
+  //     this.reloadProfile();
+  //   });
+  // }
+
+  // editProfile() {
+  //   if (this.currentState === ProfileState.EditingProfile) {
+  //     this.userService.updateUser2(this.currentUser).subscribe(() => {
+  //       this.currentState = ProfileState.Viewing;
+  //       this.reloadProfile();
+  //     });
+  //   } else {
+  //     this.currentState = ProfileState.EditingProfile;
+  //   }
+  // }
+
+  saveProfile() {
+    if (this.currentState === ProfileState.EditingProfile) {
+      this.userService.updateUser2(this.currentUser).subscribe(
+        () => {
+          this.currentState = ProfileState.Viewing;
+          this.reloadProfile(); // Reload the profile to ensure we display the latest data
+        },
+        (error) => {
+          console.error('Error updating profile:', error);
+          // Handle error (e.g., show error message to user)
+        }
+      );
+    }
   }
 
   get passwordGroup() {
@@ -559,26 +629,25 @@ export class ProfileComponent implements OnInit {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  toggleProfile() {
-    this.saveOrChange = !this.saveOrChange;
-    this.classAppliedTwo = !this.classAppliedTwo;
-    this.editProfileToggle = !this.editProfileToggle;
-    this.onlyProfilePicture = !this.onlyProfilePicture;
-  }
+  // toggleProfile() {
+  //   this.saveOrChange = !this.saveOrChange;
+  //   this.classAppliedTwo = !this.classAppliedTwo;
+  //   this.editProfileToggle = !this.editProfileToggle;
+  //   this.onlyProfilePicture = !this.onlyProfilePicture;
+  // }
 
-  toggleEditProfile() {
-    this.classApplied = !this.classApplied;
-    this.saveOrChange = !this.saveOrChange;
-    this.editOrUpdate = !this.editOrUpdate;
-    this.editProfileToggle = !this.editProfileToggle;
-  }
+  // toggleEditProfile() {
+  //   this.classApplied = !this.classApplied;
+  //   this.saveOrChange = !this.saveOrChange;
+  //   this.editOrUpdate = !this.editOrUpdate;
+  //   this.editProfileToggle = !this.editProfileToggle;
+  // }
 
-  toggleDelete() {
-    this.classAppliedDeleteProfile = !this.classAppliedDeleteProfile;
-    (
-      document.getElementById('deleteProfile') as HTMLFieldSetElement
-    ).setAttribute('disabled', 'disabled');
-  }
+  // toggleDelete() {
+  //   this.classAppliedDeleteProfile = !this.classAppliedDeleteProfile;
+  //   (document.getElementById('deleteProfile') as HTMLFieldSetElement)
+  //   .setAttribute('disabled', 'disabled');
+  // }
 
   goodbye() {
     (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
@@ -613,18 +682,48 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  changePassword() {
-    this.classAppliedTwo = !this.classAppliedTwo;
-    this.editProfileToggle = !this.editProfileToggle;
-    this.onlyProfilePicture = !this.onlyProfilePicture;
-    this.updatePassword = !this.updatePassword;
+  // changePassword() {
+  //   this.classAppliedTwo = !this.classAppliedTwo;
+  //   this.editProfileToggle = !this.editProfileToggle;
+  //   this.onlyProfilePicture = !this.onlyProfilePicture;
+  //   this.updatePassword = !this.updatePassword;
+  // }
+
+  // goBack() {
+  //   this.classApplied = !this.classApplied;
+  //   this.classAppliedTwo = !this.classAppliedTwo;
+  //   this.editProfileToggle = !this.editProfileToggle;
+  //   this.updatePassword = !this.updatePassword;
+  //   this.stepForm.reset();
+  // }
+
+  editProfile() {
+    if (this.currentState === ProfileState.EditingProfile) {
+      // Save the profile
+      this.userService.updateUser2(this.currentUser).subscribe(() => {
+        this.currentState = ProfileState.Viewing;
+        this.loadProfile();
+      });
+    } else {
+      this.currentState = ProfileState.EditingProfile;
+    }
   }
 
-  goBack() {
-    this.classApplied = !this.classApplied;
-    this.classAppliedTwo = !this.classAppliedTwo;
-    this.editProfileToggle = !this.editProfileToggle;
-    this.updatePassword = !this.updatePassword;
-    this.stepForm.reset();
+  changePicture() {
+    this.currentState = ProfileState.ChangingPicture;
+  }
+
+  changePassword() {
+    this.currentState = ProfileState.ChangingPassword;
+  }
+
+  deleteProfile() {
+    this.currentState = ProfileState.DeletingProfile;
+    this.classAppliedDeleteProfile = true;
+  }
+
+  cancelAction() {
+    this.currentState = ProfileState.Viewing;
+    this.reloadProfile();
   }
 }

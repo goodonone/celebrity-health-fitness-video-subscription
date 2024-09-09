@@ -8,21 +8,21 @@
         </div>
 
         <div class="profileContainer">
-            <!-- <div class="deleteProfileContainer" > -->
-                <div class="absoluteContainer" *ngIf="classAppliedDeleteProfile" (click)="toggleDelete()">
+            <div class="deleteProfileContainer" [class.active]="currentState === ProfileState.DeletingProfile">
+                <div class="absoluteContainer" *ngIf="currentState === ProfileState.DeletingProfile" (click)="cancelAction()">
                     <div class="cancelSubscription">
                         <img class="warningImg" src="assets/Images/Exclamation.svg">
                         <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific <br> Content & All Access to the Store. <br>  Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be Missed!</h1>
                         <div class="cancelSubscriptionButtonContainer">
-                            <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="toggleDelete()">Keep <br> Subscription</button>
+                            <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="deleteProfile()">Keep <br> Subscription</button>
                             <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
                         </div>
                     </div>
                 </div>
-            <!-- </div>/ -->
+            </div>
 
-            <fieldset id="deleteProfile" [class.active]="classAppliedDeleteProfile" [disabled]="classAppliedDeleteProfile">
-                
+            <fieldset id="deleteProfile" [class.active]="currentState === ProfileState.DeletingProfile" [disabled]="currentState === ProfileState.DeletingProfile">
+           
             <mat-card class="profileInfo">
 
                 <div class="flexAllProfileData">
@@ -32,19 +32,23 @@
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')','box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' }" [ngClass]="{'animateBoxShadow': tierThree && firstTimeAnimation }"> -->
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}"[class.tierThreeStyle]="tierThree"></mat-card> -->
                             <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
-                            <div class="editProfilePictureButtonsContainer">
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && saveOrChange == false" (click)="toggleProfile()">Add Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && saveOrChange == false && updatePassword == false" (click)="toggleProfile()">Change Picture</button>
+                            <div class="editProfilePictureButtonsContainer" >
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()" (click)="changePicture()">Change Picture</button>
                             </div>
                         </div>
-                        <div class="editProfileButtonsContainer">
-                                <button mat-button style="color:white" class="btn btn-editProfileButton" *ngIf="!editOrUpdate" (click)="toggleEditProfile()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Edit Profile</button>
-                                <button mat-button style="color:white" class="btn btn-changePasswordButton" *ngIf="!editOrUpdate" (click)="changePassword()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Change Password</button>
-                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" *ngIf="!editOrUpdate" (click)="toggleDelete()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Cancel Subscription</button>
-                                <button mat-button style="color:white" class="btn btn-signOutButton" *ngIf="!editOrUpdate" (click)="logOut()" id="buttonDisappearEdit" [class.active]="classAppliedTwo">Sign Out</button>
+                        <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit">Change Password</button>
+                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit">Cancel Subscription</button>
+                                <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit">Sign Out</button>
                         </div>
                      </div>
-                    <div class="profileDataContainer" *ngIf="!editProfileToggle && !updatePassword">
+
+                <div [ngSwitch]="currentState">
+                  <!-- Viewing State -->
+                  <ng-container *ngSwitchCase="ProfileState.Viewing">
+                    <div class="profileDataContainer">
                         <h3 class="profileDetails name"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
                         <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
                         <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
@@ -58,12 +62,16 @@
                         </div>
                         <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
                     </div>
-                    <div class="profileDataContainer" *ngIf="editProfileToggle && !updatePassword">
-                        <form (ngSubmit)="editProfile()" id="profileForm">
-                            <div class="updateOnlyPicture" *ngIf="onlyProfilePicture">
+                </ng-container>
+
+                <!-- Edit Profile State -->
+                <ng-container *ngSwitchCase="ProfileState.EditingProfile">
+                    <div class="profileDataContainer">
+                        <form (ngSubmit)="saveProfile()" id="profileForm">
+                            <div class="updateOnlyPicture">
                                 <h3 class="profileDetailsInput name"><span class="spanProfileCategory">Name</span> <br>  <input class="name" placeholder="Enter Full Name" type="text" name="firstName" [(ngModel)]="currentUser.name"></h3>
                                 <h3 class="profileDetailsInput"><span class="spanProfileCategory">Email Address</span><br> <input class="email" placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"></h3>
-                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Date Of Birth</span> <br> <input placeholder="Enter Date of Birth" type="text" name="dateOfBirth" id="dob" [(ngModel)]="currentUser.dateOfBirth"></h3>
+                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Date Of Birth</span> <br> <input placeholder="mm/dd/yy" type="text" name="dateOfBirth" id="dob" [(ngModel)]="currentUser.dateOfBirth"></h3>
                                 <h3 class="profileDetailsInputGender"><span class="spanProfileCategory">Gender</span> <br> 
                                     <select name="gender" id="gender" [(ngModel)]="currentUser.gender">
                                         <option value="Male">Male</option>
@@ -84,13 +92,65 @@
                                 <h3 class="profileDetailsInputPhoto" *ngIf="!updatePassword"><span class="spanProfileCategory">Profile Picture Link</span> <br></h3>
                                 <input class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl">
                             </div>
-                            <button mat-button style="color:white" class="btn btn-savePhotoButton" *ngIf="saveOrChange == true && !editOrUpdate && !onlyProfilePicture" id="buttonDisappear" form="profileForm" type="submit" (click)="editProfile();toggleProfile()">Save Picture</button>
-                            <button mat-button style="color:white" class="btn btn-updateProfileButton" *ngIf="editOrUpdate && !updatePassword"  form="profileForm" type="submit" (click)="toggleEditProfile();editProfile()">Update Profile</button>
+                            <div class="updateProfileButtonContainer">
+                                <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
+                                <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" type="submit">Update</button>
+                            </div>
                         </form> 
-                    </div> 
-                        <div class="updatePassword" *ngIf="updatePassword">
+                    </div>
+                </ng-container>
+
+                <!-- Deleting Profile State -->
+                <ng-container *ngSwitchCase="ProfileState.DeletingProfile">
+                    <div class="profileDataContainer">
+                        <h3 class="profileDetails name"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
+                        <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{currentUser.height}}ft</h3>
+                        <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
+                        <div class="planContainer">
+                            <h3 class="profileDetails plan" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
+                        </div>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
+                    </div>
+                </ng-container>
+
+                <!-- Change Picture State -->
+                <!-- <ng-container *ngSwitchCase="ProfileState.ChangingPicture">  
+                    <form [formGroup]="pictureForm" (ngSubmit)="saveProfile()" id="pictureForm">
+                    <div class="profilePictureLinkContainer">
+                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span> <br></h3>
+                        <input class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl">
+                    </div>
+                    <div class="savePictureButtonContainer">
+                        <button mat-button style="color:white" class="btn btn-cancelPasswordButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button style="color:white" class="btn btn-savePhotoButton" id="buttonDisappear" form="profileForm" type="submit" (click)="saveProfile()">Save Picture</button>
+                    </div>
+                </form>
+                </ng-container> -->
+                <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
+                    <div class="profilePictureContainer">
+                    <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
+                      <div class="profilePictureLinkContainer">
+                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span></h3>
+                        <input class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" formControlName="imgUrl" [(ngModel)]="currentUser.imgUrl">
+                      </div>
+                      <div class="savePictureButtonContainer">
+                        <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit">Save</button>
+                      </div>
+                    </form>
+                </div> 
+                </ng-container>
+
+                <!-- Change Password State -->
+                <ng-container *ngSwitchCase="ProfileState.ChangingPassword">
+                        <div class="updatePassword">
                             <h3 class="profileDetailsChangePassword"><span class="spanProfileCategory">Change Password</span> <br> </h3>
-                            <form [formGroup]="stepForm" (ngSubmit)="updateUserPassword();changePassword()">
+                            <form [formGroup]="stepForm" (ngSubmit)="updateUserPassword()" id="passwordForm">
                                 <div class="oldPassword">
                                     <div class="input-details focusedInput">
                                         <label class="label" for="oldPassword">Current Password</label>
@@ -161,20 +221,17 @@
                                     </div>
                                 </div>
                                 <div class="updatePasswordButtonContainer">
-                                    <button mat-button style="color:white" class="btn btn-backPasswordButton" type="button" (click)="goBack()">Back</button>
-                                    <!-- <button mat-button style="color:white" class="btn btn-updatePasswordButton" [disabled]="stepForm.invalid || oldPasswordError" type="submit">Update Password</button> -->
-                                    <button mat-button style="color:white" class="btn btn-updatePasswordButton" 
-                                    [disabled]="!isFormValid()" 
-                                    type="submit">Update Password</button>
+                                    <button mat-button style="color:white" class="btn btn-cancelPasswordButton" type="button" (click)="cancelAction()">Cancel</button>
+                                    <button mat-button style="color:white" class="btn btn-updatePasswordButton" [disabled]="!isFormValid()" type="submit">Update</button>
                                 </div>
                             </form>
                         </div>
+                    </ng-container>
                 </div>
-                
-            </mat-card>      
+              </div>
+            </mat-card>  
         </fieldset> 
         </div>  
-
     </div>
 
 </div>
