@@ -26,7 +26,8 @@
           <div class="input-details">
             <label for="password">Password</label>
           </div>
-          <input type="password"
+          <div class="passwordInput">
+            <input type="password"
                  matInput 
                  appPassword
                  name="password"
@@ -34,6 +35,8 @@
                  placeholder="Enter your password"
                  [(ngModel)]="password"
                  required>
+            <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+          </div>
                 <span class="errorSpan"><p *ngIf="errorMessage">Invalid Username or Password! Try again.</p></span>
                 <span class="buttonSpan">
                   <button class="btn btn-submit" mat-button
@@ -41,6 +44,7 @@
                   (click)="signIn()">Log In</button>
                  </span>
                 </form>
+                <p class="forgotPassword">Forgot Password? <span class="resetPassword" routerLink="/reset-password">Reset it now</span></p>  
             </mat-card-content>
         </mat-card>
     </div>

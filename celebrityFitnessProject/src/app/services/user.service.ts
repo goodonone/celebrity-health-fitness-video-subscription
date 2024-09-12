@@ -55,12 +55,20 @@ getUserId() {
   return "undefined";
 }
 
+// updateUser(updatedUser: User): Observable<User> {
+//   let reqHeaders = {
+//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+//   }
+//     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
+//   }
+
 updateUser(updatedUser: User): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-  }
-    return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
-  }
+  };
+  // Use the /data/ endpoint for all updates
+  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders });
+}
 
   checkPassword(userId: number, password: string): Observable<boolean> {
     let reqHeaders = {
@@ -77,12 +85,13 @@ updateUser(updatedUser: User): Observable<User> {
   }
 
 
-updateUser2(updatedUser2: User): Observable<User> {
-  let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-  }
-    return this.http.put<User>(this.baseURL + "/data/" + updatedUser2.userId, updatedUser2, {headers: reqHeaders});
-  }
+// updateUser2(updatedUser2: User): Observable<User> {
+//   let reqHeaders = {
+//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+//   }
+//     return this.http.put<User>(this.baseURL + "/data/" + updatedUser2.userId, updatedUser2, {headers: reqHeaders});
+//   }
+
 
 
 getUser(userId: number): Observable<User> {

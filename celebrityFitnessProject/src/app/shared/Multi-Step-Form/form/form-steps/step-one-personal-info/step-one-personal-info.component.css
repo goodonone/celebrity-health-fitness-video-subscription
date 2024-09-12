@@ -12,7 +12,7 @@ mat-card{
   /* max-width: 700px; */
   max-width: 32.8rem;
   /* height: 26rem; */
-  height: auto;
+  height: 26rem;
   max-height: 27rem;
   margin-left: 0.6rem;
 }
@@ -55,6 +55,7 @@ input:valid {
   display: flex;
   justify-content: space-between;
   width: 15.437rem;
+  height: 1.1rem;
   /* width: 100%; */
 }
 
@@ -80,6 +81,7 @@ input:valid {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
+  user-select: none;
 }
 
 .eye-icon:hover {
@@ -118,7 +120,7 @@ input:valid {
 .input-details-confirm{
   display: flex;
   justify-content: space-between;
-  width: 15.437rem;
+  width: 10.437rem;
   margin-top: 0.4rem;
 }
 

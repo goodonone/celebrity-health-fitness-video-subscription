@@ -148,7 +148,6 @@ export class FormService implements OnInit {
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
-
     if (!localStorage.getItem('userId')) {
       const userData = {
         name: userInfo.name,
@@ -196,6 +195,7 @@ export class FormService implements OnInit {
       setTimeout(() => {
         this.activeStepSubject.next(1); this.router.navigate(['sign-in']);
       }, 4000);
+      // this.multiStepForm.;
       this.multiStepForm = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
@@ -225,7 +225,8 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
-      location.href
+      localStorage.setItem('hasVisitedProfileBefore', 'false');
+      // location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 

@@ -1,11 +1,11 @@
-.maxContainer{
+.maxContainer {
   height: auto;
   width: auto;
   max-width: 3000px;
   margin: auto;
 }
 
-.videoBackground{
+.videoBackground {
   width: 100%;
   height: 100vh;
   object-fit: cover;
@@ -27,7 +27,7 @@
 
 .overlay {
   position: absolute;
-  top: 50%; 
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -64,7 +64,7 @@
 
 .overlayTwo {
   position: absolute;
-  top:170%; 
+  top: 170%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
@@ -118,7 +118,7 @@
   font-family: "Outfit", sans-serif;
   font-weight: 300;
   /* padding-top: 60px; */
-  font-size:  10rem;
+  font-size: 10rem;
   font-weight: 400;
   line-height: 20vw;
   color: white;
@@ -128,7 +128,7 @@
 /* Beginning of Banner Three Styling */
 
 .bannerThree {
-  display:flex;
+  display: flex;
   flex-direction: column;
   margin: auto;
   height: 100%;
@@ -186,7 +186,7 @@
   width: 100%;
   background-color: #c7ff20;
   min-height: 100vh; */
-  display:flex;
+  display: flex;
   flex-direction: column;
   margin: auto;
   height: 100%;
@@ -200,7 +200,7 @@
 .containerTwo {
   display: flex;
   justify-content: space-evenly;
-  margin:auto;
+  margin: auto;
   /* height: 100vh;
   width: auto; */
   height: 100%;
@@ -299,20 +299,98 @@ label {
   box-sizing: border-box;
 }
 
+.actionButtonsContainer {
+  /* display: flex;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: auto;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  height: 3rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.3vw;
+  border-color: #676767;
+  background-color: transparent !important; */
+  display: flex;
+  justify-content: space-evenly;
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  bottom: 3rem;
+  transform: translateX(-50%);
+  height: 2rem;
+  width: 18rem;
+  /* margin-top: -4rem;
+    margin-left: -0.7rem; */
+  background-color: transparent !important;
+  transition: border-color 0.3s;
+  border-radius: 0.4rem;
+  max-width: 23rem;
+  overflow: hidden;
+  border-color: #676767;
+  border-style: solid;
+  cursor: pointer;
+}
+
+.btn-backToTop,
+.btn-signUp {
+  flex: 1;
+  font-size: 1rem;
+  /* color: black; */
+  background-color: transparent !important;
+  border: none;
+  transition: background-color 0.3s, color 0.3s;
+  padding: 0;
+  margin: 0;
+  font-weight: 400;
+  height: 100%;
+  /* color:#cb1212; */
+  /* border-radius: 0 8px 8px 0; */
+  border-radius: 0;
+  /* color: #c80f0f; */
+  /* color: #676767; */
+  cursor: pointer;
+}
+
+.actionButtonsContainer:hover{
+  border-color: white !important;
+  color: white;
+}
+
+.btn-backToTop {
+  color: #676767 !important;
+}
+
+.btn-signUp{
+  color: #9bc422 !important;
+}
+
+.btn-backToTop:hover {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.btn-signUp:hover {
+  background-color: white !important;
+  color: #000000 !important;
+}
+
 /* Media Queries */
 
 @media screen and (min-width: 2000px) and (max-width: 6000px) {
-  
-  .textOverlay{
+  .textOverlay {
     padding-top: 5rem;
-    font-size:  clamp(20rem, 1.5vw, 30rem);
+    font-size: clamp(20rem, 1.5vw, 30rem);
     line-height: 20rem;
   }
-
 }
 
 @media screen and (min-width: 300px) and (max-width: 872px) {
-
   .banner {
     height: 100vh;
     width: 100%;
@@ -361,7 +439,7 @@ label {
     justify-content: center;
     align-items: center;
     margin: auto;
-    width:50rem;
+    width: 50rem;
   }
 
   .heading {
@@ -414,7 +492,7 @@ label {
     margin-top: -50px;
   }
 
-  .cardText{
+  .cardText {
     display: flex;
     flex-direction: column;
     font-size: 1.5rem;

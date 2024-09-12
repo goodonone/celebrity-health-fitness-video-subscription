@@ -8,6 +8,7 @@ import { AuthGuard } from './auth.guard';
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "home", component: HomeComponent },
+  { path: "search/?:query", component: NotFoundComponent },
   { path: "search", component: SearchComponent },
   {
     path: "about",
@@ -64,6 +65,9 @@ const routes: Routes = [
     loadChildren: () => import('./components/upgrade/upgrade.module').then((m) => m.UpgradeModule),
     canActivate: [AuthGuard]
   },
+  {
+    path: 'reset-password', 
+    loadChildren: () => import('./components/reset-password/reset-password.module').then(m => m.ResetPasswordModule) },
   { 
     path: "**", component: NotFoundComponent 
   },

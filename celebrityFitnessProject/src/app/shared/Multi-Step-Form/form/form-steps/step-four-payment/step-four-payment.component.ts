@@ -19,6 +19,9 @@ export class StepFourPaymentComponent implements OnInit {
   isChecked = true;
   showShipping = false;
   zipText = true;
+
+  private billingAddressSubscription: any;
+  private billingZipSubscription: any;
   
   constructor(private rootFormGroup: FormGroupDirective, private fb: FormBuilder) { }
 
@@ -56,14 +59,52 @@ export class StepFourPaymentComponent implements OnInit {
   //   Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/),
   //   expirationDateValidator()
   // ]);
+
+  // this.stepForm.get('expDate')?.setValidators([
+  //   Validators.required, 
+  //   Validators.pattern(/^\d{2}\/\d{2}$/),
+  //   expirationDateValidator()
+  // ]);
+  // this.stepForm.get('expDate')?.setValidators([
+  //   Validators.required, 
+  //   Validators.pattern(/^\d{2}\/\d{2}$/),
+  //   (control) => {
+  //     this.validateExpDate();
+  //     return null;
+  //   }
+  // ]);
+
   this.stepForm.get('expDate')?.setValidators([
-    Validators.required, 
-    Validators.pattern(/^\d{2}\/\d{2}$/),
+    Validators.required,
+    Validators.pattern(/^\d{2}\/\d{2}$/),  // Ensure format is MM/YY
     expirationDateValidator()
   ]);
 
-  // Implement 00/00 format for date input
+  
+
+  // Subscribe to billing address and zip changes to update shipping fields automatically
+  this.billingAddressSubscription = this.stepForm.get('billingAddress')?.valueChanges.subscribe(() => {
+    if (this.isChecked) {
+      this.updateShippingFields(true);
+    }
+  });
+
+  this.billingZipSubscription = this.stepForm.get('billingZip')?.valueChanges.subscribe(() => {
+    if (this.isChecked) {
+      this.updateShippingFields(true);
+    }
+  });
+
+
 }
+
+ngOnDestroy(): void {
+  // Unsubscribe to prevent memory leaks
+  this.billingAddressSubscription?.unsubscribe();
+  this.billingZipSubscription?.unsubscribe();
+}
+
+
     toggleShipping() {
       this.showShipping = !this.showShipping;
 
@@ -154,6 +195,23 @@ export class StepFourPaymentComponent implements OnInit {
     //   }
     // }
 
+    // formatExpirationDate(event: any) {
+    //   const input = event.target;
+    //   let value = input.value.replace(/\D/g, '');
+      
+    //   if (value.length > 4) {
+    //     value = value.slice(0, 4);
+    //   }
+  
+    //   if (value.length > 2) {
+    //     value = value.slice(0, 2) + '/' + value.slice(2);
+    //   }
+  
+    //   input.value = value;
+    //   this.stepForm.get('expDate')?.setValue(value);
+    //   this.stepForm.get('expDate')?.updateValueAndValidity();
+    // }
+
     formatExpirationDate(event: any) {
       const input = event.target;
       let value = input.value.replace(/\D/g, '');
@@ -161,48 +219,42 @@ export class StepFourPaymentComponent implements OnInit {
       if (value.length > 4) {
         value = value.slice(0, 4);
       }
-  
+    
       if (value.length > 2) {
         value = value.slice(0, 2) + '/' + value.slice(2);
       }
-  
+    
       input.value = value;
-      this.stepForm.get('expDate')?.setValue(value);
-      this.stepForm.get('expDate')?.updateValueAndValidity();
+      this.stepForm.get('expDate')?.setValue(value, { emitEvent: false });
     }
   
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value && expDateControl.value.length === 2) {
+    //     expDateControl.setErrors({'invalid': true});
+    //   }
+    // }
+
     validateExpDate() {
       const expDateControl = this.stepForm.get('expDate');
-      if (expDateControl?.value && expDateControl.value.length === 2) {
-        expDateControl.setErrors({'invalid': true});
+      if (expDateControl?.value) {
+        const [month, year] = expDateControl.value.split('/');
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+    
+        if (year.length === 2 && month.length === 2) {
+          if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+            expDateControl.setErrors({ 'expiredDate': true });
+          } else {
+            expDateControl.setErrors(null);
+          }
+        } else {
+          expDateControl.setErrors({ 'invalidFormat': true });
+        }
       }
     }
-
-    // updateShippingFields(isChecked: boolean) {
-    //   if (isChecked) {
-    //     // Copy billing address to shipping address fields
-    //     this.stepForm.patchValue({
-    //       shippingAddress: this.stepForm.get('billingAddress')?.value,
-    //       shippingZip: this.stepForm.get('billingZip')?.value,
-    //     });
   
-    //     // Disable the shipping address fields since they're the same as billing
-    //     // this.stepForm.get('shippingAddress')?.disable();
-    //     // this.stepForm.get('shippingZip')?.disable();
-    //   } else {
-    //     // Clear and enable the shipping address fields
-    //     this.stepForm.patchValue({
-    //       shippingAddress: '',
-    //       shippingZip: '',
-    //     });
-    //     this.stepForm.get('shippingAddress')?.enable();
-    //     this.stepForm.get('shippingZip')?.enable();
-    //   }
-  
-    //   // Update the validity of the form fields
-    //   this.stepForm.get('shippingAddress')?.updateValueAndValidity();
-    //   this.stepForm.get('shippingZip')?.updateValueAndValidity();
-    // }
 
     updateShippingFields(isChecked: boolean) {
       if (isChecked) {

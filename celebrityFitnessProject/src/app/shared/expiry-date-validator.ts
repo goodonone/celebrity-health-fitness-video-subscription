@@ -202,53 +202,90 @@
 // }
 
 
-import { AbstractControl, ValidatorFn } from '@angular/forms';
+// import { AbstractControl, ValidatorFn } from '@angular/forms';
 
-export function expirationDateValidator(): ValidatorFn {
-  return (control: AbstractControl): {[key: string]: any} | null => {
+// export function expirationDateValidator(): ValidatorFn {
+//   return (control: AbstractControl): {[key: string]: any} | null => {
+//     const value = control.value;
+//     if (!value) {
+//       return null;
+//     }
+
+//     // Check if the format is correct
+//     if (!/^\d{2}\/\d{2}$/.test(value)) {
+//       return { 'invalid': true };
+//     }
+
+//     const [monthStr, yearStr] = value.split('/');
+//     const month = parseInt(monthStr, 10);
+//     let year = parseInt(yearStr, 10);
+
+//     // Check if month is valid (01-12)
+//     if (month < 1 || month > 12) {
+//       return { 'invalid': true };
+//     }
+
+//     const currentYear = 2027;
+
+//     // Adjust year to four digits
+//     // Always interpret as 20xx, since we're in 2027
+//     year += 2000;
+
+//     // Check if the card is expired (anything before 2027 is expired)
+//     if (year < currentYear) {
+//       return { 'expiredDate': true };
+//     }
+
+//     // If it's 2027, check the month
+//     if (year === currentYear) {
+//       const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
+//       if (month < currentMonth) {
+//         return { 'expiredDate': true };
+//       }
+//     }
+
+//     // Check if the year is too far in the future (more than 20 years from 2027)
+//     if (year > currentYear + 20) {
+//       return { 'invalid': true };
+//     }
+
+//     return null;
+//   };
+// }
+
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+
+export function expirationDateValidator(): (control: AbstractControl) => Observable<ValidationErrors | null> {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
     const value = control.value;
     if (!value) {
-      return null;
+      return of(null); // Valid when no value is present
     }
 
-    // Check if the format is correct
     if (!/^\d{2}\/\d{2}$/.test(value)) {
-      return { 'invalid': true };
+      return of({ 'invalid': true });
     }
 
     const [monthStr, yearStr] = value.split('/');
     const month = parseInt(monthStr, 10);
     let year = parseInt(yearStr, 10);
 
-    // Check if month is valid (01-12)
     if (month < 1 || month > 12) {
-      return { 'invalid': true };
+      return of({ 'invalid': true });
     }
 
     const currentYear = 2027;
-
-    // Adjust year to four digits
-    // Always interpret as 20xx, since we're in 2027
     year += 2000;
 
-    // Check if the card is expired (anything before 2027 is expired)
-    if (year < currentYear) {
-      return { 'expiredDate': true };
+    if (year < currentYear || (year === currentYear && month < (new Date().getMonth() + 1))) {
+      return of({ 'expiredDate': true });
     }
 
-    // If it's 2027, check the month
-    if (year === currentYear) {
-      const currentMonth = new Date().getMonth() + 1; // Get current month (1-12)
-      if (month < currentMonth) {
-        return { 'expiredDate': true };
-      }
-    }
-
-    // Check if the year is too far in the future (more than 20 years from 2027)
     if (year > currentYear + 20) {
-      return { 'invalid': true };
+      return of({ 'invalid': true });
     }
 
-    return null;
+    return of(null);
   };
 }

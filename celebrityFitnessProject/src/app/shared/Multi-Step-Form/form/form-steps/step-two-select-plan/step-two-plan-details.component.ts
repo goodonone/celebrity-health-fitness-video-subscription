@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { planOptions } from './planDetails.model';
 
@@ -20,7 +20,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   billing!: string;
   cardCounter: number[] = [1,2,3];
 
-  constructor(private rootFormGroup: FormGroupDirective) { }
+  constructor(private rootFormGroup: FormGroupDirective, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
@@ -31,6 +31,26 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     this.checked = this.typeOfBilling === 'monthly' ? false : true;
     this.planType = formVals?.plan || 'Just Looking';
     this.updateBilling();
+
+    // setTimeout(() => {
+    //   this.cdr.detectChanges();
+    // }, 0);
+  }
+
+  ngAfterViewInit(): void {
+    const formVals = this.rootFormGroup.form.get('planDetails')?.value;
+
+    this.typeOfBilling = formVals?.billing || 'monthly';
+    this.chosenPlan = formVals?.plan;
+    this.checked = this.typeOfBilling === 'monthly' ? false : true;
+    this.planType = formVals?.plan || 'Just Looking';
+    this.updateBilling();
+
+    // Trigger change detection manually if needed
+    // setTimeout(() => {
+    //   this.cdr.detectChanges();
+    // }, 0);
+    this.cdr.detectChanges();
   }
 
   public onPlanChange(plan: string) {
@@ -45,6 +65,10 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       planCost: cost,
       totalCost: cost,
     })
+
+    // setTimeout(() => {
+    //   this.cdr.detectChanges();
+    // }, 0);
   }
 
   updateBilling() {
@@ -73,14 +97,16 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   toggleBilling() {
     this.checked = !this.checked;
-    if (this.checked === false) {
-      this.typeOfBilling = 'monthly'
-      this.updateBilling();
-    }
-    if (this.checked === true) {
-      this.typeOfBilling = 'yearly';
-      this.updateBilling();
-    }
+    this.typeOfBilling = this.checked ? 'yearly' : 'monthly';
+    this.updateBilling();
+    // if (this.checked === false) {
+    //   this.typeOfBilling = 'monthly'
+    //   this.updateBilling();
+    // }
+    // if (this.checked === true) {
+    //   this.typeOfBilling = 'yearly';
+    //   this.updateBilling();
+    // }
   }
 
   // Disable if the first plan is selected

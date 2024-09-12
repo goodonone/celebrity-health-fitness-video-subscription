@@ -14,6 +14,8 @@ import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/materi
 import { MaterialModule } from './material.module';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ScrollToTopDirective } from './shared/scroll-to-top.directive';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -35,6 +37,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     MaterialModule,
     AppRoutingModule,
     FontAwesomeModule,
+    SharedModule
   ],
   providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent]

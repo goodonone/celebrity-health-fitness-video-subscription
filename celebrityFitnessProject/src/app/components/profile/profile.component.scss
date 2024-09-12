@@ -3,31 +3,154 @@
 }
 
 .pageContainer {
-  background-color: rgb(255, 255, 255);
-  width: 100vw;
-  max-width: 100%;
-  max-width: 3000px;
-  overflow-x: hidden;
-  height: 100vh;
-  /* margin-top: -80px; */
-  padding-top: 2rem;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.flexContainer {
+  // background-color: rgb(236, 61, 61);
+  // width: 100vw;
+  // max-width: 100%;
+  // max-width: 3000px;
+  // overflow-x: hidden;
+  // height: 100vh;
+  // padding-top: 2rem;
+  // margin-left: auto;
+  // margin-right: auto;
   display: flex;
-  justify-content: space-evenly;
-  /* padding-top: 1.8rem; */
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
   min-height: 100vh;
+  max-width: 3000px;
+  position: relative;
+  margin: 0 auto;
+  padding-bottom: 5rem;
+}
+
+.flexContainer {
+  // display: flex;
+  // justify-content: space-evenly;
+  // width: 100%;
+  // height: 100%;
+  // min-height: 100vh;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  position: absolute;
+  margin: auto;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -55%);
+  justify-content: space-evenly;
+  width: fit-content;
+  height: 100%;
+  min-height: 100vh;
+  align-items: center;
+  box-sizing: border-box;
+  justify-content: center; 
 }
 
 .nameTier {
-  padding-top: 5rem;
-  padding-left: 2rem;
+  // padding-top: 5rem;
+  // padding-left: 2rem;
+  // display: flex;
+  // position: relative;
+  flex: 1; // Allow it to grow
+  max-width: 600px; // Limit maximum width
   text-align: center;
+  align-items: center;
+  // margin-right: 5rem;
+  // flex-direction: column;
+  height: 100%;
+  max-height: 50vh;
+  padding-bottom: 5rem;
+  // max-height: 550px;
+  // margin: auto 0;
+  margin: auto;
+  // margin-bottom: 2rem;
+}
+
+h1.profileNameTier{
+  // line-height: 9rem;
+}
+
+// .nameTier .tierOne{
+//   padding-top: 3rem;
+//   padding-left: 2rem;
+//   text-align: center;
+// //   margin: auto;
+// }
+
+#deleteProfile.active {
+  border-radius: 6px;
+  -webkit-filter: blur(30px);
+  -moz-filter: blur(30px);
+  -o-filter: blur(30px);
+  -ms-filter: blur(30px);
+  filter: blur(5px);
+}
+
+.deleteProfileContainer {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(19, 18, 18, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.deleteProfileContainer.active {
+  // display: block;
+  // margin: auto;
+  display: flex;
+  // justify-content: center;
+  // align-items: center;
+}
+
+fieldset {
+  position: relative;
+  // width: 100%;
+  // height: 100%;
+  width: fit-content;
+  height: fit-content;
+  border-color: transparent !important;
+  border-style: solid;
+}
+
+.profileContainer {
+  // position: relative;
+  // width: 50vw;
+  // max-width: 43rem;
+  // max-height: 51rem;
+  // height: fit-content;
+  position: relative;
+  display: flex;
+  background-color: transparent !important;
+  box-shadow: none;
+  height: 100%;
+  // max-height: 50vh;
+  // padding-top: 5rem;
+  // max-height: 550px;
+  min-height: 100vh;
+  max-height: 51rem;
+  flex: 1; // Allow it to grow
+  // max-width: 600px; // Limit maximum width
+  margin: 0; 
+  width: 100%;
+  // min-width: 20vw;
+  // max-width: 43rem;
+  max-width: 800px;
+  border-radius: 1.4rem;
+  opacity: 100%;
+  // margin-bottom: 5rem;
+  margin: auto auto auto 3rem;
+  transform: scale(0.9);
+  box-sizing: border-box;
+  overflow: hidden;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; 
 }
 
 .profilePictureAndButtonsContainer {
@@ -126,6 +249,7 @@
 #profilePicture {
   &.animateBoxShadow {
     animation: boxShadowExpand 0.5s ease-in forwards;
+
     @keyframes boxShadowExpand {
       0% {
         box-shadow: 0 0 0 #c7ff20;
@@ -194,8 +318,8 @@ h1.profileNameTier {
   /* height: 52rem; */
   position: relative;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  // justify-content: space-between;
   /* height: 52rem; */
   /* width: 50rem; */
   width: 50vw;
@@ -203,13 +327,16 @@ h1.profileNameTier {
   /* height: 80vh;*/
   min-height: fit-content;
   max-height: 51rem;
-  height: fit-content;
+  height: 100%;
   /* min-height: 80vh; */
   /* max-height: 52rem; */
   aspect-ratio: 3/5;
   padding: 1.5rem;
   background-color: #000000;
   border-radius: 1rem;
+  justify-content: center;
+  margin: auto;
+  // margin: auto 0;
 }
 
 h3.profileDetails {
@@ -224,6 +351,13 @@ h3.profileDetailsInput {
   font-weight: 500;
   font-size: 1.9rem;
   margin-bottom: 1rem;
+}
+
+h3.profileDetailsInput.email {
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 1.4rem;
 }
 
 // h3.profileDetailsInput.name {
@@ -244,37 +378,72 @@ h3.profileDetails.name {
 
 h3.profileDetails.email {
   width: 18rem;
+  // overflow: visible;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  //   overflow-y: visible;
+  height: 4rem;
+  // margin-bottom: 1.5rem;
+  // overflow-y: visible;
   //   box-sizing: border-box;
   //   background-color: #C7FF20;
-  padding-bottom: 0.2rem;
+  // padding-bottom: 0.2rem;
   //   height: auto;
   //   background-color: #c7ff20;
+}
+
+h3.profileDetailsInputDOB{
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  // margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+
+.dateOfBirthSpanAndErrorContainer{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+}
+
+.spanProfileCategoryDOB{
+  font-size: 1.4rem;
+  width: 100%;
+}
+
+.errorTwentyOne{
+  color: red;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.875rem;
+  width: auto;
+  width: 100%;
+  // line-height: 1rem;
 }
 
 h3.profileDetailsInputGender {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
 }
 
-h3.profileDetailsInputGender,
+// h3.profileDetailsInputPhoto {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 0.8rem;
+// }
+
 h3.profileDetailsInputPhoto {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 0.8rem;
-}
+  margin-bottom: 0rem;
 
-h3.profileDetailsInputPhoto {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 0.3rem;
 }
 
 .profilePictureLinkContainer {
@@ -325,6 +494,7 @@ h3.profileDetailsInputObjective {
 .spanProfileCategory {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
+  width: 100%;
 }
 
 .buttons {
@@ -353,7 +523,7 @@ h3.profileDetailsInputObjective {
   align-items: center;
   position: absolute;
   left: 50%;
-  bottom: 0.8rem;
+  bottom: 0.4rem;
   /* bottom: 2rem; */
   /* top: 0; */
   transform: translateX(-50%);
@@ -424,7 +594,8 @@ h3.profileDetailsInputObjective {
 // }
 
 .btn-signOutButton,
-.btn-changePasswordButton {
+.btn-changePasswordButton,
+.btn-billingDetailsButton {
   height: 2.4rem;
   padding-left: 0.6rem;
   padding-right: 0.6rem;
@@ -469,6 +640,11 @@ h3.profileDetailsInputObjective {
   //   margin-top: 1.3rem;
 }
 
+.btn-updateProfileButton:disabled{
+  background-color: rgb(62, 61, 61);
+  color: rgb(116, 115, 115) !important;
+}
+
 .btn-backButton {
   height: 3rem;
   padding-left: 0.6rem;
@@ -505,7 +681,8 @@ h3.profileDetailsInputObjective {
 .btn-updatePasswordButton:hover,
 .btn-savePhotoButton:hover,
 .btn-cancelPhotoButton:hover,
-.btn-cancelProfileButton:hover {
+.btn-cancelProfileButton:hover,
+.btn-billingDetailsButton:hover {
   background-color: white;
   color: black !important;
 }
@@ -529,6 +706,7 @@ h3.profileDetailsInputObjective {
   top: 40%;
   transform: translateY(-40%);
   cursor: pointer;
+  user-select: none;
   color: white;
 }
 
@@ -576,11 +754,11 @@ h3.profileDetailsInputObjective {
   width: 100%;
 }
 
-.input-details-confirm {
+.input-details {
   display: flex;
   justify-content: space-between;
   // width: 15.437rem;
-  width: 100%;
+  width: 98%;
   margin-top: 0.4rem;
 }
 
@@ -611,7 +789,15 @@ input:disabled:-moz-placeholder {
   font-weight: bold;
   text-align: right;
   font-size: 0.875rem;
-  line-height: 1.3rem;
+  line-height: 1rem;
+}
+
+.authenticating{
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1rem;
 }
 
 .label {
@@ -673,22 +859,7 @@ input:disabled:-moz-placeholder {
   color: rgb(116, 115, 115) !important;
 }
 
-.profileContainer {
-  position: relative;
-  /* width: 100%;
-    max-width: ;
-    height: 100%; */
-  /* width: 50vw;
-    max-width: 43rem; */
-  /* height: 80vh;*/
-  width: 50vw;
-  max-width: 43rem;
-  /* height: 80vh;*/
-  max-height: 51rem;
-  height: fit-content;
-  /* max-height: 51rem; */
-  transform: scale(0.9);
-}
+
 
 /* .deleteProfileContainer {
     position: relative;
@@ -707,19 +878,14 @@ input:disabled:-moz-placeholder {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  margin: auto;
-  /* top: 100%; */
-  /* left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%); */
-  z-index: 1;
+  // position: absolute;
+  // margin: auto;
+  // z-index: 1;
   width: 100%;
-  /* max-width: 49rem; */
-  /* padding: 1.5rem; */
-  height: fit-content;
-  max-height: 51rem;
-  overflow: hidden;
+  height: 100%;
+  padding: 2rem;
+  // max-height: 51rem;
+  // overflow: hidden;
 }
 
 .cancelSubscription {
@@ -729,10 +895,14 @@ input:disabled:-moz-placeholder {
   align-items: center;
   /* vertical-align: middle; */
   /* position: absolute; */
-  margin: auto 0;
-  height: 100%;
-  width: 100%;
-  padding-bottom: 20rem;
+  // margin: auto;
+  // height: fit-content;
+  // width: fit-content;
+  max-width: 90%;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 1rem;
+  padding-bottom: 15rem;
 
   /* top: 100%; */
   /* left: 50%;
@@ -769,7 +939,7 @@ h1.deleteProfileText {
 
 img.warningImg {
   transform: scale(30%, 30%);
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
 }
 
 .avatar {
@@ -781,6 +951,8 @@ img.warningImg {
   left: -42.5rem;
   top: -54rem;
 }
+
+
 
 input,
 select {
@@ -795,15 +967,22 @@ select {
   border-color: white;
   border-width: 1px;
   color: white;
+  padding-left: 0.2rem;
 }
+
+// input#dob, {
+//   padding-left: 0.2rem;
+// }
+
+// input{
+//   padding-left: 0.2rem;
+// }
 
 /* input{
     padding-left: 0.5rem;
 } */
 
-input::content {
-  padding-left: 0.3rem;
-}
+
 
 // input.name, input.imgUrl, input.email {
 //     width: 17rem;
@@ -824,7 +1003,7 @@ input#weight,
   height: 2.5rem;
   font-size: large;
   font-weight: 400;
-  padding-left: 0;
+  padding-left: 0.2rem;
   /* padding-left: 0.3rem; */
 }
 
@@ -884,34 +1063,32 @@ input#weight,
   margin-top: 0.5rem;
 }
 
-#deleteProfile.active {
-  border-radius: 6px;
-  -webkit-filter: blur(30px);
-  -moz-filter: blur(30px);
-  -o-filter: blur(30px);
-  -ms-filter: blur(30px);
-  filter: blur(30px);
-}
 
-.deleteProfileContainer {
-  display: none;
-}
-
-.deleteProfileContainer.active {
-  display: block;
-  /* Add any additional styles for positioning and layout */
-}
-
-fieldset {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-color: rgb(255, 255, 255);
-  border-style: solid;
-}
 
 ::placeholder {
   text-align: left;
+  padding-left: 0.2rem;
+  text-overflow: ellipsis;
+}
+
+input[matInput]:focus {
+  border-color: #ffffff !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #ffffff !important; /* Change the text color when focused */
+}
+
+::ng-deep select[matNativeControl]:focus {
+  border-color: #ffffff !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #ffffff !important; /* Change the text color when focused */
+}
+
+@media screen and (min-width: 2400px) {
+  .profileContainer {
+    transform: scale(1);
+  }
 }
 
 @media screen and (min-width: 500px) and (max-width: 1450px) {

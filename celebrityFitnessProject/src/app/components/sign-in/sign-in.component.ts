@@ -68,6 +68,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sign-in',
@@ -80,6 +81,11 @@ export class SignInComponent implements OnInit {
   errorMessage = false;
   navbar!: HTMLElement | null;
   menu!: HTMLElement | null;
+  passwordVisible = false;
+
+  // Icons
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
 
   constructor(
     private userService: UserService,
@@ -132,5 +138,10 @@ export class SignInComponent implements OnInit {
     navBarTextElements.forEach((element) => {
       element.classList.remove('black');
     });
+  }
+
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }
