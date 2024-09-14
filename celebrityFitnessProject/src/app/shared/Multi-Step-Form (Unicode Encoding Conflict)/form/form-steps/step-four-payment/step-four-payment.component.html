@@ -1,0 +1,226 @@
+<ng-container [formGroup]="stepForm">
+    <mat-card class="step-four">
+      <mat-card-header>
+        <mat-card-title-group class="title">
+          <mat-card-title role="heading"
+                          aria-level="1">Payment Details</mat-card-title>
+          <mat-card-subtitle role="heading"
+                             aria-level="2"
+                             role="heading"
+                             aria-level="2">Please Enter Your Payment Details</mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content class="form-controls">
+      <div class="nameCredit">
+        <!-- name on card input -->
+        <div>
+          <div class="input-details-name">
+            <label for="name">Name on Card</label>
+            <label for="error"
+                   id="error"
+                   *ngIf="this.stepForm.controls['nameOnCard'].invalid && this.stepForm.controls['nameOnCard'].touched"
+                   class="error-alert">Invalid</label>
+          </div>
+          <input type="text"
+                 matInput
+                 name="nameOnCard"
+                 id="nameOnCard"
+                 placeholder="Aye Wantobejacked" 
+                 formControlName="nameOnCard"
+                 required>
+        </div>
+        <!-- credit card number input -->
+        <div>
+        <div class="input-details-cc">
+          <label for="ccNumber">Card Number</label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
+                 class="error-alert">Invalid</label>
+        </div>
+        <input type="tel"
+               matInput
+               name="ccNumber"
+               id="ccNumber"
+               maxlength="19"
+               pattern="[0-9\s]{13,19}"
+               inputmode="numeric"
+               placeholder="xxxx xxxx xxxx xxxx"
+               formControlName="ccNumber"
+               (blur)="hideCreditCardNumber()"
+               required>
+        </div>
+      </div>
+      <div class="expCvvZip">
+      <!-- expiration date input -->
+        <div>
+        <div class="input-details-exp">
+          <label for="expiration">Exp.</label>
+          <!-- <label for="error"
+                 *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
+                 class="error-alert">Invalid</label> -->
+          <label for="error" 
+                  *ngIf="stepForm.get('expDate')!.invalid && stepForm.get('expDate')?.touched && !stepForm.get('expDate')?.hasError('expiredDate')" class="error-alert">
+                  Invalid</label>   
+          <label for="error" 
+                  *ngIf="stepForm.get('expDate')?.hasError('expiredDate') && stepForm.get('expDate')?.touched" class="error-alert">
+                  Expired</label>       
+        </div>
+        <input type="tel"
+               matInput
+               name="expDate"
+               maxlength="5"
+               id="expDate"
+               placeholder="01/25" 
+               formControlName="expDate"
+               (input)="formatExpirationDate($event)"
+               (blur)="validateExpDate()"
+               required>
+       </div>
+       <!-- cvv number input -->
+       <div>
+        <div class="input-details-cvv">
+          <label for="cvv">CVV</label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['cvv'].invalid && this.stepForm.controls['cvv'].touched"
+                 class="error-alert">Invalid</label>
+        </div>
+        <input type="tel"
+              matInput
+               name="cvv"
+               id="cvv"
+               maxlength="3"
+               placeholder="000"
+               formControlName="cvv"
+               required>
+        </div>
+      <!-- zipcode input -->
+      <div>
+        <div class="input-details-zip">
+          <label 
+          for="zipcode"  
+          [ngClass]="{'label-zipcode': true}">
+          Zipcode
+        </label>
+        
+        <label 
+          for="zipcode" 
+          [ngClass]="{'label-zip': true}">
+          Zip
+        </label>
+        <label for="error"
+                 *ngIf="this.stepForm.controls['zipCode'].invalid && this.stepForm.controls['zipCode'].touched"
+                 class="error-alert">Invalid</label>
+        </div>
+        <input type="tel"
+               matInput
+               name="zipcode"
+               id="zipCode"
+               maxlength="5"
+               placeholder="12345"
+               formControlName="zipCode"
+               required>
+      </div>
+    </div>
+    <!-- Billing & Zipcode input -->
+    <div class="billingZip">
+      <div>
+      <div class="input-details-billing">
+        <label for="billingAddress">Billing Address</label>
+        <label for="error"
+               *ngIf="this.stepForm.controls['billingAddress'].invalid && this.stepForm.controls['billingAddress'].touched"
+               class="error-alert">Invalid</label>
+      </div>
+      <input type="tel"
+             matInput
+             name="billingAddress"
+             id="billingAddress"
+             maxlength="30"
+             placeholder="1221 Mount Bicepius Street, Minnesota"
+             formControlName="billingAddress"
+             required>
+      </div>
+      <!-- zipcode input -->
+      <div>
+        <div class="input-details-billing-zip">
+          <label 
+          for="zipcodeBilling"  
+          [ngClass]="{'label-zipcode': true}">
+          Zipcode
+        </label>
+        
+        <label 
+          for="zipcodeBilling" 
+          [ngClass]="{'label-zip': true}">
+          Zip
+        </label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['billingZip'].invalid && this.stepForm.controls['billingZip'].touched"
+                 class="error-alert">Invalid</label>
+        </div>
+        <input type="tel"
+               matInput
+               name="zipcodeBilling"
+               id="zipCodeBilling"
+               maxlength="5"
+               placeholder="12345"
+               formControlName="billingZip"
+               required>
+      </div>  
+    </div>
+   
+
+    <!-- Shipping & Zipcode input -->
+    <div class="shippingZip" *ngIf="showShipping">
+      <div>
+      <div class="input-details-shipping">
+        <label for="billingAddress">Shipping Address</label>
+        <label for="error"
+               *ngIf="this.stepForm.controls['shippingAddress'].invalid && this.stepForm.controls['shippingAddress'].touched"
+               class="error-alert">Invalid</label>
+      </div>
+      <input type="tel"
+             name="shippingAddress"
+             id="shippingAddress"
+             maxlength="30"
+             placeholder="777 Lattismus Dorsi Blvd, Wyoming"
+             formControlName="shippingAddress"
+             required>
+      </div>
+      <!-- zipcode input -->
+      <div>
+        <div class="input-details-zip-shipping">
+        <label 
+          for="zipcodeShipping"  
+          [ngClass]="{'label-zipcode': true}">
+          Zipcode
+        </label>
+        <label 
+          for="zipcodeShipping" 
+          [ngClass]="{'label-zip': true}">
+          Zip
+        </label>
+        <label for="error"
+                 *ngIf="this.stepForm.controls['shippingZip'].invalid && this.stepForm.controls['shippingZip'].touched"
+                 class="error-alert">Invalid</label>
+        </div>
+        <input type="tel"
+               matInput
+               name="zipcodeShipping"
+               id="zipCodeShipping"
+               maxlength="5"
+               placeholder="12345"
+               formControlName="shippingZip"
+               required>
+      </div>   
+    </div>
+    <!-- Show Shipping Address Field Toggle -->
+    <mat-slide-toggle 
+    class="shippingToggle"
+    [checked]="isChecked"
+    (change)="toggleShipping()"
+    *ngIf="shipping">
+    Shipping Address same as Billing Address
+    </mat-slide-toggle> 
+      </mat-card-content>
+    </mat-card>
+  </ng-container>

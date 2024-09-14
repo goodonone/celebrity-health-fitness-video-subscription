@@ -1,0 +1,111 @@
+<ng-container [formGroup]="stepForm">
+    <mat-card class="step-one">
+      <mat-card-header>
+        <mat-card-title-group class="title">
+          <mat-card-title role="heading"
+                          aria-level="1">Personal Info</mat-card-title>
+          <mat-card-subtitle role="heading"
+                             aria-level="2"
+                             role="heading"
+                             aria-level="2">Please provide your name and email address, and phone number.</mat-card-subtitle>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content class="form-controls">
+        <!-- name input -->
+        <div class="input-details focusedInput">
+          <label class="label" for="name">Name</label>
+          <label for="error"
+                 id="error"
+                 *ngIf="this.stepForm.controls['name']?.invalid && this.stepForm.controls['name'].touched"
+                 class="error-alert">Name is required</label>
+        </div>
+        <input type="text"
+               matInput
+               name="name"
+               id="name"
+               placeholder="Hugh Jackedman" 
+               formControlName="name"
+               required>
+        <!-- email input -->
+        <div class="input-details focusedInput">
+          <label class="label" for="email">Email Address</label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['email']?.invalid && this.stepForm.controls['email'].touched && !this.stepForm.get('email')?.hasError('emailExists')"
+                 class="error-alert">Email is required</label>
+           <label for="error"
+                 *ngIf="this.stepForm.get('email')?.hasError('emailExists')"
+                 class="error-alert">Email already exists</label>      
+        </div>
+        <input type="text"
+               matInput
+               name="email"
+               id="email"
+               placeholder="hugh@hughjackedman.com"
+               formControlName="email"
+               (blur)="checkEmail()"
+               required>
+      <!-- password input -->
+       <div>
+        <div class="input-details focusedInput passwordRelative">
+          <label class="label" for="password">Password</label>
+          <label for="error"
+                 *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched && !this.passwordMismatch"
+                 class="error-alert">Password is required</label>
+          <label for="error"
+                 *ngIf="passwordMismatch && stepForm.get('confirmPassword')?.touched"
+                 class="error-alert">Passwords do not match</label>
+          <div class="popup" *ngIf="isPopupVisible">
+              <p>Password must:</p>
+              <ul>
+                     <li>Be at least 8 characters long</li>
+                     <li>Contain at least one uppercase letter</li>
+                     <li>Contain at least one lowercase letter</li>
+                     <li>Contain at least one number</li>
+                     <li>Contain at least one special character (e.g., @, #, $, etc.)</li>
+              </ul>
+         </div>
+        </div>
+        <div class="passwordInput">
+        <input type="password"
+               matInput
+               name="password"
+               id="password"
+               (focus)="showPasswordPopup()"
+               (blur)="hidePasswordPopup()"
+               placeholder="Enter Password"
+               formControlName="password"
+               required>
+               <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+        </div>
+       </div>
+       <!-- </div> -->
+      <!-- confirm password -->
+      <div class="input-details-confirm focusedInput">
+        <label class="label" for="password">Confirm Password</label>
+        <label for="error"
+               *ngIf="this.stepForm.controls['password'].invalid &&this.stepForm.controls['confirmPassword'].touched && !this.passwordMismatch"
+               class="error-alert">Password is required</label>
+        <label for="error"
+               *ngIf="passwordMismatch && stepForm.get('confirmPassword')?.touched"
+               class="error-alert">Passwords do not match</label>
+               <!-- -->
+      </div>
+      <div class="passwordInput">
+      <input type="password"
+             matInput
+             name="password"
+             id="confirmPassword"
+             (focus)="showPasswordPopup()"
+             (blur)="hidePasswordPopup(); checkPasswords()"
+             placeholder="Confirm Password"
+             formControlName="confirmPassword"
+             (copy)="preventCopyPaste($event)"
+             (cut)="preventCopyPaste($event)" 
+             (paste)="preventCopyPaste($event)"
+             required>
+             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+       </div>
+        <!-- <p id="showHide" appShowHidePassword [targetInputs]="['#password', '#confirmPassword']" style="cursor: pointer;">Show Password</p>      -->
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
