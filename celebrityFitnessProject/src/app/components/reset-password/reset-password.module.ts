@@ -1,21 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CheckoutRoutingModule } from './checkout-routing.module';
-
+import { ResetPasswordRoutingModule } from './reset-password-routing.module';
+import { ResetPasswordComponent } from './reset-password.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { CheckoutComponent } from './checkout.component';
-
 
 
 @NgModule({
   declarations: [
-    CheckoutComponent
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,
-    CheckoutRoutingModule,
+    ResetPasswordRoutingModule,
     SharedModule
   ]
 })
-export class CheckoutModule { }
+export class ResetPasswordModule { }

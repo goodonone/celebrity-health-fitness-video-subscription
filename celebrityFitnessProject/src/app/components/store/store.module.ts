@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { StoreRoutingModule } from './store-routing.module';
 import { StoreComponent } from './store.component';
 import { MaterialModule } from 'src/app/material.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,7 @@ import { MaterialModule } from 'src/app/material.module';
   imports: [
     CommonModule,
     StoreRoutingModule,
-    MaterialModule
+    SharedModule
   ]
 })
 export class StoreModule { }

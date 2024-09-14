@@ -23,8 +23,8 @@ nav {
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 
   &.firstVisitAnimation {
-    animation: fadeIn 0.5s cubic-bezier(0.47, 0, 0.745, 0.715);
-    animation-delay: 0.5s;
+    animation: fadeIn 0.3s cubic-bezier(0.47, 0, 0.745, 0.715);
+    animation-delay: 0.3s;
     animation-fill-mode: both;
     @keyframes fadeIn {
       from {

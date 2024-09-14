@@ -105,22 +105,24 @@ export class StepOnePersonalInfoComponent implements OnInit {
   // }
   // }
   checkPasswords() {
+    
     const password = this.stepForm.get('password')?.value;
     const confirmPassword = this.stepForm.get('confirmPassword')?.value;
-
-    if (confirmPassword === '') {
-      // Don't show mismatch error if confirm password is empty
-      this.passwordMismatch = false;
-      this.stepForm.get('confirmPassword')?.setErrors(null);
-    } else if (password !== confirmPassword) {
-      this.passwordMismatch = true;
-      this.stepForm.get('confirmPassword')?.setErrors({ mismatch: true });
-    } else {
-      this.passwordMismatch = false;
-      this.stepForm.get('confirmPassword')?.setErrors(null);
+  
+    if (this.stepForm.get('confirmPassword')?.touched) {
+      if (confirmPassword === '') {
+        // Don't show mismatch error if confirm password is empty
+        this.passwordMismatch = false;
+        this.stepForm.get('confirmPassword')?.setErrors(null);
+      } else if (password !== confirmPassword) {
+        this.passwordMismatch = true;
+        this.stepForm.get('confirmPassword')?.setErrors({ mismatch: true });
+      } else {
+        this.passwordMismatch = false;
+        this.stepForm.get('confirmPassword')?.setErrors(null);
+      }
     }
   }
-
   // Show and hide password popup
   showPasswordPopup() {
     this.isPopupVisible = true;
@@ -134,6 +136,36 @@ export class StepOnePersonalInfoComponent implements OnInit {
   preventCopyPaste(event: ClipboardEvent): void {
     event.preventDefault();
   }
+
+  getPasswordErrorMessage(): string {
+    const passwordControl = this.stepForm.controls['password'];
+    if (passwordControl.hasError('required')) {
+      return 'Password is required';
+    }
+    // if (passwordControl.hasError('minlength')) {
+    //   return 'Password must be at least 8 characters long';
+    // }
+    if (passwordControl.hasError('pattern')) {
+      return 'Requirements not met';
+    }
+    return 'Invalid password';
+  }
+
+  getConfirmPasswordErrorMessage(): string {
+    const passwordControl = this.stepForm.controls['confirmPassword'];
+    if (passwordControl.hasError('required')) {
+      return 'Password is required';
+    }
+    // if (passwordControl.hasError('minlength')) {
+    //   return 'Password must be at least 8 characters long';
+    // }
+    if (passwordControl.hasError('pattern')) {
+      return 'Requirements not met';
+    }
+    return 'Invalid password';
+  }
+
+
 
 
 }

@@ -88,7 +88,7 @@ form{
 input {
   display: inline-block;
   /* width: 21.8rem; */
-  width: 95%;
+  width: 97%;
   height: 2rem;
   border-radius: 0.25rem;
   border: 0.063rem solid black;
@@ -96,7 +96,8 @@ input {
   padding: 0.5rem 0 0.5rem 0.5rem;
   color: black;
   background-color: white;
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  text-overflow: ellipsis;
 }
 
 input#password {
@@ -141,9 +142,9 @@ input:valid {
   padding-left: 20%;
 }
 
-span.buttonSpan {
+/* span.buttonSpan {
   padding-left: 19rem;
-}
+} */
 
 .errorSpan {
   text-align: center;
@@ -162,6 +163,40 @@ span.buttonSpan {
   font-weight: 500;
   /* font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   line-height: clamp(0.8rem, 1.5vw, 1.1rem); */
+}
+
+.passwordInput {
+  position: relative;
+  /* margin-bottom: 20px; */
+}
+
+.eye-icon {
+  position: absolute;
+  right: 20px;
+  top: 40%;
+  transform: translateY(-40%);
+  cursor: pointer;
+  color: #646464;
+  user-select: none;
+}
+
+.eye-icon:hover {
+  color: rgb(0, 0, 0);
+}
+
+.forgotPassword{
+  position: absolute;
+  bottom:1rem;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+  width: 100%;
+  text-align: center;
+}
+
+.resetPassword{
+  font-weight: bold;
+  cursor: pointer;
 }
 
 ::placeholder {
@@ -192,7 +227,7 @@ input[matInput]:focus::placeholder {
 span.buttonSpan {
     position: absolute;
     top: 120%; 
-    left: 48%;
+    left: 50%;
     transform: translate(-50%);
     /* width: 100%; 
     text-align: center; */
@@ -236,6 +271,18 @@ button.btn-submit {
     height: auto;
     /* margin-top: 15px; */
   }
+
+  .eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 40%;
+    transform: translateY(-40%);
+    cursor: pointer;
+    color: #646464;
+    user-select: none;
+  }
+
+  
 
   .errorSpan p{
     color: red;

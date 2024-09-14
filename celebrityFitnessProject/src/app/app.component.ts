@@ -17,6 +17,8 @@ import { CartService } from './services/cart.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
+
+  // @ViewChild('navbar') navbarElement!: ElementRef;
   
   title = 'Hugh Jackedman';
 
@@ -80,7 +82,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationEnd) {
         if (
           !this.router.url.includes('home') ||
-          !this.router.url.includes('sign-in')
+          !this.router.url.includes('sign-in') ||
+          !this.router.url.includes('reset-password')
         ) {
           this.isVisibleNavbar = false; // Reset when navigating away from home
           this.isMenuOpen = false;
@@ -150,7 +153,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   // Search Function(INCOMPLETE)
-
   search(searchString: string) {
     var search = (<HTMLInputElement>document.getElementById('mySearch') ?? '')
       .value;

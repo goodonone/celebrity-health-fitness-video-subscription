@@ -19,6 +19,11 @@ export class StepFourPaymentComponent implements OnInit {
   isChecked = true;
   showShipping = false;
   zipText = true;
+  private originalCCNumber: string = '';
+  isCCNumberMasked: boolean = false;
+
+  private billingAddressSubscription: any;
+  private billingZipSubscription: any;
   
   constructor(private rootFormGroup: FormGroupDirective, private fb: FormBuilder) { }
 
@@ -56,14 +61,58 @@ export class StepFourPaymentComponent implements OnInit {
   //   Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/),
   //   expirationDateValidator()
   // ]);
+
+  // this.stepForm.get('expDate')?.setValidators([
+  //   Validators.required, 
+  //   Validators.pattern(/^\d{2}\/\d{2}$/),
+  //   expirationDateValidator()
+  // ]);
+  // this.stepForm.get('expDate')?.setValidators([
+  //   Validators.required, 
+  //   Validators.pattern(/^\d{2}\/\d{2}$/),
+  //   (control) => {
+  //     this.validateExpDate();
+  //     return null;
+  //   }
+  // ]);
+
   this.stepForm.get('expDate')?.setValidators([
-    Validators.required, 
-    Validators.pattern(/^\d{2}\/\d{2}$/),
+    Validators.required,
+    Validators.pattern(/^\d{2}\/\d{2}$/),  // Ensure format is MM/YY
     expirationDateValidator()
   ]);
+  
 
-  // Implement 00/00 format for date input
+  // Subscribe to billing address and zip changes to update shipping fields automatically
+  this.billingAddressSubscription = this.stepForm.get('billingAddress')?.valueChanges.subscribe(() => {
+    if (this.isChecked) {
+      this.updateShippingFields(true);
+    }
+  });
+
+  this.billingZipSubscription = this.stepForm.get('billingZip')?.valueChanges.subscribe(() => {
+    if (this.isChecked) {
+      this.updateShippingFields(true);
+    }
+  });
+
+  // Subscribe to ccNumber changes
+  this.stepForm.get('ccNumber')?.valueChanges.subscribe((value) => {
+    if (!this.isCCNumberMasked) {
+      this.originalCCNumber = value.replace(/\s/g, '');
+    }
+  });
+
+
 }
+
+ngOnDestroy(): void {
+  // Unsubscribe to prevent memory leaks
+  this.billingAddressSubscription?.unsubscribe();
+  this.billingZipSubscription?.unsubscribe();
+}
+
+
     toggleShipping() {
       this.showShipping = !this.showShipping;
 
@@ -154,6 +203,23 @@ export class StepFourPaymentComponent implements OnInit {
     //   }
     // }
 
+    // formatExpirationDate(event: any) {
+    //   const input = event.target;
+    //   let value = input.value.replace(/\D/g, '');
+      
+    //   if (value.length > 4) {
+    //     value = value.slice(0, 4);
+    //   }
+  
+    //   if (value.length > 2) {
+    //     value = value.slice(0, 2) + '/' + value.slice(2);
+    //   }
+  
+    //   input.value = value;
+    //   this.stepForm.get('expDate')?.setValue(value);
+    //   this.stepForm.get('expDate')?.updateValueAndValidity();
+    // }
+
     formatExpirationDate(event: any) {
       const input = event.target;
       let value = input.value.replace(/\D/g, '');
@@ -161,48 +227,74 @@ export class StepFourPaymentComponent implements OnInit {
       if (value.length > 4) {
         value = value.slice(0, 4);
       }
-  
+    
       if (value.length > 2) {
         value = value.slice(0, 2) + '/' + value.slice(2);
       }
-  
+    
       input.value = value;
-      this.stepForm.get('expDate')?.setValue(value);
-      this.stepForm.get('expDate')?.updateValueAndValidity();
+      this.stepForm.get('expDate')?.setValue(value, { emitEvent: false });
     }
   
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value && expDateControl.value.length === 2) {
+    //     expDateControl.setErrors({'invalid': true});
+    //   }
+    // }
+
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value) {
+    //     const [month, year] = expDateControl.value.split('/');
+    //     const currentDate = new Date();
+    //     const currentYear = currentDate.getFullYear() % 100;
+    //     const currentMonth = currentDate.getMonth() + 1;
+    
+    //     if (year.length === 2 && month.length === 2) {
+    //       if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+    //         expDateControl.setErrors({ 'expiredDate': true });
+    //       } else {
+    //         expDateControl.setErrors(null);
+    //       }
+    //     } else {
+    //       expDateControl.setErrors({ 'invalidFormat': true });
+    //     }
+    //   }
+    // }
+
     validateExpDate() {
       const expDateControl = this.stepForm.get('expDate');
-      if (expDateControl?.value && expDateControl.value.length === 2) {
-        expDateControl.setErrors({'invalid': true});
+      if (expDateControl?.value) {
+        const [month, year] = expDateControl.value.split('/');
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear() % 100;
+        const currentMonth = currentDate.getMonth() + 1;
+    
+        if (month.length === 2 && year.length === 2) {
+          const expMonth = parseInt(month, 10);
+          const expYear = parseInt(year, 10);
+    
+          if (expMonth < 1 || expMonth > 12) {
+            expDateControl.setErrors({ 'invalidFormat': true });
+          } else if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+            expDateControl.setErrors({ 'expiredDate': true });
+          } else {
+            expDateControl.setErrors(null);
+          }
+        } else {
+          expDateControl.setErrors({ 'invalidFormat': true });
+        }
       }
     }
 
-    // updateShippingFields(isChecked: boolean) {
-    //   if (isChecked) {
-    //     // Copy billing address to shipping address fields
-    //     this.stepForm.patchValue({
-    //       shippingAddress: this.stepForm.get('billingAddress')?.value,
-    //       shippingZip: this.stepForm.get('billingZip')?.value,
-    //     });
-  
-    //     // Disable the shipping address fields since they're the same as billing
-    //     // this.stepForm.get('shippingAddress')?.disable();
-    //     // this.stepForm.get('shippingZip')?.disable();
-    //   } else {
-    //     // Clear and enable the shipping address fields
-    //     this.stepForm.patchValue({
-    //       shippingAddress: '',
-    //       shippingZip: '',
-    //     });
-    //     this.stepForm.get('shippingAddress')?.enable();
-    //     this.stepForm.get('shippingZip')?.enable();
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl) {
+    //     expDateControl.updateValueAndValidity();
     //   }
-  
-    //   // Update the validity of the form fields
-    //   this.stepForm.get('shippingAddress')?.updateValueAndValidity();
-    //   this.stepForm.get('shippingZip')?.updateValueAndValidity();
     // }
+  
 
     updateShippingFields(isChecked: boolean) {
       if (isChecked) {
@@ -233,12 +325,12 @@ export class StepFourPaymentComponent implements OnInit {
       this.stepForm.get('shippingZip')?.updateValueAndValidity();
     }
   
-    formatCCNumber(number: string): string {
-      return number.split("").reduce((seed, next, index) => {
-        if (index !== 0 && !(index % 4)) seed += " ";
-        return seed + next;
-      }, "");
-    }
+    // formatCCNumber(number: string): string {
+    //   return number.split("").reduce((seed, next, index) => {
+    //     if (index !== 0 && !(index % 4)) seed += " ";
+    //     return seed + next;
+    //   }, "");
+    // }
 
     hideCreditCardNumber() {
       const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
@@ -255,6 +347,44 @@ export class StepFourPaymentComponent implements OnInit {
       }
     }
 
+    // showCreditCardNumber() {
+    //   this.stepForm.get('ccNumber')?.value;
+    // }
+
+    // hideCreditCardNumber() {
+    //   const ccNumberControl = this.stepForm.get('ccNumber');
+    //   if (ccNumberControl && ccNumberControl.value) {
+    //     const cleanCCNumber = this.originalCCNumber;
+    //     const maskedCCNumber = '•'.repeat(cleanCCNumber.length - 4) + cleanCCNumber.slice(-4);
+    //     const formattedMaskedNumber = this.formatCCNumber(maskedCCNumber);
+    //     ccNumberControl.setValue(formattedMaskedNumber, { emitEvent: false });
+    //     this.isCCNumberMasked = true;
+    //   }
+    // }
+  
+    showCreditCardNumber() {
+      const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
+      if (ccNumberInput && this.originalCCNumber) {
+        const formattedNumber = this.formatCCNumber(this.originalCCNumber);
+        ccNumberInput.value = formattedNumber;
+        this.stepForm.get('ccNumber')?.setValue(formattedNumber, { emitEvent: false });
+        this.isCCNumberMasked = false;
+      }
+    }
+  
+    formatCCNumber(number: string): string {
+      return number.replace(/(.{4})/g, '$1 ').trim();
+    }
+  
+    onCCNumberInput(event: Event) {
+      const input = event.target as HTMLInputElement;
+      let value = input.value.replace(/\D/g, '');
+      if (value.length > 16) value = value.slice(0, 16);
+      const formattedValue = this.formatCCNumber(value);
+      this.stepForm.get('ccNumber')?.setValue(formattedValue, { emitEvent: true });
+      this.isCCNumberMasked = false;
+      this.originalCCNumber = value;
+    }
 
   }
 

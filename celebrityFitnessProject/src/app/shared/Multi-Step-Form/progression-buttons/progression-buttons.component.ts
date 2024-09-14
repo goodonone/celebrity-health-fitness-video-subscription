@@ -70,7 +70,6 @@ export class ProgressionButtonsComponent implements OnInit {
     setInterval(()=>{
       this.router.navigate(['cart']);
     },3000)
-
   }
 
 

@@ -48,8 +48,8 @@ export class FormService implements OnInit {
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8)]]
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
     }, { validator: passwordMatchValidator }),
     planDetails: this.fb.group({
       plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
@@ -58,7 +58,7 @@ export class FormService implements OnInit {
       totalCost: []
     }),
     paymentDetails: this.fb.group({
-      nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
+      nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
       ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
       expDate: ['', [Validators.required], Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)],
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
@@ -148,7 +148,6 @@ export class FormService implements OnInit {
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
-
     if (!localStorage.getItem('userId')) {
       const userData = {
         name: userInfo.name,
@@ -196,6 +195,7 @@ export class FormService implements OnInit {
       setTimeout(() => {
         this.activeStepSubject.next(1); this.router.navigate(['sign-in']);
       }, 4000);
+      // this.multiStepForm.;
       this.multiStepForm = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
@@ -225,7 +225,8 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
-      location.href
+      localStorage.setItem('hasVisitedProfileBefore', 'false');
+      // location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 
