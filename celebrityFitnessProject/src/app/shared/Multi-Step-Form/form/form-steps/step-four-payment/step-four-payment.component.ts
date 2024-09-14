@@ -19,6 +19,8 @@ export class StepFourPaymentComponent implements OnInit {
   isChecked = true;
   showShipping = false;
   zipText = true;
+  private originalCCNumber: string = '';
+  isCCNumberMasked: boolean = false;
 
   private billingAddressSubscription: any;
   private billingZipSubscription: any;
@@ -79,7 +81,6 @@ export class StepFourPaymentComponent implements OnInit {
     Validators.pattern(/^\d{2}\/\d{2}$/),  // Ensure format is MM/YY
     expirationDateValidator()
   ]);
-
   
 
   // Subscribe to billing address and zip changes to update shipping fields automatically
@@ -92,6 +93,13 @@ export class StepFourPaymentComponent implements OnInit {
   this.billingZipSubscription = this.stepForm.get('billingZip')?.valueChanges.subscribe(() => {
     if (this.isChecked) {
       this.updateShippingFields(true);
+    }
+  });
+
+  // Subscribe to ccNumber changes
+  this.stepForm.get('ccNumber')?.valueChanges.subscribe((value) => {
+    if (!this.isCCNumberMasked) {
+      this.originalCCNumber = value.replace(/\s/g, '');
     }
   });
 
@@ -235,6 +243,26 @@ ngOnDestroy(): void {
     //   }
     // }
 
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl?.value) {
+    //     const [month, year] = expDateControl.value.split('/');
+    //     const currentDate = new Date();
+    //     const currentYear = currentDate.getFullYear() % 100;
+    //     const currentMonth = currentDate.getMonth() + 1;
+    
+    //     if (year.length === 2 && month.length === 2) {
+    //       if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+    //         expDateControl.setErrors({ 'expiredDate': true });
+    //       } else {
+    //         expDateControl.setErrors(null);
+    //       }
+    //     } else {
+    //       expDateControl.setErrors({ 'invalidFormat': true });
+    //     }
+    //   }
+    // }
+
     validateExpDate() {
       const expDateControl = this.stepForm.get('expDate');
       if (expDateControl?.value) {
@@ -243,8 +271,13 @@ ngOnDestroy(): void {
         const currentYear = currentDate.getFullYear() % 100;
         const currentMonth = currentDate.getMonth() + 1;
     
-        if (year.length === 2 && month.length === 2) {
-          if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+        if (month.length === 2 && year.length === 2) {
+          const expMonth = parseInt(month, 10);
+          const expYear = parseInt(year, 10);
+    
+          if (expMonth < 1 || expMonth > 12) {
+            expDateControl.setErrors({ 'invalidFormat': true });
+          } else if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
             expDateControl.setErrors({ 'expiredDate': true });
           } else {
             expDateControl.setErrors(null);
@@ -254,6 +287,13 @@ ngOnDestroy(): void {
         }
       }
     }
+
+    // validateExpDate() {
+    //   const expDateControl = this.stepForm.get('expDate');
+    //   if (expDateControl) {
+    //     expDateControl.updateValueAndValidity();
+    //   }
+    // }
   
 
     updateShippingFields(isChecked: boolean) {
@@ -285,12 +325,12 @@ ngOnDestroy(): void {
       this.stepForm.get('shippingZip')?.updateValueAndValidity();
     }
   
-    formatCCNumber(number: string): string {
-      return number.split("").reduce((seed, next, index) => {
-        if (index !== 0 && !(index % 4)) seed += " ";
-        return seed + next;
-      }, "");
-    }
+    // formatCCNumber(number: string): string {
+    //   return number.split("").reduce((seed, next, index) => {
+    //     if (index !== 0 && !(index % 4)) seed += " ";
+    //     return seed + next;
+    //   }, "");
+    // }
 
     hideCreditCardNumber() {
       const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
@@ -307,6 +347,44 @@ ngOnDestroy(): void {
       }
     }
 
+    // showCreditCardNumber() {
+    //   this.stepForm.get('ccNumber')?.value;
+    // }
+
+    // hideCreditCardNumber() {
+    //   const ccNumberControl = this.stepForm.get('ccNumber');
+    //   if (ccNumberControl && ccNumberControl.value) {
+    //     const cleanCCNumber = this.originalCCNumber;
+    //     const maskedCCNumber = '•'.repeat(cleanCCNumber.length - 4) + cleanCCNumber.slice(-4);
+    //     const formattedMaskedNumber = this.formatCCNumber(maskedCCNumber);
+    //     ccNumberControl.setValue(formattedMaskedNumber, { emitEvent: false });
+    //     this.isCCNumberMasked = true;
+    //   }
+    // }
+  
+    showCreditCardNumber() {
+      const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
+      if (ccNumberInput && this.originalCCNumber) {
+        const formattedNumber = this.formatCCNumber(this.originalCCNumber);
+        ccNumberInput.value = formattedNumber;
+        this.stepForm.get('ccNumber')?.setValue(formattedNumber, { emitEvent: false });
+        this.isCCNumberMasked = false;
+      }
+    }
+  
+    formatCCNumber(number: string): string {
+      return number.replace(/(.{4})/g, '$1 ').trim();
+    }
+  
+    onCCNumberInput(event: Event) {
+      const input = event.target as HTMLInputElement;
+      let value = input.value.replace(/\D/g, '');
+      if (value.length > 16) value = value.slice(0, 16);
+      const formattedValue = this.formatCCNumber(value);
+      this.stepForm.get('ccNumber')?.setValue(formattedValue, { emitEvent: true });
+      this.isCCNumberMasked = false;
+      this.originalCCNumber = value;
+    }
 
   }
 

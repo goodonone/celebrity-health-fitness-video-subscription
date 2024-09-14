@@ -2,9 +2,10 @@
 
     <div class="flexContainer" *ngIf="loadingComplete">
         <div class="nameTier">
-            <h1 class="profileNameTier tierOne" *ngIf="tierOne">Hi {{firstName}}! You are {{currentUser.tier | uppercase}}</h1>
-            <h1 class="profileNameTier" *ngIf="tierTwo">Hi {{firstName}}! You, are {{currentUser.tier | uppercase}} </h1>
-            <h1 class="profileNameTier" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier tierOne" id="tierOne" [ngClass]="{'fade-in': firstTimeAnimationTierOne }" *ngIf="tierOne">Hi {{firstName}}! You're {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier"  id="tierTwo" [ngClass]="{'fade-in': firstTimeAnimationTierTwo }" *ngIf="tierTwo">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
+            <h1 class="profileNameTier" id="tierThree" [ngClass]="{'fade-in': firstTimeAnimationTierThree }" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
+             <!-- <fa-icon [icon]="mobileview ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngClass]=""></fa-icon> -->
         </div>
 
         <div class="profileContainer">
@@ -26,27 +27,34 @@
             <mat-card class="profileInfo">
 
                 <div class="flexAllProfileData">
+                    <!-- <div class="flexPictureAndButtons"> -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'animateBoxShadow': tierThree && firstTimeAnimation}"></mat-card>
+                            <mat-card class="profilePicture" id="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}"></mat-card>
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')','box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' }" [ngClass]="{'animateBoxShadow': tierThree && firstTimeAnimation }"> -->
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}"[class.tierThreeStyle]="tierThree"></mat-card> -->
                             <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
-                            <div class="editProfilePictureButtonsContainer" >
+                            <div class="editProfilePictureButtonsContainer">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()" (click)="changePicture()">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Change Password</button>
+                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
+                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Cancel Subscription</button>
+                                <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Sign Out</button>
                             </div>
                         </div>
                         <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
-                                <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit">Edit Profile</button>
-                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit">Change Password</button>
-                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit">Billing Details</button>
-                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit">Cancel Subscription</button>
-                                <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit">Sign Out</button>
+                                <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Edit Profile</button>
+                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Change Password</button>
+                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}">Billing Details</button>
+                                <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Cancel Subscription</button>
+                                <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Sign Out</button>
                         </div>
                      </div>
+                    <!-- </div> -->
 
-                <div [ngSwitch]="currentState">
+                <div class="currentState" [ngSwitch]="currentState">
                   <!-- Viewing State -->
                   <ng-container *ngSwitchCase="ProfileState.Viewing">
                     <div class="profileDataContainer">
@@ -321,7 +329,7 @@
                                     <button mat-button style="color:white" class="btn btn-cancelPasswordButton" type="button" (click)="cancelAction()">Cancel</button>
                                     <!-- <button mat-button style="color:white" class="btn btn-updatePasswordButton" [disabled]="!isFormValid()" type="submit">Update</button> -->
                                     <button mat-button style="color:white" class="btn btn-updatePasswordButton" form="passwordForm" 
-                                    type="submit" [disabled]="!isFormValid('password')" (click)="updateUserPassword()">Update</button>
+                                    type="submit" [disabled]="!isFormValid('password')" (click)="updateUserPassword()">Change</button>
                                 </div>
                             </form>
                         </div>

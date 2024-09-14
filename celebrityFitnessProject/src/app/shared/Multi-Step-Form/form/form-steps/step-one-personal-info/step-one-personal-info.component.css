@@ -120,7 +120,8 @@ input:valid {
 .input-details-confirm{
   display: flex;
   justify-content: space-between;
-  width: 10.437rem;
+  width: 15.437rem;
+  height: 1.1rem;
   margin-top: 0.4rem;
 }
 
