@@ -344,10 +344,10 @@
 
               <!-- Buttons On Mobile View for Editing Profile -->
               <div class="updateProfileButtonContainerMobile" [ngClass]="{'narrow': true}" *ngIf="currentState === ProfileState.EditingProfile">
-                <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
+                <button mat-button style="color:white" class="btn btn-cancelProfileButton mobile" type="button" (click)="cancelAction()">Cancel</button>
                 <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
                         type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
-                <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
+                <button mat-button style="color:white" class="btn btn-updateProfileButton mobile" form="profileForm" 
                 type="submit" [disabled]="!isFormValid('profile')">Update</button>
             </div>
 
