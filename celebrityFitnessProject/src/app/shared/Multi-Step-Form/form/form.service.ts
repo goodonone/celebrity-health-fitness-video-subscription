@@ -220,7 +220,6 @@ export class FormService implements OnInit {
       setTimeout(() => {
         this.activeStepSubject.next(1); this.router.navigate(['sign-in']);
       }, 4000);
-      // this.multiStepForm.;
       this.multiStepForm = this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
@@ -250,7 +249,9 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
-      localStorage.setItem('hasVisitedProfileBefore', 'false');
+      localStorage.removeItem('hasVisitedProfileBefore');
+      console.log("removed from local storage");
+      // localStorage.setItem('hasVisitedProfileBefore', 'false');
       // location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }

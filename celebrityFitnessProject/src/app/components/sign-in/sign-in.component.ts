@@ -115,7 +115,7 @@ export class SignInComponent implements OnInit {
       (response: any) => {
         const userId = response.userId;
         localStorage.setItem('tier', response.tier);
-        localStorage.setItem('billing', response.paymentFrequency);
+        localStorage.setItem('billing', response.billing);
         
         // Use AuthService to handle the login
         this.authService.login(response.token);

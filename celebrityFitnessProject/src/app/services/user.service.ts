@@ -29,6 +29,7 @@ login(email: string, password: string){
       localStorage.setItem(this.tokenKey, response.token);
       localStorage.setItem(this.userIdKey , response.userId);
       localStorage.setItem(this.tierKey, response.tier);
+      localStorage.setItem('billing', response.paymentFrequency);
     }));
 }
 

@@ -2,14 +2,13 @@
 
     <div class="flexContainer" *ngIf="loadingComplete">
         <div class="nameTier">
-            <h1 class="profileNameTier tierOne" id="tierOne" [ngClass]="{'fade-in': firstTimeAnimationTierOne }" *ngIf="tierOne">Hi {{firstName}}! You're {{currentUser.tier | uppercase}}</h1>
-            <h1 class="profileNameTier"  id="tierTwo" [ngClass]="{'fade-in': firstTimeAnimationTierTwo }" *ngIf="tierTwo">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
-            <h1 class="profileNameTier" id="tierThree" [ngClass]="{'fade-in': firstTimeAnimationTierThree }" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! You're {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
+            <h1 class="profileNameTier" id="tierThree" *ngIf="tierThree" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
             <div class="arrowContainer" [ngClass]="{'narrow': true}">
                 <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
                 <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
             </div>
-            
         </div>
 
         <div class="profileContainer">
@@ -17,7 +16,8 @@
                 <div class="absoluteContainer" *ngIf="currentState === ProfileState.DeletingProfile" (click)="cancelAction()">
                     <div class="cancelSubscription">
                         <img class="warningImg" src="assets/Images/Exclamation.svg">
-                        <h1 class="deleteProfileText">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific <br> Content & All Access to the Store. <br>  Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be missed.</h1>
+                        <h1 class="deleteProfileText" [ngClass]="{'wide': true}">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific <br> Content & All Access to the Store. <br>  Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be missed.</h1>
+                        <h1 class="deleteProfileText" [ngClass]="{'narrow': true}"> You are about to <br> <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content & All Access to the Store. Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be missed.</h1>
                         <div class="cancelSubscriptionButtonContainer">
                             <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="cancelAction()">Keep <br> Subscription</button>
                             <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
@@ -29,12 +29,13 @@
             <fieldset id="deleteProfile" [class.active]="currentState === ProfileState.DeletingProfile" [disabled]="currentState === ProfileState.DeletingProfile">
            
             <mat-card class="profileInfo">
+                <!-- [ngClass]="{'firstTimeAnimation': currentUser.tier === 'All In' && 'firstTimeAnimation'} -->
 
                 <div class="flexAllProfileData">
                     <!-- <div class="flexPictureAndButtons"> -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <mat-card class="profilePicture" id="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}">
+                            <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'firstTimeAnimation': firstTimeAnimation && tierThree}">
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')','box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' }" [ngClass]="{'animateBoxShadow': tierThree && firstTimeAnimation }"> -->
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}"[class.tierThreeStyle]="tierThree"></mat-card> -->
                             <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
@@ -58,6 +59,7 @@
                         </div>
                      </div>
                     <!-- </div> -->
+                    <!-- [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}" -->
 
                 <div class="currentState" [ngSwitch]="currentState">
                   <!-- Viewing State -->

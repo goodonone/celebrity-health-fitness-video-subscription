@@ -40,7 +40,8 @@
         <button class="btn btn-next" mat-button *ngIf="activeStep$ < 3"
                         [disabled]="stepForm.controls['planDetails'].valid === false" (click)="nextStep()">Next
                         Step</button>
-        <button class="btn btn-confirm" mat-button *ngIf="activeStep$ === 3" (click)="confirmAndSubmitForm()"
+        <button class="btn btn-confirm" mat-button *ngIf="activeStep$ === 3" 
+                        [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="confirmAndSubmitForm()"
                         type="button">Confirm</button>
         </div>
 
