@@ -1,0 +1,349 @@
+* {
+  font-family: 'Outfit', sans-serif;
+  }
+
+mat-card{
+  /* width: 32.8rem; */
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+
+  /* max-width: 700px; */
+  max-width: 32.8rem;
+  /* height: 26rem; */
+  height: auto;
+  max-height: 27rem;
+  margin-left: 0.6rem;
+}
+  
+input {
+  display: inline-block;
+  width: 100%;
+  max-width: 1000px;
+  height: 2.5rem;
+  height: 80%;
+  max-height: 700px;
+  border-radius: 0.25rem;
+  border: 0.063rem solid black;
+  margin-bottom: 0.3rem;
+  padding: 0.5rem 0 0.5rem 1rem;
+  color: black;
+  background-color: white !important;
+  font-size: 1rem;
+}
+
+mat-card-header{
+  margin-bottom: 0.4rem;
+}
+
+mat-card-title{
+  font-size: large;
+}
+
+input:focus{
+  border-color: #dcde50
+}
+
+input:focus,
+input:valid {
+  color: rgb(0, 0, 0);
+  background-color: rgb(255, 255, 255);
+}
+
+.input-details {
+  display: flex;
+  justify-content: space-between;
+  width: 15.437rem;
+  /* width: 100%; */
+}
+
+.passwordRelative{
+  position: relative;
+  /* margin-bottom: 20px; */
+}
+
+.passwordInput{
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+#password,
+#confirmPassword {
+  padding-right: 30px;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.eye-icon:hover {
+  color: #333; /* darken on hover */
+}
+
+.popup {
+  position: absolute;
+  bottom: 20px;
+  left: 0px;
+  width: 250px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: background-color 0.5s ease-in;
+}
+
+.popup p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.popup ul {
+  padding-left: 20px;
+  margin: 5px 0 0;
+}
+
+.popup li {
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
+
+.input-details-confirm{
+  display: flex;
+  justify-content: space-between;
+  width: 15.437rem;
+  margin-top: 0.4rem;
+}
+
+.error-alert {
+  color: red;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1.3rem;
+}
+
+/* #showHide {
+
+font-weight: 600;
+} */
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; /* Change the placeholder color when focused */
+}
+
+@media (min-width: 37.5em) {
+
+  input {
+    height: 2rem;
+    /* width: 29.6rem; */
+    width: 95%;
+  }
+
+  #password{
+    display: inline-block;
+    width: 95%;
+    height: 2rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  } 
+
+  #confirmPassword{
+    display: inline-block;
+    width: 95%;
+    height: 2rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  }
+
+  .input-details {
+    width: 30.125rem;
+  }
+
+  .input-details-confirm{
+    width: 30.125rem;
+  }
+
+  .error-alert {
+    font-weight: 500;
+  }
+}
+
+@media screen and (min-width: 939px) and (max-width: 1300px){
+
+  mat-card-header {
+    margin: 0;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+  }
+
+  mat-card{
+    /* width: 27rem; */
+    width: auto;
+    height: auto;
+    min-height: 26rem;
+    max-height: 27rem;
+    /* overflow: hidden; */
+  }
+
+  mat-card-subtitle{
+    font-size: clamp(0.75rem, 1.1vw, 1.4rem);
+    line-height: 1rem;
+  }
+
+  input {
+    height: 1.8rem;
+    width: 95%;
+  }
+
+  #password, #confirmPassword{
+    padding: 0.5rem 0 0.5rem 1rem;
+  }
+
+  #password{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  } 
+
+  #confirmPassword{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  }
+
+  .input-details, .input-details-confirm{
+    width: 99.5%;
+  }
+
+  .popup {
+    position: absolute;
+    /* top: 15px; */
+    bottom: 18px;
+    left: 0px;
+    width: 250px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: background-color 0.5s ease-in;
+  }
+
+}
+
+@media screen and (min-width: 0px) and (max-width: 938px){
+  
+  mat-card{
+    height: 25rem;
+    width: 100%;
+  }
+
+  mat-card-subtitle {
+    display: none;
+  }
+  
+  .step-one{
+    margin-top: 0;
+    padding-top: 0;
+    margin: auto;
+    /* width: 28rem; */
+    width: 99%;
+  }
+
+  input {
+    height: 1.8rem;
+    width: 95%;
+  }
+
+  #password{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  } 
+
+  #confirmPassword{
+    display: inline-block;
+    width: 95%;
+    height: 1.8rem;
+    border-radius: 0.25rem;
+    border: 0.063rem solid black;
+    margin-bottom: 0rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+  }
+
+  .input-details {
+    width: 100%;
+  }
+
+  .input-details-confirm{
+    width: 100%;
+  }
+
+  .error-alert {
+    font-weight: 500;
+  }
+
+  .popup {
+    position: absolute;
+    bottom: 18px;
+    left: 0px;
+    width: 250px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: background-color 0.5s ease-in;
+  }
+}
+
+

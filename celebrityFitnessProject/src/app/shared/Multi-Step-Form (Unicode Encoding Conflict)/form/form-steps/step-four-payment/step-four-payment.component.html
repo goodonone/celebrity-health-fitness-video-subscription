@@ -47,7 +47,6 @@
                placeholder="xxxx xxxx xxxx xxxx"
                formControlName="ccNumber"
                (blur)="hideCreditCardNumber()"
-               (focus)="showCreditCardNumber()"
                required>
         </div>
       </div>
@@ -67,14 +66,15 @@
                   Expired</label>       
         </div>
         <input type="tel"
-              matInput
-              name="expDate"
-              maxlength="5"
-              id="expDate"
-              placeholder="01/25" 
-              formControlName="expDate"
-              (input)="formatExpirationDate($event)"
-              required>
+               matInput
+               name="expDate"
+               maxlength="5"
+               id="expDate"
+               placeholder="01/25" 
+               formControlName="expDate"
+               (input)="formatExpirationDate($event)"
+               (blur)="validateExpDate()"
+               required>
        </div>
        <!-- cvv number input -->
        <div>
@@ -85,7 +85,7 @@
                  class="error-alert">Invalid</label>
         </div>
         <input type="tel"
-               matInput
+              matInput
                name="cvv"
                id="cvv"
                maxlength="3"

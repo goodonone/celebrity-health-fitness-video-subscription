@@ -8,6 +8,8 @@ import { expirationDateValidator } from 'src/app/shared/expiry-date-validator';
   styleUrls: ['./step-four-payment.component.css'],
 })
 
+
+
 export class StepFourPaymentComponent implements OnInit {
 
   stepForm!: FormGroup;
@@ -46,6 +48,16 @@ export class StepFourPaymentComponent implements OnInit {
     }
   });
 
+  const expDateControl = this.stepForm.get('expDate');
+  if (expDateControl) {
+    expDateControl.setValidators([
+      Validators.required,
+      Validators.pattern(/^\d{2}\/\d{2}$/)
+    ]);
+    expDateControl.setAsyncValidators(expirationDateValidator());
+    expDateControl.updateValueAndValidity();
+  }
+
     // Format credit card number
     const ccNumber: number | any = document.getElementById("ccNumber");
     ccNumber.addEventListener("input", () => ccNumber.value = formatCCNumber(ccNumber.value.replaceAll(" ", "")));;
@@ -53,34 +65,6 @@ export class StepFourPaymentComponent implements OnInit {
       if (index !== 0 && !(index % 4)) seed += " ";
       return seed + next;
     }, "");
-
-    
-    // Add the custom validator to the expDate form control
-  //   this.stepForm.get('expDate')?.setValidators([
-  //   Validators.required, 
-  //   Validators.pattern(/^(0[1-9]|1[0-2])\/\d{2}$/),
-  //   expirationDateValidator()
-  // ]);
-
-  // this.stepForm.get('expDate')?.setValidators([
-  //   Validators.required, 
-  //   Validators.pattern(/^\d{2}\/\d{2}$/),
-  //   expirationDateValidator()
-  // ]);
-  // this.stepForm.get('expDate')?.setValidators([
-  //   Validators.required, 
-  //   Validators.pattern(/^\d{2}\/\d{2}$/),
-  //   (control) => {
-  //     this.validateExpDate();
-  //     return null;
-  //   }
-  // ]);
-
-  this.stepForm.get('expDate')?.setValidators([
-    Validators.required,
-    Validators.pattern(/^\d{2}\/\d{2}$/),  // Ensure format is MM/YY
-    expirationDateValidator()
-  ]);
   
 
   // Subscribe to billing address and zip changes to update shipping fields automatically
@@ -121,106 +105,7 @@ ngOnDestroy(): void {
       
     }
 
-    // formatExpirationDate(event: any) {
-    //   let input = event.target.value.replace(/\D/g, '').substring(0, 4);
-    //   let month = input.substring(0, 2);
-    //   let year = input.substring(2);
-  
-    //   if (input.length > 2) {
-    //     this.stepForm.get('expDate')?.setValue(`${month}/${year}`);
-    //   } else if (input.length === 2) {
-    //     this.stepForm.get('expDate')?.setValue(`${month}/`);
-    //   } else {
-    //     this.stepForm.get('expDate')?.setValue(input);
-    //   }
-    // }
-
-    // formatExpirationDate(event: any) {
-    //   const input = event.target;
-    //   const trimmed = input.value.replace(/\s+/g, '');
-    //   const numbers = trimmed.replace(/[^0-9]/g, '');
-      
-    //   if (numbers.length > 4) {
-    //     input.value = numbers.slice(0, 4);
-    //   }
-  
-    //   let formatted = '';
-    //   if (numbers.length > 0) {
-    //     formatted += numbers.slice(0, 2);
-    //     if (numbers.length > 2) {
-    //       formatted += '/' + numbers.slice(2);
-    //     }
-    //   }
-  
-    //   input.value = formatted;
-    //   this.stepForm.get('expDate')?.setValue(formatted);
-    // }
-    // formatExpirationDate(event: any) {
-    //   const input = event.target;
-    //   let value = input.value.replace(/\D/g, '');
-      
-    //   if (value.length > 4) {
-    //     value = value.slice(0, 4);
-    //   }
-  
-    //   if (value.length > 2) {
-    //     value = value.slice(0, 2) + '/' + value.slice(2);
-    //   }
-  
-    //   input.value = value;
-    //   this.stepForm.get('expDate')?.setValue(value);
-    //   this.stepForm.get('expDate')?.updateValueAndValidity();
-    // }
-
-    // validateExpDate() {
-    //   const expDateControl = this.stepForm.get('expDate');
-    //   if (expDateControl?.value && expDateControl.value.length === 2) {
-    //     expDateControl.setErrors({'invalidFormat': true});
-    //   }
-    // }
-
-    // formatExpirationDate(event: any) {
-    //   const input = event.target;
-    //   let value = input.value.replace(/\D/g, '');
-      
-    //   if (value.length > 4) {
-    //     value = value.slice(0, 4);
-    //   }
-  
-    //   if (value.length > 2) {
-    //     value = value.slice(0, 2) + '/' + value.slice(2);
-    //   }
-  
-    //   input.value = value;
-    //   this.stepForm.get('expDate')?.setValue(value);
-    //   this.stepForm.get('expDate')?.updateValueAndValidity();
-    // }
-  
-    // validateExpDate() {
-    //   const expDateControl = this.stepForm.get('expDate');
-    //   if (expDateControl?.value && expDateControl.value.length === 2) {
-    //     expDateControl.setErrors({'invalidFormat': true});
-    //   }
-    // }
-
-    // formatExpirationDate(event: any) {
-    //   const input = event.target;
-    //   let value = input.value.replace(/\D/g, '');
-      
-    //   if (value.length > 4) {
-    //     value = value.slice(0, 4);
-    //   }
-  
-    //   if (value.length > 2) {
-    //     value = value.slice(0, 2) + '/' + value.slice(2);
-    //   }
-  
-    //   input.value = value;
-    //   this.stepForm.get('expDate')?.setValue(value);
-    //   this.stepForm.get('expDate')?.updateValueAndValidity();
-    // }
-
-    formatExpirationDate(event: any) {
+    formatExpirationDate(event: any): void {
       const input = event.target;
       let value = input.value.replace(/\D/g, '');
       
@@ -233,68 +118,13 @@ ngOnDestroy(): void {
       }
     
       input.value = value;
-      this.stepForm.get('expDate')?.setValue(value, { emitEvent: false });
-    }
-  
-    // validateExpDate() {
-    //   const expDateControl = this.stepForm.get('expDate');
-    //   if (expDateControl?.value && expDateControl.value.length === 2) {
-    //     expDateControl.setErrors({'invalid': true});
-    //   }
-    // }
-
-    // validateExpDate() {
-    //   const expDateControl = this.stepForm.get('expDate');
-    //   if (expDateControl?.value) {
-    //     const [month, year] = expDateControl.value.split('/');
-    //     const currentDate = new Date();
-    //     const currentYear = currentDate.getFullYear() % 100;
-    //     const currentMonth = currentDate.getMonth() + 1;
-    
-    //     if (year.length === 2 && month.length === 2) {
-    //       if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
-    //         expDateControl.setErrors({ 'expiredDate': true });
-    //       } else {
-    //         expDateControl.setErrors(null);
-    //       }
-    //     } else {
-    //       expDateControl.setErrors({ 'invalidFormat': true });
-    //     }
-    //   }
-    // }
-
-    validateExpDate() {
       const expDateControl = this.stepForm.get('expDate');
-      if (expDateControl?.value) {
-        const [month, year] = expDateControl.value.split('/');
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear() % 100;
-        const currentMonth = currentDate.getMonth() + 1;
-    
-        if (month.length === 2 && year.length === 2) {
-          const expMonth = parseInt(month, 10);
-          const expYear = parseInt(year, 10);
-    
-          if (expMonth < 1 || expMonth > 12) {
-            expDateControl.setErrors({ 'invalidFormat': true });
-          } else if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-            expDateControl.setErrors({ 'expiredDate': true });
-          } else {
-            expDateControl.setErrors(null);
-          }
-        } else {
-          expDateControl.setErrors({ 'invalidFormat': true });
-        }
+      if (expDateControl) {
+        expDateControl.setValue(value);
+        expDateControl.markAsTouched();
       }
     }
-
-    // validateExpDate() {
-    //   const expDateControl = this.stepForm.get('expDate');
-    //   if (expDateControl) {
-    //     expDateControl.updateValueAndValidity();
-    //   }
-    // }
-  
+    
 
     updateShippingFields(isChecked: boolean) {
       if (isChecked) {
@@ -325,42 +155,36 @@ ngOnDestroy(): void {
       this.stepForm.get('shippingZip')?.updateValueAndValidity();
     }
   
-    // formatCCNumber(number: string): string {
-    //   return number.split("").reduce((seed, next, index) => {
-    //     if (index !== 0 && !(index % 4)) seed += " ";
-    //     return seed + next;
-    //   }, "");
+
+    // hideCreditCardNumber() {
+    //   const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
+    //   const formCCNumber = this.stepForm.get('ccNumber')?.value;
+    //   if (ccNumberInput && ccNumberInput.value) {
+    //     const cleanCCNumber = ccNumberInput.value.replace(/\s+/g, '');
+    //     const maskedCCNumber = cleanCCNumber.slice(0, -4).replace(/\d/g, "•") + cleanCCNumber.slice(-4);
+    //     ccNumberInput.value = maskedCCNumber;
+    //     this.isCCNumberMasked = true;
+    //   }
     // }
 
     hideCreditCardNumber() {
       const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
+      const formCCNumber = this.stepForm.get('ccNumber');
       
-      if (ccNumberInput && ccNumberInput.value) {
-        // Remove spaces and format the card number
-        const cleanCCNumber = ccNumberInput.value.replaceAll(" ", "");
-    
-        // Only show the last 4 digits, replace the rest with dots
+      if (ccNumberInput && ccNumberInput.value && formCCNumber && !formCCNumber.invalid) {
+        const inputValue = ccNumberInput.value;
+        
+        // Check if the input contains any alphabetic characters
+        if (/[a-zA-Z]/.test(inputValue)) {
+          return; // Exit the function without masking if alphabets are present
+        }
+        
+        const cleanCCNumber = inputValue.replace(/\s+/g, '');
         const maskedCCNumber = cleanCCNumber.slice(0, -4).replace(/\d/g, "•") + cleanCCNumber.slice(-4);
-    
-        // Update the input field with the masked credit card number
         ccNumberInput.value = maskedCCNumber;
+        this.isCCNumberMasked = true;
       }
     }
-
-    // showCreditCardNumber() {
-    //   this.stepForm.get('ccNumber')?.value;
-    // }
-
-    // hideCreditCardNumber() {
-    //   const ccNumberControl = this.stepForm.get('ccNumber');
-    //   if (ccNumberControl && ccNumberControl.value) {
-    //     const cleanCCNumber = this.originalCCNumber;
-    //     const maskedCCNumber = '•'.repeat(cleanCCNumber.length - 4) + cleanCCNumber.slice(-4);
-    //     const formattedMaskedNumber = this.formatCCNumber(maskedCCNumber);
-    //     ccNumberControl.setValue(formattedMaskedNumber, { emitEvent: false });
-    //     this.isCCNumberMasked = true;
-    //   }
-    // }
   
     showCreditCardNumber() {
       const ccNumberInput: HTMLInputElement | null = document.getElementById("ccNumber") as HTMLInputElement;
@@ -387,6 +211,7 @@ ngOnDestroy(): void {
     }
 
   }
+
 
 
   

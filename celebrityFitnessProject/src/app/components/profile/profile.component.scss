@@ -46,7 +46,7 @@
   min-height: 100vh;
   align-items: center;
   box-sizing: border-box;
-  // justify-content: center; 
+  // justify-content: center;
   // max-width: 1400px;
 }
 
@@ -80,53 +80,93 @@
   // margin-bottom: 2rem;
 }
 
+// .profileNameTier {
+//   text-align: center;
+//   width: 40rem;
+//   line-height: clamp(7rem, 8.5vw, 9rem);
+//   padding-right: 0.5rem;
+//   font-size: clamp(5.5rem, 8.5vw, 7.5rem);
+//   font-weight: 1000;
+// }
+
+// .fade-in {
+//   animation: fadeIn 1s;
+//   animation-fill-mode: both;
+//   animation-delay: 0.5s;
+// }
+
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
+
 .profileNameTier {
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  width: 40rem;
-  // min-width: 20rem;
+  align-items: center;
+  width: 30rem;
+  min-width: 20rem;
   line-height: clamp(7rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5.5rem, 8.5vw, 7.5rem);
   font-weight: 1000;
-    
-  //   &.fade-in {
-  //   animation: fade-in 1s linear;
-  //   animation-fill-mode: both;
-  //   animation-delay: 0.5s;
-    
-  //   @keyframes fade-in {
-  //     from {
-  //       opacity: 0;
-  //     }
-  
-  //     to {
-  //       opacity: 100;
-  //     }
-  //   }
-  // }
-  }
 
-  .fade-in {
-    animation: fadeIn 1s;
-    animation-fill-mode: both;
-    animation-delay: 0.5s;
+  /* Adding the fade-in class for the fade-in effect */
+  &.firstTimeAnimation {
+    animation: fadeIn 1s ease-in-out 0.5s both;
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  // .animateBoxShadow {
-  //   animation: expandBoxShadow 0.5s;
-  // }
-  
-  // @keyframes expandBoxShadow {
-  //   0% { box-shadow: 0 0 0 #C7FF20; }
-  //   50% { box-shadow: 0 0 60px #C7FF20; }
-  //   100% { box-shadow: 0 0 40px #C7FF20; }
-  // }
+}
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.profileNameTier.tierTwo{
+  text-align: center;
+  width: 40rem;
+  line-height: clamp(7rem, 8.5vw, 9rem);
+  padding-right: 0.5rem;
+  font-size: clamp(4.5rem, 7.5vw, 7.5rem);
+  font-weight: 1000;
+
+  /* Adding the fade-in class for the fade-in effect */
+  &.firstTimeAnimation {
+    animation: fadeIn 1s ease-in-out 0.5s both;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// .fade-in {
+//   animation: fadeIn 1s ease-in-out 0.5s both;
+// }
+
+// .animateBoxShadow {
+//   animation: expandBoxShadow 0.5s;
+// }
+
+// @keyframes expandBoxShadow {
+//   0% { box-shadow: 0 0 0 #C7FF20; }
+//   50% { box-shadow: 0 0 60px #C7FF20; }
+//   100% { box-shadow: 0 0 40px #C7FF20; }
+// }
 
 // .nameTier .tierOne{
 //   padding-top: 3rem;
@@ -154,7 +194,8 @@
   min-height: fit-content;
   // margin: auto;
   max-height: fit-content;
-  z-index: 10;
+  // z-index: 10;
+  z-index: 1;
   background-color: rgba(19, 18, 18, 0.5);
   justify-content: center;
   align-items: center;
@@ -197,12 +238,12 @@ fieldset {
   max-height: 51rem;
   flex: 1; // Allow it to grow
   // max-width: 600px; // Limit maximum width
-  margin: 0; 
-  width:fit-content;
+  margin: 0;
+  width: fit-content;
   // min-width: 20vw;
   // max-width: 43rem;
   min-width: 680px;
-  max-width: 700px;
+  max-width: 650px;
   border-radius: 1.4rem;
   opacity: 100%;
   // margin-bottom: 5rem;
@@ -212,7 +253,7 @@ fieldset {
   overflow: hidden;
   flex-direction: row;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   // padding-right: 2rem;
 }
 
@@ -249,20 +290,21 @@ fieldset {
 
 .profilePicture {
   position: relative;
-  width: 21rem;
-  height: 42rem;
+  // width: 21rem;
+  // height: 42rem;
   width: 300px;
-  max-width: 500px;
+  max-width: 350px;
   /* height: 42rem; */
   height: 300px;
   min-height: auto;
-  max-height: 500px;
-  max-width: 21rem;
-  aspect-ratio: 2/1;
+  max-height: 350px;
+  max-width: 400px;
+  aspect-ratio: 1/1;
   background-color: #c7ff20;
   background-size: cover;
   border-radius: 100rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  // margin-bottom: 1rem;
 
   // &.tierThreeStyle {
   //   box-shadow: 0 0 40px #C7FF20;
@@ -271,8 +313,23 @@ fieldset {
   // &.animateBoxShadow {
   //   animation: boxShadowExpand 0.5s ease-in forwards;
   // }
+
+  &.firstTimeAnimation {
+    animation: boxShadowExpand 0.5s ease-in forwards;
+  }
 }
 
+@keyframes boxShadowExpand {
+  0% {
+    box-shadow: 0 0 0 #c7ff20;
+  }
+  50% {
+    box-shadow: 0 0 60px #c7ff20;
+  }
+  100% {
+    box-shadow: 0 0 40px #c7ff20;
+  }
+}
 //   @keyframes boxShadowExpand {
 //     0% {
 //       box-shadow: 0 0 0 #c7ff20;
@@ -357,8 +414,6 @@ fieldset {
   position: relative;
 }
 
-
-
 #buttonDisappear.active {
   opacity: 0;
 }
@@ -373,7 +428,7 @@ fieldset {
   flex-direction: column;
   // width: 50vw;
   // max-width: 43rem;
-  width:50vw;
+  width: 50vw;
   min-width: 680px;
   max-width: 700px;
   min-height: fit-content;
@@ -446,7 +501,7 @@ h3.profileDetails.email {
   //   background-color: #c7ff20;
 }
 
-h3.profileDetailsInputDOB{
+h3.profileDetailsInputDOB {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
@@ -455,7 +510,7 @@ h3.profileDetailsInputDOB{
   margin-bottom: 0.9rem;
 }
 
-.dateOfBirthSpanAndErrorContainer{
+.dateOfBirthSpanAndErrorContainer {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -463,12 +518,12 @@ h3.profileDetailsInputDOB{
   margin: 0;
 }
 
-.spanProfileCategoryDOB{
+.spanProfileCategoryDOB {
   font-size: 1.4rem;
   width: 100%;
 }
 
-.errorTwentyOne{
+.errorTwentyOne {
   color: red;
   font-weight: bold;
   text-align: right;
@@ -497,7 +552,6 @@ h3.profileDetailsInputPhoto {
   font-weight: 500;
   font-size: 1.9rem;
   margin-bottom: 0rem;
-
 }
 
 .profilePictureLinkContainer {
@@ -533,6 +587,10 @@ h3.profileDetailsInputObjective {
   font-weight: 500;
   font-size: 1.9rem;
   margin-bottom: 0.9rem;
+}
+
+h3.profileDetails.plan{
+  font-size: clamp(1.6rem, 1.5vw, 1.9rem);
 }
 
 .profileDataContainer {
@@ -680,7 +738,7 @@ h3.profileDetailsInputObjective {
   cursor: pointer;
   font-weight: 600;
   background-color: rgb(25, 25, 25);
-  width: 5rem;
+  width: clamp(3.5rem, 10vw, 4.5rem);
   margin-top: 1.3rem;
 }
 
@@ -696,7 +754,7 @@ h3.profileDetailsInputObjective {
   //   margin-top: 1.3rem;
 }
 
-.btn-updateProfileButton:disabled{
+.btn-updateProfileButton:disabled {
   background-color: rgb(62, 61, 61);
   color: rgb(116, 115, 115) !important;
 }
@@ -714,15 +772,15 @@ h3.profileDetailsInputObjective {
   margin-left: 1rem;
 }
 
-.btn-cancelProfileButton{
-    height: 2.4rem;
-    padding-left: 0.6rem;
-    padding-right: 0.6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    background-color: rgb(25, 25, 25);
-    width: 8.5rem;
+.btn-cancelProfileButton {
+  height: 2.4rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: rgb(25, 25, 25);
+  width: 8.5rem;
 }
 
 .btn-change:hover,
@@ -848,7 +906,7 @@ input:disabled:-moz-placeholder {
   // line-height: 1rem;
 }
 
-.authenticating{
+.authenticating {
   color: rgb(255, 255, 255);
   font-weight: bold;
   text-align: right;
@@ -915,8 +973,6 @@ input:disabled:-moz-placeholder {
   color: rgb(116, 115, 115) !important;
 }
 
-
-
 /* .deleteProfileContainer {
     position: relative;
     width:100%;
@@ -956,6 +1012,7 @@ input:disabled:-moz-placeholder {
   // width: fit-content;
   width: fit-content;
   min-width: 700px;
+  // min-width: 300px;
   max-width: 90%;
   min-height: fit-content;
   max-height: 100%;
@@ -1010,11 +1067,22 @@ img.warningImg {
   z-index: 1;
   background-size: cover;
   background-position: center center;
-  transform: scale(10%, 10%);
-  left: -42.5rem;
-  top: -54rem;
+  // transform: scale(10%, 10%);
+  // left: -42.5rem;
+  // top: -54rem;
+  transform: scale(0.1); /* Scaling down by 10% */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.1);
+  // left: 50%;
+  // top: 50%;
+  // transform: translate(-50%, -50%);
+  // width: 10rem;
+  // height: 10rem;
+  // border-radius: 50%;
+  // border: 0.5rem solid #C7FF20;
+  // box-shadow: 0 0 0 #C7FF20;
 }
-
 
 // .fade-in {
 //   animation: fadeIn 1s;
@@ -1024,17 +1092,6 @@ img.warningImg {
 //   from { opacity: 0; }
 //   to { opacity: 1; }
 // }
-
-.animateBoxShadow {
-  animation: boxShadowExpand 0.5s ease-in forwards;
-}
-
-@keyframes boxShadowExpand {
-  0% { box-shadow: 0 0 0 #C7FF20; }
-  50% { box-shadow: 0 0 60px #C7FF20; }
-  100% { box-shadow: 0 0 40px #C7FF20; }
-}
-
 
 input,
 select {
@@ -1063,8 +1120,6 @@ select {
 /* input{
     padding-left: 0.5rem;
 } */
-
-
 
 // input.name, input.imgUrl, input.email {
 //     width: 17rem;
@@ -1098,11 +1153,13 @@ input#weight,
 .updatePassword {
   // position: relative;
   width: 100%;
+
   max-width: 21rem;
   height: 100%;
   padding-left: 1rem;
   margin-top: 0.2rem;
   width: fit-content;
+  // background-color: aqua;
 }
 
 .updatePasswordButtonContainer {
@@ -1115,13 +1172,13 @@ input#weight,
   margin: auto;
 }
 
-.profilePictureContainer {
-    width: 100%;
-    max-width: 21rem;
-    height: 100%;
-    padding-left: 1rem;
-    margin-top: 0.2rem;
-    width: fit-content;
+.profilePictureFormContainer {
+  width: 100%;
+  max-width: 21rem;
+  height: 100%;
+  padding-left: 1rem;
+  margin-top: 0.2rem;
+  width: fit-content;
 }
 
 .savePictureButtonContainer {
@@ -1145,12 +1202,18 @@ input#weight,
   margin-top: 0.5rem;
 }
 
-.narrow{
+.narrow {
   display: none;
 }
 
-.wide{
-  display: block;
+.wide {
+  &.updateProfileButtonContainer{
+    display: flex;
+  }
+
+  &.deleteProfileText{
+    display: block;
+  }
 }
 
 ::placeholder {
@@ -1179,26 +1242,40 @@ input[matInput]:focus {
   }
 }
 
-@media screen and (min-width: 642px) and (max-width: 1300px) {
-
-  .nameTier{
+@media screen and (min-width: 938px) and (max-width: 1300px) {
+  .nameTier {
     width: 100%;
+    min-width: 250px;
+    max-width: 400px;
   }
 
+  .profileNameTier {
+    text-align: center;
+    width: 100%;
+    min-width: 300px;
+    // min-width: 20rem;
+    line-height: clamp(4rem, 8.5vw, 9rem);
+    // padding-right: 0.5rem;
+    font-size: clamp(5rem, 8vw, 9rem);
+    // font-weight: 1000;
+  }
 
-  .profileContainer{
+  .profileContainer {
+    width: auto;
     min-width: 550px;
+    max-width: 600px;
+
     // min-width: 550px;
   }
 
-  .flexAllProfileData{
+  .flexAllProfileData {
     width: 100%;
     margin: auto;
   }
 
-  .profilePictureAndButtonsContainer{
+  .profilePictureAndButtonsContainer {
     width: 25vw;
-    min-width: 21rem;
+    min-width: 18rem;
     box-sizing: border-box;
     margin-left: 1rem;
   }
@@ -1211,12 +1288,12 @@ input[matInput]:focus {
   //   margin-left: 1rem;
   // }
 
-  .profilePictureAndButtons{
+  .profilePictureAndButtons {
     width: 80%;
     min-width: auto;
   }
 
-  .profileInfo{
+  .profileInfo {
     padding-right: 2rem;
     margin-left: 3rem;
     // padding-left: 1rem;
@@ -1229,7 +1306,7 @@ input[matInput]:focus {
     // aspect-ratio: 1 / 1;
     // margin-bottom: 1rem;
     width: 20vw;
-    min-width: 250px;
+    min-width: 200px;
     max-width: 300px;
     height: auto;
     min-height: 200px;
@@ -1238,7 +1315,6 @@ input[matInput]:focus {
     margin-bottom: 1rem;
   }
 
-  .updateProfileButtonContainer,
   .savePictureButtonContainer,
   .updatePasswordButtonContainer {
     flex-direction: row;
@@ -1247,13 +1323,27 @@ input[matInput]:focus {
     // max-width: 14rem;
   }
 
+  .updateProfileButtonContainer {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 18rem;
+    min-width: 14rem;
+    margin-left: auto;
+    margin-right: auto;
+    // margin: 0 auto;
+    // max-width: 25rem;
+    //   overflow: visible;
+    /* background-color: #C7FF20; */
+  }
+
   h3.profileDetails.name {
     width: 100%;
-    max-width: 13rem;
+    max-width: 15rem;
     // width: 18rem;
     // min-width: 5rem;
     // max-width: 25rem;
-    overflow: auto;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     //   overflow: visible;
@@ -1266,131 +1356,222 @@ input[matInput]:focus {
     // width: 18rem;
     // min-width: 5rem;
     // max-width: 25rem;
-    overflow: auto;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  input{
+  // .updateOnlyPicture{
+  //   width: 15vw;
+  //   max-width: 14rem;
+  //   min-width: 12rem;
+  // }
+
+  input {
     // width: 100%;
     // max-width: 18rem;
     // min-width: 13rem;
     // font-size: 1rem;
-    width: 10vw;
+    width: 21vw;
+    max-width: 250px;
+    min-width: 230px;
+    height: 2.5rem;
+    font-size: 1rem;
+    // width: 10vw;
+    // min-width: 250px;
+    // font-size: 1rem;
+  }
+
+  select {
+    // width: 100%;
+    //   max-width: 18rem;
+    //   min-width: 13rem;
+    //   font-size: 1rem;
+    width: 15.3vw;
+    max-width: 250px;
+    min-width: 100px;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  #password,
+  #oldPassword,
+  #confirmPassword {
+    // width: 100%;
+    // max-width: 18rem;
     // min-width: 13rem;
-    min-width: 250px;
+    // font-size: 1rem;
+    width: 21vw;
+    max-width: 250px;
+    min-width: 230px;
+    height: 2.5rem;
     font-size: 1rem;
-}
+  }
 
-select{
-  width: 100%;
+  // .updateProfileButtonContainer{
+  //   width: auto;
+  // }
+
+  .btn-cancelProfileButton,
+  .btn-updateProfileButton,
+  .btn-cancelPhotoButton,
+  .btn-savePhotoButton {
+    width: 6.5rem;
+    height: 2.4rem;
+  }
+
+  // {
+  //   width: 6.5rem;
+  // }
+
+  .btn-updatePasswordButton,
+  .btn-cancelPasswordButton {
+    width: 6.5rem;
+    height: 2.4rem;
+  }
+
+  .updatePassword,
+  .profileDataContainer {
+    padding: 0;
+  }
+
+  .profileDataContainer {
+    width: 100%;
     max-width: 18rem;
-    min-width: 13rem;
+    min-width: 14rem;
+    margin: auto;
+  }
+
+  .profilePictureFormContainer {
+    width: 100%;
+    max-width: 18rem;
+    min-width: 14rem;
+    margin: auto;
+    padding: 0;
+  }
+
+  .eye-icon {
+    position: absolute;
+    right: 15px;
+    top: 40%;
+    transform: translateY(-40%);
+    cursor: pointer;
+    user-select: none;
+    color: white;
+  }
+
+  .avatar {
+    position: absolute;
+    z-index: 1;
+    background-size: cover;
+    background-position: center center;
+    // transform: scale(0.1); /* Scaling down by 10% */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    width: 120vw;
+    height: auto;
+  }
+
+  input::placeholder {
     font-size: 1rem;
+  }
+
+  .narrow {
+    display: none;
+  }
+
+  .wide {
+    display: flex;
+  }
 }
 
-#password,
-#oldPassword,
-#confirmPassword {
-  width: 100%;
-  max-width: 18rem;
-  min-width: 13rem;
-  font-size: 1rem;
-}
-
-.updateProfileButtonContainer{
-  width: auto
-}
-
-.btn-cancelProfileButton, 
-.btn-updateProfileButton, 
-.btn-cancelPhotoButton, 
-.btn-savePhotoButton{
-  width: 6.5rem;
-  height: 2.4rem;
-}
-
-// {
-//   width: 6.5rem;
-// }
-
-.btn-updatePasswordButton, .btn-cancelPasswordButton{
-  width: 6.5rem;
-  height: 2.4rem;
-}
-
-.updatePassword, .profileDataContainer{
-  padding: 0;
-}
-
-// .profileDataContainer{ 
-//   width: 80%;
-//   max-width: 18rem;
-//   min-width: 16rem;
-//   margin: auto;
-// }
-
-.eye-icon {
-  position: absolute;
-  right: 15px;
-  top: 40%;
-  transform: translateY(-40%);
-  cursor: pointer;
-  user-select: none;
-  color: white;
-}
-
-input::placeholder{
-  font-size: 1rem;
-
-}
-
-}
-
-@media screen and (min-width: 300px) and (max-width: 642px) {
-
-  .narrow{
+@media screen and (min-width: 300px) and (max-width: 937px) {
+  .narrow {
     display: block;
   }
-  
-  .wide{
+
+  .wide {
     display: none;
+
+    &.updateProfileButtonContainer,
+    &.deleteProfileText {
+      display: none;
+    }
   }
 
   .pageContainer {
     width: 100%;
     height: 100%;
     min-height: 100vh;
-    max-height: max-content;
-    background-color: #C7FF20;
-    // margin-bottom: 25rem;
-    // flex-grow: 1;
-    // padding-top: 20rem;
-    // padding-bottom: 30rem;
-    // overflow-y: scroll;
-    padding-bottom: 20rem;
+    max-height: 100%;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    // background-color: aqua;
+    padding-bottom: 5rem;
+    // background-color: #c7ff20;
+    // padding-bottom: 150%;
   }
 
-  .profileContainer{
+  .flexContainer {
+    flex-direction: column;
+    height: 100%;
+    // min-height: 100vh;
+    min-height: auto;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    padding: 2rem 1rem;
+    max-height: 100%;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  .profileContainer {
     flex-direction: column;
     align-items: center;
-    max-height: fit-content;
-    transform: scale(0.9);
-    // padding-top: 20rem;
+    height: auto;
+    max-height: 44rem;
+    width: 90vw;
+    // width: auto;
+    max-width: 28rem;
+    min-width: auto;
+    margin: 2rem 0 0;
+    padding: 0;
+    transform: none;
+    // border-radius: 0;
+  }
+
+  .planContainer {
+    margin-bottom: 0rem;
   }
 
   .profileInfo {
-    max-height: 80rem;
-    height: fit-content;
-    width: 100%;
-    max-width: 50rem;
-    padding: 2.5rem;
-    background-color: #000000;
-    border-radius: 1rem;
-    margin-bottom: 4rem;
-    padding-top: 3rem;
-    overflow-y: scroll;
-    margin-top: 5rem;
+    position: relative;
+    height: auto;
+    min-height: auto;
+    max-height: 44rem;
+
+    width: 90vw;
+    max-width: 30rem;
+    min-width: auto;
+    // width: 100%;
+    // max-width: 100%;
+    // min-width: auto;
+    border-radius: 1.5rem;
+    // padding: 2rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
+    padding-top: 0rem;
+    padding-bottom: auto;
+    // padding-top: 1.5rem;
+    // padding-right: 1.5rem;
+    // overflow-y: scroll;
+    // overflow-x: hidden;
+    // scrollbar-color: #ffffff #000000;
+    aspect-ratio: 2/5;
   }
 
   .flexAllProfileData {
@@ -1398,21 +1579,32 @@ input::placeholder{
     // flex-direction: column;
     // flex-wrap: wrap;
     display: block;
-    
+    width: 100%;
+    // .flexAllProfileData {
+    flex-direction: column;
+    flex-wrap: wrap;
+    // }
   }
 
+  // .deleteProfileContainer{
+  //   min-width: 300px;
+  // }
 
-  .editProfileButtonsContainer{
-    position: absolute;
-    top: 4rem;
-    bottom: auto;
-    left: 25%;
-    transform: translateX(-50%);
-    transform: none;
+  .editProfileButtonsContainer {
+    // position: absolute;
+    // top: 4rem;
+    // bottom: auto;
+    // left: 25%;
+    // transform: translateX(-50%);
+    // transform: none;
+    // max-width: 100%;
+    width: 100%;
+    // min-width: 5rem;
     max-width: 100%;
+    padding: 0;
   }
 
-  .flexPictureAndButtons{
+  .flexPictureAndButtons {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap-reverse;
@@ -1426,16 +1618,20 @@ input::placeholder{
   //   display: block;
   // }
 
-  .profilePictureAndButtonsContainer{
-   display: flex;
-   flex-direction: row;
-   flex-wrap: wrap;
-   width: 100%;
-   max-width: 100%;
-   height: 20rem;
-   position: static;
-  //  flex-direction: row;
-  //  flex-wrap: wrap-reverse;
+  .profilePictureAndButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+    // height: auto;
+    height: 20rem;
+    position: static;
+  }
+
+  .updateOnlyPicture {
+    padding: 0;
+    margin: 0;
   }
 
   // .profilePictureAndButtons{
@@ -1446,7 +1642,7 @@ input::placeholder{
 
   .profilePictureAndButtons {
     display: flex;
-    flex-direction:row;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     height: auto;
@@ -1454,6 +1650,9 @@ input::placeholder{
     min-width: 21rem;
     max-width: 100%;
     margin: auto;
+    margin-left: -0.5rem;
+    // gap: 1.5rem;
+    gap: clamp(0rem, 2vw, 1rem);
   }
 
   // .profilePictureAndButtons {
@@ -1462,18 +1661,37 @@ input::placeholder{
   //   align-items: center;
   //   width: 100%;
   // }
-  
+
   // .profilePicture{
   //   width: 100%;
   //   // height: auto;
   // }
 
+  // .profilePicture {
+  //   width: 100%;
+  //   max-width: 300px;
+  //   height: auto;
+  //   aspect-ratio: 1 / 1;
+  //   margin-bottom: 1rem;
+  // }
+
   .profilePicture {
-    width: 100%;
-    max-width: 300px;
+    // width: auto;
+    // min-width: 200px;
+    // height: auto;
+    // aspect-ratio: 1 / 1;
+    // margin-bottom: 1rem;
+    width: 50vw;
+    min-width: 130px;
+    max-width: 230px;
     height: auto;
+    min-height: 130px;
+    max-height: 280px;
     aspect-ratio: 1 / 1;
     margin-bottom: 1rem;
+    padding-left: 2rem;
+    // flex: 1;
+    // margin: auto;
   }
 
   // .profilePicture{
@@ -1495,18 +1713,51 @@ input::placeholder{
   //   margin: 0 auto;
   // }
 
-  .nameTier{
+  .nameTier {
+    position: relative;
     margin-top: 0;
+    height: 100vh;
+    min-height: 100vh;
+    width: 100%;
+    min-width: 200px;
+    max-width: 400px;
+    flex: 1;
+    display: flex;
+    // flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    // overflow-x: hidden;
+  }
+
+  .profileNameTier {
+    height: auto;
+    width: 100%;
+    width: 400px;
+    margin: auto;
+    padding-right: 0;
   }
 
   .editProfilePictureButtonsContainer {
-    position: absolute;
-    top: 0;
-    left: 75%;
-    transform: translateX(-50%);
+    // position: absolute;
+    // top: 0;
+    // left: 75%;
+    // transform: translateX(-50%);
     width: 100%;
-    padding: 10px;
+    min-width: 5rem;
+    max-width: 10rem;
+    padding-right: 1.5rem;
+    padding-left: 1rem;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin-left: 1vw;
+    // margin-top: 0.5rem;
+    // margin-bottom: 0.5rem;
   }
 
   // .editProfilePictureButtonsContainer {
@@ -1520,37 +1771,69 @@ input::placeholder{
   //   padding-top: 40px; /* Adjust this value to create space for the button at the top */
   // }
 
+  .updatePassword {
+    padding-left: 0rem;
+    width: 100%;
+    max-width: 96%;
+    // background-color: #c7ff20;
+    background-color: #131313;
+    border-radius: 1rem;
+    border-color: #605f5f;
+    border-style: solid;
+    padding: 0.5rem;
+  }
+
   .btn-editProfileButton {
     margin-top: 0.5rem;
     margin-bottom: 0;
+  }
+
+  .cancelSubscription {
+    margin: auto;
+    width: 100%;
+    // max-width: 110px;
+    // max-width: auto;
+    // max-width: 100%;
+    // padding-left: 2.5rem;
+    padding-left: 2.5rem;
+    padding-bottom: 20rem;
+    // padding-right: 2rem;
   }
 
   .btn-cancelSubscriptionButton {
     margin-top: 0.5rem;
   }
 
-  .flexAllProfileData {
-    flex-direction: column;
-    flex-wrap: wrap;
+  .btn-cancelPhotoButton,
+  .btn-savePhotoButton {
+    box-shadow: #605f5f 0px 0px 0px 1px;
   }
 
-  .profilePictureContainer {
+  .profilePictureFormContainer {
     display: inline-flex;
     flex-direction: column;
+    // width: 100%;
+    // position: relative;
+    // height: 18rem;
+    // width: 18rem;
+    // background-size: cover;
+    // align-items: right;
+    // margin: auto;
+    // padding-left: 0;
+    // padding-left: 0.5rem;
     width: 100%;
-    position: relative;
-    height: 18rem;
-    width: 18rem;
-    background-color: #c7ff20;
-    background-size: cover;
-    border-radius: 100rem;
-    align-items: right;
-    margin: auto;
+    max-width: 96%;
+    // background-color: #c7ff20;
+    background-color: #131313;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    border-color: #605f5f;
+    border-style: solid;
   }
 
   h3.profileDetails.name {
     width: 100%;
-    max-width: 20rem;
+    max-width: 2rem;
     // width: 18rem;
     // min-width: 5rem;
     // max-width: 25rem;
@@ -1561,32 +1844,87 @@ input::placeholder{
     /* background-color: #C7FF20; */
   }
 
+  // h3.profileDetails.name {
+  //   width: 100%;
+  //   max-width: 100%;
+  //   // width: 18rem;
+  //   // min-width: 5rem;
+  //   // max-width: 25rem;
+  //   overflow: auto;
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap;
+  //   //   overflow: visible;
+  //   /* background-color: #C7FF20; */
+  // }
+
   .avatar {
     position: absolute;
     z-index: 1;
     background-size: cover;
     background-position: center center;
-    transform: scale(8%, 8%);
-    left: -44rem;
-    top: -55rem;
+    // transform: scale(0.3); /* Scaling down by 10% */
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.2);
+    width: 150vw;
+    max-width: 800px;
+    height: auto;
   }
 
-  .currentState{
-    margin: 0;
-    padding:0;
-
-  }
+  // .currentState {
+  //   margin: 0;
+  //   padding: 0;
+  //   width: 100%;
+  //   height: 100%;
+  // }
 
   .profileDataContainer {
-    // margin-top: 1rem;
-    transform: scale(0.85);
-    // padding-bottom: 15rem;
+    // transform: scale(0.85);
+    // width: 70vw;
+    // max-width: 50rem;
+    // min-width: 14rem;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: auto;
+    padding: 0;
+    margin-top: 0;
+    height: 22.5rem;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-padding: 0.2rem;
+    background-color: #131313;
+    border-radius: 1rem;
+    border-color: #605f5f;
+    border-style: solid;
+    padding: 0.5rem;
+    // margin-bottom: 0.5rem;
+
+    &::-webkit-scrollbar {
+      width: 10px; // Adjust scrollbar width
+      // height: 10px; // Adjust scrollbar height
+      // background-color: #131313; // Color of the scrollbar
+
+      // border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      margin-top: 1rem;
+      background-color: rgb(255, 255, 255); // Color of the scrollbar thumb
+      border-radius: 10px;
+      border: 3px solid #131313; // Adds padding to the scrollbar thumb
+    }
+
+    &::-webkit-scrollbar-track {
+      margin-top: 10px; /* Adds padding to the top of the scrollbar track */
+      margin-bottom: 10px;
+    }
   }
 
   .planContainer {
     display: flex;
     width: 18rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
   }
 
   .editButtonsContainer {
@@ -1594,6 +1932,43 @@ input::placeholder{
     /* top:0; */
     bottom: 3rem;
     left: 15rem;
+  }
+
+  .updateProfileButtonContainerMobile {
+    // position: absolute;
+    // bottom: 1.5rem;
+    // left: 51%;
+    // transform: translateX(-51%);
+    // width: 100%;
+    // max-width: 40rem;
+    // margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    // width: 100%;
+    height: auto;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+    // margin-top: 0.5rem;
+    width: 97%;
+    min-height: auto;
+    min-width: 100px;
+    max-width: 500px;
+    padding: initial;
+    padding-top: 2rem;
+    padding-bottom: 0rem;
+    // box-shadow: #605f5f 0px 0px 0px 1px;
+    // border-radius: 0.5rem;
+    // margin-top: 1rem;
+    // padding: 0 4rem 0 4rem;
+    // margin: 0 auto;
+  }
+
+  .btn-updateProfileButton,
+  .btn-cancelProfileButton {
+    width: 100vw;
+    min-width: 5vw;
+    max-width: clamp(6rem, 32.5vw, 10rem);
   }
 
   // .btn-editPhotoButton {
@@ -1605,26 +1980,35 @@ input::placeholder{
   //   min-width: 150px; /* Adjust as needed */
   // }
 
-  .btn-editPhotoButton {
-    display: block;
-    width: auto;
-    min-width: 150px;
-    margin: 0 auto;
-  }
+  // .btn-editPhotoButton {
+  //   display: block;
+  //   width: auto;
+  //   min-width: 150px;
+  //   margin: 0 auto;
+  // }
 
   .btn-signOutButton {
     margin-top: 0.5rem;
   }
 
-  h3.profileDetails.plan {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0rem;
+  .btn-change{
+    box-shadow: #605f5f 0px 0px 0px 1px;
+  }
+
+  // h3.profileDetails.plan {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0rem;
+  // }
+
+  .profilePictureLinkContainer {
+    margin-bottom: 0.5rem;
   }
 
   input {
-    width: 18rem;
+    width: 97%;
+    max-width: 40rem;
     height: 2.5rem;
     font-size: large;
     font-weight: 400;
@@ -1636,18 +2020,361 @@ input::placeholder{
     color: white;
   }
 
+  select {
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 15rem;
+    height: 2.5rem;
+  }
+
   .absoluteContainer {
     position: absolute;
-    top: -10rem;
-    left: 5;
-    right: -7.5rem;
+    // top: -10rem;
+    // left: auto;
+    // right: -7.5rem;
     z-index: 1;
     width: 49rem;
+    min-width: 90%;
     height: 50rem;
+    // width: 100%;
+    // height: 100%;
+    padding: auto;
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    // justify-content: center;
+    // margin: 0 auto;
+  }
+
+  .btn-editPhotoButton,
+  .btn-editProfileButton,
+  .btn-cancelSubscriptionButton,
+  .btn-changePasswordButton,
+  .btn-billingDetailsButton,
+  .btn-signOutButton {
+    width: 100vw;
+    min-width: 5vw;
+    max-width: clamp(2rem, 25.5vw, 8.5rem);
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    line-height: clamp(0.3rem, 2.5vw, 1rem);
+    height: auto;
+    min-height: clamp(1.3rem, 7.5vw, 2rem);
+    font-weight: bold;
+    box-shadow: #605f5f 0px 0px 0px 1px;
+    // margin: 0 auto 0 1rem;
+  }
+
+  .btn-updateProfileButton.mobile,
+  .btn-cancelProfileButton.mobile {
+    box-shadow: #605f5f 0px 0px 0px 1px;
+  }
+
+  .btn-cancelPasswordButton,
+  .btn-updatePasswordButton {
+    box-shadow: #605f5f 0px 0px 0px 1px;
+  }
+
+  h3.profileDetails {
+    color: white;
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  h3.profileDetailsInput {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0rem;
+  }
+
+  h3.profileDetails.email {
+    width: 100%;
+    max-width: 100%;
+    // width: 18rem;
+    // min-width: 5rem;
+    // max-width: 25rem;
+    overflow: auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.8rem;
+  }
+
+  h3.profileDetails.plan {
+    color: white;
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin-bottom: 0rem;
+  }
+
+  h3.profileDetailsInput {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  h3.profileDetailsInput.email {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  // h3.profileDetailsInput.name {
+  //     color: white;
+  //     font-weight: 500;
+  //     font-size: 1.9rem;
+  //     margin-bottom: 1.1rem;
+  // }
+
+  h3.profileDetails.name {
+    width: 100%;
+    max-width: 25rem;
+    // width: 18rem;
+    min-width: 5rem;
+    // max-width: 25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    //   overflow: visible;
+    /* background-color: #C7FF20; */
+  }
+
+  h3.profileDetails.email {
+    width: 18rem;
+    // overflow: visible;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 4rem;
+    // margin-bottom: 1.5rem;
+    // overflow-y: visible;
+    //   box-sizing: border-box;
+    //   background-color: #C7FF20;
+    // padding-bottom: 0.2rem;
+    //   height: auto;
+    //   background-color: #c7ff20;
+  }
+
+  h3.profileDetailsInputDOB {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    // margin-bottom: 2rem;
+    margin-top: 0rem;
+    margin-bottom: 0.2rem;
+  }
+
+  // .dateOfBirthSpanAndErrorContainer {
+  //   display: flex;
+  //   width: 100%;
+  //   justify-content: space-between;
+  //   padding: 0;
+  //   margin: 0;
+  // }
+
+  // .spanProfileCategoryDOB {
+  //   font-size: 1.4rem;
+  //   width: 100%;
+  // }
+
+  // .errorTwentyOne {
+  //   color: red;
+  //   font-weight: bold;
+  //   text-align: right;
+  //   font-size: 0.875rem;
+  //   width: auto;
+  //   width: 100%;
+  //   // line-height: 1rem;
+  // }
+
+  h3.profileDetailsInputGender {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  // h3.profileDetailsInputPhoto {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0.8rem;
+  // }
+
+  h3.profileDetailsInputWeight {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  h3.profileDetailsInputHeight {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  h3.profileDetailsInputObjective {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0.2rem;
+  }
+
+  h3.profileDetailsInputPhoto {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0rem;
+  }
+
+  .btn-changePasswordButton,
+  .btn-billingDetailsButton {
+    margin-top: 0.5rem;
+  }
+
+  #password,
+  #oldPassword,
+  #confirmPassword {
+    width: 97%;
+    max-width: 40rem;
+    height: 2.5rem;
+    font-size: large;
+    font-weight: 400;
+    /* Comment out following text if you want to revert to white background input and select */
+    background-color: rgb(25, 25, 25);
+    border-radius: 6px;
+    border-color: white;
+    border-width: 1px;
+    color: white;
+  }
+
+  img.warningImg {
+    transform: scale(30%, 30%);
+    width: auto;
+    min-width: 70%;
+    max-width: 80%;
+    height: auto;
+    // padding-bottom: 3rem;
+    margin: 2rem auto 7rem auto;
+  }
+
+  h1.deleteProfileText {
+    // margin-top: -14rem;
+    color: white;
+    font-weight: 500;
+    font-size: clamp(1rem, 2vw, 2.5rem);
+    line-height: 1.5rem;
+    text-align: center;
+    max-width: 330px;
+    align-items: center;
+    // margin-top: 1%
+    // margin: 0 auto;
+    // max-width:350px;
+  }
+
+  .cancelSubscriptionButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    margin: auto;
+    width: 100%;
+    min-width: 40%;
+    max-width: 40vw;
+    padding: 0 5rem 0 5rem;
+    // padding: 1rem 10rem 3rem 10rem;
+  }
+
+  .btn-backButton,
+  .btn-cancelSubscriptionButtonFinal {
+    width: 50vw;
+    min-width: 100px;
+    max-width: 150px;
+    font-size: clamp(0.3rem, 3vw, 0.8rem);
+    line-height: clamp(0.7rem, 1.9vw, 1.5rem);
+    height: auto;
+    min-height: clamp(1.5rem, 10.5vw, 3rem);
+    font-weight: bold;
+    box-shadow: #3f3f3f 0px 0px 0px 1px;
+  }
+
+  .arrowContainer {
+    position: absolute;
+    top: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    margin: auto;
+    gap: 0;
+
+    /* Both fade-in and bounce animations combined */
+
+    &.firstTimeAnimation {
+      animation: fadeIn 1s ease-in-out 0.5s both,
+      bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    }
+
+    animation: bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+
+    @keyframes bounce {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(15%);
+        animation-timing-function: cubic-bezier(0.3, 0.5, 0.45, 0.3);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  //   0%, 20%, 50%, 80%, 100% {
+  //     transform: translateY(0);
+  //   }
+  //   40% {
+  //     transform: translateY(-10px);
+  //   }
+  //   60% {
+  //     transform: translateY(-5px);
+  //   }
+  // }
+
+  .arrow-icon {
+    // background-color : black;
+    // transform: scale(5);
+    color: rgb(0, 0, 0);
+    // transform: translateY(-40%);
+    // cursor: pointer;
+    // user-select: none;
+    // z-index: 1;
+  }
+
+  .arrow-size {
+    font-size: 5rem;
+    margin-bottom: -3rem;
   }
 }
 
-  /* @media screen and (min-width: 642px) and (max-width: 1233px) {
+
+
+/* @media screen and (min-width: 642px) and (max-width: 1233px) {
 
         .flexContainer {
             flex-wrap: wrap;
@@ -1661,87 +2388,87 @@ input::placeholder{
         }
     } */
 
-  // @media screen and (min-width: 300px) and (max-width: 642px) {
-  //   h1.profileNameTier {
-  //     font-size: 17vw;
-  //     font-weight: 600;
-  //   }
+// @media screen and (min-width: 300px) and (max-width: 642px) {
+//   h1.profileNameTier {
+//     font-size: 17vw;
+//     font-weight: 600;
+//   }
 
-  //   .avatar {
-  //     position: absolute;
-  //     z-index: 1;
-  //     background-size: cover;
-  //     background-position: center center;
-  //     transform: scale(8%, 8%);
-  //     left: -46rem;
-  //     top: -57rem;
-  //   }
+//   .avatar {
+//     position: absolute;
+//     z-index: 1;
+//     background-size: cover;
+//     background-position: center center;
+//     transform: scale(8%, 8%);
+//     left: -46rem;
+//     top: -57rem;
+//   }
 
-  //   .profileNameTier {
-  //     flex-wrap: wrap;
-  //     text-align: center;
-  //     width: 80vw;
-  //     line-height: 19vw;
-  //     padding-right: 0.5rem;
-  //   }
+//   .profileNameTier {
+//     flex-wrap: wrap;
+//     text-align: center;
+//     width: 80vw;
+//     line-height: 19vw;
+//     padding-right: 0.5rem;
+//   }
 
-  //   .nameTier {
-  //     padding-top: 1rem;
-  //     margin-bottom: 2rem;
-  //     text-align: center;
-  //   }
+//   .nameTier {
+//     padding-top: 1rem;
+//     margin-bottom: 2rem;
+//     text-align: center;
+//   }
 
-  //   .profileInfo {
-  //     height: 52rem;
-  //     height: auto;
-  //     width: 90rem;
-  //     padding: 2rem;
-  //     background-color: #000000;
-  //     border-radius: 10px;
-  //     margin-bottom: 4rem;
-  //   }
+//   .profileInfo {
+//     height: 52rem;
+//     height: auto;
+//     width: 90rem;
+//     padding: 2rem;
+//     background-color: #000000;
+//     border-radius: 10px;
+//     margin-bottom: 4rem;
+//   }
 
-  //   .profilePictureContainer {
-  //     position: relative;
-  //     height: 45vw;
-  //     width: 45vw;
-  //     background-color: #c7ff20;
-  //     background-size: cover;
-  //     border-radius: 100rem;
-  //     align-items: right;
-  //   }
+//   .profilePictureContainer {
+//     position: relative;
+//     height: 45vw;
+//     width: 45vw;
+//     background-color: #c7ff20;
+//     background-size: cover;
+//     border-radius: 100rem;
+//     align-items: right;
+//   }
 
-  //   .editButtonsContainer {
-  //     position: absolute;
-  //     bottom: 1rem;
-  //     left: 9.5rem;
-  //   }
+//   .editButtonsContainer {
+//     position: absolute;
+//     bottom: 1rem;
+//     left: 9.5rem;
+//   }
 
-  //   .cancelSubscriptionButtonContainer {
-  //     display: flex;
-  //     justify-content: space-between;
-  //     width: 20rem;
-  //     padding: 3rem 1rem 3rem 14rem;
-  //   }
+//   .cancelSubscriptionButtonContainer {
+//     display: flex;
+//     justify-content: space-between;
+//     width: 20rem;
+//     padding: 3rem 1rem 3rem 14rem;
+//   }
 
-  //   .profileDataContainer {
-  //     position: relative;
-  //     width: 100%;
-  //     height: 100%;
-  //     margin-top: 1.5rem;
-  //     margin-left: 0.1rem;
-  //     margin-left: auto;
-  //     margin-right: auto;
-  //   }
+//   .profileDataContainer {
+//     position: relative;
+//     width: 100%;
+//     height: 100%;
+//     margin-top: 1.5rem;
+//     margin-left: 0.1rem;
+//     margin-left: auto;
+//     margin-right: auto;
+//   }
 
-  //   .absoluteContainer {
-  //     position: absolute;
-  //     top: -10rem;
-  //     left: 5;
-  //     right: -7.5rem;
-  //     z-index: 1;
-  //     width: 49rem;
-  //     height: 50rem;
-  //   }
-  // }
+//   .absoluteContainer {
+//     position: absolute;
+//     top: -10rem;
+//     left: 5;
+//     right: -7.5rem;
+//     z-index: 1;
+//     width: 49rem;
+//     height: 50rem;
+//   }
+// }
 // }

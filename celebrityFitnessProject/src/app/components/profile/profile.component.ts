@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
@@ -74,17 +74,19 @@ export class ProfileComponent implements OnInit {
   heightInches!: number;
   isValidAge: boolean = true;  
   twentyOneError: boolean = false;
-  // firstTimeAnimation: boolean = true;
-  firstTimeAnimationTierOne: boolean = true;
-  firstTimeAnimationTierTwo: boolean = true;
-  firstTimeAnimationTierThree: boolean = true;
-  currentTier: string = '';
-  lastAnimatedTier: string | null = null;
+  firstTimeAnimation: boolean = true;
+  // firstTimeAnimationTierOne: boolean = true;
+  // firstTimeAnimationTierTwo: boolean = true;
+  // firstTimeAnimationTierThree: boolean = true;
+  // currentTier: string = '';
+  // lastAnimatedTier: string | null = null;
 
 
   // Icons
   faEye = faEye;
   faEyeSlash = faEyeSlash;
+  faAngleDown = faAngleDown;
+
 
   // Handler properties
   keydownHandler: (event: KeyboardEvent) => void;
@@ -132,6 +134,7 @@ export class ProfileComponent implements OnInit {
   
 
     this.loadProfile();
+
 
     this.initializePictureForm();
 
@@ -191,7 +194,11 @@ export class ProfileComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => this.triggerAnimations(), 0);
+    // const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+    // if(!hasVisited) {
+    //   setTimeout(() => this.triggerAnimations(), 100);
+    // }
+    
   }
 
   // triggerAnimations() {
@@ -307,176 +314,187 @@ export class ProfileComponent implements OnInit {
     document.removeEventListener('mousedown', this.mousedownHandler);
   }
 
-  // loadProfile() {
-  //   this.loadingComplete = false;
-  //   this.imageLoaded = false;
-  //   const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
-
-  //   this.userId = parseInt(UserId);
-  //   const previousTier = this.currentUser.tier;
-
-
-  //   this.userService.getUser(this.userId).subscribe(
-  //     (user) => {
-  //       const previousTier = this.currentUser?.tier;
-  //       this.currentUser = user;
-        
-  //       this.updateTierFlags();
-
-  //       // Check if the tier has changed
-  //       if (previousTier && previousTier !== this.currentUser.tier) {
-  //         this.resetAnimationFlags();
-  //       }
-  //       else{
-  //         this.initializeAnimationFlags();
-  //       }
-
-  //       this.triggerAnimations();
-
-  //       // console.log('Full user object:', user);
-  //       if (this.currentUser.height) {
-  //         this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
-  //       }
-        
-  //       if(this.currentUser.tier === 'All In') this.tierThree = true;
-
-  //       // console.log('After profile load - tierThree:', this.tierThree);
-  //       // console.log('After profile load - firstTimeAnimation:', this.firstTimeAnimation);
-
-  //       if (this.currentUser.tier === 'Just Looking') {
-  //         this.tierOne = true;
-  //         this.tierTwo = false;
-  //         this.tierThree = false;
-  //         if (this.firstTimeAnimationTierOne) {
-  //           localStorage.setItem('hasVisitedProfileBeforeTierOne', 'true');
-  //         }
-  //       } else if (this.currentUser.tier === 'Motivated') {
-  //         this.tierOne = false;
-  //         this.tierTwo = true;
-  //         this.tierThree = false;
-  //         if (this.firstTimeAnimationTierTwo) {
-  //           localStorage.setItem('hasVisitedProfileBeforeTierTwo', 'true');
-  //         }
-  //       } else {
-  //         this.tierOne = false;
-  //         this.tierTwo = false;
-  //         this.tierThree = true;
-  //         if (this.firstTimeAnimationTierThree) {
-  //           localStorage.setItem('hasVisitedProfileBeforeTierThree', 'true');
-  //         }
-  //       }
-  //       if (this.currentUser.paymentFrequency === 'monthly') {
-  //         this.monthOrYear = 'month';
-  //       } else {
-  //         this.monthOrYear = 'year';
-  //       }
-
-  //       if (this.currentUser.tier === 'Just Looking') {
-  //         this.freeTier = true;
-  //       } else {
-  //         this.freeTier = false;
-  //       }
-  //       if (user.imgUrl) {
-  //         this.preloadImage(user.imgUrl);
-  //       } else {
-  //         // If there's no image URL, consider the image "loaded"
-  //         this.imageLoaded = true;
-  //         this.checkLoadingComplete();
-  //       }
-  //       // If it's tier three and first visit, trigger animation
-  //       if (this.tierThree && this.firstTimeAnimationTierThree) {
-  //         // Small delay to ensure the view is ready
-  //         setTimeout(() => this.triggerAnimations(), 100);
-  //       }
-
-  //       // this.loadingComplete = true;
-  //       const displayName = this.currentUser.name;
-  //       this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
-
-         
-  //     },
-  //     (error) => {
-  //       console.error('Error loading user profile:', error);
-  //       this.loadingComplete = true;
-  //       this.imageLoaded = true; // Consider image loaded in case of error
-  //       this.cdr.detectChanges();
-  //     }
-  //   );
-  // }
-
   loadProfile() {
-    console.log('Loading profile');
     this.loadingComplete = false;
     this.imageLoaded = false;
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
+
     this.userId = parseInt(UserId);
-  
-    // const previousTier = this.currentUser?.tier;
-    const storedTier = localStorage.getItem('currentTier');
-    this.lastAnimatedTier = localStorage.getItem('lastAnimatedTier');
-  
+    // const previousTier = this.currentUser.tier;
+
+
     this.userService.getUser(this.userId).subscribe(
       (user) => {
-        console.log('User data received:', user);
+        // const previousTier = this.currentUser?.tier;
         this.currentUser = user;
         
-        this.updateTierFlags();
+        // this.updateTierFlags();
 
-        // const storedTier = localStorage.getItem('currentTier');
-        const currentTier = this.currentUser.tier || 'Unknown';
-        console.log('Stored tier:', storedTier, 'Current tier:', currentTier);
-
-
-        if (storedTier !== currentTier || this.lastAnimatedTier !== currentTier) {
-          console.log('Tier changed or not animated yet. Resetting animations.');
-          this.resetAnimationFlags();
-          // setTimeout(() => {
-          //   this.triggerAnimations();
-          //   if (currentTier !== 'Unknown') {
-          //     localStorage.setItem('currentTier', currentTier);
-          //   }
-          // }, 0);
-        // } else {
-        //   console.log('Same tier. No animation needed.');
-        //   this.loadAnimationState();
-        }
-        localStorage.setItem('currentTier', currentTier);
-  
-        // if (currentTier !== 'Unknown') {
-        //   localStorage.setItem('currentTier', currentTier);
+        // Check if the tier has changed
+        // if (previousTier && previousTier !== this.currentUser.tier) {
+        //   this.resetAnimationFlags();
         // }
-  
+        // else{
+        //   this.initializeAnimationFlags();
+        // }
+
+        // this.triggerAnimations();
+
+        // console.log('Full user object:', user);
         if (this.currentUser.height) {
           this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
         }
-  
-        this.monthOrYear = this.currentUser.paymentFrequency === 'monthly' ? 'month' : 'year';
-        this.freeTier = this.currentUser.tier === 'Just Looking';
-  
+        
+        if(this.currentUser.tier === 'All In') this.tierThree = true;
+
+        // console.log('After profile load - tierThree:', this.tierThree);
+        // console.log('After profile load - firstTimeAnimation:', this.firstTimeAnimation);
+
+        if (this.currentUser.tier === 'Just Looking') {
+          this.tierOne = true;
+          this.tierTwo = false;
+          this.tierThree = false;
+          // if (this.firstTimeAnimationTierOne) {
+          //   localStorage.setItem('hasVisitedProfileBeforeTierOne', 'true');
+          // }
+        } else if (this.currentUser.tier === 'Motivated') {
+          this.tierOne = false;
+          this.tierTwo = true;
+          this.tierThree = false;
+          // if (this.firstTimeAnimationTierTwo) {
+          //   localStorage.setItem('hasVisitedProfileBeforeTierTwo', 'true');
+          // }
+        } else {
+          this.tierOne = false;
+          this.tierTwo = false;
+          this.tierThree = true;
+          // if (this.firstTimeAnimationTierThree) {
+          //   localStorage.setItem('hasVisitedProfileBeforeTierThree', 'true');
+          // }
+        }
+        if (this.currentUser.paymentFrequency === 'monthly') {
+          this.monthOrYear = 'month';
+        } else {
+          this.monthOrYear = 'year';
+        }
+
+        if (this.currentUser.tier === 'Just Looking') {
+          this.freeTier = true;
+        } else {
+          this.freeTier = false;
+        }
         if (user.imgUrl) {
           this.preloadImage(user.imgUrl);
         } else {
+          // If there's no image URL, consider the image "loaded"
           this.imageLoaded = true;
           this.checkLoadingComplete();
         }
-  
+        // If it's tier three and first visit, trigger animation
+        // if (this.tierThree && this.firstTimeAnimationTierThree) {
+        //   // Small delay to ensure the view is ready
+        //   setTimeout(() => this.triggerAnimations(), 100);
+        // }
+
+        // this.loadingComplete = true;
         const displayName = this.currentUser.name;
-        this.firstName = displayName?.split(' ')[0];
-  
-        // console.log('About to trigger animations');
-        // this.triggerAnimations();
-  
-        this.cdr.detectChanges();
-        setTimeout(() => this.triggerAnimations(), 0);
+        this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
+
+         //  // Check if the user has visited the page before to serve animations or not
+        const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+        if (!hasVisited) {
+          // Trigger animations
+          this.triggerAnimations();
+          // Store the flag in localStorage
+          localStorage.setItem('hasVisitedProfileBefore', 'true');
+        } else {
+          // Skip animations
+          this.skipAnimations();
+        }
+         
       },
       (error) => {
         console.error('Error loading user profile:', error);
         this.loadingComplete = true;
-        this.imageLoaded = true;
+        this.imageLoaded = true; // Consider image loaded in case of error
         this.cdr.detectChanges();
       }
     );
   }
+
+  // loadProfile() {
+  //   console.log('Loading profile');
+  //   this.loadingComplete = false;
+  //   this.imageLoaded = false;
+  //   const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
+  //   this.userId = parseInt(UserId);
+  
+  //   // const previousTier = this.currentUser?.tier;
+  //   const storedTier = localStorage.getItem('currentTier');
+  //   this.lastAnimatedTier = localStorage.getItem('lastAnimatedTier');
+  
+  //   this.userService.getUser(this.userId).subscribe(
+  //     (user) => {
+  //       console.log('User data received:', user);
+  //       this.currentUser = user;
+        
+  //       this.updateTierFlags();
+
+  //       // const storedTier = localStorage.getItem('currentTier');
+  //       const currentTier = this.currentUser.tier || 'Unknown';
+  //       console.log('Stored tier:', storedTier, 'Current tier:', currentTier);
+
+
+  //       if (storedTier !== currentTier || this.lastAnimatedTier !== currentTier) {
+  //         console.log('Tier changed or not animated yet. Resetting animations.');
+  //         this.resetAnimationFlags();
+  //         // setTimeout(() => {
+  //         //   this.triggerAnimations();
+  //         //   if (currentTier !== 'Unknown') {
+  //         //     localStorage.setItem('currentTier', currentTier);
+  //         //   }
+  //         // }, 0);
+  //       // } else {
+  //       //   console.log('Same tier. No animation needed.');
+  //       //   this.loadAnimationState();
+  //       }
+  //       localStorage.setItem('currentTier', currentTier);
+  
+  //       // if (currentTier !== 'Unknown') {
+  //       //   localStorage.setItem('currentTier', currentTier);
+  //       // }
+  
+  //       if (this.currentUser.height) {
+  //         this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
+  //       }
+  
+  //       this.monthOrYear = this.currentUser.paymentFrequency === 'monthly' ? 'month' : 'year';
+  //       this.freeTier = this.currentUser.tier === 'Just Looking';
+  
+  //       if (user.imgUrl) {
+  //         this.preloadImage(user.imgUrl);
+  //       } else {
+  //         this.imageLoaded = true;
+  //         this.checkLoadingComplete();
+  //       }
+  
+  //       const displayName = this.currentUser.name;
+  //       this.firstName = displayName?.split(' ')[0];
+  
+  //       // console.log('About to trigger animations');
+  //       // this.triggerAnimations();
+  
+  //       this.cdr.detectChanges();
+  //       setTimeout(() => this.triggerAnimations(), 0);
+  //     },
+  //     (error) => {
+  //       console.error('Error loading user profile:', error);
+  //       this.loadingComplete = true;
+  //       this.imageLoaded = true;
+  //       this.cdr.detectChanges();
+  //     }
+  //   );
+  // }
 
   // resetAnimationFlags() {
   //   this.firstTimeAnimationTierOne = true;
@@ -487,17 +505,38 @@ export class ProfileComponent implements OnInit {
   //   localStorage.removeItem('animationTierThree');
   // }
 
-  resetAnimationFlags() {
-    this.firstTimeAnimationTierOne = true;
-    this.firstTimeAnimationTierTwo = true;
-    this.firstTimeAnimationTierThree = true;
-    localStorage.removeItem('lastAnimatedTier');
-  }
+  // resetAnimationFlags() {
+  //   this.firstTimeAnimationTierOne = true;
+  //   this.firstTimeAnimationTierTwo = true;
+  //   this.firstTimeAnimationTierThree = true;
+  //   localStorage.removeItem('lastAnimatedTier');
+  // }
 
-  loadAnimationState() {
-    this.firstTimeAnimationTierOne = localStorage.getItem('animationTierOne') !== 'done';
-    this.firstTimeAnimationTierTwo = localStorage.getItem('animationTierTwo') !== 'done';
-    this.firstTimeAnimationTierThree = localStorage.getItem('animationTierThree') !== 'done';
+  // loadAnimationState() {
+  //   this.firstTimeAnimationTierOne = localStorage.getItem('animationTierOne') !== 'done';
+  //   this.firstTimeAnimationTierTwo = localStorage.getItem('animationTierTwo') !== 'done';
+  //   this.firstTimeAnimationTierThree = localStorage.getItem('animationTierThree') !== 'done';
+  // }
+
+  triggerAnimations(){
+    const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
+    profilePicture?.classList.add('firstTimeAnimation');
+    
+    const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
+    profileNameTier?.classList.add('firstTimeAnimation');
+
+    this.firstTimeAnimation = true;
+    this.cdr.detectChanges();
+  }
+  skipAnimations(){
+    const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
+    profilePicture?.classList.remove('firstTimeAnimation');
+    
+    const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
+    profileNameTier?.classList.remove('firstTimeAnimation');
+
+    this.firstTimeAnimation = false;
+    this.cdr.detectChanges();
   }
 
   // triggerAnimations(): void {
@@ -660,30 +699,30 @@ export class ProfileComponent implements OnInit {
 //   this.cdr.detectChanges();
 // }
 
-triggerAnimations(): void {
-  console.log('Triggering animations');
-  console.log('Current tier:', this.currentUser.tier);
+// triggerAnimations(): void {
+//   console.log('Triggering animations');
+//   console.log('Current tier:', this.currentUser.tier);
 
-  if (this.currentUser.tier !== this.lastAnimatedTier) {
-    switch(this.currentUser.tier) {
-      case 'Just Looking':
-        this.animateTier('One');
-        break;
-      case 'Motivated':
-        this.animateTier('Two');
-        break;
-      case 'All In':
-        this.animateTier('Three');
-        break;
-      default:
-        console.log('No animation triggered');
-    }
-  } else {
-    console.log('Animation already played for this tier');
-  }
+//   if (this.currentUser.tier !== this.lastAnimatedTier) {
+//     switch(this.currentUser.tier) {
+//       case 'Just Looking':
+//         this.animateTier('One');
+//         break;
+//       case 'Motivated':
+//         this.animateTier('Two');
+//         break;
+//       case 'All In':
+//         this.animateTier('Three');
+//         break;
+//       default:
+//         console.log('No animation triggered');
+//     }
+//   } else {
+//     console.log('Animation already played for this tier');
+//   }
   
-  this.cdr.detectChanges();
-}
+//   this.cdr.detectChanges();
+// }
 
 // animateTier(tier: string) {
 //   console.log(`Animating Tier ${tier}`);
@@ -809,54 +848,54 @@ triggerAnimations(): void {
 //   }
 // }
 
-animateTier(tier: string) {
-  console.log(`Animating Tier ${tier}`);
-  const elementId = `tier${tier}`;
-  const element = document.getElementById(elementId);
-  if (element) {
-    element.classList.remove('fade-in');
-    void element.offsetWidth; // Trigger a reflow
-    element.classList.add('fade-in');
+// animateTier(tier: string) {
+//   console.log(`Animating Tier ${tier}`);
+//   const elementId = `tier${tier}`;
+//   const element = document.getElementById(elementId);
+//   if (element) {
+//     element.classList.remove('fade-in');
+//     void element.offsetWidth; // Trigger a reflow
+//     element.classList.add('fade-in');
     
-    if (tier === 'Three') {
-      const profilePicture = document.getElementById('profilePicture');
-      if (profilePicture && this.currentUser.tier === 'All In') {
-        profilePicture.classList.remove('animateBoxShadow');
-        void profilePicture.offsetWidth; // Trigger a reflow
-        profilePicture.classList.add('animateBoxShadow');
-        setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-      }
-    }
+//     if (tier === 'Three') {
+//       const profilePicture = document.getElementById('profilePicture');
+//       if (profilePicture && this.currentUser.tier === 'All In') {
+//         profilePicture.classList.remove('animateBoxShadow');
+//         void profilePicture.offsetWidth; // Trigger a reflow
+//         profilePicture.classList.add('animateBoxShadow');
+//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
+//       }
+//     }
     
-    if (this.currentUser.tier) {
-      this.lastAnimatedTier = this.currentUser.tier;
-      localStorage.setItem('lastAnimatedTier', this.currentUser.tier);
-    } else {
-      this.lastAnimatedTier = null;
-      localStorage.removeItem('lastAnimatedTier');
-    }
+//     if (this.currentUser.tier) {
+//       this.lastAnimatedTier = this.currentUser.tier;
+//       localStorage.setItem('lastAnimatedTier', this.currentUser.tier);
+//     } else {
+//       this.lastAnimatedTier = null;
+//       localStorage.removeItem('lastAnimatedTier');
+//     }
     
-    switch(tier) {
-      case 'One':
-        this.firstTimeAnimationTierOne = false;
-        break;
-      case 'Two':
-        this.firstTimeAnimationTierTwo = false;
-        break;
-      case 'Three':
-        this.firstTimeAnimationTierThree = false;
-        break;
-    }
-  } else {
-    console.log(`Element for Tier ${tier} not found`);
-  }
-}
+//     switch(tier) {
+//       case 'One':
+//         this.firstTimeAnimationTierOne = false;
+//         break;
+//       case 'Two':
+//         this.firstTimeAnimationTierTwo = false;
+//         break;
+//       case 'Three':
+//         this.firstTimeAnimationTierThree = false;
+//         break;
+//     }
+//   } else {
+//     console.log(`Element for Tier ${tier} not found`);
+//   }
+// }
 
-updateTierFlags(): void {
-  this.tierOne = this.currentUser.tier === 'Just Looking';
-  this.tierTwo = this.currentUser.tier === 'Motivated';
-  this.tierThree = this.currentUser.tier === 'All In';
-}
+// updateTierFlags(): void {
+//   this.tierOne = this.currentUser.tier === 'Just Looking';
+//   this.tierTwo = this.currentUser.tier === 'Motivated';
+//   this.tierThree = this.currentUser.tier === 'All In';
+// }
 
   reloadProfile() {
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
@@ -1082,18 +1121,37 @@ isHeightValid(): boolean {
   return heightPattern.test(this.currentUser.height || '');
 }
 
+// isWeightValid(): boolean {
+//   const weightString = this.currentUser.weight || '';
+//   const weightValue = parseFloat(weightString);
+  
+//   if (isNaN(weightValue)) {
+//     return false;
+//   }
+//   else if(weightValue < 50 || weightValue > 600) {
+//     return false;
+//   }
+  
+//   return weightValue >= 50 && weightValue <= 600;
+// }
+
 isWeightValid(): boolean {
   const weightString = this.currentUser.weight || '';
+  
+  // Check if weight contains only numbers and at most one decimal
+  const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightString);
+  if (!isNumeric) {
+    return false;
+  }
+
   const weightValue = parseFloat(weightString);
-  
-  if (isNaN(weightValue)) {
+
+  // Check if weight is within the valid range
+  if (weightValue < 50 || weightValue > 600) {
     return false;
   }
-  else if(weightValue < 50 || weightValue > 600) {
-    return false;
-  }
-  
-  return weightValue >= 50 && weightValue <= 600;
+
+  return true;
 }
 
   get passwordGroup() {
@@ -1241,9 +1299,10 @@ isWeightValid(): boolean {
   logOut() {
     this.cartService.clearCart();
     this.userService.logoutUser();
-    this.resetAnimationFlags();
-    localStorage.removeItem('currentTier');
-    localStorage.removeItem('lastAnimatedTier');
+    // this.resetAnimationFlags();
+    // localStorage.removeItem('currentTier');
+    // localStorage.removeItem('lastAnimatedTier');
+    localStorage.removeItem('hasVisitedProfileBefore');
     this.UpdateStatus();
     this.router.navigate(['/home']);
   }

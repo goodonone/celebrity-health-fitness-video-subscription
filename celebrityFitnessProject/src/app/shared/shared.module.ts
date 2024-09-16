@@ -15,10 +15,9 @@ import { StepTrackerIconsUpgradeComponent } from './Multi-Step-Form/step-nav-upg
 import { ProgressionButtonsComponent } from './Multi-Step-Form/progression-buttons/progression-buttons.component';
 import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { ScrollToTopDirective } from './scroll-to-top.directive';
 import { HeightFormatDirective } from './height-format.directive';
-import { passwordMatchValidator } from './Multi-Step-Form/form/form.service';
 
 @NgModule({
   declarations: [
@@ -69,9 +68,10 @@ import { passwordMatchValidator } from './Multi-Step-Form/form/form.service';
 export class SharedModule { 
 
   constructor(library: FaIconLibrary) {
-    library.addIcons(faEye, faEyeSlash);
+    library.addIcons(faEye, faEyeSlash, faAngleDown);
   }
 
   faEye = faEye;
   faEyeSlash = faEyeSlash;
+  faAngleDown = faAngleDown;
 }

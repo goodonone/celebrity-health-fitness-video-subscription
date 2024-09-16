@@ -6,8 +6,7 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { PaymentService } from 'src/app/services/payment.service';
-import { expirationDateValidator } from '../../expiry-date-validator';
-// import { expirationDateValidator } from '../../expiry-date-validator';
+
 
 // Custom Validator Function
 export const passwordMatchValidator: ValidatorFn = (formGroup: AbstractControl): ValidationErrors | null => {
@@ -49,8 +48,8 @@ export class FormService implements OnInit {
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
+      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      confirmPassword: ['', [Validators.required, Validators.minLength(8)]]
     }, { validator: passwordMatchValidator }),
     planDetails: this.fb.group({
       plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
@@ -59,7 +58,7 @@ export class FormService implements OnInit {
       totalCost: []
     }),
     paymentDetails: this.fb.group({
-      nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
+      nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
       ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
       expDate: ['', [Validators.required], Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)],
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
@@ -86,7 +85,17 @@ export class FormService implements OnInit {
         Validators.minLength(5),
         Validators.maxLength(5),
         Validators.pattern(/^\d{5}$/), // Ensures it's exactly 5 digits
-        this.zipCodeValidator
+        (control: AbstractControl) => {
+          const value = control.value;
+          const numValue = parseInt(value, 10);
+    
+          // Check if the value is between 00501 and 99950
+          if (numValue < 501 || numValue > 99950) {
+            return { zipCodeOutOfRange: true }; // Return error object if out of range
+          }
+    
+          return null; // Valid
+        }
       ]],
     }),
   });
@@ -102,58 +111,24 @@ export class FormService implements OnInit {
         Validators.minLength(5),
         Validators.maxLength(5),
         Validators.pattern(/^\d{5}$/), // Ensures it's exactly 5 digits
-        this.zipCodeValidator
-        ]
-      ));
+        (control: AbstractControl) => {
+          const value = control.value;
+          const numValue = parseInt(value, 10);
+    
+          // Check if the value is between 00501 and 99950
+          if (numValue < 501 || numValue > 99950) {
+            return { zipCodeOutOfRange: true }; // Return error object if out of range
+          }
+    
+          return null; // Valid
+        }
+      ]));
     } else {
       paymentDetailsGroup.removeControl('shippingAddress');
       paymentDetailsGroup.removeControl('shippingZip');
     }
   }
 
-
-  private zipCodeValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    const numValue = parseInt(value, 10);
-
-    if (numValue < 501 || numValue > 99950) {
-      return { zipCodeOutOfRange: true };
-    }
-
-    return null;
-  }
-
-
-  // private expirationDateValidator(): ValidatorFn {
-  //   return (control: AbstractControl): ValidationErrors | null => {
-  //     const value = control.value;
-  //     if (!value) {
-  //       return null;
-  //     }
-
-  //     if (!/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(value)) {
-  //       return { 'invalidFormat': true };
-  //     }
-
-  //     const [month, year] = value.split('/');
-  //     const expMonth = parseInt(month, 10);
-  //     const expYear = parseInt(year, 10);
-
-  //     const currentDate = new Date();
-  //     const currentYear = currentDate.getFullYear() % 100;
-  //     const currentMonth = currentDate.getMonth() + 1;
-
-  //     if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-  //       return { 'expiredDate': true };
-  //     }
-
-  //     if (expYear > currentYear + 20) {
-  //       return { 'invalidDate': true };
-  //     }
-
-  //     return null;
-  //   };
-  // }
 
   get stepForm(): FormGroup {
     return this.multiStepForm;
@@ -173,6 +148,7 @@ export class FormService implements OnInit {
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
+
     if (!localStorage.getItem('userId')) {
       const userData = {
         name: userInfo.name,
@@ -249,10 +225,7 @@ export class FormService implements OnInit {
       localStorage.removeItem('billing');
       localStorage.setItem('tier', planInfo.plan);
       localStorage.setItem('billing', planInfo.billing);
-      localStorage.removeItem('hasVisitedProfileBefore');
-      console.log("removed from local storage");
-      // localStorage.setItem('hasVisitedProfileBefore', 'false');
-      // location.href
+      location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 

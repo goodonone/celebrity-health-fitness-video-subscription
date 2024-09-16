@@ -50,10 +50,7 @@
           <label class="label" for="password">Password</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['password'].invalid && this.stepForm.controls['password'].touched && !this.passwordMismatch"
-                 class="error-alert">{{getPasswordErrorMessage()}}</label>
-          <!-- <label for="error"
-                 *ngIf="stepForm.controls['password'].hasError('pattern') && stepForm.controls['password'].touched && !passwordMismatch"
-                 class="error-alert">Requirements not met</label> -->
+                 class="error-alert">Password is required</label>
           <label for="error"
                  *ngIf="passwordMismatch && stepForm.get('confirmPassword')?.touched"
                  class="error-alert">Passwords do not match</label>
@@ -74,7 +71,7 @@
                name="password"
                id="password"
                (focus)="showPasswordPopup()"
-               (blur)="hidePasswordPopup(); checkPasswords()"
+               (blur)="hidePasswordPopup()"
                placeholder="Enter Password"
                formControlName="password"
                required>
@@ -85,12 +82,9 @@
       <!-- confirm password -->
       <div class="input-details-confirm focusedInput">
         <label class="label" for="password">Confirm Password</label>
-        <!-- <label for="error"
+        <label for="error"
                *ngIf="this.stepForm.controls['password'].invalid &&this.stepForm.controls['confirmPassword'].touched && !this.passwordMismatch"
-               class="error-alert">Password is required</label> -->
-       <label for="error"
-               *ngIf="this.stepForm.controls['confirmPassword'].invalid && this.stepForm.controls['confirmPassword'].touched && !this.passwordMismatch"
-               class="error-alert">{{getConfirmPasswordErrorMessage()}}</label>       
+               class="error-alert">Password is required</label>
         <label for="error"
                *ngIf="passwordMismatch && stepForm.get('confirmPassword')?.touched"
                class="error-alert">Passwords do not match</label>
@@ -99,7 +93,7 @@
       <div class="passwordInput">
       <input type="password"
              matInput
-             name="confirmPassword"
+             name="password"
              id="confirmPassword"
              (focus)="showPasswordPopup()"
              (blur)="hidePasswordPopup(); checkPasswords()"
