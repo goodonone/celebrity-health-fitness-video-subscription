@@ -67,15 +67,14 @@
                   Expired</label>       
         </div>
         <input type="tel"
-               matInput
-               name="expDate"
-               maxlength="5"
-               id="expDate"
-               placeholder="01/25" 
-               formControlName="expDate"
-               (input)="formatExpirationDate($event)"
-               (blur)="validateExpDate()"
-               required>
+              matInput
+              name="expDate"
+              maxlength="5"
+              id="expDate"
+              placeholder="01/25" 
+              formControlName="expDate"
+              (input)="formatExpirationDate($event)"
+              required>
        </div>
        <!-- cvv number input -->
        <div>

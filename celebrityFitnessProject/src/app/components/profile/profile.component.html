@@ -5,7 +5,11 @@
             <h1 class="profileNameTier tierOne" id="tierOne" [ngClass]="{'fade-in': firstTimeAnimationTierOne }" *ngIf="tierOne">Hi {{firstName}}! You're {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier"  id="tierTwo" [ngClass]="{'fade-in': firstTimeAnimationTierTwo }" *ngIf="tierTwo">Hi {{firstName}}! You are {{currentUser.tier | uppercase}} </h1>
             <h1 class="profileNameTier" id="tierThree" [ngClass]="{'fade-in': firstTimeAnimationTierThree }" *ngIf="tierThree">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
-             <!-- <fa-icon [icon]="mobileview ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngClass]=""></fa-icon> -->
+            <div class="arrowContainer" [ngClass]="{'narrow': true}">
+                <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+                <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+            </div>
+            
         </div>
 
         <div class="profileContainer">
@@ -30,10 +34,11 @@
                     <!-- <div class="flexPictureAndButtons"> -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <mat-card class="profilePicture" id="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}"></mat-card>
+                            <mat-card class="profilePicture" id="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')', 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none'}" [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}">
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')','box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' }" [ngClass]="{'animateBoxShadow': tierThree && firstTimeAnimation }"> -->
                             <!-- <mat-card class="profilePicture" id="profilePicture" [ngStyle]="{'background-image': 'url(' + currentUser.imgUrl + ')'}"[class.tierThreeStyle]="tierThree"></mat-card> -->
                             <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
+                            </mat-card>
                             <div class="editProfilePictureButtonsContainer">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()" (click)="changePicture()">Change Picture</button>
@@ -192,7 +197,7 @@
                                     Please enter a valid URL
                                 </mat-error> -->
                             </div>
-                            <div class="updateProfileButtonContainer">
+                            <div class="updateProfileButtonContainer" [ngClass]="{'wide': true}">
                                 <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
                                 <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
                                         type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
@@ -235,7 +240,7 @@
                 </form>
                 </ng-container> -->
                 <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
-                    <div class="profilePictureContainer">
+                    <div class="profilePictureFormContainer">
                     <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
                       <div class="profilePictureLinkContainer">
                         <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span></h3>
@@ -336,6 +341,16 @@
                     </ng-container>
                 </div>
               </div>
+
+              <!-- Buttons On Mobile View for Editing Profile -->
+              <div class="updateProfileButtonContainerMobile" [ngClass]="{'narrow': true}" *ngIf="currentState === ProfileState.EditingProfile">
+                <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
+                <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
+                        type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
+                <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
+                type="submit" [disabled]="!isFormValid('profile')">Update</button>
+            </div>
+
             </mat-card>  
         </fieldset> 
         </div>  

@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
@@ -85,6 +85,8 @@ export class ProfileComponent implements OnInit {
   // Icons
   faEye = faEye;
   faEyeSlash = faEyeSlash;
+  faAngleDown = faAngleDown;
+
 
   // Handler properties
   keydownHandler: (event: KeyboardEvent) => void;
@@ -132,6 +134,18 @@ export class ProfileComponent implements OnInit {
   
 
     this.loadProfile();
+
+    //  // Check if the user has visited the page before to serve animations or not
+    //  const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
+    //  if (!hasVisited) {
+    //    // Trigger animations
+    //    this.triggerAnimations();
+    //    // Store the flag in localStorage
+    //    localStorage.setItem('hasVisitedHomeBefore', 'true');
+    //  } else {
+    //    // Skip animations
+    //    this.skipAnimations();
+    //  }
 
     this.initializePictureForm();
 
@@ -1082,18 +1096,37 @@ isHeightValid(): boolean {
   return heightPattern.test(this.currentUser.height || '');
 }
 
+// isWeightValid(): boolean {
+//   const weightString = this.currentUser.weight || '';
+//   const weightValue = parseFloat(weightString);
+  
+//   if (isNaN(weightValue)) {
+//     return false;
+//   }
+//   else if(weightValue < 50 || weightValue > 600) {
+//     return false;
+//   }
+  
+//   return weightValue >= 50 && weightValue <= 600;
+// }
+
 isWeightValid(): boolean {
   const weightString = this.currentUser.weight || '';
+  
+  // Check if weight contains only numbers and at most one decimal
+  const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightString);
+  if (!isNumeric) {
+    return false;
+  }
+
   const weightValue = parseFloat(weightString);
-  
-  if (isNaN(weightValue)) {
+
+  // Check if weight is within the valid range
+  if (weightValue < 50 || weightValue > 600) {
     return false;
   }
-  else if(weightValue < 50 || weightValue > 600) {
-    return false;
-  }
-  
-  return weightValue >= 50 && weightValue <= 600;
+
+  return true;
 }
 
   get passwordGroup() {
