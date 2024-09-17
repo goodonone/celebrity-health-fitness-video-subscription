@@ -273,6 +273,7 @@ fieldset {
   /* width: 60%; */
   /* min-width: 10rem; */
   max-width: 21rem;
+  max-height: fit-content;
   align-items: center;
   /* overflow: hidden; */
 }
@@ -283,6 +284,7 @@ fieldset {
   justify-content: center;
   align-items: center;
   height: auto;
+  max-height: fit-content;
   width: 100%;
   min-width: 21rem;
   margin: auto;
@@ -1533,14 +1535,15 @@ input[matInput]:focus {
     flex-direction: column;
     align-items: center;
     height: auto;
-    max-height: 44rem;
+    max-height: 47rem;
     width: 90vw;
     // width: auto;
-    max-width: 28rem;
+    max-width: 30rem;
     min-width: auto;
     margin: 2rem 0 0;
     padding: 0;
     transform: none;
+    // overflow: visible;
     // border-radius: 0;
   }
 
@@ -1552,7 +1555,7 @@ input[matInput]:focus {
     position: relative;
     height: auto;
     min-height: auto;
-    max-height: 44rem;
+    max-height: 47rem;
 
     width: 90vw;
     max-width: 30rem;
@@ -1571,7 +1574,7 @@ input[matInput]:focus {
     // overflow-y: scroll;
     // overflow-x: hidden;
     // scrollbar-color: #ffffff #000000;
-    aspect-ratio: 2/5;
+    aspect-ratio: 2/7;
   }
 
   .flexAllProfileData {
@@ -1645,14 +1648,14 @@ input[matInput]:focus {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: auto;
+    height: 100%;
     width: 100%;
     min-width: 21rem;
     max-width: 100%;
     margin: auto;
-    margin-left: -0.5rem;
+    // margin-left: -0.5rem;
     // gap: 1.5rem;
-    gap: clamp(0rem, 2vw, 1rem);
+    // gap: clamp(0rem, 2vw, 1rem);
   }
 
   // .profilePictureAndButtons {
@@ -1884,20 +1887,22 @@ input[matInput]:focus {
     // max-width: 50rem;
     // min-width: 14rem;
     transform: none;
-    width: 100%;
+    width: auto;
     max-width: 100%;
     min-width: auto;
     padding: 0;
     margin-top: 0;
-    height: 22.5rem;
+    height: 25rem;
+    min-height: auto;
     overflow-x: hidden;
     overflow-y: scroll;
-    scroll-padding: 0.2rem;
+    // scroll-padding: 0.2rem;
     background-color: #131313;
     border-radius: 1rem;
     border-color: #605f5f;
     border-style: solid;
     padding: 0.5rem;
+    // aspect-ratio: 3/4;
     // margin-bottom: 0.5rem;
 
     &::-webkit-scrollbar {
@@ -1954,9 +1959,9 @@ input[matInput]:focus {
     min-height: auto;
     min-width: 100px;
     max-width: 500px;
-    padding: initial;
-    padding-top: 2rem;
-    padding-bottom: 0rem;
+    // padding: initial;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     // box-shadow: #605f5f 0px 0px 0px 1px;
     // border-radius: 0.5rem;
     // margin-top: 1rem;
@@ -2315,9 +2320,11 @@ input[matInput]:focus {
 
     /* Both fade-in and bounce animations combined */
 
+    animation: bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+
     &.firstTimeAnimation {
       animation: fadeIn 1s ease-in-out 0.5s both,
-      bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+      bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite both;
 
       @keyframes fadeIn {
         from {
@@ -2329,7 +2336,7 @@ input[matInput]:focus {
       }
     }
 
-    animation: bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+   
 
     @keyframes bounce {
       0% {

@@ -8,6 +8,7 @@ import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icon
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
+import * as faceapi from 'face-api.js';
 
 enum ProfileState {
   Viewing,
@@ -27,6 +28,8 @@ enum ProfileState {
 export class ProfileComponent implements OnInit {
 
   @ViewChild('profileForm') profileForm!: NgForm;
+  // @ViewChild('profilePicture') profilePicture!: ElementRef<HTMLElement>;
+
   // @ViewChild('profileNameTier') profileNameTierElement!: ElementRef;
   // @ViewChild('profilePicture') profilePictureElement!: ElementRef;
   
@@ -73,8 +76,9 @@ export class ProfileComponent implements OnInit {
   heightFeet!: number;
   heightInches!: number;
   isValidAge: boolean = true;  
-  twentyOneError: boolean = false;
+  maxAgeError: boolean = false;
   firstTimeAnimation: boolean = true;
+  isFirstVisit: boolean = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
   // firstTimeAnimationTierThree: boolean = true;
@@ -86,14 +90,14 @@ export class ProfileComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
   faAngleDown = faAngleDown;
-
-
+  
   // Handler properties
   keydownHandler: (event: KeyboardEvent) => void;
   mousedownHandler: (event: MouseEvent) => void;
 
   private oldPasswordSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+
 
   constructor(
     private userService: UserService,
@@ -125,6 +129,61 @@ export class ProfileComponent implements OnInit {
       }
     };
   }
+
+  // async ngAfterViewInit() {
+  //   await this.loadModels();
+  //   if (this.currentUser.imgUrl) {
+  //     await this.centerFaceInProfilePicture(this.currentUser.imgUrl);
+  //   }
+  // }
+
+  // async loadModels() {
+  //   await faceapi.nets.ssdMobilenetv1.loadFromUri('/assets/models');
+  //   await faceapi.nets.faceLandmark68Net.loadFromUri('/assets/models');
+  //   await faceapi.nets.faceRecognitionNet.loadFromUri('/assets/models');
+  // }
+
+  // async centerFaceInProfilePicture(imageUrl: string) {
+  //   const image = await this.loadImageFromUrl(imageUrl);
+  //   if (image) {
+  //     const detections = await faceapi.detectSingleFace(image);
+      
+  //     if (detections) {
+  //       const box = detections.box;
+        
+  //       const offsetX = (this.profilePicture.nativeElement.clientWidth / 2) - (box.x + box.width / 2);
+  //       const offsetY = (this.profilePicture.nativeElement.clientHeight / 2) - (box.y + box.height / 2);
+
+  //       // Update background position based on detected face
+  //       this.profilePicture.nativeElement.style.backgroundImage = `url(${image.src})`;
+  //       this.profilePicture.nativeElement.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
+  //       this.profilePicture.nativeElement.style.backgroundSize = 'cover';
+  //     } else {
+  //       console.warn('No face detected in the image.');
+  //     }
+  //   }
+  // }
+
+  // loadImageFromUrl(url: string): Promise<HTMLImageElement> {
+  //   return new Promise((resolve, reject) => {
+  //     const img = new Image();
+  //     img.crossOrigin = 'anonymous'; // For CORS
+  //     img.src = url;
+  //     img.onload = () => resolve(img);
+  //     img.onerror = reject;
+  //   });
+  // }
+
+  // loadImageFromUrl(url: string): Promise<HTMLImageElement> {
+  //   return new Promise((resolve, reject) => {
+  //     const img = new Image();
+  //     img.crossOrigin = 'anonymous';
+  //     const corsProxyUrl = 'https://cors-anywhere.herokuapp.com/';
+  //     img.src = corsProxyUrl + url;
+  //     img.onload = () => resolve(img);
+  //     img.onerror = reject;
+  //   });
+  // }
 
   ngOnInit(): void {
     
@@ -193,13 +252,13 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    // const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
-    // if(!hasVisited) {
-    //   setTimeout(() => this.triggerAnimations(), 100);
-    // }
+  // ngAfterViewInit() {
+  //   // const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+  //   // if(!hasVisited) {
+  //   //   setTimeout(() => this.triggerAnimations(), 100);
+  //   // }
     
-  }
+  // }
 
   // triggerAnimations() {
   //   if (this.tierOne && this.firstTimeAnimationTierOne) {
@@ -402,6 +461,7 @@ export class ProfileComponent implements OnInit {
 
          //  // Check if the user has visited the page before to serve animations or not
         const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+        this.isFirstVisit = !hasVisited;
         if (!hasVisited) {
           // Trigger animations
           this.triggerAnimations();
@@ -525,6 +585,11 @@ export class ProfileComponent implements OnInit {
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.add('firstTimeAnimation');
 
+    if(this.isFirstVisit){
+    const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+    arrowContainer?.classList.add('firstTimeAnimation');
+    }
+
     this.firstTimeAnimation = true;
     this.cdr.detectChanges();
   }
@@ -534,6 +599,10 @@ export class ProfileComponent implements OnInit {
     
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.remove('firstTimeAnimation');
+
+
+    const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+    arrowContainer?.classList.remove('firstTimeAnimation');
 
     this.firstTimeAnimation = false;
     this.cdr.detectChanges();
@@ -1000,7 +1069,7 @@ export class ProfileComponent implements OnInit {
       const today = new Date();
       if (dob > today) {
         this.isValidAge = false;
-        this.twentyOneError = true;  // You can remove or repurpose this
+        // this.twentyOneError = true;  // You can remove or repurpose this
         return;
       }
   
@@ -1010,9 +1079,9 @@ export class ProfileComponent implements OnInit {
       this.isValidAge = dob >= maxDate;
       if (!this.isValidAge) {
         // Handle the case where the person is older than 124 years
-        this.twentyOneError = true;  // You can rename this variable to something like "maxAgeError"
+        this.maxAgeError = true;  // You can rename this variable to something like "maxAgeError"
       } else {
-        this.twentyOneError = false;
+        this.maxAgeError = false;
       }
     } else {
       this.isValidAge = false;
@@ -1035,8 +1104,24 @@ export class ProfileComponent implements OnInit {
         }
       );
     }
-    // ... handle other states if needed
+
   }
+
+  // saveProfilePicture() {
+  //   if (this.currentState === ProfileState.ChangingPicture) {
+  //     const newImgUrl = this.pictureForm.get('imgUrl')?.value;
+  //     this.currentUser.imgUrl = newImgUrl;
+  //     this.userService.updateUser(this.currentUser).subscribe(
+  //       async () => {
+  //         await this.centerFaceInProfilePicture(newImgUrl);
+  //         this.currentState = ProfileState.Viewing;
+  //       },
+  //       error => {
+  //         console.error('Error updating profile picture:', error);
+  //       }
+  //     );
+  //   }
+  // }
 
   preloadImage(imgUrl: string) {
     const img = new Image();

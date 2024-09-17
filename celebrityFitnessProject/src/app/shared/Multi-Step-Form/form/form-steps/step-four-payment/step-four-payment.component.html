@@ -59,12 +59,16 @@
           <!-- <label for="error"
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
                  class="error-alert">Invalid</label> -->
-          <label for="error" 
+          <!-- <label for="error" 
                   *ngIf="stepForm.get('expDate')!.invalid && stepForm.get('expDate')?.touched && !stepForm.get('expDate')?.hasError('expiredDate')" class="error-alert">
                   Invalid</label>   
           <label for="error" 
                   *ngIf="stepForm.get('expDate')?.hasError('expiredDate') && stepForm.get('expDate')?.touched" class="error-alert">
-                  Expired</label>       
+                  Expired</label>        -->
+         <label for="error" 
+             *ngIf="stepForm.get('expDate')!.invalid && stepForm.get('expDate')?.touched && stepForm.get('expDate')?.value.length === 5"
+             class="error-alert">
+          {{ getExpDateErrorMessage() }} </label>
         </div>
         <input type="tel"
               matInput

@@ -11,7 +11,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist/final-project",
             "index": "src/index.html",
@@ -19,28 +19,41 @@
             "polyfills": [
               "zone.js"
             ],
+            "customWebpackConfig": {
+                  "path": "./webpack.config.js"
+            },
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/assets/favicon.png",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              }
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@tensorflow/tfjs-core",
+              "face-api.js",
+              "crypto-browserify"
+          ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
+                  "maximumWarning": "50kb",
                   "maximumError": "1mb"
                 }
               ],
@@ -58,7 +71,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
               "browserTarget": "finalProject:build:production"
@@ -72,7 +85,10 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "finalProject:build"
+            "browserTarget": "finalProject:build",
+            "customWebpackConfig": {
+                "path": "./webpack.config.js"
+              }
           }
         },
         "test": {
@@ -85,7 +101,12 @@
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets"
+              }
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
@@ -98,6 +119,9 @@
     }
   },
   "cli": {
-    "analytics": "ec93c30d-50cf-4e31-abf2-ea29cdb8c845"
+    "analytics": "ec93c30d-50cf-4e31-abf2-ea29cdb8c845",
+    "schematicCollections": [
+      "@angular-builders/custom-webpack"
+    ]
   }
 }
