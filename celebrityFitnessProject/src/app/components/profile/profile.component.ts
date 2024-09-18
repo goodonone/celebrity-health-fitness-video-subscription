@@ -54,7 +54,7 @@ export class ProfileComponent implements OnInit {
   userIsLoggedIn: boolean = false;
   cartQuantity = 0;
 
-  userId!: number;
+  userId!: string;
   classAppliedDeleteProfile = false;
   loadingComplete = false;
   imageLoaded = false;
@@ -319,7 +319,7 @@ export class ProfileComponent implements OnInit {
     this.imageLoaded = false;
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
 
-    this.userId = parseInt(UserId);
+    this.userId = UserId;
     // const previousTier = this.currentUser.tier;
 
 
@@ -900,7 +900,7 @@ export class ProfileComponent implements OnInit {
   reloadProfile() {
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
 
-    this.userId = parseInt(UserId);
+    this.userId = UserId;
 
     this.userService.getUser(this.userId).subscribe(
       (user) => {

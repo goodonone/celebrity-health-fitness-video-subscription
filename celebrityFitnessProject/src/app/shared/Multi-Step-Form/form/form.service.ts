@@ -25,7 +25,7 @@ export class FormService implements OnInit {
 
   userIsLoggedIn: boolean = false;
   UserId?: string;
-  userId?: number;
+  userId?: string;
   currentUser: User = new User();
   shipping?: boolean;
 
@@ -190,7 +190,7 @@ export class FormService implements OnInit {
     else {
       this.UserId = this.user.getUserId() ?? "";
 
-      this.userId = parseInt(this.UserId);
+      this.userId = this.UserId;
 
       this.user.getUser(this.userId).subscribe((user)=>{
         this.currentUser = user;

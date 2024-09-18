@@ -1,6 +1,6 @@
 export class Product {
     productId?: number;
-    paymentId?: number;
+    paymentId?: string;
     productName?: string;
     productPrice?: number;
     productDescription?: string;
@@ -10,7 +10,7 @@ export class Product {
 
     constructor(
         productId?: number,
-        paymentId?: number,
+        paymentId?: string,
         productName?: string,
         productPrice?: number,
         productDescription?: string,

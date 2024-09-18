@@ -71,14 +71,14 @@ updateUser(updatedUser: User): Observable<User> {
   return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders });
 }
 
-  checkPassword(userId: number, password: string): Observable<boolean> {
+  checkPassword(userId: string, password: string): Observable<boolean> {
     let reqHeaders = {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
     }
     return this.http.post<boolean>(`${this.baseURL}/check-password/${userId}`, { password }, { headers: reqHeaders });
   }
 
-  updatePassword(userId: number, newPassword: string): Observable<any> {
+  updatePassword(userId: string, newPassword: string): Observable<any> {
     let reqHeaders = {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
     }
@@ -95,14 +95,14 @@ updateUser(updatedUser: User): Observable<User> {
 
 
 
-getUser(userId: number): Observable<User> {
+getUser(userId: string): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }
   return this.http.get<User>(this.baseURL + "/" + userId, {headers: reqHeaders});
   }
   
-deleteUser(userId: number) : Observable<any> {
+deleteUser(userId: string) : Observable<any> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   }

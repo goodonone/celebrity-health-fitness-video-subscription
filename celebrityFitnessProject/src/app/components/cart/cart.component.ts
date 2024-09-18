@@ -14,7 +14,7 @@ import { UserService } from 'src/app/services/user.service';
 export class CartComponent implements OnInit {
   cart!: Cart;
   tierTwoThree = true;
-  userId?: number;
+  userId: string | null = '';
   tierOneCheckout = false;
   cartStatic = true;
   cartFlip = false;
@@ -26,7 +26,8 @@ export class CartComponent implements OnInit {
   ngOnInit(): void {
 
     let UserId = localStorage.getItem('userId');
-    this.userId = parseInt(UserId!);
+    // this.userId = parseInt(UserId!);
+    this.userId = UserId;
 
     this.cartService.getCartObservable().subscribe((cart) => {
       this.cart = cart;
@@ -57,7 +58,7 @@ export class CartComponent implements OnInit {
   checkoutCart() {
     let UserId: string | null = localStorage.getItem("userId");
     const newPayment = {
-      userId: parseInt(UserId!),
+      userId: UserId!,
       tier: localStorage.getItem("tier") || "",
       price: this.cart.totalPrice || 0,
       paymentType: 'store purchase',
