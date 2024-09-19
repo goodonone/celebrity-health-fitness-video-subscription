@@ -1,4 +1,4 @@
-<div class="pageContainer">
+<!-- <div class="pageContainer">
     <div class="pageContent">
         <h1 class="pageName">Store</h1>
 
@@ -20,6 +20,46 @@
     <div class="actionButtonsContainer">
         <button mat-button class="btn-backToTop" appScrollToTop>&#8682; Back to Top</button>
       </div>
+</div> -->
+
+<div class="pageContainer">
+    <div class="pageContent">
+        <h1 class="pageName">Store</h1>
+
+        <ng-container *ngIf="productList$ | async as productList; else loading">
+            <div class="productsContainer">
+                <div class="cardsDiv" *ngFor="let product of productList">
+                    <mat-card class="products" [ngStyle]="{'background-image': 'url(' + (product.productUrl || 'assets/default-product-image.jpg') + ')', 'background-size': 'cover', 'background-position': 'center center'}">
+                        <div class="productDetails" [attr.id]="'card' + product.productId">
+                            <div class="absoluteContainer">
+                                <p class="name">{{product.productName}}</p>
+                                <p class="price" id="price">${{product.productPrice | priceFormat }}</p>
+                            </div>
+                            <div class="buttonContainer">
+                                <button mat-button [routerLink]="['/store/product', product.productId]" class="buttonView">View</button>
+                                <button mat-button (click)="addToCart(product)" class="buttonAdd">+Cart</button>
+                            </div>
+                        </div>
+                    </mat-card>
+                </div>
+            </div>
+            <ng-template #noProducts>
+                <p class="error-message">No products available at the moment.</p>
+            </ng-template>
+        </ng-container>
+
+        <ng-template #loading>
+            <div class="loading-container">
+                <mat-spinner class="loading-spinner" diameter="50"></mat-spinner>
+                <p class="loading-text">Loading products...</p>
+            </div>
+        </ng-template>
+
+        <p *ngIf="error" class="error-message">{{ error }}</p>
+    </div>
+    <div class="actionButtonsContainer">
+        <button mat-button class="btn-backToTop" appScrollToTop>&#8682; Back to Top</button>
+    </div>
 </div>
 
 

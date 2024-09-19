@@ -1,23 +1,22 @@
 export class Product {
-    productId?: number;
-    paymentId?: string;
-    productName?: string;
-    productPrice?: number;
-    productDescription?: string;
-    productUrl?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    productId!: string;
+    paymentId!: string;
+    productName!: string;
+    productPrice!: number;
+    productDescription!: string;
+    productUrl!: string;
+    createdAt!: Date;
+    updatedAt!: Date;
 
     constructor(
-        productId?: number,
-        paymentId?: string,
-        productName?: string,
-        productPrice?: number,
-        productDescription?: string,
-        productUrl?: string,
-        createdAt?: Date,
-        updatedAt?: Date,
-
+        productId: string,
+        paymentId: string,
+        productName: string,
+        productPrice: number,
+        productDescription: string,
+        productUrl: string,
+        createdAt: Date,
+        updatedAt: Date,
     ) 
     {
         this.productId = productId;

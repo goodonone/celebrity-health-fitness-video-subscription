@@ -6,7 +6,7 @@ import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
 import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { debounceTime, Subject, takeUntil } from 'rxjs';
+import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 
 enum ProfileState {
@@ -1279,6 +1279,29 @@ isWeightValid(): boolean {
       this.userService.logoutUser();
     });
   }
+
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.userService.getUserId() ?? '';
+  //   }
+  // }
+
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+    
+  //   if (this.userIsLoggedIn) {
+  //     this.userService.getUserId().subscribe(
+  //       (userId) => {
+  //         this.UserId = userId || '';  // Assign the userId once fetched or fallback to an empty string
+  //       },
+  //       (error) => {
+  //         console.error('Error fetching userId:', error);
+  //         this.UserId = '';  // Fallback in case of error
+  //       }
+  //     );
+  //   }
+  // }
 
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();

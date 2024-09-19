@@ -39,7 +39,10 @@ nav {
 
 /* Effect when navbar turns black */
 .navBar.shadow {
-  box-shadow: 0 0 10px rgba(20, 20, 20, 0.9);
+  // box-shadow: 0 0 10px rgba(20, 20, 20, 0.9);
+  box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
+  background-color: rgba(255, 255, 255, 1);
+  // opacity: 1;
   transition: box-shadow 0.1s ease-in-out;
 }
 /* End */
@@ -245,8 +248,9 @@ footer {
   }
 
   .menu.shadow {
+    background-color: rgba(255, 255, 255, 1);
     box-shadow: 0 0 10px rgba(143, 143, 143, 0.9);
-    transition: background-color 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
   }
 
   #toggle:checked + .menu {

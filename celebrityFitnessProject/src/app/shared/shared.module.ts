@@ -18,6 +18,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { ScrollToTopDirective } from './scroll-to-top.directive';
 import { HeightFormatDirective } from './height-format.directive';
+import { PriceFormatPipe } from './price-format.pipe';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { HeightFormatDirective } from './height-format.directive';
     AppPasswordDirective,
     ScrollToTopDirective,
     HeightFormatDirective,
+    PriceFormatPipe
   ],
   imports: [
     CommonModule,
@@ -63,6 +65,7 @@ import { HeightFormatDirective } from './height-format.directive';
     FontAwesomeModule,
     ScrollToTopDirective,
     HeightFormatDirective,
+    PriceFormatPipe
   ] 
 })
 export class SharedModule { 

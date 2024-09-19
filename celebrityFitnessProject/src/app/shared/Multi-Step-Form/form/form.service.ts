@@ -172,8 +172,11 @@ export class FormService implements OnInit {
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
+     // Check if user is signed in
+    const userId = localStorage.getItem('userId') || '';
+
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
-    if (!localStorage.getItem('userId')) {
+    if (!userId) {
       const userData = {
         name: userInfo.name,
         password: userInfo.password,
@@ -251,8 +254,6 @@ export class FormService implements OnInit {
       localStorage.setItem('billing', planInfo.billing);
       localStorage.removeItem('hasVisitedProfileBefore');
       console.log("removed from local storage");
-      // localStorage.setItem('hasVisitedProfileBefore', 'false');
-      // location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 
