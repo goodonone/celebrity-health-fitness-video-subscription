@@ -21,7 +21,7 @@
 </div> -->
 
 
-<div class="pageContainer">
+<!-- <div class="pageContainer">
     <mat-card class="productContainer">
         <mat-card-content class="cardFlex">
             <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl() + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
@@ -41,4 +41,38 @@
             </div>
         </mat-card-content>
     </mat-card>
+    </div> -->
+
+    <div class="pageContainer">
+        <ng-container *ngIf="currentProduct$ | async as currentProduct; else loading">
+            <mat-card class="productContainer">
+                <mat-card-content class="cardFlex">
+                    <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl(currentProduct) + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                    </mat-card>
+                    <div class="productInfo">
+                        <p class="name">{{currentProduct.productName}}</p>
+                        <p class="price" id="price">${{currentProduct.productPrice | priceFormat }}</p>
+                        <div class="productDescriptionContainer">
+                            <p class="descriptionTitle"> Product Description: <br><br> </p>
+                            <p class="productDescriptionLorem">{{currentProduct.productDescription}}</p>
+                        </div>
+                        <div class="buttonContainer">
+                            <button mat-button class="backButton" routerLink="/store">Back To Store</button>
+                            <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">Add to Cart</button>
+                            <button mat-button class="viewCartButton" routerLink="/cart">View Cart</button>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+    
+        <ng-template #loading>
+            <mat-card class="loadingContainer">
+                <mat-card-content>
+                    <mat-spinner *ngIf="!errorMessage"></mat-spinner>
+                    <p *ngIf="!errorMessage">Loading product...</p>
+                    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+                </mat-card-content>
+            </mat-card>
+        </ng-template>
     </div>

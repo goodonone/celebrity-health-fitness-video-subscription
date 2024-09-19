@@ -14,7 +14,7 @@ export class UpgradeComponent implements OnInit, OnDestroy {
 
   userLoggedIn = true;
   showOrHide!: boolean;
-  userId?: number;
+  userId?: string;
   payment = false;
 
   currentUser: User = new User;
@@ -24,7 +24,7 @@ export class UpgradeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userId = parseInt(UserId);
+    this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
     });

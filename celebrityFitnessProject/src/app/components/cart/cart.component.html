@@ -1,4 +1,4 @@
-<div class="pageContainer">
+<!-- <div class="pageContainer">
    
     <mat-card class="cartContainer">
         <h1 *ngIf="(!cartItem() && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
@@ -52,9 +52,165 @@
         </div>
         </mat-card-content>
     </mat-card>
+    </div> -->
+<!-- 
+    <div class="pageContainer">
+   
+        <mat-card class="cartContainer">
+            <ng-container *ngIf="cart$ | async as cart">
+                <h1 *ngIf="(cart.items.length === 0 && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
+                <h1 *ngIf="cart.items.length === 0 && tierTwoThree" class="pageName">Checkout</h1>
+    
+                <mat-card-content class="cardFlex">
+                    <mat-card class="cards" *ngFor="let cartItem of cart.items">
+                        <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                        </mat-card>
+                        <p class="name">{{cartItem.product.productName}}</p>
+                        <div class="quantity">
+                            <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
+                                <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
+                            </select>
+                        </div>
+                        <div class="removeButton">
+                            <button mat-button (click)="removeFromCart(cartItem)">
+                                Remove
+                            </button>
+                        </div>
+                        <div class="priceContainer">
+                            <p class="price">${{cartItem.product.productPrice | number:'1.2-2'}}</p>
+                        </div>
+                    </mat-card>
+                    <div class="totalContainer" *ngIf="cart.items.length !== 0">
+                        <h1 class="totalText">Total:</h1>
+                        <div class="totalPriceContainer">
+                            <p class="totalPrice">${{cart.totalPrice | number:'1.2-2'}}</p>
+                        </div>
+                    </div>
+                
+                    <div class="buttonContainer" *ngIf="cart.items.length !== 0">
+                        <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
+                        <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
+                    </div>
+                    <div class="emptyMessageContainer" *ngIf="cart.items.length === 0">
+                        <p *ngIf="!tierTwoThree" class="emptyMessage">Your cart is empty</p>
+                        <div *ngIf="tierTwoThree" class="thankYouMessage">
+                            <h1 class="thankYou">Thank You for your Purchase!</h1>
+                            <p class="payment">Payment has been processed with Card Number on file. You will receive a Confirmation Email shortly. If you do not, please feel free to reach out to our Support Team at support@hughjackedman.com.</p>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </ng-container>
+        </mat-card>
+    </div> -->
+
+
+
+    <!-- <div class="pageContainer">
+        <mat-card class="cartContainer">
+            <ng-container *ngIf="cart$ | async as cart">
+                <h1 *ngIf="(!cart.items.length && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
+                <h1 *ngIf="cart.items.length === 0 && tierTwoThree" class="pageName">Checkout</h1>
+        
+                <mat-card-content class="cardFlex">
+                    <ng-container *ngIf="cart.items.length; else emptyCart">
+                        <mat-card class="cards" *ngFor="let cartItem of cart.items">
+                            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                            </mat-card>
+                            <p class="name">{{cartItem.product.productName}}</p>
+                            <div class="quantity">
+                                <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
+                                    <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
+                                </select>
+                            </div>
+                            <div class="removeButton">
+                                <button mat-button (click)="removeFromCart(cartItem)">
+                                    Remove
+                                </button>
+                            </div>
+                            <div class="priceContainer">
+                                <p class="price">${{cartItem.product.productPrice | number:'1.2-2'}}</p>
+                            </div>
+                        </mat-card>
+                        <div class="totalContainer">
+                            <h1 class="totalText">Total:</h1>
+                            <div class="totalPriceContainer">
+                                <p class="totalPrice">${{cart.totalPrice | number:'1.2-2'}}</p>
+                            </div>
+                        </div>
+                    
+                        <div class="buttonContainer">
+                            <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
+                            <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
+                        </div>
+                    </ng-container>
+                    
+                    <ng-template #emptyCart>
+                        <div class="emptyMessageContainer">
+                            <p *ngIf="!tierTwoThree" class="emptyMessage">Your cart is empty</p>
+                            <div *ngIf="tierTwoThree" class="thankYouMessage">
+                                <h1 class="thankYou">Thank You for your Purchase!</h1>
+                                <p class="payment">Payment has been processed with Card Number on file. You will receive a Confirmation Email shortly. If you do not, please feel free to reach out to our Support Team at support@hughjackedman.com.</p>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-card-content>
+            </ng-container>
+        </mat-card>
+    </div> -->
+
+    <div class="pageContainer">
+        <mat-card class="cartContainer">
+            <ng-container *ngIf="cart$ | async as cart">
+                <h1 *ngIf="(!cart.items.length && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
+                <h1 *ngIf="cart.items.length === 0 && tierTwoThree" class="pageName">Checkout</h1>
+        
+                <mat-card-content class="cardFlex">
+                    <ng-container *ngIf="cart.items.length; else emptyCart">
+                        <mat-card class="cards" *ngFor="let cartItem of cart.items">
+                            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.Product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                            </mat-card>
+                            <p class="name">{{cartItem.Product.productName}}</p>
+                            <div class="quantity">
+                                <!-- <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
+                                    <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
+                                </select> -->
+                                <select matNativeControl [(ngModel)]="cartItem.quantity" (change)="changeQuantity(cartItem, $event)">
+                                    <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
+                                </select>
+                            </div>
+                            <div class="removeButton">
+                                <button mat-button (click)="removeFromCart(cartItem)">
+                                    Remove
+                                </button>
+                            </div>
+                            <div class="priceContainer">
+                                <p class="price">${{cartItem.Product.productPrice | priceFormat}}</p>
+                            </div>
+                        </mat-card>
+                        <div class="totalContainer">
+                            <h1 class="totalText">Total:</h1>
+                            <div class="totalPriceContainer">
+                                <p class="totalPrice">${{ getFormattedTotal(cart.totalPrice).dollars }}.
+                                    <sup>{{ getFormattedTotal(cart.totalPrice).cents }}</sup></p>
+                            </div>
+                        </div>
+                    
+                        <div class="buttonContainer">
+                            <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
+                            <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
+                        </div>
+                    </ng-container>
+                    
+                    <ng-template #emptyCart>
+                        <div class="emptyMessageContainer">
+                            <p *ngIf="!tierTwoThree" class="emptyMessage">Your cart is empty</p>
+                            <div *ngIf="tierTwoThree" class="thankYouMessage">
+                                <h1 class="thankYou">Thank You for your Purchase!</h1>
+                                <p class="payment">Payment has been processed with Card Number on file. You will receive a Confirmation Email shortly. If you do not, please feel free to reach out to our Support Team at support@hughjackedman.com.</p>
+                            </div>
+                        </div>
+                    </ng-template>
+                </mat-card-content>
+            </ng-container>
+        </mat-card>
     </div>
-
-
-
-
-

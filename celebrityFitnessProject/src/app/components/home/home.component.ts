@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { carouselImage } from 'src/app/components/home/carousel/carousel.component';
+import { UserService } from 'src/app/services/user.service';
 
 interface videoPlaylist {
   videoSrc: string;
@@ -16,6 +17,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   bannerFour!: HTMLElement | null;
   navbar!: HTMLElement | null;
   menu!: HTMLElement | null;
+  userIsLoggedIn: boolean = false;
+  // UserId: string = '';
+
 
   videos = [
     { videoSrc: "/assets/Videos/Man Video One.mp4" }, { videoSrc: "/assets/Videos/Man Video Two.mp4" },
@@ -99,6 +103,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
         this.resetNavbarState();
       }
     });
+
+    this.UpdateStatus();
+    
+    this.userService.isLoggedIn$.subscribe(status => {
+      this.userIsLoggedIn = status;
+    });
   }
 
 ngAfterViewInit(): void {
@@ -113,7 +123,7 @@ ngAfterViewInit(): void {
   }
 
 
-  constructor(private router: Router){}
+  constructor(private router: Router, private userService: UserService){}
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
@@ -152,6 +162,16 @@ ngAfterViewInit(): void {
     });
   }
 
+  UpdateStatus() {
+    this.userIsLoggedIn = this.userService.isloggedIn();
+    if (this.userIsLoggedIn) {
+      localStorage.setItem("isUserLoggedIn", "true");
+    }
+  }
+
+  onLogout() {
+    this.userService.logoutUser();
+  }
 }
 
 

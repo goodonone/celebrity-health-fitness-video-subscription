@@ -26,14 +26,15 @@ export class ContentComponent implements OnInit{
   currentUser: User = new User;
   timerVal = '';
   timerValThree = '';
-  userId?: number;
+  userId?: string;
   heading:boolean = true;
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
-    this.userId = parseInt(UserId);
+    // this.userId = parseInt(UserId);
+    this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
       if(this.currentUser.tier === "Just Looking"){

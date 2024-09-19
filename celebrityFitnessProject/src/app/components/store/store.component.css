@@ -61,54 +61,74 @@ mat-card.products {
     margin-bottom: 10rem;
     background-size: 80%;
     box-shadow: 0 0 20px rgb(162, 162, 162);
-    padding-bottom: 4rem;
+    /* padding-bottom: 4rem; */
 }
 
 .productDetails {
-    position: absolute;
-    top: 4%;
+    position: relative;
+    /* top: 4%;
     left: 3%;
     z-index: 1;
-    height: 20rem;
+    height: 20rem; */
+    width: 100%;
+    height: 100%;
+}
+
+.absoluteContainer {
+    position: absolute;
+    bottom: 1rem;
+    width: 100%;
+    height: auto;
 }
 
 .name {
     font-weight: 500;
-    width: 25rem;
+    width: 100%;
     color: white;
     font-size: 5rem;
-    height: 8rem;
-    margin-top:13rem;
-    margin-bottom: 0;
+    height: fit-content;
+    /* margin-top:13rem; */
+    /* margin-bottom: 0; */
     padding-bottom: 0;
-    line-height: 4rem;
-    text-shadow: 0 0 10px rgb(87, 86, 86);
+    padding-bottom: 5.5rem;
+    padding-left: 0.5rem;
+    /* line-height: 4rem; */
+    text-shadow: 0 0 12px rgb(87, 86, 86);
 }
 
 .price {
     font-family: 'Roboto', sans-serif;
     font-style: italic;
     font-weight: 600;
-    width: 10rem;
+    width: 100%;
     color: white;
     font-size: 10rem;
-    height: 10rem;
-    margin-top: 2rem;
+    height: fit-content;
+    /* margin-top: 2rem; */
+    padding-bottom: 7.5rem;
+    padding-left: 0.5rem;
     text-shadow: 0 0 10px rgb(87, 86, 86);
 }
 
 .buttonContainer {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
     display: flex;
+    flex-direction: row;
     justify-content: space-evenly;
+    /* opacity: 0.9; */
     height: 4rem;
     width: 23rem;
-    margin-top: -4rem;
-    margin-left: -0.7rem;
+    /* margin-top: -2rem; */
+    /* margin-left: -0.7rem; */
     background-color: transparent !important;
     border-radius: 0 0 8px 8px;
     max-width: 23rem;
     overflow: hidden;
+    margin: auto;
 }
+
 
 .buttonView,
 .buttonAdd {

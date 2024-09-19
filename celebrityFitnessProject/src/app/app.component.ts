@@ -10,6 +10,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
+import { catchError, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   UserId: string = '';
 
-  cartQuantity = 0;
+  cartQuantity: number = 0;
 
   navbar!: HTMLElement | null;
 
@@ -58,12 +59,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
 
     this.cartService.getCartObservable().subscribe((newCart) => {
-      this.cartQuantity = newCart.totalCount;
+      console.log('Cart received in navbar:', newCart); 
+      this.cartQuantity = newCart.totalCount || 0;
     });
   }
 
   ngOnInit(): void {
+    // this.loadUserId();
     this.UpdateStatus();
+
 
       // Check if the user has visited the page before to serve animations or not
       const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
@@ -107,6 +111,20 @@ export class AppComponent implements OnInit, AfterViewInit {
     const navBar = document.querySelector('.navBar') as HTMLElement;
     navBar?.classList.remove('firstVisitAnimation');
   }
+
+
+  // loadUserId(): void {
+  //   this.userService.getUserId().subscribe(
+  //     userId => {
+  //       this.UserId = userId;  // Assign the userId once it's fetched
+  //       console.log('User ID:', this.UserId);  // Log the userId for debugging
+  //     },
+  //     error => {
+  //       console.error('Error fetching userId:', error);
+  //       this.UserId = '';  // Set a fallback value in case of an error
+  //     }
+  //   );
+  // }
 
 
     // Add event listener for the hamburger button
@@ -164,6 +182,36 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // UpdateStatus() {
+  //   this.userService.getUserId().subscribe(
+  //     userId => {
+  //       this.UserId = userId;  // Assign the userId once fetched
+  //     },
+  //     error => {
+  //       console.error('Error fetching userId:', error);
+  //       this.UserId = '';  // Fallback value in case of error
+  //     }
+  //   );
+  // }
+
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+  //   if (this.userIsLoggedIn) {
+  //     this.userService.getUserId().subscribe(
+  //       userId => {
+  //         this.UserId = userId || '';
+  //         console.log('User ID updated:', this.UserId);
+  //       },
+  //       error => {
+  //         console.error('Error fetching user ID:', error);
+  //         this.UserId = '';
+  //       }
+  //     );
+  //   } else {
+  //     this.UserId = '';
+  //   }
+  // }
+
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();
     if (this.userIsLoggedIn) {
@@ -172,7 +220,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   logOut() {
-    this.cartService.clearCart();
+    // this.cartService.clearCart();
     this.userService.logoutUser();
     this.UpdateStatus();
   }

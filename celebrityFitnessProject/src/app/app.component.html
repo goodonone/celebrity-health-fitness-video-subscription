@@ -35,8 +35,7 @@
       <h6 class="navBarText" routerLink="/contact" (click)="clearMenu()">Contact</h6>
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store" (click)="clearMenu()">Store</h6>
-      <h6 *ngIf="userIsLoggedIn && cartQuantity >= 1" class="navBarText" routerLink="/cart">Cart <span class="reddot" *ngIf="cartQuantity" (click)="clearMenu()">{{cartQuantity}}</span></h6>
-
+      <h6 *ngIf="userIsLoggedIn && cartQuantity>=1" class="navBarText" routerLink="/cart">Cart <span class="reddot" (click)="clearMenu()">{{cartQuantity}}</span></h6>
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home" (click)="clearMenu()">Sign Out</h6>
 

@@ -25,7 +25,7 @@ export class FormService implements OnInit {
 
   userIsLoggedIn: boolean = false;
   UserId?: string;
-  userId?: number;
+  userId?: string;
   currentUser: User = new User();
   shipping?: boolean;
 
@@ -47,7 +47,7 @@ export class FormService implements OnInit {
 
   multiStepForm: FormGroup = this.fb.group({
     personalDetails: this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
+      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
@@ -172,8 +172,11 @@ export class FormService implements OnInit {
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
 
+     // Check if user is signed in
+    const userId = localStorage.getItem('userId') || '';
+
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
-    if (!localStorage.getItem('userId')) {
+    if (!userId) {
       const userData = {
         name: userInfo.name,
         password: userInfo.password,
@@ -190,7 +193,7 @@ export class FormService implements OnInit {
     else {
       this.UserId = this.user.getUserId() ?? "";
 
-      this.userId = parseInt(this.UserId);
+      this.userId = this.UserId;
 
       this.user.getUser(this.userId).subscribe((user)=>{
         this.currentUser = user;
@@ -222,7 +225,7 @@ export class FormService implements OnInit {
       }, 4000);
       this.multiStepForm = this.fb.group({
     personalDetails: this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z]+ [A-Za-z]+$/)]],
+      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       confirmPassword: ['', { validators: [Validators.required]}]
@@ -251,8 +254,6 @@ export class FormService implements OnInit {
       localStorage.setItem('billing', planInfo.billing);
       localStorage.removeItem('hasVisitedProfileBefore');
       console.log("removed from local storage");
-      // localStorage.setItem('hasVisitedProfileBefore', 'false');
-      // location.href
       this.router.navigateByUrl(`/content/${this.UserId}`);
     }
 
