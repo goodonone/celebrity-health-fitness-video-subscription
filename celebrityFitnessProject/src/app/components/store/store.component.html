@@ -37,7 +37,7 @@
                             </div>
                             <div class="buttonContainer">
                                 <button mat-button [routerLink]="['/store/product', product.productId]" class="buttonView">View</button>
-                                <button mat-button (click)="addToCart(product)" class="buttonAdd">+Cart</button>
+                                <button mat-button (click)="addToCart(product)" class="buttonAdd">{{ getButtonText(product) }}</button>
                             </div>
                         </div>
                     </mat-card>

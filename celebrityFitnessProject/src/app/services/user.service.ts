@@ -484,11 +484,28 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.isloggedIn());
+
+  // Observable for components to subscribe to
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
   signUp(newUser: User) {
     return this.http.post(`${this.baseURL}/`, newUser)
 }
 
-login(email: string, password: string){
+// login(email: string, password: string){
+//   let request = { email, password };
+
+//   return this.http.post(`${this.baseURL}/login`, request)
+//     .pipe(tap((response: any) => {
+//       localStorage.setItem(this.tokenKey, response.token);
+//       localStorage.setItem(this.userIdKey , response.userId);
+//       localStorage.setItem(this.tierKey, response.tier);
+//       localStorage.setItem('billing', response.paymentFrequency);
+//     }));
+// }
+
+login(email: string, password: string) {
   let request = { email, password };
 
   return this.http.post(`${this.baseURL}/login`, request)
@@ -497,11 +514,15 @@ login(email: string, password: string){
       localStorage.setItem(this.userIdKey , response.userId);
       localStorage.setItem(this.tierKey, response.tier);
       localStorage.setItem('billing', response.paymentFrequency);
+
+      // Update login state after successful login
+      localStorage.setItem("isUserLoggedIn", "true");
+      this.isLoggedInSubject.next(true);  // Notify login state change
     }));
 }
 
 isloggedIn() {
-  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey)
+  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true';
 }
 
 logoutUser() {
@@ -510,6 +531,7 @@ logoutUser() {
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
   localStorage.removeItem("cart");
+  this.isLoggedInSubject.next(false);
 }
 
 checkEmail(email: string): Observable<{exists: boolean, message: string}> {

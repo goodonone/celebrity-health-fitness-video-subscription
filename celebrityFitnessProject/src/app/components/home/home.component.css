@@ -324,17 +324,19 @@ label {
   bottom: 3rem;
   transform: translateX(-50%);
   height: 2rem;
-  width: 18rem;
-  /* margin-top: -4rem;
-    margin-left: -0.7rem; */
+  /* width:18rem; */
+  min-width: 12rem;
+  max-width: 19rem;
+  /* max-width: 18rem; */
   background-color: transparent !important;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, width 0.3s;
   border-radius: 0.4rem;
-  max-width: 23rem;
+  /* max-width: 23rem; */
   overflow: hidden;
   border-color: #676767;
   border-style: solid;
   cursor: pointer;
+  /* padding: 0 0.5rem; */
 }
 
 .btn-backToTop,
@@ -355,6 +357,23 @@ label {
   /* color: #c80f0f; */
   /* color: #676767; */
   cursor: pointer;
+  /* width: 50%; */
+  min-width: 8.5rem;
+}
+
+.btn-backToTop {
+  flex-grow: 1;
+  padding-left: 0.5rem;
+}
+
+.btn-signUp {
+  flex-grow: 1;
+  min-width: 8rem;
+}
+
+.actionButtonsContainer:has(.btn-signUp:empty) {
+  min-width: 12rem; /* Ensures the container is at least 12rem when one button disappears */
+  max-width: 12rem; /* Lock the width at 12rem when only one button remains */
 }
 
 .actionButtonsContainer:hover{

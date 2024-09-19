@@ -124,6 +124,7 @@ import { catchError } from 'rxjs/operators';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
 import { CartService } from 'src/app/services/cart.service';
+import { CartItem } from 'src/app/models/cart-items';
 
 @Component({
   selector: 'app-store',
@@ -133,6 +134,8 @@ import { CartService } from 'src/app/services/cart.service';
 export class StoreComponent implements OnInit {
   productList$: Observable<Product[]>;
   error: string | null = null;
+  cartItems: CartItem[] = [];
+  maxReachedForProducts: { [productId: string]: boolean } = {};
   
   constructor(
     private productService: ProductService,
@@ -149,15 +152,55 @@ export class StoreComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('StoreComponent initialized');
+    this.cartService.getCartObservable().subscribe(cart => {
+      this.cartItems = cart.CartProducts;
+
+      this.cartItems.forEach(item => {
+        if (item.quantity >= 10) {
+          this.maxReachedForProducts[item.productId] = true;
+        }
+      });
+    });
   }
 
+  // addToCart(selectedProduct: Product) {
+  //   this.cartService.addToCart(selectedProduct).subscribe(
+  //     () => console.log('Product added to cart:', selectedProduct),
+  //     error => console.error('Error adding product to cart:', error)
+  //   );
+  // }
+
   addToCart(selectedProduct: Product) {
+    const cartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
+    if (cartItem && cartItem.quantity >= 10) {
+      // Max quantity reached, don't add to cart
+      this.maxReachedForProducts[selectedProduct.productId] = true;
+      return;
+    }
+
     this.cartService.addToCart(selectedProduct).subscribe(
-      () => console.log('Product added to cart:', selectedProduct),
+      () => {
+        console.log('Product added to cart:', selectedProduct);
+        // Update the cart and check if max quantity is reached
+        this.cartService.getCartObservable().subscribe(cart => {
+          this.cartItems = cart.CartProducts;
+          const updatedCartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
+          if (updatedCartItem && updatedCartItem.quantity >= 10) {
+            this.maxReachedForProducts[selectedProduct.productId] = true; // Set max quantity reached
+          }
+        });
+      },
       error => console.error('Error adding product to cart:', error)
     );
   }
 
+  getButtonText(product: Product): string {
+    return this.maxReachedForProducts[product.productId] ? 'Max Quantity Reached' : '+Cart';
+  }
 
+  // isMaxQuantityReached(product: Product): boolean {
+  //   const cartItem = this.cartItems.find(item => item.productId === product.productId);
+  //   return cartItem ? cartItem.quantity >= 10 : false;
+  // }
 }
+

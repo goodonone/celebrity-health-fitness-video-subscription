@@ -357,13 +357,122 @@
 //   }
 // }
 
+// import { Injectable } from '@angular/core';
+// import { HttpClient } from '@angular/common/http';
+// import { BehaviorSubject, Observable } from 'rxjs';
+// import { map, tap } from 'rxjs/operators';
+// import { Cart } from '../models/cart';
+// import { Product } from '../models/product';
+// import { CartItems } from '../models/cart-items';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class CartService {
+//   private apiUrl = 'http://localhost:3000/api/cart'; // Replace with your actual API URL
+//   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
+
+//   constructor(private http: HttpClient) {
+    
+//     this.getCart().subscribe();
+//   }
+
+//   getCart(): Observable<Cart> {
+//     const userId = this.getCurrentUserId();
+//     return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+//       tap(cart => this.cartSubject.next(cart))
+//     );
+//   }
+
+//   // addToCart(product: Product, quantity: number = 1): Observable<Cart> {
+//   //   const userId = this.getCurrentUserId();
+//   //   return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
+//   //     tap(cart => this.cartSubject.next(cart))
+//   //   );
+//   // }
+
+//   // addToCart(product: Product, quantity: number = 1): Observable<Cart> {
+//   //   const userId = this.getCurrentUserId();
+//   //   return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
+//   //     tap(cart => {
+//   //       console.log('Cart after adding product:', cart);  // Log the updated cart
+//   //       this.cartSubject.next(cart);  // Update the cart subject
+//   //     })
+//   //   );
+//   // }
+
+//   addToCart(product: Product, quantity: number = 1): Observable<Cart> {
+//     const userId = this.getCurrentUserId();
+//     return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
+//       tap(cart => {
+//         console.log('Updated Cart after adding product:', cart);  // Log the updated full cart
+//         this.cartSubject.next(cart);  // Update the cart subject with the full cart
+//       })
+//     );
+//   }
+
+//   removeFromCart(productId: string | number): Observable<Cart> {
+//     const userId = this.getCurrentUserId();
+//     return this.http.delete<Cart>(`${this.apiUrl}/${userId}/${productId}`).pipe(
+//       tap(cart => this.cartSubject.next(cart))
+//     );
+//   }
+
+//   updateQuantity(productId: string | number, quantity: number): Observable<Cart> {
+//     const userId = this.getCurrentUserId();
+//     return this.http.put<Cart>(`${this.apiUrl}/${userId}/${productId}`, { quantity }).pipe(
+//       tap(cart => this.cartSubject.next(cart))
+//     );
+//   }
+
+//   clearCart(): Observable<Cart> {
+//     const userId = this.getCurrentUserId();
+//     return this.http.delete<Cart>(`${this.apiUrl}/${userId}`).pipe(
+//       tap(() => this.cartSubject.next(new Cart()))
+//     );
+//   }
+
+//   getCartObservable(): Observable<Cart> {
+//     return this.cartSubject.asObservable();
+//   }
+
+//   getTotalPrice(): Observable<number> {
+//     return this.cartSubject.pipe(
+//       map(cart => cart.totalPrice)
+//     );
+//   }
+
+//   getTotalCount(): Observable<number> {
+//     return this.cartSubject.pipe(
+//       map(cart => cart.totalCount)
+//     );
+//   }
+
+//   private getCurrentUserId(): string {
+//     return localStorage.getItem('userId') || '';
+//   }
+
+//    // You can also have methods to fetch and update the cart from an API
+//    loadCart(): void {
+//     const userId = localStorage.getItem('userId'); // Get userId or another way to load the cart
+//     this.http.get<Cart>(`/api/cart/${userId}`).subscribe(
+//       (cart) => {
+//         this.cartSubject.next(cart);
+//       },
+//       (error) => {
+//         console.error('Error loading cart', error);
+//       }
+//     );
+//   }
+// }
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Cart } from '../models/cart';
 import { Product } from '../models/product';
-import { CartItems } from '../models/cart-items';
+// import { CartItem } from '../models/cart-item';
 
 @Injectable({
   providedIn: 'root'
@@ -373,7 +482,6 @@ export class CartService {
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
 
   constructor(private http: HttpClient) {
-    
     this.getCart().subscribe();
   }
 
@@ -384,44 +492,64 @@ export class CartService {
     );
   }
 
-  // addToCart(product: Product, quantity: number = 1): Observable<Cart> {
-  //   const userId = this.getCurrentUserId();
-  //   return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
-  //     tap(cart => this.cartSubject.next(cart))
-  //   );
-  // }
-
-  // addToCart(product: Product, quantity: number = 1): Observable<Cart> {
-  //   const userId = this.getCurrentUserId();
-  //   return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
-  //     tap(cart => {
-  //       console.log('Cart after adding product:', cart);  // Log the updated cart
-  //       this.cartSubject.next(cart);  // Update the cart subject
-  //     })
-  //   );
-  // }
-
   addToCart(product: Product, quantity: number = 1): Observable<Cart> {
     const userId = this.getCurrentUserId();
     return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
       tap(cart => {
-        console.log('Updated Cart after adding product:', cart);  // Log the updated full cart
-        this.cartSubject.next(cart);  // Update the cart subject with the full cart
+        console.log('Updated Cart after adding product:', cart);
+        this.cartSubject.next(cart);
       })
     );
   }
 
-  removeFromCart(productId: string | number): Observable<Cart> {
+  // removeFromCart(productId: string): Observable<Cart> {
+  //   const userId = this.getCurrentUserId();
+  //   return this.http.delete<Cart>(`${this.apiUrl}/${userId}/${productId}`).pipe(
+  //     tap(cart => this.cartSubject.next(cart))
+  //   );
+  // }
+
+  removeFromCart(productId: string): Observable<any> {
     const userId = this.getCurrentUserId();
-    return this.http.delete<Cart>(`${this.apiUrl}/${userId}/${productId}`).pipe(
-      tap(cart => this.cartSubject.next(cart))
+    return this.http.delete(`${this.apiUrl}/${userId}/${productId}`, { responseType: 'text' }).pipe(
+      tap(() => {
+        const currentCart = this.cartSubject.getValue();
+        const updatedCart = new Cart();
+        Object.assign(updatedCart, currentCart);
+        updatedCart.CartProducts = currentCart.CartProducts.filter(item => item.Product.productId !== productId);
+        updatedCart.totalCount = updatedCart.calculatedTotalCount;
+        updatedCart.totalPrice = updatedCart.calculatedTotalPrice;
+        this.cartSubject.next(updatedCart);
+      })
     );
   }
 
-  updateQuantity(productId: string | number, quantity: number): Observable<Cart> {
+  // updateQuantity(productId: string, quantity: number): Observable<Cart> {
+  //   const userId = this.getCurrentUserId();
+  //   return this.http.put<Cart>(`${this.apiUrl}/${userId}/${productId}`, { quantity }).pipe(
+  //     tap(cart => this.cartSubject.next(cart))
+  //   );
+  // }
+
+  updateQuantity(productId: string, quantity: number): Observable<any> {
     const userId = this.getCurrentUserId();
-    return this.http.put<Cart>(`${this.apiUrl}/${userId}/${productId}`, { quantity }).pipe(
-      tap(cart => this.cartSubject.next(cart))
+    return this.http.put(`${this.apiUrl}/${userId}/${productId}`, { quantity }, { responseType: 'text' }).pipe(
+      tap(() => {
+        const currentCart = this.cartSubject.getValue();
+        const updatedCart = new Cart();
+        Object.assign(updatedCart, currentCart);
+        const updatedProduct = updatedCart.CartProducts.find(item => item.Product.productId === productId);
+        if (updatedProduct) {
+          updatedProduct.quantity = quantity;
+          updatedCart.totalCount = updatedCart.calculatedTotalCount;
+          updatedCart.totalPrice = updatedCart.calculatedTotalPrice;
+          this.cartSubject.next(updatedCart);
+        }
+      }),
+      catchError((error) => {
+        console.error('Error updating quantity:', error);
+        return this.getCart(); // Refresh the cart from the server in case of an error
+      })
     );
   }
 
@@ -438,13 +566,13 @@ export class CartService {
 
   getTotalPrice(): Observable<number> {
     return this.cartSubject.pipe(
-      map(cart => cart.totalPrice)
+      map(cart => cart.totalPrice || cart.calculatedTotalPrice)
     );
   }
 
   getTotalCount(): Observable<number> {
     return this.cartSubject.pipe(
-      map(cart => cart.totalCount)
+      map(cart => cart.totalCount || cart.calculatedTotalCount)
     );
   }
 
@@ -452,10 +580,9 @@ export class CartService {
     return localStorage.getItem('userId') || '';
   }
 
-   // You can also have methods to fetch and update the cart from an API
-   loadCart(): void {
-    const userId = localStorage.getItem('userId'); // Get userId or another way to load the cart
-    this.http.get<Cart>(`/api/cart/${userId}`).subscribe(
+  loadCart(): void {
+    const userId = this.getCurrentUserId();
+    this.http.get<Cart>(`${this.apiUrl}/${userId}`).subscribe(
       (cart) => {
         this.cartSubject.next(cart);
       },

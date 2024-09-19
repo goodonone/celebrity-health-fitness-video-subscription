@@ -67,6 +67,10 @@ div.quantity{
     top: 2rem;
 }
 
+select{
+    cursor: pointer;
+}
+
 div.removeButton{
     position: absolute;
     left: 71rem;
@@ -86,6 +90,9 @@ p.price{
 }
 
 h1.totalText{
+    position: absolute;
+    right: 10rem;
+    /* top: 2rem; */
     font-size: 3rem;
     font-weight: 500;
     margin-top: 1rem;
@@ -96,12 +103,11 @@ h1.totalText{
 } */
 
 .totalContainer{
+    position: relative;
     display:inline-flex;
     justify-content: right;
-    margin-right: 8rem;
+    margin-right: 4.5rem;
 }
-
-
 
 .totalCountContainer{
     margin-top: 4rem;
@@ -121,6 +127,13 @@ p.totalPrice{
 .totalPriceContainer{
     margin-top: 3.9rem;
 }
+
+.totalPrice sup {
+    font-size: 0.7em; /* Reduce the font size */
+    vertical-align: top; /* Align it closer to the top */
+    line-height: 0; /* Reduce extra space */
+    margin-left: -0.2em; /* Move it closer to the decimal point */
+  }
 
 button.buttonCheckOut{
     background-color: rgb(236, 236, 236);
@@ -162,6 +175,16 @@ p.payment{
     font-size: 1rem;
     width: 50%
 }
+
+::ng-deep select[matNativeControl] {
+    border-color: #ffffff !important; /* Change the border color when focused */
+    outline: none; /* Remove the default outline */
+    box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+    color: #000000 !important; /* Change the text color when focused */
+    border-radius: 0.2rem !important;
+  }
+
+
 
 @media screen and (min-width: 500px) and (max-width: 1286px){
 

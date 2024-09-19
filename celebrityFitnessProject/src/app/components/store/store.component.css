@@ -91,6 +91,7 @@ mat-card.products {
     /* margin-bottom: 0; */
     padding-bottom: 0;
     padding-bottom: 5.5rem;
+    padding-left: 0.5rem;
     /* line-height: 4rem; */
     text-shadow: 0 0 12px rgb(87, 86, 86);
 }
@@ -104,7 +105,8 @@ mat-card.products {
     font-size: 10rem;
     height: fit-content;
     /* margin-top: 2rem; */
-    padding-bottom: 6.5rem;
+    padding-bottom: 7.5rem;
+    padding-left: 0.5rem;
     text-shadow: 0 0 10px rgb(87, 86, 86);
 }
 
