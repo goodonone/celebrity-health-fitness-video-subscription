@@ -436,6 +436,11 @@ input[matInput]:focus::placeholder {
     width: 100%;
   }
 
+  mat-card-header {
+    padding-top: 0.3rem;
+    margin-bottom: 0rem;
+  }
+
   mat-card-subtitle {
     display: none;
   }
@@ -449,14 +454,14 @@ input[matInput]:focus::placeholder {
   }
 
   input {
-    height: 1.8rem;
+    height: 1.2rem;
     width: 95%;
   }
 
   #password, #confirmPassword{
     display: inline-block;
     width: 95%;
-    height: 1.6rem;
+    height: 1.2rem;
     border-radius: 0.25rem;
     border: 0.063rem solid black;
     margin-bottom: 0rem;
@@ -479,13 +484,14 @@ input[matInput]:focus::placeholder {
     font-size: 1rem;
   } */
 
-  .input-details {
+  .input-details, .input-details-confirm{
+    font-weight: 600;
     width: 100%;
   }
 
-  .input-details-confirm{
+  /* .input-details-confirm{
     width: 100%;
-  }
+  } */
 
   .error-alert {
     font-weight: 500;
@@ -505,15 +511,24 @@ input[matInput]:focus::placeholder {
     transition: background-color 0.5s ease-in;
   }
 
+  .socialContainer{
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 100%;
+  }
+
   .btn-google, .btn-apple {
+    max-width: 400px;
+    padding: 7px 1px 7px 1px;
+  }  
+  /* .btn-google, .btn-apple {
     width: 49.5%;
     min-width: 100px;
     max-width: 155px;
     padding: 8px 4px;
     font-size: clamp(10.5px, 1.5vw, 12px); 
     font-weight: 700;
-    /* box-shadow: 0 0px 2px 0 rgba(68, 68, 69, 0.3), 0 1px 3px 0 rgba(58, 59, 59, 0.15); */
-  }
+  } */
 }
 
 
