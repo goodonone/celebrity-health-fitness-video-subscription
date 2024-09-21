@@ -66,10 +66,10 @@ mat-card {
   transform: translate(-50%, -50%); */
   width: 30%;
   min-width: 430px;
-  max-width: 500px;
+  max-width: 440px;
   height: auto;
   min-height: 430px;
-  max-height: 500px;
+  max-height: 440px;
   /* border-radius: 8px; */
   border-radius: 1rem;
   padding: 1rem;
@@ -221,7 +221,7 @@ p {
 
 .absoluteContainer{
   position: absolute;
-  bottom:15%;
+  bottom:clamp(14%, 2vw, 15%); 
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -455,7 +455,7 @@ input[matInput]:focus::placeholder {
   }
 
   .absoluteContainer{
-    bottom: 12%;
+    bottom: 11%;
   }
 
   .socialContainer{
