@@ -16,6 +16,10 @@ import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ScrollToTopDirective } from './shared/scroll-to-top.directive';
 import { SharedModule } from './shared/shared.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { CustomOAuthService } from './services/oauth.service';
+import { AuthStateService } from './services/authstate.service';
+
 
 
 @NgModule({
@@ -37,9 +41,10 @@ import { SharedModule } from './shared/shared.module';
     MaterialModule,
     AppRoutingModule,
     FontAwesomeModule,
-    SharedModule
+    SharedModule,
+    OAuthModule.forRoot()
   ],
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

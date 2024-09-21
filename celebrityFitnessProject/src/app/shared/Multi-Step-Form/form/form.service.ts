@@ -7,6 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { PaymentService } from 'src/app/services/payment.service';
 import { expirationDateValidator } from '../../expiry-date-validator';
+import { CustomOAuthService} from 'src/app/services/oauth.service';
 // import { expirationDateValidator } from '../../expiry-date-validator';
 
 // Custom Validator Function
@@ -42,7 +43,7 @@ export class FormService implements OnInit {
     }
   }
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { 
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private oauthService: CustomOAuthService) { 
   }
 
   multiStepForm: FormGroup = this.fb.group({
@@ -50,7 +51,8 @@ export class FormService implements OnInit {
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
+      confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      isGoogleAuth: [false]
     }, { validator: passwordMatchValidator }),
     planDetails: this.fb.group({
       plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
@@ -108,6 +110,32 @@ export class FormService implements OnInit {
     } else {
       paymentDetailsGroup.removeControl('shippingAddress');
       paymentDetailsGroup.removeControl('shippingZip');
+    }
+  }
+
+  async initiateGoogleOAuth() {
+    try {
+      const success = await this.oauthService.loginWithPopup();
+      if (success) {
+        const googleUser = await this.oauthService.getUser();
+        this.populateFormWithGoogleData(googleUser);
+      }
+    } catch (error) {
+      console.error('Google OAuth error:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  }
+
+  private populateFormWithGoogleData(googleUser: any) {
+    const personalDetails = this.multiStepForm.get('personalDetails');
+    if (personalDetails) {
+      personalDetails.patchValue({
+        name: googleUser.name,
+        email: googleUser.email,
+        isGoogleAuth: true
+      });
+      personalDetails.get('password')?.disable();
+      personalDetails.get('confirmPassword')?.disable();
     }
   }
 
@@ -179,7 +207,8 @@ export class FormService implements OnInit {
     if (!userId) {
       const userData = {
         name: userInfo.name,
-        password: userInfo.password,
+        password: userInfo.isGoogleAuth ? null : userInfo.password,
+        isGoogleAuth: userInfo.isGoogleAuth,
         email: userInfo.email,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,

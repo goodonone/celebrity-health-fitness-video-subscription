@@ -12,6 +12,8 @@ import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
 import { catchError, filter, of, Subscription, switchMap, tap } from 'rxjs';
 import { AuthService } from './services/auth.service';
+import { CustomOAuthService } from './services/oauth.service';
+import { AuthStateService } from './services/authstate.service';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +46,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMenuHovered: boolean = false;
   closeTimeout: any;
 
-  // private cartSubscription: Subscription | null = null;
+  private cartSubscription: Subscription | null = null;
   // private authSubscription: Subscription | null = null;
   // private routerSubscription!: Subscription;
 
@@ -59,7 +61,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     private router: Router,
     private userService: UserService,
     private cartService: CartService,
-    private authService: AuthService
+    private authService: AuthService,
+    private oauthService: CustomOAuthService,
+    private authStateService: AuthStateService
   ) {
     // this.router.events.subscribe((event) => {
     //   if (event instanceof NavigationEnd) {
@@ -77,11 +81,21 @@ export class AppComponent implements OnInit, AfterViewInit {
     // this.loadUserId();
     // this.UpdateStatus();
 
-    this.cartService.getCartObservable().subscribe((newCart) => {
-      console.log('Cart received in navbar:', newCart); 
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then((loginResult) => {
+      if (loginResult) {
+        console.log('User logged in successfully after redirect');
+        this.authStateService.checkAuthStatus();
+      } else {
+        console.log('No user is currently logged in');
+      }
+    }).catch(error => {
+      console.error('Error during OAuth initialization:', error);
+    });
+
+    this.cartSubscription =this.cartService.getCartObservable().subscribe((newCart) => {
+      // console.log('Cart received in navbar:', newCart); 
       this.cartQuantity = newCart.totalCount || 0;
       });
-
 
       this.subscription.add(
         this.userService.isLoggedIn$.pipe(
@@ -96,7 +110,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           switchMap(() => this.cartService.getCartObservable())
         ).subscribe(cart => {
           this.cartQuantity = cart.totalCount || 0;
-          console.log('Cart received in navbar:', cart);
+          // console.log('Cart received in navbar:', cart);
         })
       );
   
@@ -158,6 +172,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+    // this.cartService.clearCart();
     // this.unsubscribeFromCart();
     // if (this.routerSubscription) {
     //   this.routerSubscription.unsubscribe();
@@ -303,6 +321,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   private UpdateStatus(): void {
     if (this.authService.isAuthenticated()) {
+      this.UserId = this.userService.getUserId() ?? '';
       this.userService.updateLoginStatus(true);
       this.cartService.loadCart();
     } else {
