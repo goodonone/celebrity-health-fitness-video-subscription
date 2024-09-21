@@ -450,10 +450,11 @@
 
 // Now, let's update the CartComponent
 import { Component, OnInit } from '@angular/core';
-import { map, Observable, BehaviorSubject, catchError } from 'rxjs';
+import { map, Observable, BehaviorSubject, catchError, Subscription } from 'rxjs';
 import { Cart } from 'src/app/models/cart';
 import { CartItem } from 'src/app/models/cart-items';
 import { Product } from 'src/app/models/product';
+import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { PaymentService } from 'src/app/services/payment.service';
 
@@ -468,10 +469,14 @@ export class CartComponent implements OnInit {
   tierTwoThree = true;
   userId: string | null = '';
   cartStatic = true;
+  private authSubscription!: Subscription;
+  isLoggedIn: boolean = false;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private cartService: CartService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {

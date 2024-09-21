@@ -10,7 +10,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, of, Subscription, switchMap } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -43,6 +44,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMenuHovered: boolean = false;
   closeTimeout: any;
 
+  private cartSubscription: Subscription | null = null;
+  private authSubscription: Subscription | null = null;
+  private routerSubscription!: Subscription;
+
   private closeMenuTimer: any;
   private hoverTimer: any;
 
@@ -50,7 +55,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private actRoute: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -58,15 +64,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.cartService.getCartObservable().subscribe((newCart) => {
-      console.log('Cart received in navbar:', newCart); 
-      this.cartQuantity = newCart.totalCount || 0;
-    });
+    if(this.authService.isAuthenticated()) {
+      this.cartService.getCartObservable().subscribe((newCart) => {
+        // console.log('Cart received in navbar:', newCart); 
+        this.cartQuantity = newCart.totalCount || 0;
+        });
+        this.subscribeToCart();
+      }
   }
 
   ngOnInit(): void {
     // this.loadUserId();
-    this.UpdateStatus();
+    // this.UpdateStatus();
 
 
       // Check if the user has visited the page before to serve animations or not
@@ -101,6 +110,33 @@ export class AppComponent implements OnInit, AfterViewInit {
     hamburger!.addEventListener('click', () => {
       hamburger!.classList.toggle('active');
     });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribeFromCart();
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
+
+  private subscribeToCart() {
+    if (!this.cartSubscription) {
+      this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
+        // console.log('Cart received in navbar:', newCart);
+        this.cartQuantity = newCart.totalCount || 0;
+      });
+    }
+  }
+
+  private unsubscribeFromCart() {
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+      this.cartSubscription = null;
+    }
+    this.cartQuantity = 0; // Reset cart quantity when logging out
   }
 
   triggerAnimations(){

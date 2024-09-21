@@ -156,10 +156,10 @@ ngAfterViewInit(): void {
   resetNavbarState(): void {
     this.navbar?.classList.remove('shadow');
     this.menu?.classList.remove('shadow'); 
-    const navBarTextElements = document.querySelectorAll('.navBarText');
-    navBarTextElements.forEach((element) => {
-      element.classList.remove('shadow');
-    });
+    // const navBarTextElements = document.querySelectorAll('.navBarText');
+    // navBarTextElements.forEach((element) => {
+    //   element.classList.remove('shadow');
+    // });
   }
 
   UpdateStatus() {

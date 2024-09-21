@@ -132,12 +132,12 @@ export class SignInComponent implements OnInit {
   }
 
   resetNavbarState(): void {
-    this.navbar?.classList.remove('black');
-    this.menu?.classList.remove('black');
-    const navBarTextElements = document.querySelectorAll('.navBarText');
-    navBarTextElements.forEach((element) => {
-      element.classList.remove('black');
-    });
+    this.navbar?.classList.remove('shadow');
+    this.menu?.classList.remove('shadow');
+    // const navBarTextElements = document.querySelectorAll('.navBarText');
+    // navBarTextElements.forEach((element) => {
+    //   element.classList.remove('black');
+    // });
   }
 
 

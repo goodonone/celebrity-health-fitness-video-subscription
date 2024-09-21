@@ -132,20 +132,110 @@
 //   }
 // }
 
+// import { Injectable } from '@angular/core';
+// import { Router } from '@angular/router';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class AuthService {
+//   private redirectUrl: string | null = null;
+
+//   constructor(private router: Router) {}
+
+//   isAuthenticated(): boolean {
+//     const token = localStorage.getItem("token");
+//     return !!token && !this.isTokenExpired(token);
+//   }
+
+//   private isTokenExpired(token: string): boolean {
+//     try {
+//       const payload = this.parseJwt(token);
+//       if (payload && payload.exp) {
+//         return Date.now() >= payload.exp * 1000;
+//       }
+//     } catch (error) {
+//       console.error('Error checking token expiration:', error);
+//     }
+//     return true;
+//   }
+
+//   private parseJwt(token: string): any {
+//     try {
+//       const base64Url = token.split('.')[1];
+//       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+//         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+//       }).join(''));
+
+//       return JSON.parse(jsonPayload);
+//     } catch (error) {
+//       console.error('Error parsing token:', error);
+//       return null;
+//     }
+//   }
+
+//   setRedirectUrl(url: string): void {
+//     this.redirectUrl = url;
+//   }
+
+//   getRedirectUrl(): string | null {
+//     return this.redirectUrl;
+//   }
+
+//   login(token: string): void {
+//     localStorage.setItem("token", token);
+//     const redirect = this.getRedirectUrl();
+//     if (redirect) {
+//       this.router.navigateByUrl(redirect);
+//       this.redirectUrl = null;
+//     }
+//   }
+
+//   logout(): void {
+//     localStorage.removeItem("token");
+//     this.router.navigate(['/sign-in']);
+//   }
+
+//   getUserIdFromToken(): string | null {
+//     const token = localStorage.getItem("token");
+//     if (token) {
+//       const payload = this.parseJwt(token);
+//       return payload?.userId || null;
+//     }
+//     return null;
+//   }
+// }
+
+
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private redirectUrl: string | null = null;
+  private authStateSubject: BehaviorSubject<boolean>;
+  public authState$: Observable<boolean>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    const isAuthenticated = this.checkInitialAuthState();
+    this.authStateSubject = new BehaviorSubject<boolean>(isAuthenticated);
+    this.authState$ = this.authStateSubject.asObservable();
+  }
+
+  private checkInitialAuthState(): boolean {
+    const token = localStorage.getItem("token");
+    return !!token && !this.isTokenExpired(token);
+  }
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem("token");
-    return !!token && !this.isTokenExpired(token);
+    const isAuth = !!token && !this.isTokenExpired(token);
+    this.authStateSubject.next(isAuth);
+    return isAuth;
   }
 
   private isTokenExpired(token: string): boolean {
@@ -185,6 +275,7 @@ export class AuthService {
 
   login(token: string): void {
     localStorage.setItem("token", token);
+    this.authStateSubject.next(true);
     const redirect = this.getRedirectUrl();
     if (redirect) {
       this.router.navigateByUrl(redirect);
@@ -192,10 +283,11 @@ export class AuthService {
     }
   }
 
-  logout(): void {
-    localStorage.removeItem("token");
-    this.router.navigate(['/sign-in']);
-  }
+  // logout(): void {
+  //   localStorage.removeItem("token");
+  //   this.authStateSubject.next(false);
+  //   this.router.navigate(['/sign-in']);
+  // }
 
   getUserIdFromToken(): string | null {
     const token = localStorage.getItem("token");
