@@ -166,9 +166,9 @@
         
                 <mat-card-content class="cardFlex">
                     <ng-container *ngIf="cart.items.length; else emptyCart">
+                      <div class="scroll">
                         <mat-card class="cards" *ngFor="let cartItem of cart.items">
-                            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.Product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-                            </mat-card>
+                            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + cartItem.Product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}" [routerLink]="['/store/product', cartItem.Product.productId]"></mat-card>
                             <p class="name">{{cartItem.Product.productName}}</p>
                             <div class="quantity">
                                 <!-- <select #quantitySelect [value]="cartItem.quantity" (change)="changeQuantity(cartItem, quantitySelect.value)">
@@ -187,6 +187,7 @@
                                 <p class="price">${{cartItem.Product.productPrice | priceFormat}}</p>
                             </div>
                         </mat-card>
+                    </div>
                         <div class="totalContainer">
                             <h1 class="totalText">Total:</h1>
                             <div class="totalPriceContainer">

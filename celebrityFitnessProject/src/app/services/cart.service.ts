@@ -469,7 +469,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, take, tap } from 'rxjs/operators';
 import { Cart } from '../models/cart';
 import { Product } from '../models/product';
 import { AuthService } from './auth.service';
@@ -483,23 +483,54 @@ export class CartService {
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
 
   isLoggedIn: boolean = false;
+  private isInitialized = false;
 
   constructor(private http: HttpClient, private authService: AuthService) {
-    if(this.authService.isAuthenticated()) { 
-      console.log('Get cart is called');
-      this.getCart().subscribe();
+    // if(this.authService.isAuthenticated()) { 
+    //   console.log('Get cart is called');
+    //   this.getCart().subscribe();
+    // }
+    this.initializeCart();
+  }
+
+  private initializeCart(): void {
+    if (this.authService.isAuthenticated() && !this.isInitialized) {
+      this.isInitialized = true;
+      this.loadCart();
     }
   }
 
-  getCart(): Observable<Cart> {
-    // this.isLoggedIn = this.authService.isAuthenticated();
-    // if (!this.isLoggedIn) {
-    //   return of(new Cart());
-    // }
+
+  // getCart(): Observable<Cart> {
+  //   // this.isLoggedIn = this.authService.isAuthenticated();
+  //   // if (!this.isLoggedIn) {
+  //   //   return of(new Cart());
+  //   // }
+  //   const userId = this.getCurrentUserId();
+  //   return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     tap(cart => this.cartSubject.next(cart))
+  //   );
+  // }
+
+  loadCart(): void {
     const userId = this.getCurrentUserId();
-    return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
-      tap(cart => this.cartSubject.next(cart))
+    this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+      take(1)
+    ).subscribe(
+      (cart) => {
+        if (cart.totalCount > 0) {
+          console.log('Get cart is called');
+          this.cartSubject.next(cart);
+        }
+      },
+      (error) => {
+        console.error('Error loading cart', error);
+      }
     );
+  }
+
+  getCart(): Observable<Cart> {
+    return this.cartSubject.asObservable();
   }
 
   addToCart(product: Product, quantity: number = 1): Observable<Cart> {
@@ -591,15 +622,15 @@ export class CartService {
     return localStorage.getItem('userId') || '';
   }
 
-  loadCart(): void {
-    const userId = this.getCurrentUserId();
-    this.http.get<Cart>(`${this.apiUrl}/${userId}`).subscribe(
-      (cart) => {
-        this.cartSubject.next(cart);
-      },
-      (error) => {
-        console.error('Error loading cart', error);
-      }
-    );
-  }
+  // loadCart(): void {
+  //   const userId = this.getCurrentUserId();
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).subscribe(
+  //     (cart) => {
+  //       this.cartSubject.next(cart);
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //     }
+  //   );
+  // }
 }

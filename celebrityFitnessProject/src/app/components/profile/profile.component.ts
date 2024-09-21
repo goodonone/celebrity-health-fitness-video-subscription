@@ -526,6 +526,9 @@ export class ProfileComponent implements OnInit {
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.add('firstTimeAnimation');
 
+    // const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    // arrows?.classList.add('firstTimeAnimation');
+
     this.firstTimeAnimation = true;
     this.cdr.detectChanges();
   }
@@ -535,6 +538,9 @@ export class ProfileComponent implements OnInit {
     
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.remove('firstTimeAnimation');
+
+    // const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    // arrows?.classList.remove('firstTimeAnimation');
 
     this.firstTimeAnimation = false;
     this.cdr.detectChanges();

@@ -10,7 +10,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
-import { catchError, of, Subscription, switchMap } from 'rxjs';
+import { catchError, filter, of, Subscription, switchMap, tap } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -44,9 +44,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMenuHovered: boolean = false;
   closeTimeout: any;
 
-  private cartSubscription: Subscription | null = null;
-  private authSubscription: Subscription | null = null;
-  private routerSubscription!: Subscription;
+  // private cartSubscription: Subscription | null = null;
+  // private authSubscription: Subscription | null = null;
+  // private routerSubscription!: Subscription;
+
+  private subscription: Subscription = new Subscription();
+  
 
   private closeMenuTimer: any;
   private hoverTimer: any;
@@ -79,10 +82,45 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.cartQuantity = newCart.totalCount || 0;
       });
 
-    this.userService.isLoggedIn$.subscribe(status => {
-      this.userIsLoggedIn = status;
-    });
 
+      this.subscription.add(
+        this.userService.isLoggedIn$.pipe(
+          tap(isLoggedIn => {
+            this.userIsLoggedIn = isLoggedIn;
+            if (isLoggedIn) {
+              this.cartService.loadCart();
+            } else {
+              this.cartQuantity = 0;
+            }
+          }),
+          switchMap(() => this.cartService.getCartObservable())
+        ).subscribe(cart => {
+          this.cartQuantity = cart.totalCount || 0;
+          console.log('Cart received in navbar:', cart);
+        })
+      );
+  
+      // this.subscription.add(
+      //   this.router.events.subscribe((event) => {
+      //     if (event instanceof NavigationEnd) {
+      //       this.UpdateStatus();
+      //     }
+      //   })
+      // );
+
+      this.subscription.add(
+        this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd)
+        ).subscribe(() => {
+          this.UpdateStatus();
+        })
+      );
+  
+      this.UpdateStatus();
+
+      this.userService.isLoggedIn$.subscribe(status => {
+        this.userIsLoggedIn = status;
+      });
 
       // Check if the user has visited the page before to serve animations or not
       const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
@@ -119,13 +157,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
+    this.subscription.unsubscribe();
     // this.unsubscribeFromCart();
-    if (this.routerSubscription) {
-      this.routerSubscription.unsubscribe();
-    }
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
+    // if (this.routerSubscription) {
+    //   this.routerSubscription.unsubscribe();
+    // }
+    // if (this.authSubscription) {
+    //   this.authSubscription.unsubscribe();
+    // }
   }
 
   // private subscribeToCart() {
@@ -261,6 +300,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   //     this.UserId = this.userService.getUserId() ?? '';
   //   }
   // }
+
+  private UpdateStatus(): void {
+    if (this.authService.isAuthenticated()) {
+      this.userService.updateLoginStatus(true);
+      this.cartService.loadCart();
+    } else {
+      this.userService.updateLoginStatus(false);
+    }
+  }
 
   logOut() {
     // this.cartService.clearCart();

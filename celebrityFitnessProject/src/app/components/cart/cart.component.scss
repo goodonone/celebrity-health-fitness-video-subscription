@@ -3,6 +3,7 @@
 }
 
 .pageContainer {
+    position: relative;
     background-color: rgb(255, 255, 255);
     width: 100%;
     max-width: 3000px;
@@ -15,11 +16,15 @@
 }
 
 .cartContainer{
-    margin: 10.5rem auto auto auto;
-    width: 80rem;
+    position: absolute;
+    top:11%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    margin: auto auto auto auto;
+    width: 50rem;
     height: fit-content;
     padding-top: 5rem;
-    border-radius: 10px;
+    border-radius: 1rem;
     margin-bottom: 2rem;
     box-shadow: 0 0 20px rgb(162, 162, 162);
 }
@@ -28,20 +33,21 @@
     color: Black;
     font-weight: 500;
     text-align: left;
-    font-size: 8vw;
-    padding-left: 3rem;
+    font-size: 7rem;
+    padding-left: 2rem;
     font-weight: 600; 
 }
 
 p.name{
-    padding: 1.3rem 0 0rem 1.3rem;
-    font-size: 2.5rem;
+    padding: 0.5rem 0 0rem 1rem;
+    font-size: 2rem;
 }
 
 .productImage{
-    width: 4rem;
-    height: 4rem;
+    width: 2.3rem;
+    height: 2.3rem;
     box-shadow: none;
+    cursor: pointer;
 }
 
 .cardFlex{
@@ -50,24 +56,69 @@ p.name{
     height: fit-content;
     margin-top: 3rem;
     position: relative;
+    justify-content: center;
+    padding:0 1.8rem;
+}
+
+.scroll{
+    position: relative;
+    overflow-y: scroll;
+    height: 21rem;
+    width: 100%;
+    border-radius: 0.8rem;
+    background-color: rgb(215, 215, 215);
+    box-shadow: 0 0 10px 5px rgba(63, 63, 63, 0.5) inset ;
+    padding-left: 0.5rem;
+
+    &::-webkit-scrollbar {
+        width:9px; 
+        height: 10px;
+        position: absolute;
+        left: -5px !important;
+        top: 20px; 
+        bottom: 20px; 
+        // padding-left: -2.2rem;
+    }
+  
+      &::-webkit-scrollbar-thumb {
+        margin-top: 20rem;
+        margin-bottom: 2rem;
+        border-radius: 10px;
+        background-color: #575757;
+        border: 0px solid #575757;
+        
+      }
+  
+      &::-webkit-scrollbar-track {
+        margin-top: 15px; 
+        margin-bottom: 10px;
+        margin-right: 5px;
+        padding-right: 1rem !important;
+      }
+    
 }
 
 .cards{
     display: flex;
     flex-direction: row;
+    justify-self: center;
     position: relative;
     /* background-color: rgb(236, 236, 236); */
     background-color: rgb(236, 236, 236);
-    margin: 0.5rem 0 0.5rem 0;
+    margin: 0.8rem 0 0.8rem 0;
     border-radius: 6px;
-    padding: 0.4rem ;
-    box-shadow: 0 0 10px rgb(169, 168, 168);
+    width: 100%;
+    max-width: 45.5rem;
+    height: 3rem;
+    padding: 0.4rem;
+    /* box-shadow: 0 2px 10px rgb(169, 168, 168); */
+    box-shadow: 0 0 5px rgb(120, 120, 120);
 }
 
 div.quantity{
     position: absolute;
-    left: 60rem;
-    top: 2rem;
+    right: 15rem;
+    top: 1rem;
 }
 
 select{
@@ -76,15 +127,15 @@ select{
 
 div.removeButton{
     position: absolute;
-    left: 71rem;
-    top: 1.5rem;
+    right: 1rem;
+    top: 0.5rem;
 }
 
 div.priceContainer{
     position: absolute;
-    margin-left: 10rem;
-    top: 2rem;
-    left: 55rem;
+    /* margin-left: 10rem; */
+    top: 1rem;
+    right: 8rem;
 }
 
 p.price{
@@ -102,14 +153,14 @@ h1.totalText{
 }
 
 /* .totalButton{
-    display: block;
+    display: block;xf
 } */
 
 .totalContainer{
     position: relative;
     display:inline-flex;
     justify-content: right;
-    margin-right: 4.5rem;
+    /* margin-right: 4.5rem; */
 }
 
 .totalCountContainer{
@@ -141,7 +192,10 @@ p.totalPrice{
 button.buttonCheckOut{
     background-color: rgb(236, 236, 236);
     width: 12rem;
-    margin-left: 54rem;
+
+    /* display: block;
+    justify-content: flex-end; */
+    /* margin-left: 54rem; */
 }
 
 .buttonCheckOut:hover{
@@ -151,7 +205,11 @@ button.buttonCheckOut{
 
 .buttonContainer{
     margin-top: 1rem;
-    margin-left: 12rem;
+    display: flex;
+    justify-content: right;
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+    /* margin-left: 12rem; */
 }
 
 div.emptyMessageContainer{

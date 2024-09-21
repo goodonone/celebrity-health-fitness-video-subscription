@@ -510,7 +510,7 @@ login(email: string, password: string) {
 
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
-      this.isLoggedInSubject.next(true);
+      this.updateLoginStatus(true);
       localStorage.setItem(this.tokenKey, response.token);
       localStorage.setItem(this.userIdKey , response.userId);
       localStorage.setItem(this.tierKey, response.tier);
@@ -533,7 +533,8 @@ logoutUser() {
   // localStorage.removeItem("cart");
   localStorage.removeItem("hasVisitedHomeBefore");
   localStorage.removeItem("hasVisitedProfileBefore");
-  this.isLoggedInSubject.next(false);
+  localStorage.removeItem("isUserLoggedIn");
+  this.updateLoginStatus(false);
 }
 
 checkEmail(email: string): Observable<{exists: boolean, message: string}> {
@@ -592,5 +593,10 @@ deleteUser(userId: string) : Observable<any> {
   }
   return this.http.delete<any>(this.baseURL + "/" + userId, {headers: reqHeaders});
 }
+
+updateLoginStatus(status: boolean) {
+  this.isLoggedInSubject.next(status);
+}
+
 
 }
