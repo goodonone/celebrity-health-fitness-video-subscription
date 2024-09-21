@@ -58,24 +58,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     private cartService: CartService,
     private authService: AuthService
   ) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.UpdateStatus();
-      }
-    });
+    // this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.UpdateStatus();
+    //   }
+    // });
 
     // if(this.authService.isAuthenticated()) {
-      this.cartService.getCartObservable().subscribe((newCart) => {
-        // console.log('Cart received in navbar:', newCart); 
-        this.cartQuantity = newCart.totalCount || 0;
-        });
-        this.subscribeToCart();
+      
+        // this.subscribeToCart();
       // }
   }
 
   ngOnInit(): void {
     // this.loadUserId();
     // this.UpdateStatus();
+
+    this.cartService.getCartObservable().subscribe((newCart) => {
+      console.log('Cart received in navbar:', newCart); 
+      this.cartQuantity = newCart.totalCount || 0;
+      });
+
+    this.userService.isLoggedIn$.subscribe(status => {
+      this.userIsLoggedIn = status;
+    });
 
 
       // Check if the user has visited the page before to serve animations or not
@@ -113,7 +119,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.unsubscribeFromCart();
+    // this.unsubscribeFromCart();
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
@@ -122,22 +128,22 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private subscribeToCart() {
-    if (!this.cartSubscription) {
-      this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
-        // console.log('Cart received in navbar:', newCart);
-        this.cartQuantity = newCart.totalCount || 0;
-      });
-    }
-  }
+  // private subscribeToCart() {
+  //   if (!this.cartSubscription) {
+  //     this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
+  //       // console.log('Cart received in navbar:', newCart);
+  //       this.cartQuantity = newCart.totalCount || 0;
+  //     });
+  //   }
+  // }
 
-  private unsubscribeFromCart() {
-    if (this.cartSubscription) {
-      this.cartSubscription.unsubscribe();
-      this.cartSubscription = null;
-    }
-    this.cartQuantity = 0; // Reset cart quantity when logging out
-  }
+  // private unsubscribeFromCart() {
+  //   if (this.cartSubscription) {
+  //     this.cartSubscription.unsubscribe();
+  //     this.cartSubscription = null;
+  //   }
+  //   this.cartQuantity = 0; // Reset cart quantity when logging out
+  // }
 
   triggerAnimations(){
     const navBar = document.querySelector('.navBar') as HTMLElement;
@@ -248,17 +254,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   //   }
   // }
 
-  UpdateStatus() {
-    this.userIsLoggedIn = this.userService.isloggedIn();
-    if (this.userIsLoggedIn) {
-      this.UserId = this.userService.getUserId() ?? '';
-    }
-  }
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+  //   console.log('User is logged in:, updateStatus() called');
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.userService.getUserId() ?? '';
+  //   }
+  // }
 
   logOut() {
     // this.cartService.clearCart();
     this.userService.logoutUser();
-    this.UpdateStatus();
   }
 
   // Hamburger Menu Functions

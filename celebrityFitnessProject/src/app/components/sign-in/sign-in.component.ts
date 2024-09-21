@@ -82,7 +82,10 @@ export class SignInComponent implements OnInit {
   navbar!: HTMLElement | null;
   menu!: HTMLElement | null;
   passwordVisible = false;
-
+  isLoadingGoogle = false;
+  isLoadingApple = false;
+  buttonText = 'Log In';
+  
   // Icons
   faEye = faEye;
   faEyeSlash = faEyeSlash;
@@ -126,6 +129,11 @@ export class SignInComponent implements OnInit {
       (error) => {
         console.log('Error: ', error);
         this.errorMessage = true;
+        this.buttonText = "Invalid Email or Password";
+        setTimeout(() => {
+          this.buttonText = 'Log In';
+          this.errorMessage = false;
+        }, 1800);
         this.router.navigateByUrl('/sign-in');
       }
     );
@@ -143,5 +151,29 @@ export class SignInComponent implements OnInit {
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
+  }
+
+  onClickGoogle() {
+    this.isLoadingGoogle = true;
+    this.isLoadingApple = false;
+    
+
+    // Simulating authentication process
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 3000); 
+
+    // keep spinning until the user is authenticated, if user clicks apple google oauth is cancelled
+  }
+
+  onClickApple() {
+    this.isLoadingApple = true;
+    this.isLoadingGoogle = false;
+    // Simulating authentication process
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 3000); 
+
+    // keep spinning until the user is authenticated, if user clicks google apple oauth is cancelled
   }
 }

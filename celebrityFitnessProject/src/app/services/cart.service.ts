@@ -486,6 +486,7 @@ export class CartService {
 
   constructor(private http: HttpClient, private authService: AuthService) {
     if(this.authService.isAuthenticated()) { 
+      console.log('Get cart is called');
       this.getCart().subscribe();
     }
   }
@@ -570,6 +571,7 @@ export class CartService {
   }
 
   getCartObservable(): Observable<Cart> {
+    console.log('CartService: getCartObservable called');
     return this.cartSubject.asObservable();
   }
 

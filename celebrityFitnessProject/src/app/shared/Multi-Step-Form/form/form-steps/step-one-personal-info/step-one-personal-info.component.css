@@ -179,6 +179,7 @@ font-weight: 600;
 }
 
 .btn-google {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +207,19 @@ font-weight: 600;
   margin-right: 8px;
 }
 
+.btn-google:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner.Google .path{
+  stroke: #000000;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
 .btn-apple {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -233,6 +246,45 @@ font-weight: 600;
   height: 18px;
   margin-right: 8px;
   fill: #ffffff;
+}
+
+.btn-apple:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: rotate 2s linear infinite;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.spinner.Apple .path {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
 }
 
 input[matInput]:focus {

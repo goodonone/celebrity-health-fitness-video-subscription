@@ -23,6 +23,9 @@ export class StepOnePersonalInfoComponent implements OnInit {
   isPopupVisible: boolean = false;
   passwordVisible = false;
   emailExists: boolean = false;
+  isLoadingGoogle = false;
+  isLoadingApple = false;
+
 
   private destroy$ = new Subject<void>();
 
@@ -164,6 +167,31 @@ export class StepOnePersonalInfoComponent implements OnInit {
     }
     return 'Invalid password';
   }
+
+  onClickGoogle() {
+    this.isLoadingGoogle = true;
+    this.isLoadingApple = false;
+    
+
+    // Simulating authentication process
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 3000); 
+
+    // keep spinning until the user is authenticated, if user clicks apple google oauth is cancelled
+  }
+
+  onClickApple() {
+    this.isLoadingApple = true;
+    this.isLoadingGoogle = false;
+    // Simulating authentication process
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 3000); 
+
+    // keep spinning until the user is authenticated, if user clicks google apple oauth is cancelled
+  }
+
 
 
 

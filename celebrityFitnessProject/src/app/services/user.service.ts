@@ -510,6 +510,7 @@ login(email: string, password: string) {
 
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
+      this.isLoggedInSubject.next(true);
       localStorage.setItem(this.tokenKey, response.token);
       localStorage.setItem(this.userIdKey , response.userId);
       localStorage.setItem(this.tierKey, response.tier);
@@ -517,7 +518,6 @@ login(email: string, password: string) {
 
       // Update login state after successful login
       localStorage.setItem("isUserLoggedIn", "true");
-      this.isLoggedInSubject.next(true);  // Notify login state change
     }));
 }
 
@@ -530,7 +530,8 @@ logoutUser() {
   localStorage.removeItem('billing');
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
-  localStorage.removeItem("cart");
+  // localStorage.removeItem("cart");
+  localStorage.removeItem("hasVisitedHomeBefore");
   localStorage.removeItem("hasVisitedProfileBefore");
   this.isLoggedInSubject.next(false);
 }
