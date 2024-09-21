@@ -132,7 +132,7 @@ p.totalPrice{
     font-size: 0.7em; /* Reduce the font size */
     vertical-align: top; /* Align it closer to the top */
     line-height: 0; /* Reduce extra space */
-    margin-left: -0.2em; /* Move it closer to the decimal point */
+    margin-left: -0.4em; /* Move it closer to the decimal point */
   }
 
 button.buttonCheckOut{
