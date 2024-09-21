@@ -64,13 +64,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
-    if(this.authService.isAuthenticated()) {
+    // if(this.authService.isAuthenticated()) {
       this.cartService.getCartObservable().subscribe((newCart) => {
         // console.log('Cart received in navbar:', newCart); 
         this.cartQuantity = newCart.totalCount || 0;
         });
         this.subscribeToCart();
-      }
+      // }
   }
 
   ngOnInit(): void {

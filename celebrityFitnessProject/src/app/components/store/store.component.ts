@@ -195,7 +195,7 @@ export class StoreComponent implements OnInit {
   }
 
   getButtonText(product: Product): string {
-    return this.maxReachedForProducts[product.productId] ? 'Max Quantity Reached' : '+Cart';
+    return this.maxReachedForProducts[product.productId] ? '10 Items Max' : '+Cart';
   }
 
   // isMaxQuantityReached(product: Product): boolean {

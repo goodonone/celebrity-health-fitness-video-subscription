@@ -41,6 +41,7 @@ p.name{
 .productImage{
     width: 4rem;
     height: 4rem;
+    box-shadow: none;
 }
 
 .cardFlex{
@@ -55,10 +56,12 @@ p.name{
     display: flex;
     flex-direction: row;
     position: relative;
+    /* background-color: rgb(236, 236, 236); */
     background-color: rgb(236, 236, 236);
     margin: 0.5rem 0 0.5rem 0;
     border-radius: 6px;
     padding: 0.4rem ;
+    box-shadow: 0 0 10px rgb(169, 168, 168);
 }
 
 div.quantity{

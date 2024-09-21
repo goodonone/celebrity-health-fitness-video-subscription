@@ -468,10 +468,11 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Cart } from '../models/cart';
 import { Product } from '../models/product';
+import { AuthService } from './auth.service';
 // import { CartItem } from '../models/cart-item';
 
 @Injectable({
@@ -481,11 +482,19 @@ export class CartService {
   private apiUrl = 'http://localhost:3000/api/cart'; // Replace with your actual API URL
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
 
-  constructor(private http: HttpClient) {
-    this.getCart().subscribe();
+  isLoggedIn: boolean = false;
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+    if(this.authService.isAuthenticated()) { 
+      this.getCart().subscribe();
+    }
   }
 
   getCart(): Observable<Cart> {
+    // this.isLoggedIn = this.authService.isAuthenticated();
+    // if (!this.isLoggedIn) {
+    //   return of(new Cart());
+    // }
     const userId = this.getCurrentUserId();
     return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
       tap(cart => this.cartSubject.next(cart))

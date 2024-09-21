@@ -480,8 +480,16 @@ export class CartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('userId');
-    this.loadCart();
+    // this.userId = localStorage.getItem('userId');
+    // this.loadCart();
+
+    this.isLoggedIn = this.authService.isAuthenticated();
+    if (this.isLoggedIn) {
+      this.userId = localStorage.getItem('userId');
+      this.loadCart();
+    } else {
+      this.userId = null;
+    }
 
     const tier = localStorage.getItem('tier');
     if (tier === "Just Looking") {

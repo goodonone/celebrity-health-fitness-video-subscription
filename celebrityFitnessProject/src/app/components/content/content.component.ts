@@ -96,7 +96,7 @@ export class ContentComponent implements OnInit{
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        this.timerVal  = "Live Video In Progress...";
+        this.timerVal  = "Live Video In Progress... Join Me Live!";
         // ngIf to open up a card for live video here
       }
     }, 1000);

@@ -132,6 +132,16 @@ export class ProfileComponent implements OnInit {
     //  this.firstTimeAnimationTierTwo = localStorage.getItem('hasVisitedProfileBeforeTierTwo') !== 'true';
     //  this.firstTimeAnimationTierThree = localStorage.getItem('hasVisitedProfileBeforeTierThree') !== 'true';
   
+    const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+    if (!hasVisited) {
+      // Trigger animations
+      this.triggerAnimations();
+      // Store the flag in localStorage
+      localStorage.setItem('hasVisitedProfileBefore', 'true');
+    } else {
+      // Skip animations
+      this.skipAnimations();
+    }
 
     this.loadProfile();
 
@@ -401,16 +411,7 @@ export class ProfileComponent implements OnInit {
         this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
 
          //  // Check if the user has visited the page before to serve animations or not
-        const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
-        if (!hasVisited) {
-          // Trigger animations
-          this.triggerAnimations();
-          // Store the flag in localStorage
-          localStorage.setItem('hasVisitedProfileBefore', 'true');
-        } else {
-          // Skip animations
-          this.skipAnimations();
-        }
+        
          
       },
       (error) => {

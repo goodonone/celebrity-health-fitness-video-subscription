@@ -531,6 +531,7 @@ logoutUser() {
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
   localStorage.removeItem("cart");
+  localStorage.removeItem("hasVisitedProfileBefore");
   this.isLoggedInSubject.next(false);
 }
 
