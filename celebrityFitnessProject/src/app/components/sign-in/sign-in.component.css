@@ -65,10 +65,10 @@ mat-card {
   left: 50%;
   transform: translate(-50%, -50%); */
   width: 30%;
-  min-width: 400px;
+  min-width: 430px;
   max-width: 500px;
   height: auto;
-  min-height: 400px;
+  min-height: 430px;
   max-height: 500px;
   /* border-radius: 8px; */
   border-radius: 1rem;
@@ -259,8 +259,12 @@ p {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  /* width: 100vw; */
   width: 100%;
+  min-width: 10rem;
   max-width: 23rem;
+  /* min-width: 10vw;
+  max-width: 25vw; */
   height: auto;
   /* margin: 0 1rem 5rem 1rem; */
   margin-top: 0.2rem;
@@ -278,10 +282,10 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 50%;
   max-width: 180px;
   padding: 8px 1px 8px 1px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #3c4043;
   background-color: white;
@@ -307,7 +311,7 @@ p {
   cursor: not-allowed;
 }
 
-.spinner.Google .path{
+.spinner.google .path{
   stroke: #000000;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
@@ -318,7 +322,8 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 50%;
+  min-width: 100px;
   max-width: 180px;
   padding: 8px 1px 8px 1px;
   font-size: 16px;
@@ -355,7 +360,7 @@ p {
   margin-right: 8px;
 }
 
-.spinner.Apple .path {
+.spinner.apple .path {
   stroke: #ffffff;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
@@ -391,7 +396,7 @@ p {
 
 span.buttonSpan {
   position: absolute;
-  top: 106%; 
+  top: 107%; 
   left: 50%;
   transform: translate(-50%);
   /* width: 100%; 
@@ -447,6 +452,19 @@ input[matInput]:focus::placeholder {
     width: 60%;
     height: auto;
     /* margin-top: 15px; */
+  }
+
+  .absoluteContainer{
+    bottom: 12%;
+  }
+
+  .socialContainer{
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .btn-google, .btn-apple {
+    width: 100%;
   }
 
   .eye-icon {
