@@ -63,35 +63,37 @@ p.name{
 .scroll{
     position: relative;
     overflow-y: scroll;
+    // overflow: visible;
     height: 21rem;
     width: 100%;
     border-radius: 0.8rem;
     background-color: rgb(215, 215, 215);
     box-shadow: 0 0 10px 5px rgba(63, 63, 63, 0.5) inset ;
-    padding-left: 0.5rem;
+    padding-right: 0.2rem;
+    // padding-left: 0.8rem;
 
     &::-webkit-scrollbar {
-        width:9px; 
+        width:6px; 
         height: 10px;
         position: absolute;
         left: -5px !important;
         top: 20px; 
         bottom: 20px; 
-        // padding-left: -2.2rem;
+        padding-left: -2.2rem;
     }
   
       &::-webkit-scrollbar-thumb {
         margin-top: 20rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         border-radius: 10px;
-        background-color: #575757;
-        border: 0px solid #575757;
+        background-color: #171717;
+        border: 0px solid #030303;
         
       }
   
       &::-webkit-scrollbar-track {
-        margin-top: 15px; 
-        margin-bottom: 10px;
+        margin-top: 0.8rem; 
+        margin-bottom: 0.8rem;
         margin-right: 5px;
         padding-right: 1rem !important;
       }
@@ -107,10 +109,11 @@ p.name{
     background-color: rgb(236, 236, 236);
     margin: 0.8rem 0 0.8rem 0;
     border-radius: 6px;
-    width: 100%;
+    width: 99%;
     max-width: 45.5rem;
     height: 3rem;
     padding: 0.4rem;
+    margin-left: 0.5rem;
     /* box-shadow: 0 2px 10px rgb(169, 168, 168); */
     box-shadow: 0 0 5px rgb(120, 120, 120);
 }
@@ -119,6 +122,7 @@ div.quantity{
     position: absolute;
     right: 15rem;
     top: 1rem;
+    z-index: 10;
 }
 
 select{
@@ -129,6 +133,8 @@ div.removeButton{
     position: absolute;
     right: 1rem;
     top: 0.5rem;
+    z-index: 10;
+    cursor: pointer;
 }
 
 div.priceContainer{
@@ -136,6 +142,8 @@ div.priceContainer{
     /* margin-left: 10rem; */
     top: 1rem;
     right: 8rem;
+    z-index: 10;
+    pointer-events: none;
 }
 
 p.price{
@@ -237,6 +245,64 @@ p.payment{
     width: 50%
 }
 
+.imageContainer {
+    position: relative;
+  }
+  
+//   .productImage {
+//     width: 100%;
+//     height: 100%;
+//     cursor: pointer;
+//   }
+  
+//   .largeImagePreview {
+//     display: none;
+//     position: fixed;
+//     width: 200px;
+//     height: 200px;
+//     // top: 15%;
+//     // left: 11%;
+//     // left: 12%;
+//     z-index: 1000;
+//   }
+
+.largeImagePreview {
+    // display: none;
+    // position:absolute;
+    // bottom: -7rem;
+    // left: 105%;
+    // box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    // z-index: 1000;
+    display: none;
+    position: fixed; /* Change to fixed to escape the overflow */
+    // bottom: 20rem; /* Dynamically adjust the position *
+    left: 9%; /* Position it to the right of the image */
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+  }
+
+  .largeImage{
+    border-radius: 0.2rem;
+    // box-shadow: 0 0 5px rgb(120, 120, 120);
+  }
+  
+  .largeImagePreview img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    // box-shadow: 0 0 0 16px rgb(236, 236, 236), 0 5px 15px rgba(0, 0, 0, 0.3);
+    // transition: 
+    // border: 16px solid rgb(236, 236, 236);
+    border-radius: 1rem;
+    box-shadow: 0 0 5px rgb(120, 120, 120);
+  }
+  
+  .imageContainer:hover .largeImagePreview {
+    display: block;
+    // opacity: 1;
+    // visibility: visible;
+  }
+
 ::ng-deep select[matNativeControl] {
     border-color: #ffffff !important; /* Change the border color when focused */
     outline: none; /* Remove the default outline */
@@ -249,72 +315,72 @@ p.payment{
 
 @media screen and (min-width: 500px) and (max-width: 1286px){
 
-.cartContainer{
-    height: fit-content;
-    width: 50rem;
-}
+// .cartContainer{
+//     height: fit-content;
+//     width: 50rem;
+// }
 
-div.quantity{
-    position:absolute;
-    left: 28rem;
-    top: 2rem;
-}
+// div.quantity{
+//     position:absolute;
+//     left: 28rem;
+//     top: 2rem;
+// }
 
-div.removeButton{
-    position: absolute;
-    left: 42rem;
-    top: 1.5rem;
-}
+// div.removeButton{
+//     position: absolute;
+//     left: 42rem;
+//     top: 1.5rem;
+// }
 
-div.priceContainer{
-    position: absolute;
-    margin-left: 10rem;
-    top: 2rem;
-    left: 25rem;
-}
+// div.priceContainer{
+//     position: absolute;
+//     margin-left: 10rem;
+//     top: 2rem;
+//     left: 25rem;
+// }
 
-p.price{
-    font-size: 2rem;
-    font-weight: 600;
-}
+// p.price{
+//     font-size: 2rem;
+//     font-weight: 600;
+// }
 
-h1.totalText{
-    font-size: 3rem;
-    font-weight: 500;
-    margin-top: 1rem;
-}
+// h1.totalText{
+//     font-size: 3rem;
+//     font-weight: 500;
+//     margin-top: 1rem;
+// }
 
-.totalContainer{
-    display:inline-flex;
-    justify-content: right;
-    margin-right: 7rem;
-}
+// .totalContainer{
+//     display:inline-flex;
+//     justify-content: right;
+//     margin-right: 7rem;
+// }
 
-.totalCountContainer{
-    margin-top: 4rem;
-    margin-right: 2rem;
-}
+// .totalCountContainer{
+//     margin-top: 4rem;
+//     margin-right: 2rem;
+// }
 
-p.totalCount{
-    font-size: 1.3rem;
-    font-weight: 500;
-}
+// p.totalCount{
+//     font-size: 1.3rem;
+//     font-weight: 500;
+// }
 
-p.totalPrice{
-    font-size: 3rem;
-    font-weight: 500;
-}
+// p.totalPrice{
+//     font-size: 3rem;
+//     font-weight: 500;
+// }
 
-.totalPriceContainer{
-    margin-top: 3.9rem;
-}
+// .totalPriceContainer{
+//     margin-top: 3.9rem;
+// }
 
-button.buttonCheckOut{
-    display: inline-flex;
-    background-color: rgb(236, 236, 236);
-    width: 12rem;
-    margin-left: 24rem;
-}
+// button.buttonCheckOut{
+//     display: inline-flex;
+//     background-color: rgb(236, 236, 236);
+//     width: 12rem;
+//     margin-left: 24rem;
+// }
 
 }
 

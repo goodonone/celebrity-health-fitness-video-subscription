@@ -449,7 +449,7 @@
 // First, let's update the Cart model (you may need to adjust this in your actual Cart model file)
 
 // Now, let's update the CartComponent
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { map, Observable, BehaviorSubject, catchError, Subscription } from 'rxjs';
 import { Cart } from 'src/app/models/cart';
 import { CartItem } from 'src/app/models/cart-items';
@@ -464,6 +464,9 @@ import { PaymentService } from 'src/app/services/payment.service';
   styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
+  // @ViewChildren('productImage') productImages!: QueryList<ElementRef<HTMLElement>>;
+  // @ViewChildren('productImage') productImages!: QueryList<ElementRef<HTMLDivElement>>;
+  // @ViewChild('largeImagePreview') largeImagePreview!: ElementRef;
   private cartSubject = new BehaviorSubject<Cart>(new Cart());
   cart$: Observable<Cart> = this.cartSubject.asObservable();
   tierTwoThree = true;
@@ -472,6 +475,10 @@ export class CartComponent implements OnInit {
   private authSubscription!: Subscription;
   isLoggedIn: boolean = false;
   private subscription: Subscription = new Subscription();
+  hoveredItem: CartItem | null = null;
+  // hoveredItem: CartItem | null = null; // Track the hovered item
+  hoveredItemPreview: HTMLElement | null = null; // Reference to the preview element
+  hoveredItemIndex: number | null = null;
 
   constructor(
     private cartService: CartService,
@@ -496,6 +503,132 @@ export class CartComponent implements OnInit {
       this.checkTier();
     }
   }
+
+// Adding this after view initialization to confirm image elements are properly accessed.
+ngAfterViewInit() {
+  // this.setupImagePreviews();
+}
+
+// setupImagePreviews() {
+//   this.productImages.forEach((imageEl: ElementRef<HTMLElement>) => {
+//     const img = imageEl.nativeElement;
+//     const preview = img.parentElement?.querySelector('.largeImagePreview') as HTMLElement;
+
+//     if (preview) {
+//       img.addEventListener('mouseenter', () => this.showPreview(img, preview));
+//       img.addEventListener('mouseleave', () => this.hidePreview(preview));
+//     }
+//   });
+// }
+
+// showPreview(img: HTMLElement, preview: HTMLElement) {
+//   const rect = img.getBoundingClientRect();
+//   const cartContainer = document.querySelector('.cartContainer') as HTMLElement;
+//   const cartRect = cartContainer.getBoundingClientRect();
+
+//   preview.style.position = 'fixed';
+//   preview.style.left = `${cartRect.left}px`;
+//   preview.style.top = `${cartRect.top}px`;
+//   preview.style.display = 'block';
+//   preview.style.zIndex = '1000';
+// }
+
+// Method to handle mouse enter and show the preview
+
+  // Method to handle mouse enter and show the preview
+  // showPreview(index: number, cartItem: CartItem) {
+  //   this.hoveredItem = cartItem;
+
+  //   setTimeout(() => {
+  //     if (this.productImages && this.largeImagePreview) {
+  //       const imageElement = this.productImages.toArray()[index];
+  //       if (imageElement) {
+  //         const rect = imageElement.nativeElement.getBoundingClientRect();
+  //         const previewElement = this.largeImagePreview.nativeElement;
+  //         previewElement.style.display = 'block';
+  //         previewElement.style.position = 'fixed';
+  //         previewElement.style.left = `${rect.right}px`;
+  //         previewElement.style.top = `${rect.top}px`;
+  //       }
+  //     }
+  //   });
+  // }
+
+  // hidePreview() {
+  //   this.hoveredItem = null;
+  //   if (this.largeImagePreview) {
+  //     this.largeImagePreview.nativeElement.style.display = 'none';
+  //   }
+  // }
+
+  // showPreview(index: number): void {
+  //   this.hoveredItemIndex = index;
+  //   this.cart$.subscribe(cart => {
+  //     if (cart && cart.items) {
+  //       this.hoveredItem = cart.items[index];
+  //     }
+  //   });
+  // }
+
+  // hidePreview(): void {
+  //   this.hoveredItemIndex = null;
+  //   this.hoveredItem = null;
+  // }
+
+//   onMouseEnter(event: MouseEvent, cartItem: any) {
+//     const target = event.target as HTMLElement;
+//     const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//     const scrollTop = window.scrollY || window.pageYOffset;
+//     preview.style.top = `${target.getBoundingClientRect().top + scrollTop}px`; 
+// }
+
+// onMouseEnter(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+
+//   const scrollTop = window.scrollY || window.pageYOffset;
+//   preview.style.top = `${targetRect.top + scrollTop}px - 350px`; // Set the top dynamically
+//   preview.style.display = 'block';
+
+//   console.log('Preview top:', preview.style.top);
+// }
+onMouseEnter(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement;
+  const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+  const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+
+  const scrollTop = window.scrollY || window.pageYOffset;
+  
+  // Subtract 350 pixels from the calculated top position
+  const newTop = targetRect.top + scrollTop - 200;
+
+  // Apply the new top value
+  preview.style.top = `${newTop}px`;
+  preview.style.display = 'block';
+
+  console.log('Preview top:', preview.style.top);
+}
+
+onMouseLeave(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement;
+  const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+  preview.style.display = 'none';
+}
+
+
+
+ // Method to show the preview for the hovered item
+//  showPreview(cartItem: CartItem) {
+//   this.hoveredItem = cartItem;
+//   // console.log('Hovered item:', cartItem);
+// }
+
+// // Method to hide the preview
+// hidePreview() {
+//   this.hoveredItem = null;
+// }
+
 
   loadCart(): void {
     this.cartService.getCartObservable().pipe(

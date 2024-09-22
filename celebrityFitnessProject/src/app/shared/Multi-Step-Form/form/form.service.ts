@@ -126,6 +126,25 @@ export class FormService implements OnInit {
     }
   }
 
+  // async initiateGoogleOAuth() {
+  //   try {
+  //     const success = await this.oauthService.loginWithPopup();
+  //     if (success) {
+  //       const googleUser = this.oauthService.getUser();
+  //       if (googleUser) {
+  //         console.log('Logged in user:', googleUser);
+  //         // Use googleUser data as needed (e.g., to populate form fields)
+  //       } else {
+  //         console.log('Failed to get user information');
+  //       }
+  //     } else {
+  //       console.log('Google login failed');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during Google OAuth:', error);
+  //   }
+  // }
+
   private populateFormWithGoogleData(googleUser: any) {
     const personalDetails = this.multiStepForm.get('personalDetails');
     if (personalDetails) {
@@ -195,14 +214,15 @@ export class FormService implements OnInit {
     this.activeStepSubject.next(number - 1);
   }
 
+
   submit() {
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
-
-     // Check if user is signed in
+  
+    // Check if user is signed in
     const userId = localStorage.getItem('userId') || '';
-
+  
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
     if (!userId) {
       const userData = {
@@ -216,15 +236,21 @@ export class FormService implements OnInit {
         purchaseType: type,
         paymentType: type
       }
-      this.user.signUp(userData).subscribe(() => {
-      });
-    }
-    else {
+  
+      if (userInfo.isGoogleAuth) {
+        this.user.signUpWithGoogle(userData).subscribe(() => {
+          this.handleNewUserSignup();
+        });
+      } else {
+        this.user.signUp(userData).subscribe(() => {
+          this.handleNewUserSignup();
+        });
+      }
+    } else {
       this.UserId = this.user.getUserId() ?? "";
-
       this.userId = this.UserId;
-
-      this.user.getUser(this.userId).subscribe((user)=>{
+  
+      this.user.getUser(this.userId).subscribe((user) => {
         this.currentUser = user;
       });
       this.currentUser = {
@@ -235,7 +261,7 @@ export class FormService implements OnInit {
       }
       this.user.updateUser(this.currentUser).subscribe(() => {
       });
-
+  
       const planData = {
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
@@ -244,49 +270,152 @@ export class FormService implements OnInit {
       }
       this.payment.newPayment(planData).subscribe(() => {
       });
+  
+      this.handleExistingUserUpdate(planInfo);
     }
-
-
-    if (!localStorage.getItem('userId')) {
-      this.goToNextStep(4);
-      setTimeout(() => {
-        this.activeStepSubject.next(1); this.router.navigate(['sign-in']);
-      }, 4000);
-      this.multiStepForm = this.fb.group({
-    personalDetails: this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-      confirmPassword: ['', { validators: [Validators.required]}]
-    }, { validator: passwordMatchValidator 
-    }),
-    planDetails: this.fb.group({
-      plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
-      billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
-      planCost: [0],
-      totalCost: []
-    }),
-    paymentDetails: this.fb.group({
-      nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
-      ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
-      expDate: ['', [Validators.required], Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)],
-      cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
-      zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
-      billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
-      billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
-    }),
-  });
-    } else {
-      localStorage.removeItem('tier');
-      localStorage.removeItem('billing');
-      localStorage.setItem('tier', planInfo.plan);
-      localStorage.setItem('billing', planInfo.billing);
-      localStorage.removeItem('hasVisitedProfileBefore');
-      console.log("removed from local storage");
-      this.router.navigateByUrl(`/content/${this.UserId}`);
-    }
-
   }
+  
+  private handleNewUserSignup() {
+    this.goToNextStep(4);
+    setTimeout(() => {
+      this.activeStepSubject.next(1);
+      this.router.navigate(['sign-in']);
+    }, 4000);
+    this.resetForm();
+  }
+  
+  private handleExistingUserUpdate(planInfo: any) {
+    localStorage.removeItem('tier');
+    localStorage.removeItem('billing');
+    localStorage.setItem('tier', planInfo.plan);
+    localStorage.setItem('billing', planInfo.billing);
+    localStorage.removeItem('hasVisitedProfileBefore');
+    console.log("removed from local storage");
+    this.router.navigateByUrl(`/content/${this.UserId}`);
+  }
+  
+  private resetForm() {
+    this.multiStepForm = this.fb.group({
+      personalDetails: this.fb.group({
+        name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
+        email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+        password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+        confirmPassword: ['', { validators: [Validators.required]}],
+        isGoogleAuth: [false]
+      }, { validator: passwordMatchValidator }),
+      planDetails: this.fb.group({
+        plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+        billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
+        planCost: [0],
+        totalCost: []
+      }),
+      paymentDetails: this.fb.group({
+        nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
+        ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
+        expDate: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)]],
+        cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
+        zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+        billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
+        billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+      }),
+    });
+  }
+
+
+
+
+  // submit() {
+  //   const type: string = "subscription";
+  //   const userInfo = this.multiStepForm.get('personalDetails')?.value;
+  //   const planInfo = this.multiStepForm.get('planDetails')?.value;
+
+  //    // Check if user is signed in
+  //   const userId = localStorage.getItem('userId') || '';
+
+  //   // Creating a new user/new payment for initial signUp of new user if not signed in else update user
+  //   if (!userId) {
+  //     const userData = {
+  //       name: userInfo.name,
+  //       password: userInfo.isGoogleAuth ? null : userInfo.password,
+  //       isGoogleAuth: userInfo.isGoogleAuth,
+  //       email: userInfo.email,
+  //       tier: planInfo.plan,
+  //       paymentFrequency: planInfo.billing,
+  //       price: planInfo.totalCost,
+  //       purchaseType: type,
+  //       paymentType: type
+  //     }
+  //     this.user.signUp(userData).subscribe(() => {
+  //     });
+  //   }
+  //   else {
+  //     this.UserId = this.user.getUserId() ?? "";
+
+  //     this.userId = this.UserId;
+
+  //     this.user.getUser(this.userId).subscribe((user)=>{
+  //       this.currentUser = user;
+  //     });
+  //     this.currentUser = {
+  //       userId: this.userId,
+  //       tier: planInfo.plan,
+  //       paymentFrequency: planInfo.billing,
+  //       price: planInfo.totalCost
+  //     }
+  //     this.user.updateUser(this.currentUser).subscribe(() => {
+  //     });
+
+  //     const planData = {
+  //       tier: planInfo.plan,
+  //       paymentFrequency: planInfo.billing,
+  //       price: planInfo.totalCost,
+  //       purchaseType: type,
+  //     }
+  //     this.payment.newPayment(planData).subscribe(() => {
+  //     });
+  //   }
+
+
+  //   if (!localStorage.getItem('userId')) {
+  //     this.goToNextStep(4);
+  //     setTimeout(() => {
+  //       this.activeStepSubject.next(1); this.router.navigate(['sign-in']);
+  //     }, 4000);
+  //     this.multiStepForm = this.fb.group({
+  //   personalDetails: this.fb.group({
+  //     name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
+  //     email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+  //     password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+  //     confirmPassword: ['', { validators: [Validators.required]}]
+  //   }, { validator: passwordMatchValidator 
+  //   }),
+  //   planDetails: this.fb.group({
+  //     plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+  //     billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
+  //     planCost: [0],
+  //     totalCost: []
+  //   }),
+  //   paymentDetails: this.fb.group({
+  //     nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
+  //     ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
+  //     expDate: ['', [Validators.required], Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)],
+  //     cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
+  //     zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+  //     billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
+  //     billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+  //   }),
+  // });
+  //   } else {
+  //     localStorage.removeItem('tier');
+  //     localStorage.removeItem('billing');
+  //     localStorage.setItem('tier', planInfo.plan);
+  //     localStorage.setItem('billing', planInfo.billing);
+  //     localStorage.removeItem('hasVisitedProfileBefore');
+  //     console.log("removed from local storage");
+  //     this.router.navigateByUrl(`/content/${this.UserId}`);
+  //   }
+
+  // }
 
 }
 

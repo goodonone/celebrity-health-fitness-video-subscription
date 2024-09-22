@@ -548,6 +548,10 @@ getUserId() {
   return "undefined";
 }
 
+signUpWithGoogle(userData: any): Observable<User> {
+  return this.http.post<User>(`${this.baseURL}/signup-google`, userData);
+}
+
 // updateUser(updatedUser: User): Observable<User> {
 //   let reqHeaders = {
 //     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`

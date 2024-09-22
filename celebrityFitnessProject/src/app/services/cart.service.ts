@@ -484,6 +484,7 @@ export class CartService {
 
   isLoggedIn: boolean = false;
   private isInitialized = false;
+  
 
   constructor(private http: HttpClient, private authService: AuthService) {
     // if(this.authService.isAuthenticated()) { 

@@ -41,6 +41,19 @@ async loginWithPopup(): Promise<boolean> {
     }
   }
 
+  getUser(): any {
+    const claims = this.oauthService.getIdentityClaims();
+    if (!claims) {
+      return null;
+    }
+    
+    return {
+      name: claims['name'],
+      email: claims['email'],
+      picture: claims['picture']
+    };
+  }
+
 
   loadDiscoveryDocumentAndTryLogin(): Promise<boolean> {
     return this.oauthService.loadDiscoveryDocumentAndTryLogin();

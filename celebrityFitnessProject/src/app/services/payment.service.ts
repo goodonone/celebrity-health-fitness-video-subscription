@@ -34,4 +34,8 @@ export class PaymentService {
     }
     return this.http.get<Payment>(`${this.baseURL} /  ${paymentId}`, {headers: reqHeaders});
     }
+
+    processPayment(paymentData: any): Observable<any> {
+      return this.http.post(`${this.baseURL}/process`, paymentData);
+    }
 }
