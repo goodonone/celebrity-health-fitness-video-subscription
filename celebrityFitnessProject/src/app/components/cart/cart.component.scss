@@ -12,7 +12,6 @@
     height: 100%;
     min-height: 100vh;
     margin: auto;
-
 }
 
 .cartContainer{
@@ -40,13 +39,13 @@
 }
 
 p.name{
-    padding: 0.5rem 0 0rem 1rem;
+    padding: 1rem 0 0rem 1rem;
     font-size: 2rem;
 }
 
 .productImage{
-    width: 2.3rem;
-    height: 2.3rem;
+    width: 3.2rem;
+    height: 3.2rem;
     box-shadow: none;
     cursor: pointer;
 }
@@ -55,7 +54,7 @@ p.name{
     display: flex;
     flex-direction: column;
     height: fit-content;
-    margin-top: 4.5rem;
+    margin-top: 4.3rem;
     position: relative;
     justify-content: center;
     padding:0 1.8rem;
@@ -65,7 +64,7 @@ p.name{
     position: relative;
     overflow-y: scroll;
     // overflow: visible;
-    height: 20.2rem;
+    height: 20.5rem;
     width: 100%;
     border-radius: 0.8rem;
     background-color: rgb(215, 215, 215);
@@ -112,7 +111,7 @@ p.name{
     border-radius: 6px;
     width: 100%;
     max-width: 45.5rem;
-    height: 3rem;
+    height: 4rem;
     padding: 0.4rem;
     margin-left: 0.5rem;
     /* box-shadow: 0 2px 10px rgb(169, 168, 168); */
@@ -122,7 +121,7 @@ p.name{
 div.quantity{
     position: absolute;
     right: 15rem;
-    top: 1rem;
+    top: 1.4rem;
     z-index: 10;
 }
 
@@ -133,7 +132,7 @@ select{
 div.removeButton{
     position: absolute;
     right: 1rem;
-    top: 0.5rem;
+    top: 0.95rem;
     z-index: 10;
     cursor: pointer;
 }
@@ -141,7 +140,7 @@ div.removeButton{
 div.priceContainer{
     position: absolute;
     /* margin-left: 10rem; */
-    top: 1rem;
+    top: 1.45rem;
     right: 8rem;
     z-index: 10;
     pointer-events: none;
@@ -279,7 +278,7 @@ p.payment{
     display: none;
     position: fixed; /* Change to fixed to escape the overflow */
     // bottom: 20rem; /* Dynamically adjust the position *
-    left: 10.5%; /* Position it to the right of the image */
+    left: 12%; /* Position it to the right of the image */
     // box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
 
@@ -302,8 +301,8 @@ p.payment{
   }
   
   .largeImagePreview img {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     object-fit: cover;
     // box-shadow: 0 0 0 16px rgb(236, 236, 236), 0 5px 15px rgba(0, 0, 0, 0.3);
     // transition: 

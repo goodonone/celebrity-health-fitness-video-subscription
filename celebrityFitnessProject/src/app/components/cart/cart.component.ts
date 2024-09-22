@@ -479,6 +479,7 @@ export class CartComponent implements OnInit {
   // hoveredItem: CartItem | null = null; // Track the hovered item
   hoveredItemPreview: HTMLElement | null = null; // Reference to the preview element
   hoveredItemIndex: number | null = null;
+  private hoverTimeout: any = null; 
 
   constructor(
     private cartService: CartService,
@@ -593,27 +594,62 @@ ngAfterViewInit() {
 
 //   console.log('Preview top:', preview.style.top);
 // }
+// onMouseEnter(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+
+//   const scrollTop = window.scrollY || window.pageYOffset;
+  
+//   // Subtract 350 pixels from the calculated top position
+//   const newTop = targetRect.top + scrollTop - 170;
+
+//   // Apply the new top value
+//   preview.style.top = `${newTop}px`;
+//   preview.style.display = 'block';
+//   // preview.style.animation = 'fade-in 0.5s ease-in-out';
+
+//   // console.log('Preview top:', preview.style.top);
+// }
+
+// onMouseLeave(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   preview.style.display = 'none';
+// }
+
 onMouseEnter(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement;
   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-  const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
-
-  const scrollTop = window.scrollY || window.pageYOffset;
   
-  // Subtract 350 pixels from the calculated top position
-  const newTop = targetRect.top + scrollTop - 170;
+  // Clear any existing timeout to avoid multiple triggers
+  if (this.hoverTimeout) {
+    clearTimeout(this.hoverTimeout);
+  }
 
-  // Apply the new top value
-  preview.style.top = `${newTop}px`;
-  preview.style.display = 'block';
-  // preview.style.animation = 'fade-in 0.5s ease-in-out';
+  // Set a timeout for 150ms to show the preview
+  this.hoverTimeout = setTimeout(() => {
+    const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+    const scrollTop = window.scrollY || window.pageYOffset;
+    const newTop = targetRect.top + scrollTop - 170; // Adjust the top position dynamically
 
-  // console.log('Preview top:', preview.style.top);
+    preview.style.top = `${newTop}px`;
+    preview.style.display = 'block';
+
+    console.log('Preview top:', preview.style.top);
+  }, 150); // Trigger after 150ms
 }
 
 onMouseLeave(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement;
   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+
+  // Clear the timeout if mouse leaves before 150ms
+  if (this.hoverTimeout) {
+    clearTimeout(this.hoverTimeout);
+  }
+
+  // Hide the preview when the mouse leaves
   preview.style.display = 'none';
 }
 

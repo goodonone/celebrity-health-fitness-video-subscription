@@ -289,8 +289,8 @@
                         <mat-card class="cards" *ngFor="let cartItem of cart.items; let i = index">
                             <div class="imageContainer" (mouseenter)="onMouseEnter($event)" (mouseleave)="onMouseLeave($event)">
                                 <mat-card class="productImage" 
-                                [ngStyle]="{'background-image': 'url(' + cartItem.Product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}" 
-                                [routerLink]="['/store/product', cartItem.Product.productId]">
+                                    [ngStyle]="{'background-image': 'url(' + cartItem.Product.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}" 
+                                    [routerLink]="['/store/product', cartItem.Product.productId]">
                                 </mat-card>
                                 <div class="largeImagePreview">
                                     <img [src]="cartItem.Product.productUrl" [alt]="cartItem.Product.productName">
