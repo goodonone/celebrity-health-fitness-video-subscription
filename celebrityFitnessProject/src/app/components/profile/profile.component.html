@@ -15,14 +15,14 @@
 
         <div class="profileContainer">
             <div class="deleteProfileContainer" [class.active]="currentState === ProfileState.DeletingProfile">
-                <div class="absoluteContainer" *ngIf="currentState === ProfileState.DeletingProfile" (click)="cancelAction()">
+                <div class="absoluteContainer" *ngIf="currentState === ProfileState.DeletingProfile">
                     <div class="cancelSubscription">
                         <img class="warningImg" src="assets/Images/Exclamation.svg">
                         <h1 class="deleteProfileText" [ngClass]="{'wide': true}">You are about to <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific <br> Content & All Access to the Store. <br>  Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be missed.</h1>
                         <h1 class="deleteProfileText" [ngClass]="{'narrow': true}"> You are about to <br> <span class="underline">Cancel Your Membership.</span> <br>You will Lose All Access to Plan Specific Content & All Access to the Store. Proceeding will Delete All Traces of Your Profile.<br> This Step Cannot be Undone. <br> Proceed with Caution! <br><br> You will be missed.</h1>
                         <div class="cancelSubscriptionButtonContainer">
                             <button mat-button style="color:white" class="btn btn-backButton" type="submit" (click)="cancelAction()">Keep <br> Subscription</button>
-                            <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">Cancel Subscription</button>
+                            <button mat-button style="color:red" class="btn btn-cancelSubscriptionButtonFinal" id="cancelSub" (click)="goodbye()" type="submit">{{buttonText}}</button>
                         </div>
                     </div>
                 </div>

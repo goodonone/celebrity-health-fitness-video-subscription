@@ -55,6 +55,20 @@ export class ProgressionButtonsComponent implements OnInit {
 
   }
 
+  // onEnterKey(event: KeyboardEvent) {
+  //   // Check if the pressed key is Enter
+  //   if (event.key === 'Enter') {
+  //     // Prevent the default action for the Enter key
+  //     event.preventDefault();
+
+  //     // Trigger the Next button action programmatically
+  //     const nextButton = document.getElementById('nextButton') as HTMLButtonElement;
+  //     if (nextButton) {
+  //       nextButton.click(); // Trigger Next button click
+  //     }
+  //   }
+  // }
+
   goBack() {
     this.formService.goBackToPreviousStep(this.activeStep$);
   }

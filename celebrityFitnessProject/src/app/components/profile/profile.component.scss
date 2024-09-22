@@ -1266,8 +1266,8 @@ input[matInput]:focus {
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */
   outline: none; /* Remove the default outline */
-  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
-  color: #ffffff !important; /* Change the text color when focused */
+  // box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  // color: #ffffff !important; /* Change the text color when focused */
 }
 
 @media screen and (min-width: 2400px) {
