@@ -32,7 +32,7 @@ h1 {
     color: Black;
     text-align: left;
     font-size: clamp(10rem, 2vw, 25rem);
-    padding-left: 8rem;
+    padding-left: 5rem;
     font-weight: 600;
 }
 

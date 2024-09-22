@@ -520,7 +520,7 @@ export class CartService {
     ).subscribe(
       (cart) => {
         if (cart.totalCount > 0) {
-          console.log('Get cart is called');
+          // console.log('Get cart is called');
           this.cartSubject.next(cart);
         }
       },
@@ -538,7 +538,7 @@ export class CartService {
     const userId = this.getCurrentUserId();
     return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
       tap(cart => {
-        console.log('Updated Cart after adding product:', cart);
+        // console.log('Updated Cart after adding product:', cart);
         this.cartSubject.next(cart);
       })
     );
@@ -603,7 +603,7 @@ export class CartService {
   }
 
   getCartObservable(): Observable<Cart> {
-    console.log('CartService: getCartObservable called');
+    // console.log('CartService: getCartObservable called');
     return this.cartSubject.asObservable();
   }
 

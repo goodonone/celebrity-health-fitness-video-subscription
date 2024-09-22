@@ -22,10 +22,11 @@
     transform: translate(-50%, 0%);
     margin: auto auto auto auto;
     width: 50rem;
-    height: fit-content;
+    height: 43.2rem;
     padding-top: 5rem;
+    // padding-bottom: 0.5rem;
     border-radius: 1rem;
-    margin-bottom: 2rem;
+    // margin-bottom: 2rem;
     box-shadow: 0 0 20px rgb(162, 162, 162);
 }
 
@@ -54,7 +55,7 @@ p.name{
     display: flex;
     flex-direction: column;
     height: fit-content;
-    margin-top: 3rem;
+    margin-top: 4.5rem;
     position: relative;
     justify-content: center;
     padding:0 1.8rem;
@@ -64,7 +65,7 @@ p.name{
     position: relative;
     overflow-y: scroll;
     // overflow: visible;
-    height: 21rem;
+    height: 20.2rem;
     width: 100%;
     border-radius: 0.8rem;
     background-color: rgb(215, 215, 215);
@@ -109,7 +110,7 @@ p.name{
     background-color: rgb(236, 236, 236);
     margin: 0.8rem 0 0.8rem 0;
     border-radius: 6px;
-    width: 99%;
+    width: 100%;
     max-width: 45.5rem;
     height: 3rem;
     padding: 0.4rem;
@@ -200,6 +201,7 @@ p.totalPrice{
 button.buttonCheckOut{
     background-color: rgb(236, 236, 236);
     width: 12rem;
+    // margin-left: 24rem;
 
     /* display: block;
     justify-content: flex-end; */
@@ -212,11 +214,12 @@ button.buttonCheckOut{
 }
 
 .buttonContainer{
-    margin-top: 1rem;
+    margin-top: 0.8rem;
     display: flex;
     justify-content: right;
-    margin-bottom: 1rem;
-    margin-left: 0.5rem;
+    // position: absolute;
+    margin-bottom: 0.5rem;
+    margin-left: 3rem;
     /* margin-left: 12rem; */
 }
 
@@ -276,9 +279,21 @@ p.payment{
     display: none;
     position: fixed; /* Change to fixed to escape the overflow */
     // bottom: 20rem; /* Dynamically adjust the position *
-    left: 9%; /* Position it to the right of the image */
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    left: 10.5%; /* Position it to the right of the image */
+    // box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
+
+    // animation: fadeIn 0.5s ease-in-out; 
+    // // animation-duration: 0.5s;
+
+    // @keyframes fadeIn {
+    //     from {
+    //       opacity: 0;
+    //     }
+    //     to {
+    //       opacity: 1;
+    //     }
+    //   }
   }
 
   .largeImage{
@@ -287,8 +302,8 @@ p.payment{
   }
   
   .largeImagePreview img {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     // box-shadow: 0 0 0 16px rgb(236, 236, 236), 0 5px 15px rgba(0, 0, 0, 0.3);
     // transition: 

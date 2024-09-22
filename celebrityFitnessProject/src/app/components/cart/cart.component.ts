@@ -601,13 +601,14 @@ onMouseEnter(event: MouseEvent) {
   const scrollTop = window.scrollY || window.pageYOffset;
   
   // Subtract 350 pixels from the calculated top position
-  const newTop = targetRect.top + scrollTop - 200;
+  const newTop = targetRect.top + scrollTop - 170;
 
   // Apply the new top value
   preview.style.top = `${newTop}px`;
   preview.style.display = 'block';
+  // preview.style.animation = 'fade-in 0.5s ease-in-out';
 
-  console.log('Preview top:', preview.style.top);
+  // console.log('Preview top:', preview.style.top);
 }
 
 onMouseLeave(event: MouseEvent) {
@@ -638,13 +639,13 @@ onMouseLeave(event: MouseEvent) {
         return [];
       })
     ).subscribe(cart => {
-      console.log('Mapped cart:', cart);
+      // console.log('Mapped cart:', cart);
       this.cartSubject.next(cart);
     });
   }
 
   private mapBackendCartToCart(backendCart: any): Cart {
-    console.log('Backend cart received:', backendCart);
+    // console.log('Backend cart received:', backendCart);
     const cart = new Cart();
     cart.cartId = backendCart.cartId;
     cart.userId = backendCart.userId;
@@ -743,7 +744,7 @@ onMouseLeave(event: MouseEvent) {
     if (cartItem.Product.productId) {
       this.cartService.removeFromCart(cartItem.Product.productId).subscribe({
         next: () => {
-          console.log('Item removed successfully');
+          // console.log('Item removed successfully');
         },
         error: (error) => {
           console.error('Error removing item from cart:', error);
@@ -783,7 +784,7 @@ onMouseLeave(event: MouseEvent) {
     if (cartItem.Product.productId && newQuantity > 0) {
       this.cartService.updateQuantity(cartItem.Product.productId, newQuantity).subscribe({
         next: () => {
-          console.log('Quantity updated successfully');
+          // console.log('Quantity updated successfully');
         },
         error: (error) => {
           console.error('Error updating quantity:', error);
