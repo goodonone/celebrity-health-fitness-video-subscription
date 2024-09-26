@@ -489,6 +489,10 @@ export class UserService {
   // Observable for components to subscribe to
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
+  checkEmailAvailability(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseURL}/check-email/${email}`);
+  }
+
   signUp(newUser: User) {
     return this.http.post(`${this.baseURL}/`, newUser)
 }

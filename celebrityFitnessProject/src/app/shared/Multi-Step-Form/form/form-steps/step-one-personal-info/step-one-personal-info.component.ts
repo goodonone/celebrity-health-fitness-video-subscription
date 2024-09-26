@@ -206,7 +206,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
     // }, 3000); 
     setTimeout(() => {
       this.hideGoogleLoadingSpinner();
-    }, 10000);
+    }, 13000);
   }
 
     // private showGoogleLoadingSpinner() {

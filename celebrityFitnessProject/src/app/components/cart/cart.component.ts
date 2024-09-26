@@ -692,7 +692,7 @@ onMouseEnter(event: MouseEvent) {
     preview.style.display = 'block';
 
     console.log('Preview top:', preview.style.top);
-  }, 150); // Trigger after 150ms
+  }, 100); // Trigger after 150ms
 }
 
 onMouseLeave(event: MouseEvent) {
