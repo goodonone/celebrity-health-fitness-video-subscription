@@ -19,6 +19,7 @@ import { SharedModule } from './shared/shared.module';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { CustomOAuthService } from './services/oauth.service';
 import { AuthStateService } from './services/authstate.service';
+import { AuthService } from './services/auth.service';
 
 
 
@@ -44,7 +45,7 @@ import { AuthStateService } from './services/authstate.service';
     SharedModule,
     OAuthModule.forRoot()
   ],
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

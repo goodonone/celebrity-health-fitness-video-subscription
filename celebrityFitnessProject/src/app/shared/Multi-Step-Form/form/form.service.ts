@@ -7,7 +7,7 @@ import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { PaymentService } from 'src/app/services/payment.service';
 import { expirationDateValidator } from '../../expiry-date-validator';
-import { CustomOAuthService} from 'src/app/services/oauth.service';
+// import { CustomOAuthService} from 'src/app/services/oauth.service';
 // import { expirationDateValidator } from '../../expiry-date-validator';
 
 // Custom Validator Function
@@ -29,9 +29,15 @@ export class FormService implements OnInit {
   userId?: string;
   currentUser: User = new User();
   shipping?: boolean;
+  multiStepForm: FormGroup;
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
+
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { 
+    this.multiStepForm = this.createForm();
+    this.loadFormState();
+  }
 
   ngOnInit(): void {
     const userId = localStorage.getItem('userId');
@@ -43,15 +49,15 @@ export class FormService implements OnInit {
     }
   }
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private oauthService: CustomOAuthService) { 
-  }
+ 
 
-  multiStepForm: FormGroup = this.fb.group({
+  private createForm(): FormGroup {
+  return this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      password: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+      confirmPassword: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       isGoogleAuth: [false]
     }, { validator: passwordMatchValidator }),
     planDetails: this.fb.group({
@@ -92,7 +98,36 @@ export class FormService implements OnInit {
       ]],
     }),
   });
+}
   
+  // updateFormWithGoogleData(user: any) {
+  //   const personalDetails = this.multiStepForm.get('personalDetails');
+  //   if (personalDetails) {
+  //     personalDetails.patchValue({
+  //       name: user.name,
+  //       email: user.email,
+  //       isGoogleAuth: true
+  //     });
+  //     personalDetails.get('password')?.disable();
+  //     personalDetails.get('confirmPassword')?.disable();
+  //   }
+  // }
+
+  updateFormWithGoogleData(user: any) {
+    console.log('Updating form with Google data:', user);
+    const personalDetails = this.multiStepForm.get('personalDetails');
+    if (personalDetails) {
+      personalDetails.patchValue({
+        name: user.name,
+        email: user.email,
+        isGoogleAuth: true
+      });
+      personalDetails.get('password')?.disable();
+      personalDetails.get('confirmPassword')?.disable();
+    }
+    this.saveFormState();
+  }
+
 
   updateFormFields(shipping: boolean) {
     const paymentDetailsGroup = this.multiStepForm.get('paymentDetails') as FormGroup;
@@ -113,18 +148,18 @@ export class FormService implements OnInit {
     }
   }
 
-  async initiateGoogleOAuth() {
-    try {
-      const success = await this.oauthService.loginWithPopup();
-      if (success) {
-        const googleUser = await this.oauthService.getUser();
-        this.populateFormWithGoogleData(googleUser);
-      }
-    } catch (error) {
-      console.error('Google OAuth error:', error);
-      // Handle error (e.g., show error message to user)
-    }
-  }
+  // async initiateGoogleOAuth() {
+  //   try {
+  //     const success = await this.oauthService.loginWithPopup();
+  //     if (success) {
+  //       const googleUser = await this.oauthService.getUser();
+  //       this.updateFormWithGoogleData(googleUser);
+  //     }
+  //   } catch (error) {
+  //     console.error('Google OAuth error:', error);
+  //     // Handle error (e.g., show error message to user)
+  //   }
+  // }
 
   // async initiateGoogleOAuth() {
   //   try {
@@ -145,18 +180,18 @@ export class FormService implements OnInit {
   //   }
   // }
 
-  private populateFormWithGoogleData(googleUser: any) {
-    const personalDetails = this.multiStepForm.get('personalDetails');
-    if (personalDetails) {
-      personalDetails.patchValue({
-        name: googleUser.name,
-        email: googleUser.email,
-        isGoogleAuth: true
-      });
-      personalDetails.get('password')?.disable();
-      personalDetails.get('confirmPassword')?.disable();
-    }
-  }
+  // private populateFormWithGoogleData(googleUser: any) {
+  //   const personalDetails = this.multiStepForm.get('personalDetails');
+  //   if (personalDetails) {
+  //     personalDetails.patchValue({
+  //       name: googleUser.name,
+  //       email: googleUser.email,
+  //       isGoogleAuth: true
+  //     });
+  //     personalDetails.get('password')?.disable();
+  //     personalDetails.get('confirmPassword')?.disable();
+  //   }
+  // }
 
 
   private zipCodeValidator(control: AbstractControl): ValidationErrors | null {
@@ -207,12 +242,39 @@ export class FormService implements OnInit {
   }
 
   goToNextStep(number: number) {
+    console.log('Moving to next step from:', number);
     this.activeStepSubject.next(number + 1);
+    this.saveFormState();
   }
 
   goBackToPreviousStep(number: number) {
-    this.activeStepSubject.next(number - 1);
+    if (number > 1) {
+      this.activeStepSubject.next(number - 1);
+      this.saveFormState();
+    }
+    // this.activeStepSubject.next(number - 1);
   }
+
+  public saveFormState() {
+    localStorage.setItem('formState', JSON.stringify(this.multiStepForm.value));
+    localStorage.setItem('activeStep', this.activeStepSubject.value.toString());
+  }
+
+  private loadFormState() {
+    const formState = localStorage.getItem('formState');
+    const activeStep = localStorage.getItem('activeStep');
+    if (formState) {
+      this.multiStepForm.patchValue(JSON.parse(formState));
+    }
+    if (activeStep) {
+      this.activeStepSubject.next(parseInt(activeStep, 10));
+    }
+  }
+
+
+  // resetForm() {
+    
+  // }
 
 
   submit() {
@@ -319,6 +381,10 @@ export class FormService implements OnInit {
         billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
       }),
     });
+    // this.multiStepForm.reset();
+    this.activeStepSubject.next(1);
+    localStorage.removeItem('formState');
+    localStorage.removeItem('activeStep');
   }
 
 

@@ -164,13 +164,13 @@ label {
   color: black;
 }
 
-.mat-button-toggle {
+/* /* .mat-button-toggle {
   color: black;
-}
+} */
 
-.mat-slide-toggle-checked {
+/* .mat-slide-toggle-checked {
   color: #C7FF20;
-}
+}  */
 
 input[matInput]:focus {
   border-color: #000000 !important; /* Change the border color when focused */
@@ -190,6 +190,7 @@ input[matInput]:focus::placeholder {
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
   background-color: rgb(46, 46, 46) !important;
 }
+
 
 
 @media (min-width: 37.5em) {

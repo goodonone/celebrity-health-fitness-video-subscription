@@ -78,18 +78,32 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
+    // this.oauthService.handleRedirectResult();
+    this.oauthService.checkForRedirectResult();
+    this.oauthService.checkForStoredAuthResult();
     // this.loadUserId();
     // this.UpdateStatus();
 
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then((loginResult) => {
-      if (loginResult) {
-        console.log('User logged in successfully after redirect');
-        this.authStateService.checkAuthStatus();
+    // this.oauthService.loadDiscoveryDocumentAndTryLogin().then((loginResult) => {
+    //   if (loginResult) {
+    //     console.log('User logged in successfully after redirect');
+    //     this.authStateService.checkAuthStatus();
+    //   } else {
+    //     console.log('No user is currently logged in');
+    //   }
+    // }).catch(error => {
+    //   console.error('Error during OAuth initialization:', error);
+    // });
+
+    this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        console.log('User logged in successfully');
+        // You can perform any actions needed when the user becomes authenticated
       } else {
-        console.log('No user is currently logged in');
+        console.log('User is not authenticated');
+        // You can perform any actions needed when the user becomes unauthenticated
       }
-    }).catch(error => {
-      console.error('Error during OAuth initialization:', error);
     });
 
     this.cartSubscription =this.cartService.getCartObservable().subscribe((newCart) => {

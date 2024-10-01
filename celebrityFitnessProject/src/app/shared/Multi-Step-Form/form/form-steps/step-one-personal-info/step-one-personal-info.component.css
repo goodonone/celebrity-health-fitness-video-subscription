@@ -456,6 +456,7 @@ input[matInput]:focus::placeholder {
   input {
     height: 1.2rem;
     width: 95%;
+    padding-left: 0.5rem;
   }
 
   #password, #confirmPassword{
@@ -465,7 +466,7 @@ input[matInput]:focus::placeholder {
     border-radius: 0.25rem;
     border: 0.063rem solid black;
     margin-bottom: 0rem;
-    padding: 0.5rem 0 0.5rem 1rem;
+    padding: 0.5rem 0 0.5rem 0.5rem;
     color: black;
     background-color: white;
     font-size: 1rem;
