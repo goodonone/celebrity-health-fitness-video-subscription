@@ -1,12 +1,13 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, 
          Validator, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { PaymentService } from 'src/app/services/payment.service';
 import { expirationDateValidator } from '../../expiry-date-validator';
+import { AuthService } from 'src/app/services/auth.service';
 // import { CustomOAuthService} from 'src/app/services/oauth.service';
 // import { expirationDateValidator } from '../../expiry-date-validator';
 
@@ -30,11 +31,13 @@ export class FormService implements OnInit {
   currentUser: User = new User();
   shipping?: boolean;
   multiStepForm: FormGroup;
+  private formUpdatedWithGoogleData = new Subject<boolean>();
+  formUpdatedWithGoogleData$ = this.formUpdatedWithGoogleData.asObservable();
 
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService) { 
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private authService: AuthService) {
     this.multiStepForm = this.createForm();
     this.loadFormState();
   }
@@ -48,8 +51,6 @@ export class FormService implements OnInit {
       personalDetailsGroup.removeControl('confirmPassword');
     }
   }
-
- 
 
   private createForm(): FormGroup {
   return this.fb.group({
@@ -113,9 +114,24 @@ export class FormService implements OnInit {
   //   }
   // }
 
+  // updateFormWithGoogleData(user: any) {
+  //   console.log('Updating form with Google data:', user);
+  //   const personalDetails = this.multiStepForm.get('personalDetails');
+  //   if (personalDetails) {
+  //     personalDetails.patchValue({
+  //       name: user.name,
+  //       email: user.email,
+  //       isGoogleAuth: true
+  //     });
+  //     personalDetails.get('password')?.disable();
+  //     personalDetails.get('confirmPassword')?.disable();
+  //   }
+  //   this.saveFormState();
+  // }
+
   updateFormWithGoogleData(user: any) {
     console.log('Updating form with Google data:', user);
-    const personalDetails = this.multiStepForm.get('personalDetails');
+    const personalDetails = this.multiStepForm.get('personalDetails') as FormGroup;
     if (personalDetails) {
       personalDetails.patchValue({
         name: user.name,
@@ -124,10 +140,27 @@ export class FormService implements OnInit {
       });
       personalDetails.get('password')?.disable();
       personalDetails.get('confirmPassword')?.disable();
+
+      // Manually mark the fields as touched and trigger validation
+      Object.keys(personalDetails.controls).forEach(key => {
+        const control = personalDetails.get(key);
+        control?.markAsTouched();
+        control?.updateValueAndValidity();
+      });
+
+      // Manually validate the entire form group
+      personalDetails.updateValueAndValidity();
     }
     this.saveFormState();
+    
+    // Emit an event to notify that the form has been updated with Google data
+    this.formUpdatedWithGoogleData.next(true);
   }
 
+  isPersonalDetailsValid(): boolean {
+    const personalDetails = this.multiStepForm.get('personalDetails');
+    return personalDetails ? personalDetails.valid : false;
+  }
 
   updateFormFields(shipping: boolean) {
     const paymentDetailsGroup = this.multiStepForm.get('paymentDetails') as FormGroup;
@@ -260,11 +293,52 @@ export class FormService implements OnInit {
     localStorage.setItem('activeStep', this.activeStepSubject.value.toString());
   }
 
+  // private loadFormState() {
+  //   const formState = localStorage.getItem('formState');
+  //   const activeStep = localStorage.getItem('activeStep');
+  //   if (formState) {
+  //     this.multiStepForm.patchValue(JSON.parse(formState));
+  //   }
+  //   if (activeStep) {
+  //     this.activeStepSubject.next(parseInt(activeStep, 10));
+  //   }
+  // }
+
+  // private loadFormState() {
+  //   const formState = localStorage.getItem('formState');
+  //   const activeStep = localStorage.getItem('activeStep');
+  //   if (formState) {
+  //     this.multiStepForm.patchValue(JSON.parse(formState));
+  
+  //     // Reset isGoogleAuth to false after loading the form state
+  //     const personalDetailsGroup = this.multiStepForm.get('personalDetails') as FormGroup;
+  //     if (personalDetailsGroup) {
+  //       personalDetailsGroup.patchValue({ isGoogleAuth: false });
+  //     }
+  //   }
+  //   if (activeStep) {
+  //     this.activeStepSubject.next(parseInt(activeStep, 10));
+  //   }
+  // }
+
   private loadFormState() {
     const formState = localStorage.getItem('formState');
     const activeStep = localStorage.getItem('activeStep');
     if (formState) {
       this.multiStepForm.patchValue(JSON.parse(formState));
+  
+      // Access the personalDetails form group
+      const personalDetailsGroup = this.multiStepForm.get('personalDetails') as FormGroup;
+      if (personalDetailsGroup) {
+        // Log the value before resetting
+        console.log('isGoogleAuth before reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
+  
+        // Reset isGoogleAuth to false
+        personalDetailsGroup.patchValue({ isGoogleAuth: false });
+  
+        // Log the value after resetting
+        console.log('isGoogleAuth after reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
+      }
     }
     if (activeStep) {
       this.activeStepSubject.next(parseInt(activeStep, 10));
@@ -299,15 +373,27 @@ export class FormService implements OnInit {
         paymentType: type
       }
   
-      if (userInfo.isGoogleAuth) {
-        this.user.signUpWithGoogle(userData).subscribe(() => {
-          this.handleNewUserSignup();
-        });
+      if(userInfo.isGoogleAuth) {
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          const googleAuthUser = {
+            userId: userData.userId, // Extract userId from localStorage
+            tier: planInfo.plan,
+            paymentFrequency: planInfo.billing,
+            price: planInfo.totalCost
+          };
+          this.user.updateUser(googleAuthUser).subscribe(() => {
+            this.handleNewUserSignup(true);
+          });
+        } 
       } else {
         this.user.signUp(userData).subscribe(() => {
-          this.handleNewUserSignup();
+          this.handleNewUserSignup(false);
         });
       }
+
+    // Upgrading Plan for existing user
     } else {
       this.UserId = this.user.getUserId() ?? "";
       this.userId = this.UserId;
@@ -337,13 +423,28 @@ export class FormService implements OnInit {
     }
   }
   
-  private handleNewUserSignup() {
+  private handleNewUserSignup(isGoogleAuth: boolean) {
     this.goToNextStep(4);
     setTimeout(() => {
+      // this.activeStepSubject.next(1);
+      this.multiStepForm.reset();
+      if (isGoogleAuth) {
+        // For Google auth users, clear the authentication state
+        this.authService.clearAuthState();
+        this.clearGoogleAuthState();
+      }
       this.activeStepSubject.next(1);
       this.router.navigate(['sign-in']);
     }, 4000);
     this.resetForm();
+    // this.activeStepSubject.next(1);
+  }
+
+  private clearGoogleAuthState() {
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('authToken');
+    // Add any other necessary cleanup for Google auth state
   }
   
   private handleExistingUserUpdate(planInfo: any) {
@@ -356,38 +457,36 @@ export class FormService implements OnInit {
     this.router.navigateByUrl(`/content/${this.UserId}`);
   }
   
-  private resetForm() {
-    this.multiStepForm = this.fb.group({
-      personalDetails: this.fb.group({
-        name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
-        email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-        password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
-        confirmPassword: ['', { validators: [Validators.required]}],
-        isGoogleAuth: [false]
-      }, { validator: passwordMatchValidator }),
-      planDetails: this.fb.group({
-        plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
-        billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
-        planCost: [0],
-        totalCost: []
-      }),
-      paymentDetails: this.fb.group({
-        nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
-        ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
-        expDate: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)]],
-        cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
-        zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
-        billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
-        billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
-      }),
-    });
+  resetForm() {
+    this.multiStepForm.reset();
+    // this.multiStepForm = this.fb.group({
+    //   personalDetails: this.fb.group({
+    //     name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
+    //     email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+    //     password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+    //     confirmPassword: ['', { validators: [Validators.required]}],
+    //     isGoogleAuth: [false]
+    //   }, { validator: passwordMatchValidator }),
+    //   planDetails: this.fb.group({
+    //     plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
+    //     billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
+    //     planCost: [0],
+    //     totalCost: []
+    //   }),
+    //   paymentDetails: this.fb.group({
+    //     nameOnCard: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-z\s]{4,}$/)]],
+    //     ccNumber: ['', [Validators.required, Validators.minLength(19), Validators.maxLength(19), Validators.pattern(/^\d{4}\s\d{4}\s\d{4}\s\d{4}$/)]],
+    //     expDate: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^(0[1-9]|1[0-2])\/?([0-9]{2})$/)]],
+    //     cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(3), Validators.pattern(/^\d{3}$/)]],
+    //     zipCode: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+    //     billingAddress: ['', [Validators.required, Validators.minLength(15), Validators.pattern(/^[A-Za-z0-9\s,.-]{15,}$/)]],
+    //     billingZip: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5), Validators.pattern(/^\d{5}$/)]],
+    //   }),
+    // });
     // this.multiStepForm.reset();
-    this.activeStepSubject.next(1);
     localStorage.removeItem('formState');
     localStorage.removeItem('activeStep');
   }
-
-
 
 
   // submit() {

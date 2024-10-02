@@ -77,9 +77,10 @@
                (blur)="hidePasswordPopup(); checkPasswords()"
                placeholder="Enter Password"
                formControlName="password"
-               [disabled]="stepForm.get('isGoogleAuth')?.value"
+               [disabled]="isGoogleAuthEnabled"
+               [class.disabled-input]="isGoogleAuthEnabled"
                required>
-               <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+               <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']" [class.disabled-icon]="isGoogleAuthEnabled"></fa-icon>
         </div>
        </div>
        <!-- </div> -->
@@ -109,9 +110,10 @@
              (copy)="preventCopyPaste($event)"
              (cut)="preventCopyPaste($event)" 
              (paste)="preventCopyPaste($event)"
-             [disabled]="stepForm.get('isGoogleAuth')?.value"
+             [disabled]="isGoogleAuthEnabled"
+             [class.disabled-input]="isGoogleAuthEnabled"
              required>
-             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']" [class.disabled-icon]="isGoogleAuthEnabled"></fa-icon>
        </div>
         <!-- <p id="showHide" appShowHidePassword [targetInputs]="['#password', '#confirmPassword']" style="cursor: pointer;">Show Password</p>      -->
       

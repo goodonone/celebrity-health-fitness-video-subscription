@@ -30,6 +30,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
   isLoadingApple = false;
   private authSubscription!: Subscription;
   private loginTimeout: any;
+  isGoogleAuthEnabled: boolean = false;
 
   private popupClosedSubscription!: Subscription;
 
@@ -67,6 +68,12 @@ export class StepOnePersonalInfoComponent implements OnInit {
     // this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
     this.stepForm = this.formService.multiStepForm.get('personalDetails') as FormGroup;
     
+
+    this.stepForm.get('isGoogleAuth')?.valueChanges.subscribe((value) => {
+      this.isGoogleAuthEnabled = value;
+      this.cdr.detectChanges();
+    });
+  
     // window.addEventListener('message', this.handleAuthMessage.bind(this), false);
 
     // this.authSubscription = this.authStateService.isAuthenticated$.subscribe(
@@ -319,7 +326,8 @@ export class StepOnePersonalInfoComponent implements OnInit {
   onClickGoogle(): void {
     console.log('StepOnePersonalInfoComponent: Google login button clicked');
     this.isLoadingGoogle = true;
-    this.oauthService.initiateLogin();
+    this.oauthService.initiateLogin(true);
+    // this.oauthService.initiateLogin();
     // // Set up a check for the auth result
     // const checkAuthResult = setInterval(() => {
     //   const storedResult = localStorage.getItem('oauthResult');
@@ -371,6 +379,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
       });
       this.stepForm.get('password')?.disable();
       this.stepForm.get('confirmPassword')?.disable();
+      this.isGoogleAuthEnabled = true;
       console.log('StepOnePersonalInfoComponent: Form updated:', this.stepForm.value);
       this.isLoadingGoogle = false;
       this.cdr.detectChanges();

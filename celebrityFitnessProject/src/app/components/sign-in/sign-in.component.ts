@@ -69,6 +69,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -93,7 +94,8 @@ export class SignInComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService, // Inject AuthService
-    private router: Router
+    private router: Router,
+    private oauthService: CustomOAuthService
   ) {}
 
   ngOnInit(): void {
@@ -139,6 +141,25 @@ export class SignInComponent implements OnInit {
     );
   }
 
+  onClickGoogle() {
+    this.isLoadingGoogle = true;
+    this.oauthService.initiateLogin();
+    
+    this.oauthService.authResult$.subscribe(
+      (user) => {
+        this.isLoadingGoogle = false;
+        if (user) {
+          this.router.navigate(['/content', user.userId]);
+        }
+      },
+      (error) => {
+        this.isLoadingGoogle = false;
+        console.error('Google login error:', error);
+        // Handle error (e.g., show error message)
+      }
+    );
+  }
+
   resetNavbarState(): void {
     this.navbar?.classList.remove('shadow');
     this.menu?.classList.remove('shadow');
@@ -153,18 +174,11 @@ export class SignInComponent implements OnInit {
     this.passwordVisible = !this.passwordVisible;
   }
 
-  onClickGoogle() {
-    this.isLoadingGoogle = true;
-    this.isLoadingApple = false;
-    
+  // onClickGoogle() {
+  //   this.isLoadingGoogle = true;
+  //   this.isLoadingApple = false;
 
-    // Simulating authentication process
-    // setTimeout(() => {
-    //   this.isLoading = false;
-    // }, 3000); 
-
-    // keep spinning until the user is authenticated, if user clicks apple google oauth is cancelled
-  }
+  // }
 
   onClickApple() {
     this.isLoadingApple = true;

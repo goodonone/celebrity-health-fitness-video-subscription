@@ -76,8 +76,9 @@ export class CustomOAuthService {
   //   }
   // }
 
-  initiateLogin() {
-    const authUrl = 'http://localhost:3000/api/auth/google'; // Adjust if needed
+  initiateLogin(isSignUp: boolean = false) {
+    // const authUrl = 'http://localhost:3000/api/auth/google';
+    const authUrl = `http://localhost:3000/api/auth/google${isSignUp ? '?signup=true' : ''}`;
 
     // Open the popup window
     const popup = window.open(authUrl, 'google_oauth_popup', 'width=500,height=600');
@@ -89,6 +90,7 @@ export class CustomOAuthService {
       console.error('Failed to open popup window');
     }
   }
+  
 
   private handleMessage(event: MessageEvent) {
     if (event.origin !== 'http://localhost:3000') {
@@ -119,7 +121,7 @@ export class CustomOAuthService {
   public checkForStoredAuthResult(): void {
     const storedResult = localStorage.getItem('oauthResult');
     if (storedResult) {
-      console.log('CustomOAuthService: Found stored auth result');
+      // console.log('CustomOAuthService: Found stored auth result');
       const authResult = JSON.parse(storedResult);
       this.handleAuthResult(authResult);
       localStorage.removeItem('oauthResult');
@@ -129,17 +131,17 @@ export class CustomOAuthService {
 
   private handleAuthResult(result: any): void {
     if (result.type === 'GOOGLE_AUTH_SUCCESS') {
-      console.log('CustomOAuthService: Handling successful auth');
+      // console.log('CustomOAuthService: Handling successful auth');
       this.handleSuccessfulAuth(result.payload);
     } else if (result.type === 'GOOGLE_AUTH_ERROR') {
-      console.log('CustomOAuthService: Handling auth error');
+      // console.log('CustomOAuthService: Handling auth error');
       this.handleLoginError(result.error);
     }
   }
 
   private handleAuthMessage(event: MessageEvent): void {
-    console.log('CustomOAuthService: Received message', event);
-    console.log('Event origin:', event.origin);
+    // console.log('CustomOAuthService: Received message', event);
+    // console.log('Event origin:', event.origin);
     // Adjust or remove the origin check temporarily
     // if (event.origin !== 'http://localhost:3000') return;
     // Process the message regardless of origin for debugging purposes
@@ -175,7 +177,7 @@ export class CustomOAuthService {
   // }
 
   private handlePopupClosed(): void {
-    console.log('Authentication popup closed');
+    // console.log('Authentication popup closed');
     // Check localStorage for OAuth result
     const oauthResult = localStorage.getItem('oauthResult');
     if (oauthResult) {
@@ -234,16 +236,21 @@ export class CustomOAuthService {
 
 
   public handleSuccessfulAuth(payload: any): void {
-    console.log('CustomOAuthService: Handling successful auth:', payload);
+    // console.log('CustomOAuthService: Handling successful auth:', payload);
     const { token, user } = payload;
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
-    console.log('CustomOAuthService: User data stored in localStorage');
+    // console.log('CustomOAuthService: User data stored in localStorage');
     this.stateManagementService.setAuthenticationStatus(true);
     this.isAuthenticatedSubject.next(true);
     this.authResultSubject.next(user);
-    console.log('CustomOAuthService: Auth result emitted');
-    this.router.navigate(['/signup']);
+    // console.log('CustomOAuthService: Auth result emitted');
+    if (this.router.url.includes('signup')) {
+      this.formService.updateFormWithGoogleData(user);
+    } else {
+      // We're in the login flow
+      this.router.navigate(['/content', user.userId]);
+    }
   }
 
   private checkAuthStatus() {
@@ -262,26 +269,37 @@ export class CustomOAuthService {
   }
 
 
-  logout(): Observable<any> {
-    return this.http.post('http://localhost:3000/api/auth/logout', {}).pipe(
-      tap(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        this.isAuthenticatedSubject.next(false);
-        this.stateManagementService.setAuthenticationStatus(false);
-      }),
-      catchError(error => {
-        console.error('Error during logout:', error);
-        return from([{ success: false }]);
-      })
-    );
-  }
+  // logout(): Observable<any> {
+  //   return this.http.post('http://localhost:3000/api/auth/logout', {}).pipe(
+  //     tap(() => {
+  //       localStorage.removeItem('token');
+  //       localStorage.removeItem('user');
+  //       this.isAuthenticatedSubject.next(false);
+  //       this.stateManagementService.setAuthenticationStatus(false);
+  //     }),
+  //     catchError(error => {
+  //       console.error('Error during logout:', error);
+  //       return from([{ success: false }]);
+  //     })
+  //   );
+  // }
 
+  logout(): Observable<any> {
+    return new Observable(observer => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.isAuthenticatedSubject.next(false);
+      this.stateManagementService.setAuthenticationStatus(false);
+      observer.next({ success: true });
+      observer.complete();
+    });
+  }
 
   private handleLoginError(error: string): void {
     console.error('CustomOAuthService: Authentication error:', error);
     this.isAuthenticatedSubject.next(false);
     this.authResultSubject.next(null);
+    this.router.navigateByUrl("/error");
     // this.stateManagementService.setAuthenticationStatus(false);
     // Handle error (e.g., show error message to user)
     // this.router.navigate(['/login'], { queryParams: { error: 'auth_failed' } });

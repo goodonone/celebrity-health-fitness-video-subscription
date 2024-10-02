@@ -333,12 +333,78 @@ export class AppComponent implements OnInit, AfterViewInit {
   //   }
   // }
 
+  // private UpdateStatus(): void {
+  //   if (this.authService.isAuthenticated()) {
+  //     this.UserId = (this.userService.getUserId() ?? '') || (this.authService.getUserIdFromToken() ?? '');
+  //     this.userService.updateLoginStatus(true);
+  //     this.cartService.loadCart();
+  //   } else {
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
+  // private UpdateStatus(): void {
+  //   if (this.authService.isAuthenticated()) {
+  //     this.UserId = (this.userService.getUserId() ?? '') || (this.authService.getUserIdFromToken() || '');
+  //     if (this.UserId) {
+  //       this.userService.updateLoginStatus(true);
+  //       this.cartService.loadCart();
+  //     } else {
+  //       console.error('User is authenticated but UserId is not available');
+  //       // Handle this edge case as needed
+  //     }
+  //   } else {
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
+  // private UpdateStatus(): void {
+  //   console.log('UpdateStatus called');
+  //   if (this.authService.isAuthenticated()) {
+  //     console.log('User is authenticated');
+  //     const userServiceId = this.userService.getUserId();
+  //     const authServiceId = this.authService.getUserIdFromToken();
+  //     console.log('UserService ID:', userServiceId);
+  //     console.log('AuthService ID:', authServiceId);
+
+  //     this.UserId = (userServiceId ?? '') || (authServiceId || '');
+  //     console.log('Final UserId:', this.UserId);
+
+  //     if (this.UserId) {
+  //       this.userService.updateLoginStatus(true);
+  //       this.cartService.loadCart();
+  //     } else {
+  //       console.error('User is authenticated but UserId is not available');
+  //       // Log the contents of localStorage for debugging
+  //       console.log('localStorage contents:', JSON.stringify(localStorage));
+  //     }
+  //   } else {
+  //     console.log('User is not authenticated');
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
   private UpdateStatus(): void {
+    // console.log('UpdateStatus called');
     if (this.authService.isAuthenticated()) {
-      this.UserId = this.userService.getUserId() ?? '';
-      this.userService.updateLoginStatus(true);
-      this.cartService.loadCart();
+      // console.log('User is authenticated');/
+      const userServiceId = this.userService.getUserId();
+      const authServiceId = this.authService.getUserIdFromToken();
+      // console.log('UserService ID:', userServiceId);
+      // console.log('AuthService ID:', authServiceId);
+
+      this.UserId = userServiceId || authServiceId || '';
+      // console.log('Final UserId:', this.UserId);
+
+      if (this.UserId) {
+        this.userService.updateLoginStatus(true);
+        this.cartService.loadCart();
+      } else {
+        // console.error('User is authenticated but UserId is not available');
+        // console.log('localStorage contents:', JSON.stringify(localStorage));
+      }
     } else {
+      // console.log('User is not authenticated');
       this.userService.updateLoginStatus(false);
     }
   }
