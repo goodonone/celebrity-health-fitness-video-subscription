@@ -16,6 +16,7 @@ export class UpgradeComponent implements OnInit, OnDestroy {
   userId?: string;
   payment = false;
   tierTwoThree = false;
+  // tierOne = true;
 
   currentUser: User = new User();
 
@@ -32,6 +33,7 @@ export class UpgradeComponent implements OnInit, OnDestroy {
     this.userId = UserId;
     this.userService.getUser(this.userId).subscribe((user) => {
       this.currentUser = user;
+      this.initializePlanDetails();
     });
     this.routeCheck();
 
@@ -40,7 +42,11 @@ export class UpgradeComponent implements OnInit, OnDestroy {
       const tier = localStorage.getItem('tier');
       if (tier == 'Just Looking') {
         this.togglePayment();
-        console.log(tier)
+        console.log(tier);
+      }
+      else if (tier == 'Motivated'|| tier == 'All In') {
+        console.log("right location" + tier);
+        this.toggleSummary();
       }
     } else {
       const user = localStorage.getItem('user');
@@ -50,14 +56,14 @@ export class UpgradeComponent implements OnInit, OnDestroy {
       if (tier == 'Just Looking') {
         this.togglePayment();
         console.log(tier);
-        // this.tierTwoThree = false;
       }
       else {
         console.log("right location" + tier);
         this.toggleSummary();
-        // this.tierTwoThree = true;
       }
     }
+
+    console.log('UpgradeComponent: tierTwoThree value:', this.tierTwoThree);
 
     // const tier = localStorage.getItem('tier');
     // if (tier == 'Just Looking') {
@@ -65,9 +71,30 @@ export class UpgradeComponent implements OnInit, OnDestroy {
     // }
   }
 
+  ngAfterViewInit(): void {
+   this.formService.getTierAndBilling
+  }
+
   ngOnDestroy(): void {
     location.reload();
     this.formService.resetForm();
+  }
+
+
+  private initializePlanDetails(): void {
+    const { tier, billing } = this.formService.getTierAndBilling();
+    console.log('Current plan details:', { tier, billing });
+
+    // Set component state based on tier
+    if (tier === 'Just Looking') {
+      this.payment = true;
+      this.tierTwoThree = false;
+    } else {
+      this.payment = false;
+      this.tierTwoThree = true;
+    }
+
+    console.log('Component state:', { payment: this.payment, tierTwoThree: this.tierTwoThree });
   }
 
   routeCheck() {

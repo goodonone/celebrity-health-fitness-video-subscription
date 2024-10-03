@@ -616,7 +616,19 @@ updateUser(updatedUser: User): Observable<User> {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   };
   // Use the /data/ endpoint for all updates
-  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders });
+  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders })
+  .pipe(
+    tap(response => {
+      // Update the user in localStorage, preserving the imgUrl if it's not being updated
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const updatedStoredUser = {
+        ...storedUser,
+        ...response,
+        imgUrl: updatedUser.imgUrl || storedUser.imgUrl
+      };
+      localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+    })
+  );
 }
 
 

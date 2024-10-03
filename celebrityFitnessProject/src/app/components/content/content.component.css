@@ -566,7 +566,7 @@ button.btn-showMore:hover {
 
 ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
     background-color: #000000 !important;
-    box-shadow: 0px 0px 4px #868686;
+    box-shadow: 0px 0px 4px #4b4b4b;
 }
 
 

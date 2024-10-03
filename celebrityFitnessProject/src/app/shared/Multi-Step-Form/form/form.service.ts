@@ -34,6 +34,9 @@ export class FormService implements OnInit {
   private formUpdatedWithGoogleData = new Subject<boolean>();
   formUpdatedWithGoogleData$ = this.formUpdatedWithGoogleData.asObservable();
 
+  private upgradeDataLoaded = new BehaviorSubject<boolean>(false);
+  upgradeDataLoaded$ = this.upgradeDataLoaded.asObservable();
+
   private activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
@@ -53,6 +56,7 @@ export class FormService implements OnInit {
   }
 
   private createForm(): FormGroup {
+    const { tier, billing } = this.getTierAndBilling();
   return this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
@@ -62,8 +66,8 @@ export class FormService implements OnInit {
       isGoogleAuth: [false]
     }, { validator: passwordMatchValidator }),
     planDetails: this.fb.group({
-      plan: [localStorage.getItem('tier') ?? 'Just Looking', [Validators.required]],
-      billing: [localStorage.getItem('billing') ?? 'monthly', [Validators.required]],
+      plan: [tier, [Validators.required]],
+      billing: [billing, [Validators.required]],
       planCost: [0],
       totalCost: []
     }),
@@ -99,6 +103,39 @@ export class FormService implements OnInit {
       ]],
     }),
   });
+}
+
+public getTierAndBilling(user?: User): { tier: string, billing: string } {
+  if (user) {
+    return {
+      tier: user.tier || 'Just Looking',
+      billing: user.paymentFrequency || 'monthly'
+    };
+  }
+
+  let tier = localStorage.getItem('tier');
+  let billing = localStorage.getItem('billing');
+
+  if (!tier || !billing) {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const userObject = JSON.parse(userString);
+        tier = tier || userObject.tier;
+        billing = billing || userObject.billing; 
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+  }
+
+  this.upgradeDataLoaded.next(true);
+  // console.log("form service tier and billing", tier, billing);
+  return {
+    tier: tier || 'Just Looking',
+    billing: billing || 'monthly'
+  };
+  
 }
   
   // updateFormWithGoogleData(user: any) {

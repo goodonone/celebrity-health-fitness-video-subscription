@@ -38,13 +38,13 @@ mat-button-toggle {
   width: 100%;
   height: 4.8rem;
   border-radius: 0.625rem;
-  border: 0.1rem solid white;
+  border: 0.1rem solid transparent;
   margin: 0.5rem 0;
   padding-right: 0.2rem;
   cursor: pointer;
 }
 
-.mat-button-toggle-checked {
+#buttonToggle1.mat-button-toggle-checked {
   /* border: 0.1rem solid #000000; */
   border-color: #000000;
 }
@@ -64,6 +64,17 @@ mat-button-toggle {
 button .mat-button-toggle-button,
 .plan {
   height: 4.8rem;
+}
+
+/* .mat-button-toggle-group-appearance-standard .mat-button-toggle-appearance-standard + .mat-button-toggle-appearance-standard {
+  border-left: 2px solid var(--mat-standard-button-toggle-divider-color);
+} */
+.mat-button-toggle-group-appearance-standard {
+  border: none;
+}
+
+.mat-button-toggle-group-appearance-standard .mat-button-toggle-appearance-standard {
+  border: solid 1.5px transparent;
 }
 
 mat-button-toggle-label-content {
@@ -307,7 +318,7 @@ input[matInput]:focus::placeholder {
     text-align: left;
 
     box-sizing: border-box;
-    border: 0.1rem solid transparent; /* Always have a transparent border */
+    /* border: 0.1rem solid transparent;  */
     transition: border-color 0.2s ease
   }
 

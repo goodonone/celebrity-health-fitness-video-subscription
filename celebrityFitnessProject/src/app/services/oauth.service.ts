@@ -235,16 +235,50 @@ export class CustomOAuthService {
   }
 
 
+  // public handleSuccessfulAuth(payload: any): void {
+  //   // console.log('CustomOAuthService: Handling successful auth:', payload);
+  //   const { token, user } = payload;
+  //   localStorage.setItem('token', token);
+  //   localStorage.setItem('user', JSON.stringify(user));
+  //   // console.log('CustomOAuthService: User data stored in localStorage');
+  //   this.stateManagementService.setAuthenticationStatus(true);
+  //   this.isAuthenticatedSubject.next(true);
+  //   this.authResultSubject.next(user);
+  //   // console.log('CustomOAuthService: Auth result emitted');
+  //   if (this.router.url.includes('signup')) {
+  //     this.formService.updateFormWithGoogleData(user);
+  //   } else {
+  //     // We're in the login flow
+  //     this.router.navigate(['/content', user.userId]);
+  //   }
+  // }
+
   public handleSuccessfulAuth(payload: any): void {
-    // console.log('CustomOAuthService: Handling successful auth:', payload);
     const { token, user } = payload;
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    // console.log('CustomOAuthService: User data stored in localStorage');
+
+    // Check if user already exists in localStorage
+    const existingUserString = localStorage.getItem('user');
+    if (existingUserString) {
+      const existingUser = JSON.parse(existingUserString);
+      // Merge the existing user data with the new data, preserving the custom image if it exists
+      const updatedUser = {
+        ...existingUser,
+        ...user,
+        imgUrl: existingUser.imgUrl && !existingUser.imgUrl.startsWith('https://lh3.googleusercontent.com/')
+          ? existingUser.imgUrl
+          : user.imgUrl
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } else {
+      // If no existing user, store the new user data as is
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+
     this.stateManagementService.setAuthenticationStatus(true);
     this.isAuthenticatedSubject.next(true);
     this.authResultSubject.next(user);
-    // console.log('CustomOAuthService: Auth result emitted');
+
     if (this.router.url.includes('signup')) {
       this.formService.updateFormWithGoogleData(user);
     } else {

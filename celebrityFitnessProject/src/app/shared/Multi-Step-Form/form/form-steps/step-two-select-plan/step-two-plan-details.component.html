@@ -71,7 +71,7 @@
           <div class="toggle">
             <label [ngClass]="{'checked':!checked, 'disabled':isJustLookingSelected}" (click)="setChecked(true)">Monthly</label>
             <mat-slide-toggle [checked]="checked"
-                              (change)="toggleBilling()" color="primary" [disabled]="isJustLookingSelected" [class.just-looking-selected]="planType === planOptions[0].plan">
+                              (change)="toggleBilling()" color="primary" [disabled]="planType === planOptions[0].plan" [class.just-looking-selected]="planType === planOptions[0].plan">
             </mat-slide-toggle>
             <label [ngClass]="{'checked':checked, 'disabled':isJustLookingSelected}" (click)="setChecked(false)">Yearly</label>
           </div>

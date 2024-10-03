@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormGroup, FormGroupDirective } from '@angular/forms';
 import { planOptions } from './planDetails.model';
+import { FormService } from '../../form.service';
 
 @Component({
   selector: 'app-step-two-plan-details',
@@ -20,37 +21,41 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   billing!: string;
   cardCounter: number[] = [1,2,3];
 
-  constructor(private rootFormGroup: FormGroupDirective, private cdr: ChangeDetectorRef) { }
+  constructor(private rootFormGroup: FormGroupDirective, private cdr: ChangeDetectorRef, private formService: FormService) { }
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
-    const formVals = this.rootFormGroup.form.get('planDetails') ?.value;
+    // const formVals = this.rootFormGroup.form.get('planDetails') ?.value;
     
-    this.typeOfBilling = formVals?.billing || 'monthly';
-    this.chosenPlan = formVals?.plan;
-    this.checked = this.typeOfBilling === 'monthly' ? false : true;
-    this.planType = formVals?.plan || 'Just Looking';
-    this.updateBilling();
+    // this.typeOfBilling = formVals?.billing || 'monthly';
+    // this.chosenPlan = formVals?.plan;
+    // this.checked = this.typeOfBilling === 'monthly' ? false : true;
+    // this.planType = formVals?.plan || 'Just Looking';
+    // this.updateBilling();
 
-    // setTimeout(() => {
-    //   this.cdr.detectChanges();
-    // }, 0);
+    this.formService.upgradeDataLoaded$.subscribe(loaded => {
+      if (loaded) {
+        const { tier, billing } = this.formService.getTierAndBilling();
+        this.planType = tier;
+        this.typeOfBilling = billing;
+        this.updateBilling();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
-    const formVals = this.rootFormGroup.form.get('planDetails')?.value;
+    // const formVals = this.rootFormGroup.form.get('planDetails')?.value;
 
-    this.typeOfBilling = formVals?.billing || 'monthly';
-    this.chosenPlan = formVals?.plan;
-    this.checked = this.typeOfBilling === 'monthly' ? false : true;
-    this.planType = formVals?.plan || 'Just Looking';
-    this.updateBilling();
+    // this.typeOfBilling = formVals?.billing || 'monthly';
+    // this.chosenPlan = formVals?.plan;
+    // this.checked = this.typeOfBilling === 'monthly' ? false : true;
+    // this.planType = formVals?.plan || 'Just Looking';
+    // this.updateBilling();
 
-    // Trigger change detection manually if needed
-    // setTimeout(() => {
-    //   this.cdr.detectChanges();
-    // }, 0);
-    this.cdr.detectChanges();
+    // this.formService.getTierAndBilling();
+ 
+
+    // this.cdr.detectChanges();
   }
 
   public onPlanChange(plan: string) {
@@ -118,6 +123,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   toggleBilling() {
     if (!this.isJustLookingSelected) {
       this.checked = !this.checked;
+      this.typeOfBilling = this.checked ? 'yearly' : 'monthly';
+      this.updateBilling();
       // Your existing logic for when the toggle changes
     }
   }
@@ -137,6 +144,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   disableToggle(){
     this.checked = false;
+    this.typeOfBilling = 'monthly';
+    this.updateBilling();
   }
   
   toggleStyles(){

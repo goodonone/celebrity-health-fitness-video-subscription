@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
 import { UserService } from 'src/app/services/user.service';
@@ -23,6 +23,7 @@ export class ProgressionButtonsComponent implements OnInit {
   @Input() payment!: boolean;
   @Input() checkout!: boolean;
 
+
   constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService) { }
 
   ngOnInit(): void {
@@ -41,6 +42,24 @@ export class ProgressionButtonsComponent implements OnInit {
     });
 
   }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    console.log('Key pressed:', event.key);
+    if (event.key === 'Enter') {
+      console.log('Enter key pressed');
+      const maxStep = this.getMaxStep();
+      
+      if (this.activeStep$ === maxStep) {
+        console.log('Calling confirmAndSubmitForm');
+        this.confirmAndSubmitForm();
+      } else if (this.checkout) {
+        console.log('Calling purchase');
+        this.purchase();
+      }
+    }
+  }
+ 
 
   // canProceed(): boolean {
   //   const personalDetails = this.stepForm.get('personalDetails');
@@ -180,14 +199,25 @@ export class ProgressionButtonsComponent implements OnInit {
     }
   }
   
+  // private getMaxStep(): number {
+  //   if (this.loggedIn) {
+  //     return this.payment ? 3 : 2;
+  //   }
+  //   if (this.checkout) {
+  //     return 3;
+  //   }
+  //   return 4; // For new user signup
+  // }
+
   private getMaxStep(): number {
     if (this.loggedIn) {
       return this.payment ? 3 : 2;
     }
     if (this.checkout) {
-      return 3;
+      return 2; // Assuming checkout is always 2 steps
     }
-    return 4; // For new user signup
+    // For new user signup
+    return this.planCost > 0 ? 4 : 3; // 4 steps if payment is required, 3 if it's a free plan
   }
 
   private handlePostConfirmation() {
@@ -232,6 +262,10 @@ export class ProgressionButtonsComponent implements OnInit {
     this.formService.submit();
   }
 
+  // onExternalSubmit() {
+  //   this.confirmAndSubmitForm(); // This triggers the same logic as the button click
+  // }
+
   purchase() {
     this.formService.goToNextStep(this.activeStep$);
     this.cartService.clearCart();
@@ -240,6 +274,23 @@ export class ProgressionButtonsComponent implements OnInit {
       this.router.navigate(['cart']);
     },3000)
   }
+
+  // handleKeyDown(event: KeyboardEvent) {
+  //   console.log('Key pressed:', event.key);
+  //   if (event.key === 'Enter') {
+  //     console.log('Enter key pressed');
+  //     event.preventDefault(); // Prevent default button click
+  //     const maxStep = this.getMaxStep();
+      
+  //     if (this.activeStep$ === maxStep) {
+  //       console.log('Calling confirmAndSubmitForm');
+  //       this.confirmAndSubmitForm();
+  //     } else if (this.checkout) {
+  //       console.log('Calling purchase');
+  //       this.purchase();
+  //     }
+  //   }
+  // }
 
 
 }

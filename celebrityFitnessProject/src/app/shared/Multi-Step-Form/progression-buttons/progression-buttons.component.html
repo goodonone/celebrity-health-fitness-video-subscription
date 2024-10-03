@@ -16,37 +16,40 @@
         </div>
 
         <!-- If New Subscriber -->
-        <div class="upgrade" *ngIf="!loggedIn && !checkout">
+        <div class="upgrade" *ngIf="!loggedIn && !checkout" >
                 <button class="btn btn-next" mat-button *ngIf="activeStep$ < 3 || (activeStep$ === 3 && planCost > 0) "
-                        [disabled]="stepForm.controls['personalDetails'].valid === false" (click)="nextStep()" type="submit">Next
+                        [disabled]="stepForm.controls['personalDetails'].valid === false" (click)="nextStep()" type="button">Next
                         Step</button>
                 <button class="btn btn-confirm" mat-button
                         *ngIf="activeStep$ === 4 || (activeStep$ === 3 && planCost === 0)"
                         [disabled]="!(stepForm.controls['paymentDetails'].valid || (activeStep$ === 3 && planCost === 0))"
-                        (click)="confirmAndSubmitForm()" type="button" type="submit">Confirm</button>
+                        (click)="confirmAndSubmitForm()" type="button" tabindex="0">Confirm</button>
         </div>
 
         <!-- If current subscriber and not tier one -->
         <div class="upgrade" *ngIf="loggedIn && !payment && !checkout">
                 <button class="btn btn-next" mat-button *ngIf="activeStep$ < 2"
-                        [disabled]="stepForm.controls['planDetails'].valid === false" (click)="nextStep()" type="submit">Next
+                        [disabled]="stepForm.controls['planDetails'].valid === false" (click)="nextStep()" type="button">Next
                         Step</button>
-                <button class="btn btn-confirm" mat-button *ngIf="activeStep$ === 2" (click)="confirmAndSubmitForm()"
-                type="submit" >Confirm</button>
+                <button class="btn btn-confirm" mat-button *ngIf="activeStep$ === 2"
+                 (click)="confirmAndSubmitForm()"
+                type="button" tabindex="0">Confirm</button>
                 </div>
 
         <!-- If current subscriber and tier one -->
         <div class="upgrade" *ngIf="loggedIn && payment && !checkout">
         <button class="btn btn-next" mat-button *ngIf="activeStep$ < 3"
-                        [disabled]="stepForm.controls['planDetails'].valid === false" (click)="nextStep()" type="submit">Next
+                        [disabled]="stepForm.controls['planDetails'].valid === false" (click)="nextStep()" type="button">Next
                         Step</button>
         <button class="btn btn-confirm" mat-button *ngIf="activeStep$ === 3" 
-                        [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="confirmAndSubmitForm()"
-                        type="button" type="submit">Confirm</button>
+                        [disabled]="stepForm.controls['paymentDetails'].valid === false"
+                        (click)="confirmAndSubmitForm()"
+                        type="button" tabindex="0">Confirm</button>
         </div>
 
         <!-- If current subscriber, tier one and needs to checkout -->
         <div class="upgrade" *ngIf="checkout">
                 <button class="btn btn-confirm" mat-button *ngIf="activeStep$ < 2"
-                [disabled]="stepForm.controls['paymentDetails'].valid === false" (click)="purchase()" type="submit" >Confirm</button>
+                [disabled]="stepForm.controls['paymentDetails'].valid === false"
+                (click)="purchase()" type="button" tabindex="0">Confirm</button>
          </div>

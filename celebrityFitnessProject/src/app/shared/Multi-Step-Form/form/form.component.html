@@ -51,7 +51,7 @@
                                    [stepForm]="stepForm" [tierTwoThree]="tierTwoThree"></app-step-three-summary>
             </div>
 
-            <!-- Form steps for users upgrading from a free membership, they need to imput payment info for the first time -->
+            <!-- Form steps for users upgrading from a free membership, they need to input payment info for the first time -->
             <div class="skipStep" *ngIf="loggedIn && payment">
             <app-step-two-plan-details *ngIf="activeStep$ == 1"
                                        formGroupName="planDetails"></app-step-two-plan-details>

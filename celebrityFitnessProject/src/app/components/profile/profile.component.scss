@@ -1601,6 +1601,7 @@ input[matInput]:focus {
     padding-left: 2rem;
     padding-top: 0rem;
     padding-bottom: auto;
+    // padding-bottom: 2rem;
     // padding-top: 1.5rem;
     // padding-right: 1.5rem;
     // overflow-y: scroll;
@@ -1945,9 +1946,9 @@ input[matInput]:focus {
     min-width: 100%;
     padding: 0;
     margin-top: 0;
-    height: 22.5rem;
+    height: 100%;
     min-height: auto;
-    max-height: 22rem;
+    max-height: 19.6rem;
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-padding: 0.2rem;
@@ -1958,6 +1959,7 @@ input[matInput]:focus {
     // border-color: #605f5f;
     // border-style: solid;
     padding: 0.8rem;
+    // padding-top: 0;
     margin: auto;
     // margin-bottom: 0.5rem;
 
@@ -2072,7 +2074,7 @@ input[matInput]:focus {
   input {
     width: 97%;
     max-width: 40rem;
-    height: 2.5rem;
+    height: 2rem;
     font-size: large;
     font-weight: 400;
     /* Comment out following text if you want to revert to white background input and select */
@@ -2087,7 +2089,7 @@ input[matInput]:focus {
     width: 10rem;
     min-width: 10rem;
     max-width: 15rem;
-    height: 2.5rem;
+    height: 2rem;
   }
 
   .absoluteContainer {
