@@ -21,7 +21,8 @@
                              [value]="planOptions[0].plan"
                              [checked]="planOptions[0].plan === planType"
                              (click)="updatePlanType(planOptions[0].plan, planOptions[0].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[0]}}"
-                             [ngClass]="{'checked':chosenPlan}">
+                             [ngClass]="{'checked':chosenPlan}"
+                             (click)="disableToggle(); toggleStyles()">
                              
             <div class="plan">
               <div class="details">
@@ -36,7 +37,8 @@
                              [value]="planOptions[1].plan"
                              [checked]="planOptions[1].plan === planType"
                              (click)="updatePlanType(planOptions[1].plan, planOptions[1].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[1]}}" 
-                             [ngClass]="{'checked':chosenPlan}">
+                             [ngClass]="{'checked':chosenPlan}"
+                             (click)="toggleStyles()">
                             
             <div class="plan">
               <div class="details">
@@ -51,7 +53,8 @@
                              [value]="planOptions[2].plan"
                              [checked]="planOptions[2].plan === planType"
                              (click)="updatePlanType(planOptions[2].plan, planOptions[2].billing[typeOfBilling].addToTotal)" id="{{'buttonToggle' + cardCounter[2]}}"
-                             [ngClass]="{'checked':chosenPlan}">
+                             [ngClass]="{'checked':chosenPlan}"
+                             (click)="toggleStyles()">
             <div class="plan">
               <div class="details">
                 <span class="plan_title">{{ planOptions[2].plan | titlecase}}</span>
@@ -66,11 +69,11 @@
   
         <div class="toggle-area">
           <div class="toggle">
-            <label [ngClass]="{'checked':!checked}">Monthly</label>
+            <label [ngClass]="{'checked':!checked, 'disabled':isJustLookingSelected}" (click)="setChecked(true)">Monthly</label>
             <mat-slide-toggle [checked]="checked"
-                              (change)="toggleBilling()" color="primary" [disabled]="planOptions[0].plan === planType">
+                              (change)="toggleBilling()" color="primary" [disabled]="isJustLookingSelected" [class.just-looking-selected]="planType === planOptions[0].plan">
             </mat-slide-toggle>
-            <label [ngClass]="{'checked':checked}">Yearly</label>
+            <label [ngClass]="{'checked':checked, 'disabled':isJustLookingSelected}" (click)="setChecked(false)">Yearly</label>
           </div>
         </div>
       </mat-card-content>

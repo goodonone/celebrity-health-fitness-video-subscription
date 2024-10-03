@@ -16,6 +16,7 @@ export class FormComponent implements OnInit {
   @Input() payment!: boolean;
   @Input() checkout!: boolean;
   @Input() shipping!: boolean;
+  @Input() tierTwoThree!: boolean;
 
   constructor(private formService: FormService) { }
 

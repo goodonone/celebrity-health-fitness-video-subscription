@@ -42,12 +42,60 @@ export class ProgressionButtonsComponent implements OnInit {
 
   }
 
+  // canProceed(): boolean {
+  //   const personalDetails = this.stepForm.get('personalDetails');
+  //   if (this.activeStep$ === 1 && personalDetails) {
+  //     return personalDetails.valid || personalDetails.get('isGoogleAuth')?.value === true;
+  //   }
+  //   // Add logic for other steps if needed
+  //   return true;
+  // }
+
   canProceed(): boolean {
     const personalDetails = this.stepForm.get('personalDetails');
-    if (this.activeStep$ === 1 && personalDetails) {
-      return personalDetails.valid || personalDetails.get('isGoogleAuth')?.value === true;
+    const planDetails = this.stepForm.get('planDetails');
+    const paymentDetails = this.stepForm.get('paymentDetails');
+  
+    // For logged-in users upgrading their plan
+    if (this.loggedIn) {
+      if (this.activeStep$ === 1) {
+        return planDetails?.valid ?? true;
+      }
+      if (this.activeStep$ === 2) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 3 && this.payment) {
+        return paymentDetails?.valid ?? true;
+      }
     }
-    // Add logic for other steps if needed
+  
+    // For checkout process
+    if (this.checkout) {
+      if (this.activeStep$ === 1) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 2) {
+        return paymentDetails?.valid ?? true;
+      }
+    }
+  
+    // For new users signing up
+    if (!this.loggedIn && !this.checkout) {
+      if (this.activeStep$ === 1) {
+        return personalDetails?.valid || personalDetails?.get('isGoogleAuth')?.value === true || true;
+      }
+      if (this.activeStep$ === 2) {
+        return planDetails?.valid ?? true;
+      }
+      if (this.activeStep$ === 3) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 4) {
+        return paymentDetails?.valid ?? true;
+      }
+    }
+  
+    // Default to true for any unhandled cases
     return true;
   }
 
@@ -91,31 +139,55 @@ export class ProgressionButtonsComponent implements OnInit {
   //   }
   // }
 
+  // nextStep() {
+  //   if (this.canProceed()) {
+  //     if (this.activeStep$ < 4) {
+  //       if (!this.loggedIn) {
+  //         const personalDetails = this.stepForm.get('personalDetails');
+  //         if (this.activeStep$ === 1 && personalDetails) {
+  //           if (personalDetails.get('isGoogleAuth')?.value === true || personalDetails.valid) {
+  //             this.formService.goToNextStep(this.activeStep$);
+  //           } else if (!personalDetails.pristine || personalDetails.touched) {
+  //             this.formService.goToNextStep(this.activeStep$);
+  //           }
+  //         } else {
+  //           this.formService.goToNextStep(this.activeStep$);
+  //         }
+  //       } else {
+  //         this.formService.goToNextStep(this.activeStep$);
+  //       }
+  //     } else if (this.activeStep$ === 4) {
+  //       // Step 4: Submit the form
+  //       this.confirmAndSubmitForm();
+  //     } else if (this.activeStep$ === 5) {
+  //       // Step 5: Handle post-confirmation
+  //       this.handlePostConfirmation();
+  //     }
+  //   }
+  // }
+
   nextStep() {
     if (this.canProceed()) {
-      if (this.activeStep$ < 4) {
-        if (!this.loggedIn) {
-          const personalDetails = this.stepForm.get('personalDetails');
-          if (this.activeStep$ === 1 && personalDetails) {
-            if (personalDetails.get('isGoogleAuth')?.value === true || personalDetails.valid) {
-              this.formService.goToNextStep(this.activeStep$);
-            } else if (!personalDetails.pristine || personalDetails.touched) {
-              this.formService.goToNextStep(this.activeStep$);
-            }
-          } else {
-            this.formService.goToNextStep(this.activeStep$);
-          }
-        } else {
-          this.formService.goToNextStep(this.activeStep$);
-        }
-      } else if (this.activeStep$ === 4) {
-        // Step 4: Submit the form
+      const maxStep = this.getMaxStep();
+      
+      if (this.activeStep$ < maxStep) {
+        this.formService.goToNextStep(this.activeStep$);
+      } else if (this.activeStep$ === maxStep) {
         this.confirmAndSubmitForm();
-      } else if (this.activeStep$ === 5) {
-        // Step 5: Handle post-confirmation
+      } else if (this.activeStep$ === maxStep + 1) {
         this.handlePostConfirmation();
       }
     }
+  }
+  
+  private getMaxStep(): number {
+    if (this.loggedIn) {
+      return this.payment ? 3 : 2;
+    }
+    if (this.checkout) {
+      return 3;
+    }
+    return 4; // For new user signup
   }
 
   private handlePostConfirmation() {
@@ -135,7 +207,7 @@ export class ProgressionButtonsComponent implements OnInit {
         }
       }
       this.formService.resetForm();
-    }, 100); // 5 seconds delay, adjust as needed
+    }, 100); 
   }
 
   // onEnterKey(event: KeyboardEvent) {

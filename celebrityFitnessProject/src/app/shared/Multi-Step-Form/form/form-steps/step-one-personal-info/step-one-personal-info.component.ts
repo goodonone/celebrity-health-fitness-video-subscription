@@ -63,7 +63,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log('StepOnePersonalInfoComponent: Initializing');
+    // console.log('StepOnePersonalInfoComponent: Initializing');
 
     // this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
     this.stepForm = this.formService.multiStepForm.get('personalDetails') as FormGroup;
@@ -115,13 +115,13 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
     this.authSubscription = this.oauthService.authResult$.subscribe(
       user => {
-        console.log('StepOnePersonalInfoComponent: Received auth result:', user);
+        // console.log('StepOnePersonalInfoComponent: Received auth result:', user);
         if (user) {
           this.populateFormWithUserData(user);
         }
       },
       error => {
-        console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error);
+        // console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error);
         // Handle authentication error if necessary
         this.isLoadingGoogle = false;
       }
@@ -137,7 +137,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
     this.authSubscription = this.oauthService.authResult$.subscribe(
       user => {
         if (user) {
-          console.log('Received user data:', user);
+          // console.log('Received user data:', user);
           this.populateFormWithUserData(user);
         }
       });
@@ -146,10 +146,10 @@ export class StepOnePersonalInfoComponent implements OnInit {
      // Check if user data exists in localStorage
      const userData = localStorage.getItem('user');
     if (userData) {
-      console.log('StepOnePersonalInfoComponent: User data found in localStorage:', userData);
+      // console.log('StepOnePersonalInfoComponent: User data found in localStorage:', userData);
       this.populateFormWithUserData(JSON.parse(userData));
     } else {
-      console.log('StepOnePersonalInfoComponent: No user data found in localStorage');
+      // console.log('StepOnePersonalInfoComponent: No user data found in localStorage');
     }
 
     this.oauthService.checkForStoredAuthResult();
@@ -177,7 +177,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    console.log('StepOnePersonalInfoComponent: Destroying');
+    // console.log('StepOnePersonalInfoComponent: Destroying');
     this.destroy$.next();
     this.destroy$.complete();
     if (this.authSubscription) {
@@ -324,7 +324,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
 
   onClickGoogle(): void {
-    console.log('StepOnePersonalInfoComponent: Google login button clicked');
+    // console.log('StepOnePersonalInfoComponent: Google login button clicked');
     this.isLoadingGoogle = true;
     this.oauthService.initiateLogin(true);
     // this.oauthService.initiateLogin();
@@ -371,7 +371,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
     // }
 
     private populateFormWithUserData(user: any): void {
-      console.log('StepOnePersonalInfoComponent: Populating form with user data:', user);
+      // console.log('StepOnePersonalInfoComponent: Populating form with user data:', user);
       this.stepForm.patchValue({
         name: user.name,
         email: user.email,
@@ -380,7 +380,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
       this.stepForm.get('password')?.disable();
       this.stepForm.get('confirmPassword')?.disable();
       this.isGoogleAuthEnabled = true;
-      console.log('StepOnePersonalInfoComponent: Form updated:', this.stepForm.value);
+      // console.log('StepOnePersonalInfoComponent: Form updated:', this.stepForm.value);
       this.isLoadingGoogle = false;
       this.cdr.detectChanges();
     }
@@ -398,7 +398,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
     private handleSuccessfulLogin(): void {
       this.isLoadingGoogle = false;
-      console.log('User authenticated successfully');
+      // console.log('User authenticated successfully');
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       this.populateFormWithUserData(user);
       this.cdr.detectChanges();
@@ -406,14 +406,14 @@ export class StepOnePersonalInfoComponent implements OnInit {
   
     private handleLoginError(error: string) {
       this.isLoadingGoogle = false;
-      console.log('Google login was cancelled or failed');
+      // console.log('Google login was cancelled or failed');
       // Optionally, show an error message to the user
     }
 
     private handlePopupClosed(): void {
       this.isLoadingGoogle = false;
       // You can add additional logic here, such as showing a message to the user
-      console.log('Google login popup was closed');
+      // console.log('Google login popup was closed');
     }
   }
 

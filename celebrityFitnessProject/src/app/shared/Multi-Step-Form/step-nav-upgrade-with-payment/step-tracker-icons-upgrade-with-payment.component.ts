@@ -17,6 +17,7 @@ export class StepTrackerIconsUpgradeComponentWithPayment implements OnInit {
   ngOnInit(): void {
       this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
+      
   }
 
   stepDetails: { step: number; description: string; }[] = [

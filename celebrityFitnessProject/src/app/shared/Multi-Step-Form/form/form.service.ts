@@ -357,7 +357,25 @@ export class FormService implements OnInit {
     const planInfo = this.multiStepForm.get('planDetails')?.value;
   
     // Check if user is signed in
-    const userId = localStorage.getItem('userId') || '';
+    // const userId = localStorage.getItem('userId') || '';
+    let userId = '';
+    const userIdFromStorage = localStorage.getItem('userId');
+    const userDataString = localStorage.getItem('user');
+
+    if (userIdFromStorage) {
+      userId = userIdFromStorage;
+    } else if (userDataString) {
+      try {
+        const userData = JSON.parse(userDataString);
+        userId = userData.userId;
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+      }
+    }
+
+    if (!userId) {
+      userId = this.user.getUserId();
+    }
   
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
     if (!userId) {
@@ -423,29 +441,55 @@ export class FormService implements OnInit {
     }
   }
   
+  // private handleNewUserSignup(isGoogleAuth: boolean) {
+  //   this.goToNextStep(4);
+  //   setTimeout(() => {
+  //     this.multiStepForm.reset();
+  //     if (isGoogleAuth) {
+  //       const authUserId = this.user.getUserId();
+  //       console.log('authUserId:', authUserId);
+  //       this.router.navigateByUrl(`/content/${authUserId}`);
+  //     }
+  //     this.activeStepSubject.next(1);
+  //     this.router.navigate(['sign-in']);
+  //   }, 4000);
+  //   this.resetForm();
+  // }
+
   private handleNewUserSignup(isGoogleAuth: boolean) {
     this.goToNextStep(4);
     setTimeout(() => {
-      // this.activeStepSubject.next(1);
       this.multiStepForm.reset();
       if (isGoogleAuth) {
-        // For Google auth users, clear the authentication state
-        this.authService.clearAuthState();
-        this.clearGoogleAuthState();
+        const userDataString = localStorage.getItem('user');
+        if (userDataString) {
+          const userData = JSON.parse(userDataString);
+          const authUserId = userData.userId;
+          console.log('authUserId:', authUserId);
+          if (authUserId) {
+            this.router.navigateByUrl(`/content/${authUserId}`);
+          } else {
+            console.error('No userId found for Google auth user');
+            this.router.navigate(['sign-in']);
+          }
+        } else {
+          console.error('No user data found in localStorage');
+          this.router.navigate(['sign-in']);
+        }
+      } else {
+        this.router.navigate(['sign-in']);
       }
       this.activeStepSubject.next(1);
-      this.router.navigate(['sign-in']);
     }, 4000);
     this.resetForm();
-    // this.activeStepSubject.next(1);
   }
 
-  private clearGoogleAuthState() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('authToken');
-    // Add any other necessary cleanup for Google auth state
-  }
+  // private clearGoogleAuthState() {
+  //   localStorage.removeItem('user');
+  //   localStorage.removeItem('userId');
+  //   localStorage.removeItem('authToken');
+  //   // Add any other necessary cleanup for Google auth state
+  // }
   
   private handleExistingUserUpdate(planInfo: any) {
     localStorage.removeItem('tier');
@@ -454,6 +498,7 @@ export class FormService implements OnInit {
     localStorage.setItem('billing', planInfo.billing);
     localStorage.removeItem('hasVisitedProfileBefore');
     console.log("removed from local storage");
+    // this.activeStepSubject.next(1);
     this.router.navigateByUrl(`/content/${this.UserId}`);
   }
   

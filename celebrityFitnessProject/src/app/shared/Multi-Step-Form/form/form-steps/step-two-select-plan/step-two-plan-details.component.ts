@@ -95,18 +95,31 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     }
   }
 
+  // toggleBilling() {
+  //   this.checked = !this.checked;
+  //   this.typeOfBilling = this.checked ? 'yearly' : 'monthly';
+  //   this.updateBilling();
+  // }
+
+  // setChecked(value: boolean) {
+  //   if(this.planType !== 'Just Looking'){
+  //     this.checked = value;
+  //     this.toggleBilling();
+  //   }
+  // }
+
+  setChecked(value: boolean) {
+    if (!this.isJustLookingSelected) {
+      this.checked = value;
+      this.toggleBilling();
+    }
+  }
+  
   toggleBilling() {
-    this.checked = !this.checked;
-    this.typeOfBilling = this.checked ? 'yearly' : 'monthly';
-    this.updateBilling();
-    // if (this.checked === false) {
-    //   this.typeOfBilling = 'monthly'
-    //   this.updateBilling();
-    // }
-    // if (this.checked === true) {
-    //   this.typeOfBilling = 'yearly';
-    //   this.updateBilling();
-    // }
+    if (!this.isJustLookingSelected) {
+      this.checked = !this.checked;
+      // Your existing logic for when the toggle changes
+    }
   }
 
   // Disable if the first plan is selected
@@ -120,5 +133,22 @@ export class StepTwoPlanDetailsComponent implements OnInit {
   //   }
   // }
 
+
+
+  disableToggle(){
+    this.checked = false;
+  }
   
+  toggleStyles(){
+    if(this.planType ==='Just Looking'){
+      return true;
+  }
+  return false;
+}
+
+get isJustLookingSelected(): boolean {
+  return this.planType === 'Just Looking';
+}
+
+
 }
