@@ -37,12 +37,12 @@ export class FormService implements OnInit {
   private upgradeDataLoaded = new BehaviorSubject<boolean>(false);
   upgradeDataLoaded$ = this.upgradeDataLoaded.asObservable();
 
-  private activeStepSubject = new BehaviorSubject<number>(1);
+  public activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
   constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private authService: AuthService) {
     this.multiStepForm = this.createForm();
-    this.loadFormState();
+    // this.loadFormState();
   }
 
   ngOnInit(): void {
@@ -188,7 +188,7 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
       // Manually validate the entire form group
       personalDetails.updateValueAndValidity();
     }
-    this.saveFormState();
+    // this.saveFormState();
     
     // Emit an event to notify that the form has been updated with Google data
     this.formUpdatedWithGoogleData.next(true);
@@ -311,24 +311,38 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
     return this.multiStepForm;
   }
 
+  // goToNextStep(number: number) {
+  //   console.log('Moving to next step from:', number);
+  //   this.activeStepSubject.next(number + 1);
+  // }
+
   goToNextStep(number: number) {
-    console.log('Moving to next step from:', number);
+    console.log('Going to next step from:', number, 'Stack:', new Error().stack);
+    console.log('Going to next step from:', number);
     this.activeStepSubject.next(number + 1);
-    this.saveFormState();
   }
+
+  // goBackToPreviousStep(number: number) {
+  //   if (number > 1) {
+  //     this.activeStepSubject.next(number - 1);
+  //     // this.saveFormState();
+  //   }
+  //   // this.activeStepSubject.next(number - 1);
+  // }
 
   goBackToPreviousStep(number: number) {
+    console.log('Going back from step:', number, 'Stack:', new Error().stack);
     if (number > 1) {
+      console.log('Going back to previous step from:', number);
       this.activeStepSubject.next(number - 1);
-      this.saveFormState();
     }
-    // this.activeStepSubject.next(number - 1);
   }
+  
 
-  public saveFormState() {
-    localStorage.setItem('formState', JSON.stringify(this.multiStepForm.value));
-    localStorage.setItem('activeStep', this.activeStepSubject.value.toString());
-  }
+  // public saveFormState() {
+  //   localStorage.setItem('formState', JSON.stringify(this.multiStepForm.value));
+  //   localStorage.setItem('activeStep', this.activeStepSubject.value.toString());
+  // }
 
   // private loadFormState() {
   //   const formState = localStorage.getItem('formState');
@@ -358,29 +372,29 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
   //   }
   // }
 
-  private loadFormState() {
-    const formState = localStorage.getItem('formState');
-    const activeStep = localStorage.getItem('activeStep');
-    if (formState) {
-      this.multiStepForm.patchValue(JSON.parse(formState));
+  // private loadFormState() {
+  //   const formState = localStorage.getItem('formState');
+  //   const activeStep = localStorage.getItem('activeStep');
+  //   if (formState) {
+  //     this.multiStepForm.patchValue(JSON.parse(formState));
   
-      // Access the personalDetails form group
-      const personalDetailsGroup = this.multiStepForm.get('personalDetails') as FormGroup;
-      if (personalDetailsGroup) {
-        // Log the value before resetting
-        console.log('isGoogleAuth before reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
+  //     // Access the personalDetails form group
+  //     const personalDetailsGroup = this.multiStepForm.get('personalDetails') as FormGroup;
+  //     if (personalDetailsGroup) {
+  //       // Log the value before resetting
+  //       console.log('isGoogleAuth before reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
   
-        // Reset isGoogleAuth to false
-        personalDetailsGroup.patchValue({ isGoogleAuth: false });
+  //       // Reset isGoogleAuth to false
+  //       personalDetailsGroup.patchValue({ isGoogleAuth: false });
   
-        // Log the value after resetting
-        console.log('isGoogleAuth after reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
-      }
-    }
-    if (activeStep) {
-      this.activeStepSubject.next(parseInt(activeStep, 10));
-    }
-  }
+  //       // Log the value after resetting
+  //       console.log('isGoogleAuth after reset:', personalDetailsGroup.get('isGoogleAuth')?.value);
+  //     }
+  //   }
+  //   if (activeStep) {
+  //     this.activeStepSubject.next(parseInt(activeStep, 10));
+  //   }
+  // }
 
 
   // resetForm() {
@@ -389,6 +403,7 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
 
 
   submit() {
+    console.log('Form submitted');
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
@@ -493,10 +508,37 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
   //   this.resetForm();
   // }
 
+  // private handleNewUserSignup(isGoogleAuth: boolean) {
+  //   this.goToNextStep(4);
+  //   setTimeout(() => {
+  //     this.multiStepForm.reset();
+  //     if (isGoogleAuth) {
+  //       const userDataString = localStorage.getItem('user');
+  //       if (userDataString) {
+  //         const userData = JSON.parse(userDataString);
+  //         const authUserId = userData.userId;
+  //         console.log('authUserId:', authUserId);
+  //         if (authUserId) {
+  //           this.router.navigateByUrl(`/content/${authUserId}`);
+  //         } else {
+  //           console.error('No userId found for Google auth user');
+  //           this.router.navigate(['sign-in']);
+  //         }
+  //       } else {
+  //         console.error('No user data found in localStorage');
+  //         this.router.navigate(['sign-in']);
+  //       }
+  //     } else {
+  //       this.router.navigate(['sign-in']);
+  //     }
+  //     this.activeStepSubject.next(1);
+  //   }, 4000);
+  //   // this.resetForm();
+  // }
+
   private handleNewUserSignup(isGoogleAuth: boolean) {
-    this.goToNextStep(4);
+    this.goToNextStep(4); // Move to the final step (5)
     setTimeout(() => {
-      this.multiStepForm.reset();
       if (isGoogleAuth) {
         const userDataString = localStorage.getItem('user');
         if (userDataString) {
@@ -516,9 +558,9 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
       } else {
         this.router.navigate(['sign-in']);
       }
+      this.multiStepForm.reset();
       this.activeStepSubject.next(1);
     }, 4000);
-    this.resetForm();
   }
 
   // private clearGoogleAuthState() {
@@ -536,6 +578,7 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
     localStorage.removeItem('hasVisitedProfileBefore');
     console.log("removed from local storage");
     // this.activeStepSubject.next(1);
+    // this.goToNextStep(4);
     this.router.navigateByUrl(`/content/${this.UserId}`);
   }
   

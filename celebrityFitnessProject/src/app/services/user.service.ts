@@ -646,8 +646,6 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<any>(`${this.baseURL}/update-password/${userId}`, { newPassword }, { headers: reqHeaders });
   }
 
-
-
 getUser(userId: string): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`

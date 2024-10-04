@@ -699,8 +699,19 @@ export class CartService {
     );
   }
 
+  // private getCurrentUserId(): string {
+  //   return localStorage.getItem('userId') || '';
+  // }
+
   private getCurrentUserId(): string {
-    return localStorage.getItem('userId') || '';
+    const userId = localStorage.getItem('userId');
+  
+    if (!userId) {
+      const userObject = JSON.parse(localStorage.getItem('user') || '{}');
+      return userObject.userId || '';
+    }
+  
+    return userId || '';
   }
 
   // loadCart(): void {

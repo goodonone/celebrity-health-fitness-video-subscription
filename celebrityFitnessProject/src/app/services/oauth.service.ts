@@ -139,26 +139,43 @@ export class CustomOAuthService {
     }
   }
 
+  // private handleAuthMessage(event: MessageEvent): void {
+  //   // console.log('CustomOAuthService: Received message', event);
+  //   // console.log('Event origin:', event.origin);
+  //   // Adjust or remove the origin check temporarily
+  //   // if (event.origin !== 'http://localhost:3000') return;
+  //   // Process the message regardless of origin for debugging purposes
+  //   // if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+  //   //   this.zone.run(() => {
+  //   //     this.handleSuccessfulAuth(event.data.payload);
+  //   //   });
+  //   // }
+  //   if (event.origin === 'http://localhost:3000' && event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+  //     this.zone.run(() => {
+  //       this.handleSuccessfulAuth(event.data.payload);
+  //     });
+  //   } else {
+  //     console.warn('Received message from untrusted origin:', event.origin);
+  //   }
+  // 
+
+
   private handleAuthMessage(event: MessageEvent): void {
-    // console.log('CustomOAuthService: Received message', event);
-    // console.log('Event origin:', event.origin);
-    // Adjust or remove the origin check temporarily
-    // if (event.origin !== 'http://localhost:3000') return;
-    // Process the message regardless of origin for debugging purposes
-    // if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-    //   this.zone.run(() => {
-    //     this.handleSuccessfulAuth(event.data.payload);
-    //   });
-    // }
+    // Ignore Angular DevTools messages
+    if (event.data.source && event.data.source.startsWith('angular-devtools')) {
+      return;
+    }
+  
+    console.log('Received message:', event.data, 'from origin:', event.origin);
+    
     if (event.origin === 'http://localhost:3000' && event.data.type === 'GOOGLE_AUTH_SUCCESS') {
       this.zone.run(() => {
         this.handleSuccessfulAuth(event.data.payload);
       });
-    } else {
-      console.warn('Received message from untrusted origin:', event.origin);
+    } else if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
+      console.warn('Received GOOGLE_AUTH_SUCCESS from untrusted origin:', event.origin);
     }
   }
-
   // private handleAuthMessage(event: MessageEvent): void {
   //   console.log('CustomOAuthService: Received message', event);
   //   if (event.origin !== 'http://localhost:3000') return;
