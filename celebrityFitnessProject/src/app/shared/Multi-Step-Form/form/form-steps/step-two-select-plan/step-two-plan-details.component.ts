@@ -38,6 +38,7 @@ export class StepTwoPlanDetailsComponent implements OnInit {
         const { tier, billing } = this.formService.getTierAndBilling();
         this.planType = tier;
         this.typeOfBilling = billing;
+        this.checked = this.typeOfBilling === 'monthly' ? false : true;
         this.updateBilling();
       }
     });
