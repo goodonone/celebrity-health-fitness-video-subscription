@@ -17,6 +17,26 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {
 
+    // window.addEventListener('message', (event) => {
+    //   console.log('Received message:', event);
+    //   // Validate the origin to prevent security issues
+    //   if (event.origin !== 'http://localhost:3000') {
+    //     return;
+    //   }
+
+    //   const { type, payload } = event.data;
+
+    //   if (type === 'GOOGLE_AUTH_SUCCESS') {
+    //     console.log('Google auth successful:', payload);
+    //     localStorage.setItem('oauthResult', JSON.stringify(payload));
+    //     // Call your form service to populate the form with data
+    //     this.populateForm(payload.user);
+    //   } else if (type === 'GOOGLE_AUTH_ERROR') {
+    //     console.error('Google auth error:', event.data.error);
+    //   }
+    // }, false);
+
+
     // Check if the user has visited the page before to serve animations or not
     const hasVisited = localStorage.getItem('hasVisitedBefore');
     if (!hasVisited) {
@@ -50,6 +70,10 @@ export class SignUpComponent implements OnInit {
     otherTextAnimation?.classList.add('skipVisitAnimation');
   }
 
+  // populateForm(user: any) {
+  //   // Your logic here to update the form in Step 1 with the received user data
+  //   console.log('Populating form with:', user);
+  // }
 
   signUp() {
     this.userService.signUp(this.newUser).subscribe(() => {

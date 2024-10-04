@@ -470,6 +470,8 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user';
+import { AuthService } from './auth.service';
+
 
 
 @Injectable({
@@ -482,12 +484,16 @@ export class UserService {
   tierKey: string = "tier";
   userIdKey: string = "userId";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   private isLoggedInSubject = new BehaviorSubject<boolean>(this.isloggedIn());
 
   // Observable for components to subscribe to
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
+  checkEmailAvailability(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseURL}/check-email/${email}`);
+  }
 
   signUp(newUser: User) {
     return this.http.post(`${this.baseURL}/`, newUser)
@@ -510,6 +516,7 @@ login(email: string, password: string) {
 
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
+      this.updateLoginStatus(true);
       localStorage.setItem(this.tokenKey, response.token);
       localStorage.setItem(this.userIdKey , response.userId);
       localStorage.setItem(this.tierKey, response.tier);
@@ -517,12 +524,28 @@ login(email: string, password: string) {
 
       // Update login state after successful login
       localStorage.setItem("isUserLoggedIn", "true");
-      this.isLoggedInSubject.next(true);  // Notify login state change
     }));
 }
 
-isloggedIn() {
-  return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true';
+  loginWithGoogle(token: string): Observable<any> {
+    return this.http.post<any>(`${this.baseURL}/login-google`, { token }).pipe(
+      tap((response: any) => {
+        this.authService.login(response.token, false); // We use false here because we want to log in the user
+        localStorage.setItem('userId', response.userId);
+        localStorage.setItem('tier', response.tier);
+        localStorage.setItem('billing', response.billing);
+      })
+    );
+  }
+
+// isloggedIn() {
+//   return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true';
+// }
+
+isloggedIn(): boolean {
+  const isLoggedIn = !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true' || !!localStorage.getItem('user');
+  // console.log('UserService: isLoggedIn:', isLoggedIn);
+  return isLoggedIn;
 }
 
 logoutUser() {
@@ -530,20 +553,56 @@ logoutUser() {
   localStorage.removeItem('billing');
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
-  localStorage.removeItem("cart");
-  this.isLoggedInSubject.next(false);
+  // localStorage.removeItem("cart");
+  localStorage.removeItem("hasVisitedHomeBefore");
+  localStorage.removeItem("hasVisitedProfileBefore");
+  localStorage.removeItem("isUserLoggedIn");
+  this.updateLoginStatus(false);
+  localStorage.removeItem("token");
+  localStorage.removeItem("googleAuthToken");
+  localStorage.removeItem("user");
+  localStorage.removeItem("authToken");
+  this.authService.authStateSubject.next(false);
 }
 
 checkEmail(email: string): Observable<{exists: boolean, message: string}> {
   return this.http.post<{exists: boolean, message: string}>(`${this.baseURL}/check-email`, { email });
 }
 
-getUserId() {
-  if (this.isloggedIn()) {
-    return localStorage.getItem(this.userIdKey) ?? "";
+// getUserId() {
+//   if (this.isloggedIn()) {
+//     return localStorage.getItem(this.userIdKey) ?? "";
+//   }
+//   return "undefined";
+// }
+
+getUserId(): string {
+  // console.log('UserService: getUserId called');
+  const userId = localStorage.getItem(this.userIdKey) || localStorage.getItem('user');
+  // console.log('UserService: userId from localStorage:', userId);
+  
+  if (userId) {
+    if (userId.startsWith('{')) {
+      // It's a JSON string, parse it
+      try {
+        const userObject = JSON.parse(userId);
+        return userObject.userId || '';
+      } catch (error) {
+        // console.error('Error parsing user object:', error);
+      }
+    } else {
+      // It's just the userId string
+      return userId;
+    }
   }
-  return "undefined";
+  
+  // console.log('UserService: No userId found');
+  return '';
 }
+
+// signUpWithGoogle(userData: any): Observable<User> {
+//   return this.http.post<User>(`${this.baseURL}/signup-google`, userData);
+// }
 
 // updateUser(updatedUser: User): Observable<User> {
 //   let reqHeaders = {
@@ -557,7 +616,19 @@ updateUser(updatedUser: User): Observable<User> {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
   };
   // Use the /data/ endpoint for all updates
-  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders });
+  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders })
+  .pipe(
+    tap(response => {
+      // Update the user in localStorage, preserving the imgUrl if it's not being updated
+      const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+      const updatedStoredUser = {
+        ...storedUser,
+        ...response,
+        imgUrl: updatedUser.imgUrl || storedUser.imgUrl
+      };
+      localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+    })
+  );
 }
 
 
@@ -590,5 +661,10 @@ deleteUser(userId: string) : Observable<any> {
   }
   return this.http.delete<any>(this.baseURL + "/" + userId, {headers: reqHeaders});
 }
+
+updateLoginStatus(status: boolean) {
+  this.isLoggedInSubject.next(status);
+}
+
 
 }

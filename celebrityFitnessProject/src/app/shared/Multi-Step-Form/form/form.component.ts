@@ -16,6 +16,7 @@ export class FormComponent implements OnInit {
   @Input() payment!: boolean;
   @Input() checkout!: boolean;
   @Input() shipping!: boolean;
+  @Input() tierTwoThree!: boolean;
 
   constructor(private formService: FormService) { }
 
@@ -25,6 +26,10 @@ export class FormComponent implements OnInit {
     this.formService.activeStep$.subscribe(
       step => this.activeStep$ = step
     );
+
+    this.formService.getTierAndBilling();
+
+    console.log('FormComponent: tierTwoThree value received:', this.tierTwoThree);
   }
 
   confirmAndSubmitForm() {

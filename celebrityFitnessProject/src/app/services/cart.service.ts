@@ -467,11 +467,12 @@
 // }
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, take, tap } from 'rxjs/operators';
 import { Cart } from '../models/cart';
 import { Product } from '../models/product';
+import { AuthService } from './auth.service';
 // import { CartItem } from '../models/cart-item';
 
 @Injectable({
@@ -481,22 +482,143 @@ export class CartService {
   private apiUrl = 'http://localhost:3000/api/cart'; // Replace with your actual API URL
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
 
-  constructor(private http: HttpClient) {
-    this.getCart().subscribe();
+  isLoggedIn: boolean = false;
+  private isInitialized = false;
+  
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+    // if(this.authService.isAuthenticated()) { 
+    //   console.log('Get cart is called');
+    //   this.getCart().subscribe();
+    // }
+    this.initializeCart();
+  }
+
+  // private initializeCart(): void {
+  //   if (this.authService.isAuthenticated() && !this.isInitialized) {
+  //     this.isInitialized = true;
+  //     this.loadCart();
+  //   }
+  // }
+  private initializeCart(): void {
+    if (this.authService.isAuthenticated() && !this.isInitialized) {
+      this.isInitialized = true;
+      // console.log('Initializing cart');
+      this.loadCart();
+    } else {
+      // console.log('Not initializing cart: user not authenticated or already initialized');
+    }
+  }
+
+
+  // getCart(): Observable<Cart> {
+  //   // this.isLoggedIn = this.authService.isAuthenticated();
+  //   // if (!this.isLoggedIn) {
+  //   //   return of(new Cart());
+  //   // }
+  //   const userId = this.getCurrentUserId();
+  //   return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     tap(cart => this.cartSubject.next(cart))
+  //   );
+  // }
+
+  // loadCart(): void {
+  //   const userId = this.getCurrentUserId();
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     take(1)
+  //   ).subscribe(
+  //     (cart) => {
+  //       if (cart.totalCount > 0) {
+  //         // console.log('Get cart is called');
+  //         this.cartSubject.next(cart);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //     }
+  //   );
+  // }
+
+  // loadCart(): void {
+  //   if (!this.authService.isAuthenticated()) {
+  //     console.log('User is not authenticated, not loading cart');
+  //     return;
+  //   }
+
+  //   const userId = this.getCurrentUserId();
+  //   if (!userId) {
+  //     console.log('No user ID found, not loading cart');
+  //     return;
+  //   }
+
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     take(1)
+  //   ).subscribe(
+  //     (cart) => {
+  //       if (cart && cart.totalCount > 0) {
+  //         console.log('Cart loaded successfully with items');
+  //         this.cartSubject.next(cart);
+  //       } else {
+  //         console.log('Cart is empty or does not exist');
+  //         // Optionally, you can set an empty cart here
+  //         this.cartSubject.next(new Cart());
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //       // Optionally, you can set an empty cart here as well
+  //       this.cartSubject.next(new Cart());
+  //     }
+  //   );
+  // }
+
+  loadCart(): void {
+    if (!this.authService.isAuthenticated()) {
+      // console.log('User is not authenticated, not loading cart');
+      return;
+    }
+
+    const userId = this.getCurrentUserId();
+    if (!userId) {
+      // console.log('No user ID found, not loading cart');
+      return;
+    }
+
+    this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+      take(1),
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 404) {
+          // console.log('Cart not found for user, initializing empty cart');
+          return of(new Cart());
+        }
+        throw error;
+      })
+    ).subscribe(
+      (cart) => {
+        if (cart && cart.totalCount > 0) {
+          // console.log('Cart loaded successfully with items');
+          this.cartSubject.next(cart);
+        } else {
+          // console.log('Cart is empty');
+          this.cartSubject.next(new Cart());
+        }
+      },
+      (error) => {
+        console.error('Error loading cart', error);
+        this.cartSubject.next(new Cart());
+      }
+    );
   }
 
   getCart(): Observable<Cart> {
-    const userId = this.getCurrentUserId();
-    return this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
-      tap(cart => this.cartSubject.next(cart))
-    );
+    return this.cartSubject.asObservable();
   }
 
   addToCart(product: Product, quantity: number = 1): Observable<Cart> {
     const userId = this.getCurrentUserId();
     return this.http.post<Cart>(`${this.apiUrl}/${userId}/${product.productId}`, { quantity }).pipe(
       tap(cart => {
-        console.log('Updated Cart after adding product:', cart);
+        // console.log('Updated Cart after adding product:', cart);
         this.cartSubject.next(cart);
       })
     );
@@ -561,6 +683,7 @@ export class CartService {
   }
 
   getCartObservable(): Observable<Cart> {
+    // console.log('CartService: getCartObservable called');
     return this.cartSubject.asObservable();
   }
 
@@ -580,15 +703,15 @@ export class CartService {
     return localStorage.getItem('userId') || '';
   }
 
-  loadCart(): void {
-    const userId = this.getCurrentUserId();
-    this.http.get<Cart>(`${this.apiUrl}/${userId}`).subscribe(
-      (cart) => {
-        this.cartSubject.next(cart);
-      },
-      (error) => {
-        console.error('Error loading cart', error);
-      }
-    );
-  }
+  // loadCart(): void {
+  //   const userId = this.getCurrentUserId();
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).subscribe(
+  //     (cart) => {
+  //       this.cartSubject.next(cart);
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //     }
+  //   );
+  // }
 }

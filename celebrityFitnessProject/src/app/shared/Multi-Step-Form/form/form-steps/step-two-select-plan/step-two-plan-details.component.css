@@ -2,6 +2,10 @@
   font-family: 'Outfit', sans-serif;
 }
 
+/* :root {
+  --mdc-switch-selected-icon-color: black;
+} */
+
 mat-card {
   width: 32.8rem;
   max-width: 700px;
@@ -34,26 +38,43 @@ mat-button-toggle {
   width: 100%;
   height: 4.8rem;
   border-radius: 0.625rem;
-  border: 0.1rem solid white;
+  border: 0.1rem solid transparent;
   margin: 0.5rem 0;
   padding-right: 0.2rem;
+  cursor: pointer;
 }
 
-.mat-button-toggle-checked {
-  border: 0.1rem solid #C7FF20;
+#buttonToggle1.mat-button-toggle-checked {
+  /* border: 0.1rem solid #000000; */
+  border-color: #000000;
 }
 
 #buttonToggle2.mat-button-toggle-checked {
-  border: 0.1rem solid #71BBF5;
+  /* border: 0.1rem solid #C7FF20;
+   */
+   border-color: #C7FF20;
 }
 
 #buttonToggle3.mat-button-toggle-checked {
-  border: 0.1rem solid #000000;
+  /* border: 0.1rem solid #000000;
+   */
+   border-color: #000000;
 }
 
 button .mat-button-toggle-button,
 .plan {
   height: 4.8rem;
+}
+
+/* .mat-button-toggle-group-appearance-standard .mat-button-toggle-appearance-standard + .mat-button-toggle-appearance-standard {
+  border-left: 2px solid var(--mat-standard-button-toggle-divider-color);
+} */
+.mat-button-toggle-group-appearance-standard {
+  border: none;
+}
+
+.mat-button-toggle-group-appearance-standard .mat-button-toggle-appearance-standard {
+  border: solid 1.5px transparent;
 }
 
 mat-button-toggle-label-content {
@@ -158,19 +179,34 @@ label {
   width: 3.4rem;
   color: #aeaeae;
   font-size: .875rem;
+  cursor: pointer
 }
+
+/* .disabled{
+  color:#aeaeae;
+  pointer-events: none;
+} */
+
+.toggle label.disabled {
+  color: #aeaeae;
+  pointer-events: none;
+}
+
+/* label.disabled{
+  
+} */
 
 .checked {
   color: black;
 }
 
-.mat-button-toggle {
+/* /* .mat-button-toggle {
   color: black;
-}
+} */
 
-.mat-slide-toggle-checked {
+/* .mat-slide-toggle-checked {
   color: #C7FF20;
-}
+}  */
 
 input[matInput]:focus {
   border-color: #000000 !important; /* Change the border color when focused */
@@ -187,10 +223,79 @@ input[matInput]:focus::placeholder {
   background-color: black;
 }
 
-::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #000000 !important;
+  /* box-shadow: 0px 0px 4px #868686; */
+}
+
+::ng-deep
+  .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled)
+  .mdc-switch__track::after {
+  background-color: rgb(52, 52, 52) !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked).mat-disabled .mdc-switch__shadow {
+  background-color: #000000 !important;
+  /* box-shadow: 0px 0px 4px #868686; */
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle--unselected:not(.mat-disabled) .mdc-switch__track::after {
   background-color: rgb(46, 46, 46) !important;
 }
 
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #000000 !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked).mat-disabled .mdc-switch__shadow {
+  background-color: #989898 !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle--unselected.mat-disabled .mdc-switch__shadow {
+  background-color: #989898 !important;
+}
+
+::ng-deep .mdc-switch--unselected.mdc-switch--disabled .mdc-switch__shadow {
+  fill: rgb(184, 7, 7) !important;
+}
+
+/* ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #e90e0e !important;
+} */
+
+/* ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle--unselected:not(.mat-disabled) .mdc-switch__icon {
+  fill: black !important;
+} */
+
+/* .mat-mdc-slide-toggle.mat-disabled .mdc-switch__thumb {
+  background-color: #bdbdbd !important;
+} */
+
+::ng-deep .mat-mdc-slide-toggle.just-looking-selected .mdc-switch.mdc-switch--disabled .mdc-switch__shadow {
+  background-color: #cccccc !important;
+}
+
+/* Similar rules for track and handle */
+
+::ng-deep .mdc-switch.mdc-switch--selected:disabled .mdc-switch__icon {
+  fill: black !important;
+  /* display: none !important; */
+}
+
+::ng-deep .mdc-switch.mdc-switch--selected:enabled .mdc-switch__icon {
+  fill: black !important;
+  /* display: none !important; */
+}
+
+::ng-deep .mdc-switch.mdc-switch--unselected:enabled .mdc-switch__icon {
+  display: none !important;
+  /* fill: black !important; */
+}
+
+::ng-deep .mdc-switch.mdc-switch--unselected:disabled .mdc-switch__icon {
+  display: none !important;
+  /* fill: black !important; */
+} 
 
 @media (min-width: 37.5em) {
 
@@ -204,11 +309,17 @@ input[matInput]:focus::placeholder {
   }
 
   mat-button-toggle {
-    width: 9.625rem;
-    /* width: 28%; */
+    /* width: 9.625rem; */
+    width: 9.925rem;
+    /* width: calc(33.33%-1rem); */
+
     height: 12rem;
     align-items: baseline;
     text-align: left;
+
+    box-sizing: border-box;
+    /* border: 0.1rem solid transparent;  */
+    transition: border-color 0.2s ease
   }
 
   .plan {
@@ -218,6 +329,7 @@ input[matInput]:focus::placeholder {
 
   .details {
     height: 4.25rem;
+    /* width: 100%; */
   }
 
   .toggle {
@@ -326,6 +438,10 @@ input[matInput]:focus::placeholder {
   #buttonToggle1 .plan_title, #buttonToggle2 .plan_title, #buttonToggle3 .plan_title {
     font-size: clamp(1rem, 1.5vw, 1.3rem);
     font-weight: 800;
+  }
+
+  #buttonToggle1 .plan_title{
+    margin-left: -0.3rem;
   }
 
   span.description{
@@ -473,7 +589,11 @@ input[matInput]:focus::placeholder {
   }
 
   #buttonToggle1 .plan_title{
-    margin-left: -0.3rem;
+    margin-left: -0.4rem;
+  }
+
+  #buttonToggle2 .plan_title{
+    margin-left: -0.2rem;
   }
 
   span.description{

@@ -449,40 +449,264 @@
 // First, let's update the Cart model (you may need to adjust this in your actual Cart model file)
 
 // Now, let's update the CartComponent
-import { Component, OnInit } from '@angular/core';
-import { map, Observable, BehaviorSubject, catchError } from 'rxjs';
+import { Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { map, Observable, BehaviorSubject, catchError, Subscription } from 'rxjs';
 import { Cart } from 'src/app/models/cart';
 import { CartItem } from 'src/app/models/cart-items';
 import { Product } from 'src/app/models/product';
+import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { PaymentService } from 'src/app/services/payment.service';
 
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
-  styleUrls: ['./cart.component.css']
+  styleUrls: ['./cart.component.scss']
 })
 export class CartComponent implements OnInit {
+  // @ViewChildren('productImage') productImages!: QueryList<ElementRef<HTMLElement>>;
+  // @ViewChildren('productImage') productImages!: QueryList<ElementRef<HTMLDivElement>>;
+  // @ViewChild('largeImagePreview') largeImagePreview!: ElementRef;
   private cartSubject = new BehaviorSubject<Cart>(new Cart());
   cart$: Observable<Cart> = this.cartSubject.asObservable();
   tierTwoThree = true;
   userId: string | null = '';
   cartStatic = true;
+  private authSubscription!: Subscription;
+  isLoggedIn: boolean = false;
+  private subscription: Subscription = new Subscription();
+  hoveredItem: CartItem | null = null;
+  // hoveredItem: CartItem | null = null; // Track the hovered item
+  hoveredItemPreview: HTMLElement | null = null; // Reference to the preview element
+  hoveredItemIndex: number | null = null;
+  private hoverTimeout: any = null; 
 
   constructor(
     private cartService: CartService,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('userId');
-    this.loadCart();
+    // this.userId = localStorage.getItem('userId');
+    // this.loadCart();
+
+    this.isLoggedIn = this.authService.isAuthenticated();
+    if (this.isLoggedIn) {
+      this.userId = localStorage.getItem('userId');
+      this.loadCart();
+    } else {
+      this.userId = null;
+    }
 
     const tier = localStorage.getItem('tier');
     if (tier === "Just Looking") {
       this.checkTier();
     }
   }
+
+// Adding this after view initialization to confirm image elements are properly accessed.
+ngAfterViewInit() {
+  // this.setupImagePreviews();
+}
+
+// setupImagePreviews() {
+//   this.productImages.forEach((imageEl: ElementRef<HTMLElement>) => {
+//     const img = imageEl.nativeElement;
+//     const preview = img.parentElement?.querySelector('.largeImagePreview') as HTMLElement;
+
+//     if (preview) {
+//       img.addEventListener('mouseenter', () => this.showPreview(img, preview));
+//       img.addEventListener('mouseleave', () => this.hidePreview(preview));
+//     }
+//   });
+// }
+
+// showPreview(img: HTMLElement, preview: HTMLElement) {
+//   const rect = img.getBoundingClientRect();
+//   const cartContainer = document.querySelector('.cartContainer') as HTMLElement;
+//   const cartRect = cartContainer.getBoundingClientRect();
+
+//   preview.style.position = 'fixed';
+//   preview.style.left = `${cartRect.left}px`;
+//   preview.style.top = `${cartRect.top}px`;
+//   preview.style.display = 'block';
+//   preview.style.zIndex = '1000';
+// }
+
+// Method to handle mouse enter and show the preview
+
+  // Method to handle mouse enter and show the preview
+  // showPreview(index: number, cartItem: CartItem) {
+  //   this.hoveredItem = cartItem;
+
+  //   setTimeout(() => {
+  //     if (this.productImages && this.largeImagePreview) {
+  //       const imageElement = this.productImages.toArray()[index];
+  //       if (imageElement) {
+  //         const rect = imageElement.nativeElement.getBoundingClientRect();
+  //         const previewElement = this.largeImagePreview.nativeElement;
+  //         previewElement.style.display = 'block';
+  //         previewElement.style.position = 'fixed';
+  //         previewElement.style.left = `${rect.right}px`;
+  //         previewElement.style.top = `${rect.top}px`;
+  //       }
+  //     }
+  //   });
+  // }
+
+  // hidePreview() {
+  //   this.hoveredItem = null;
+  //   if (this.largeImagePreview) {
+  //     this.largeImagePreview.nativeElement.style.display = 'none';
+  //   }
+  // }
+
+  // showPreview(index: number): void {
+  //   this.hoveredItemIndex = index;
+  //   this.cart$.subscribe(cart => {
+  //     if (cart && cart.items) {
+  //       this.hoveredItem = cart.items[index];
+  //     }
+  //   });
+  // }
+
+  // hidePreview(): void {
+  //   this.hoveredItemIndex = null;
+  //   this.hoveredItem = null;
+  // }
+
+//   onMouseEnter(event: MouseEvent, cartItem: any) {
+//     const target = event.target as HTMLElement;
+//     const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//     const scrollTop = window.scrollY || window.pageYOffset;
+//     preview.style.top = `${target.getBoundingClientRect().top + scrollTop}px`; 
+// }
+
+// onMouseEnter(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+
+//   const scrollTop = window.scrollY || window.pageYOffset;
+//   preview.style.top = `${targetRect.top + scrollTop}px - 350px`; // Set the top dynamically
+//   preview.style.display = 'block';
+
+//   console.log('Preview top:', preview.style.top);
+// }
+
+// onMouseEnter(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+
+//   const scrollTop = window.scrollY || window.pageYOffset;
+  
+//   // Subtract 350 pixels from the calculated top position
+//   const newTop = targetRect.top + scrollTop - 170;
+
+//   // Apply the new top value
+//   preview.style.top = `${newTop}px`;
+//   preview.style.display = 'block';
+//   // preview.style.animation = 'fade-in 0.5s ease-in-out';
+
+//   // console.log('Preview top:', preview.style.top);
+// }
+
+// onMouseLeave(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+//   preview.style.display = 'none';
+// }
+
+// onMouseEnter(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+  
+//   // Clear any existing timeout to avoid multiple triggers
+//   if (this.hoverTimeout) {
+//     clearTimeout(this.hoverTimeout);
+//   }
+
+//   // Set a timeout for 150ms to show the preview
+//   this.hoverTimeout = setTimeout(() => {
+//     const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+//     const scrollTop = window.scrollY || window.pageYOffset;
+//     const newTop = targetRect.top + scrollTop - 170; // Adjust the top position dynamically
+
+//     preview.style.top = `${newTop}px`;
+//     preview.style.display = 'block';
+
+//     console.log('Preview top:', preview.style.top);
+//   }, 100); // Trigger after 150ms
+// }
+
+// onMouseLeave(event: MouseEvent) {
+//   const target = event.currentTarget as HTMLElement;
+//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+
+//   // Clear the timeout if mouse leaves before 150ms
+//   if (this.hoverTimeout) {
+//     clearTimeout(this.hoverTimeout);
+//   }
+
+//   // Hide the preview when the mouse leaves
+//   preview.style.display = 'none';
+// }
+
+
+
+ // Method to show the preview for the hovered item
+//  showPreview(cartItem: CartItem) {
+//   this.hoveredItem = cartItem;
+//   // console.log('Hovered item:', cartItem);
+// }
+
+// // Method to hide the preview
+// hidePreview() {
+//   this.hoveredItem = null;
+// }
+
+onMouseEnter(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement;
+  const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+  
+  // Clear any existing timeout to avoid multiple triggers
+  if (this.hoverTimeout) {
+    clearTimeout(this.hoverTimeout);
+  }
+
+  // Set the preview to hidden while we calculate its position
+  preview.style.display = 'none';
+
+  // Set a timeout for 150ms to show the preview
+  this.hoverTimeout = setTimeout(() => {
+    const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
+    const scrollTop = window.scrollY || window.pageYOffset;
+    const newTop = targetRect.top + scrollTop - 170; // Adjust the top position dynamically
+
+    // Set the position before displaying it
+    preview.style.top = `${newTop}px`;
+
+    // Ensure the preview is displayed only after the position is set
+    preview.style.display = 'block';
+
+    console.log('Preview top:', preview.style.top);
+  }, 100); // Trigger after 150ms
+}
+
+onMouseLeave(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement;
+  const preview = target.querySelector('.largeImagePreview') as HTMLElement;
+
+  // Clear the timeout if mouse leaves before 150ms
+  if (this.hoverTimeout) {
+    clearTimeout(this.hoverTimeout);
+  }
+
+  // Hide the preview when the mouse leaves
+  preview.style.display = 'none';
+}
 
   loadCart(): void {
     this.cartService.getCartObservable().pipe(
@@ -492,13 +716,13 @@ export class CartComponent implements OnInit {
         return [];
       })
     ).subscribe(cart => {
-      console.log('Mapped cart:', cart);
+      // console.log('Mapped cart:', cart);
       this.cartSubject.next(cart);
     });
   }
 
   private mapBackendCartToCart(backendCart: any): Cart {
-    console.log('Backend cart received:', backendCart);
+    // console.log('Backend cart received:', backendCart);
     const cart = new Cart();
     cart.cartId = backendCart.cartId;
     cart.userId = backendCart.userId;
@@ -597,7 +821,7 @@ export class CartComponent implements OnInit {
     if (cartItem.Product.productId) {
       this.cartService.removeFromCart(cartItem.Product.productId).subscribe({
         next: () => {
-          console.log('Item removed successfully');
+          // console.log('Item removed successfully');
         },
         error: (error) => {
           console.error('Error removing item from cart:', error);
@@ -637,7 +861,7 @@ export class CartComponent implements OnInit {
     if (cartItem.Product.productId && newQuantity > 0) {
       this.cartService.updateQuantity(cartItem.Product.productId, newQuantity).subscribe({
         next: () => {
-          console.log('Quantity updated successfully');
+          // console.log('Quantity updated successfully');
         },
         error: (error) => {
           console.error('Error updating quantity:', error);

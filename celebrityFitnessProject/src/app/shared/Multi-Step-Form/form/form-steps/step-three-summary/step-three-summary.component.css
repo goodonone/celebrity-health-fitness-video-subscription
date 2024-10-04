@@ -93,8 +93,22 @@ button {
   font-size: 0.875rem;
 }
 
+.costSummary{
+  font-size: 0.875rem;
+  display: inline-flex;
+}
+
+.cardOnFile{
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
 div.cost{
   width: 9.3rem;
+}
+
+div.cost.summary{
+  width: 12rem;
 }
 
 .total {

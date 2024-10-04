@@ -22,6 +22,8 @@ export class StepTrackerIconsUpgradeComponent implements OnInit {
     this.formService.activeStep$.subscribe(
       activeStep => this.activeStep$ = activeStep);
 
+      console.log('Active step:', this.activeStep$, 'without payment');
+
   }
     
   stepDetails: { step: number; description: string; }[] = [

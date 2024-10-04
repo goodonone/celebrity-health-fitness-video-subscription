@@ -155,15 +155,19 @@
   padding: 0;
   z-index: 100;
   font-size: clamp(0.8rem, 3vw, 0.9rem);
-}
-
-.alreadyMemberText p {
   color: black;
+  cursor: default !important;
 }
 
-.highlight {
+// .alreadyMemberText p {
+  
+// }
+
+.alreadyMemberText .highlight {
   font-weight: bold;
+  text-shadow: 0px 0px 3px rgb(29, 29, 29);
   color: #c7ff20;
+  cursor: pointer;
 }
 
 /* @media screen and (min-width: 1080px) and (max-width: 1367px) {

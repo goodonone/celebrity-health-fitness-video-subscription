@@ -28,6 +28,20 @@ export class ContentComponent implements OnInit{
   timerValThree = '';
   userId?: string;
   heading:boolean = true;
+  checked: boolean = false;
+  timerTierThree: boolean = true;
+  showLiveVideo: boolean = false;
+  starterVideos: any[] = [];
+  channel23Videos: any[] = [];
+  channel22Videos: any[] = [];
+  channel21Videos: any[] = [];
+  channel20Videos: any[] = [];
+  absVideos: any[] = [];
+  lowerBodyVideos: any[] = [];
+  fullBodyVideos: any[] = [];
+  upperBodyVideos: any[] = [];
+  hiitVideos: any[] = [];
+  livestreamVideos: any[] = [];
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute) { }
 
@@ -51,26 +65,7 @@ export class ContentComponent implements OnInit{
   }
   
  
-  timerTierThree: boolean = true;
-  showLiveVideo: boolean = false;
-  
-  checked: boolean = false;
 
-
-  starterVideos: any[] = [];
-  channel23Videos: any[] = [];
-  channel22Videos: any[] = [];
-  channel21Videos: any[] = [];
-  channel20Videos: any[] = [];
-
-
-  absVideos: any[] = [];
-  lowerBodyVideos: any[] = [];
-  fullBodyVideos: any[] = [];
-  upperBodyVideos: any[] = [];
-  hiitVideos: any[] = [];
-
-  livestreamVideos: any[] = [];
   startCountDownTierOneTwo() {
     var countDownDate = new Date("September 17, 2024 16:45:25").getTime();
 
@@ -96,7 +91,7 @@ export class ContentComponent implements OnInit{
       // If the count down is finished, write some text
       if (distance < 0) {
         clearInterval(x);
-        this.timerVal  = "Live Video In Progress...";
+        this.timerVal  = "Live Video In Progress... Join Me Live!";
         // ngIf to open up a card for live video here
       }
     }, 1000);
@@ -136,8 +131,15 @@ export class ContentComponent implements OnInit{
   }
 
   
-  toggleBilling() {
+  toggleView() {
     this.checked = !this.checked;
+  }
+
+  setChecked(value: boolean) {
+    // if (this.checked !== value) {
+      this.checked = value;
+      this.toggleView();
+    // }
   }
 
 

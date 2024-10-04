@@ -10,7 +10,10 @@ import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, filter, of, Subscription, switchMap, tap } from 'rxjs';
+import { AuthService } from './services/auth.service';
+import { CustomOAuthService } from './services/oauth.service';
+import { AuthStateService } from './services/authstate.service';
 
 @Component({
   selector: 'app-root',
@@ -43,6 +46,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMenuHovered: boolean = false;
   closeTimeout: any;
 
+  private cartSubscription: Subscription | null = null;
+  // private authSubscription: Subscription | null = null;
+  // private routerSubscription!: Subscription;
+
+  private subscription: Subscription = new Subscription();
+  
+
   private closeMenuTimer: any;
   private hoverTimer: any;
 
@@ -50,24 +60,95 @@ export class AppComponent implements OnInit, AfterViewInit {
     private actRoute: ActivatedRoute,
     private router: Router,
     private userService: UserService,
-    private cartService: CartService
+    private cartService: CartService,
+    private authService: AuthService,
+    private oauthService: CustomOAuthService,
+    private authStateService: AuthStateService
   ) {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.UpdateStatus();
-      }
-    });
+    // this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.UpdateStatus();
+    //   }
+    // });
 
-    this.cartService.getCartObservable().subscribe((newCart) => {
-      console.log('Cart received in navbar:', newCart); 
-      this.cartQuantity = newCart.totalCount || 0;
-    });
+    // if(this.authService.isAuthenticated()) {
+      
+        // this.subscribeToCart();
+      // }
   }
 
   ngOnInit(): void {
-    // this.loadUserId();
-    this.UpdateStatus();
 
+    // this.oauthService.handleRedirectResult();
+    this.oauthService.checkForRedirectResult();
+    this.oauthService.checkForStoredAuthResult();
+    // this.loadUserId();
+    // this.UpdateStatus();
+
+    // this.oauthService.loadDiscoveryDocumentAndTryLogin().then((loginResult) => {
+    //   if (loginResult) {
+    //     console.log('User logged in successfully after redirect');
+    //     this.authStateService.checkAuthStatus();
+    //   } else {
+    //     console.log('No user is currently logged in');
+    //   }
+    // }).catch(error => {
+    //   console.error('Error during OAuth initialization:', error);
+    // });
+
+    this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        console.log('User logged in successfully');
+        // You can perform any actions needed when the user becomes authenticated
+      } else {
+        console.log('User is not authenticated');
+        // You can perform any actions needed when the user becomes unauthenticated
+      }
+    });
+
+    this.cartSubscription =this.cartService.getCartObservable().subscribe((newCart) => {
+      // console.log('Cart received in navbar:', newCart); 
+      this.cartQuantity = newCart.totalCount || 0;
+      });
+
+      this.subscription.add(
+        this.userService.isLoggedIn$.pipe(
+          tap(isLoggedIn => {
+            this.userIsLoggedIn = isLoggedIn;
+            if (isLoggedIn) {
+              this.cartService.loadCart();
+            } else {
+              this.cartQuantity = 0;
+            }
+          }),
+          switchMap(() => this.cartService.getCartObservable())
+        ).subscribe(cart => {
+          this.cartQuantity = cart.totalCount || 0;
+          // console.log('Cart received in navbar:', cart);
+        })
+      );
+  
+      // this.subscription.add(
+      //   this.router.events.subscribe((event) => {
+      //     if (event instanceof NavigationEnd) {
+      //       this.UpdateStatus();
+      //     }
+      //   })
+      // );
+
+      this.subscription.add(
+        this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd)
+        ).subscribe(() => {
+          this.UpdateStatus();
+        })
+      );
+  
+      this.UpdateStatus();
+
+      this.userService.isLoggedIn$.subscribe(status => {
+        this.userIsLoggedIn = status;
+      });
 
       // Check if the user has visited the page before to serve animations or not
       const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
@@ -102,6 +183,38 @@ export class AppComponent implements OnInit, AfterViewInit {
       hamburger!.classList.toggle('active');
     });
   }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
+    // this.cartService.clearCart();
+    // this.unsubscribeFromCart();
+    // if (this.routerSubscription) {
+    //   this.routerSubscription.unsubscribe();
+    // }
+    // if (this.authSubscription) {
+    //   this.authSubscription.unsubscribe();
+    // }
+  }
+
+  // private subscribeToCart() {
+  //   if (!this.cartSubscription) {
+  //     this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
+  //       // console.log('Cart received in navbar:', newCart);
+  //       this.cartQuantity = newCart.totalCount || 0;
+  //     });
+  //   }
+  // }
+
+  // private unsubscribeFromCart() {
+  //   if (this.cartSubscription) {
+  //     this.cartSubscription.unsubscribe();
+  //     this.cartSubscription = null;
+  //   }
+  //   this.cartQuantity = 0; // Reset cart quantity when logging out
+  // }
 
   triggerAnimations(){
     const navBar = document.querySelector('.navBar') as HTMLElement;
@@ -212,17 +325,93 @@ export class AppComponent implements OnInit, AfterViewInit {
   //   }
   // }
 
-  UpdateStatus() {
-    this.userIsLoggedIn = this.userService.isloggedIn();
-    if (this.userIsLoggedIn) {
-      this.UserId = this.userService.getUserId() ?? '';
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+  //   console.log('User is logged in:, updateStatus() called');
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.userService.getUserId() ?? '';
+  //   }
+  // }
+
+  // private UpdateStatus(): void {
+  //   if (this.authService.isAuthenticated()) {
+  //     this.UserId = (this.userService.getUserId() ?? '') || (this.authService.getUserIdFromToken() ?? '');
+  //     this.userService.updateLoginStatus(true);
+  //     this.cartService.loadCart();
+  //   } else {
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
+  // private UpdateStatus(): void {
+  //   if (this.authService.isAuthenticated()) {
+  //     this.UserId = (this.userService.getUserId() ?? '') || (this.authService.getUserIdFromToken() || '');
+  //     if (this.UserId) {
+  //       this.userService.updateLoginStatus(true);
+  //       this.cartService.loadCart();
+  //     } else {
+  //       console.error('User is authenticated but UserId is not available');
+  //       // Handle this edge case as needed
+  //     }
+  //   } else {
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
+  // private UpdateStatus(): void {
+  //   console.log('UpdateStatus called');
+  //   if (this.authService.isAuthenticated()) {
+  //     console.log('User is authenticated');
+  //     const userServiceId = this.userService.getUserId();
+  //     const authServiceId = this.authService.getUserIdFromToken();
+  //     console.log('UserService ID:', userServiceId);
+  //     console.log('AuthService ID:', authServiceId);
+
+  //     this.UserId = (userServiceId ?? '') || (authServiceId || '');
+  //     console.log('Final UserId:', this.UserId);
+
+  //     if (this.UserId) {
+  //       this.userService.updateLoginStatus(true);
+  //       this.cartService.loadCart();
+  //     } else {
+  //       console.error('User is authenticated but UserId is not available');
+  //       // Log the contents of localStorage for debugging
+  //       console.log('localStorage contents:', JSON.stringify(localStorage));
+  //     }
+  //   } else {
+  //     console.log('User is not authenticated');
+  //     this.userService.updateLoginStatus(false);
+  //   }
+  // }
+
+  private UpdateStatus(): void {
+    // console.log('UpdateStatus called');
+    if (this.authService.isAuthenticated()) {
+      // console.log('User is authenticated');/
+      const userServiceId = this.userService.getUserId();
+      const authServiceId = this.authService.getUserIdFromToken();
+      // console.log('UserService ID:', userServiceId);
+      // console.log('AuthService ID:', authServiceId);
+
+      this.UserId = userServiceId || authServiceId || '';
+      // console.log('Final UserId:', this.UserId);
+
+      if (this.UserId) {
+        this.userService.updateLoginStatus(true);
+        this.cartService.loadCart();
+      } else {
+        // console.error('User is authenticated but UserId is not available');
+        // console.log('localStorage contents:', JSON.stringify(localStorage));
+      }
+    } else {
+      // console.log('User is not authenticated');
+      this.userService.updateLoginStatus(false);
     }
   }
 
   logOut() {
     // this.cartService.clearCart();
     this.userService.logoutUser();
-    this.UpdateStatus();
   }
 
   // Hamburger Menu Functions

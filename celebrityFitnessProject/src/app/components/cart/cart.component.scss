@@ -1,0 +1,401 @@
+* {
+    font-family: 'Outfit', sans-serif;
+}
+
+.pageContainer {
+    position: relative;
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    max-width: 3000px;
+    /* margin-top: -10rem; */
+    overflow-x: hidden;
+    height: 100%;
+    min-height: 100vh;
+    margin: auto;
+}
+
+.cartContainer{
+    position: absolute;
+    top:11%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    margin: auto auto auto auto;
+    width: 50rem;
+    height: 43.2rem;
+    padding-top: 5rem;
+    // padding-bottom: 0.5rem;
+    border-radius: 1rem;
+    // margin-bottom: 2rem;
+    box-shadow: 0 0 20px rgb(162, 162, 162);
+}
+
+.pageName{
+    color: Black;
+    font-weight: 500;
+    text-align: left;
+    font-size: 7rem;
+    padding-left: 2rem;
+    font-weight: 600; 
+}
+
+p.name{
+    padding: 1rem 0 0rem 1rem;
+    font-size: 2rem;
+}
+
+.productImage{
+    width: 3.2rem;
+    height: 3.2rem;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.cardFlex{
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    margin-top: 4.3rem;
+    position: relative;
+    justify-content: center;
+    padding:0 1.8rem;
+}
+
+.scroll{
+    position: relative;
+    overflow-y: scroll;
+    // overflow: visible;
+    height: 20.3rem;
+    width: 100%;
+    border-radius: 0.8rem;
+    background-color: rgb(215, 215, 215);
+    box-shadow: 0 0 10px 5px rgba(63, 63, 63, 0.5) inset ;
+    padding-right: 0.2rem;
+    // padding-left: 0.8rem;
+
+    &::-webkit-scrollbar {
+        width:6px; 
+        height: 10px;
+        position: absolute;
+        left: -5px !important;
+        top: 20px; 
+        bottom: 20px; 
+        padding-left: -2.2rem;
+    }
+  
+      &::-webkit-scrollbar-thumb {
+        margin-top: 20rem;
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        background-color: #171717;
+        border: 0px solid #030303;
+        
+      }
+  
+      &::-webkit-scrollbar-track {
+        margin-top: 0.8rem; 
+        margin-bottom: 0.8rem;
+        margin-right: 5px;
+        padding-right: 1rem !important;
+      }
+    
+}
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    position: relative;
+    /* background-color: rgb(236, 236, 236); */
+    background-color: rgb(236, 236, 236);
+    margin: 0.8rem 0 0.8rem 0;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 45.5rem;
+    height: 4rem;
+    padding: 0.4rem;
+    margin-left: 0.5rem;
+    /* box-shadow: 0 2px 10px rgb(169, 168, 168); */
+    box-shadow: 0 0 5px rgb(120, 120, 120);
+}
+
+div.quantity{
+    position: absolute;
+    right: 15rem;
+    top: 1.4rem;
+    z-index: 10;
+}
+
+select{
+    cursor: pointer;
+}
+
+div.removeButton{
+    position: absolute;
+    right: 1rem;
+    top: 0.95rem;
+    z-index: 10;
+    cursor: pointer;
+}
+
+div.priceContainer{
+    position: absolute;
+    /* margin-left: 10rem; */
+    top: 1.45rem;
+    right: 8rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+p.price{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h1.totalText{
+    position: absolute;
+    right: 10rem;
+    /* top: 2rem; */
+    font-size: 3rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+/* .totalButton{
+    display: block;xf
+} */
+
+.totalContainer{
+    position: relative;
+    display:inline-flex;
+    justify-content: right;
+    /* margin-right: 4.5rem; */
+}
+
+.totalCountContainer{
+    margin-top: 4rem;
+    margin-right: 2rem;
+}
+
+p.totalCount{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+p.totalPrice{
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+.totalPriceContainer{
+    margin-top: 3.9rem;
+}
+
+.totalPrice sup {
+    font-size: 0.7em; /* Reduce the font size */
+    vertical-align: top; /* Align it closer to the top */
+    line-height: 0; /* Reduce extra space */
+    margin-left: -0.4em; /* Move it closer to the decimal point */
+  }
+
+button.buttonCheckOut{
+    background-color: rgb(236, 236, 236);
+    width: 12rem;
+    // margin-left: 24rem;
+
+    /* display: block;
+    justify-content: flex-end; */
+    /* margin-left: 54rem; */
+}
+
+.buttonCheckOut:hover{
+    background-color: rgb(0, 0, 0) !important;
+    color: white !important;
+}
+
+.buttonContainer{
+    margin-top: 0.8rem;
+    display: flex;
+    justify-content: right;
+    // position: absolute;
+    margin-bottom: 0.5rem;
+    margin-left: 3rem;
+    /* margin-left: 12rem; */
+}
+
+div.emptyMessageContainer{
+    padding-top: 5rem;
+    text-align: center;
+    margin: auto;
+    padding-bottom: 10rem;
+}
+
+p.emptyMessage{
+    font-size: 2rem;
+}
+
+div.thankYouMessage{
+    margin-top: 2rem;
+}
+
+h1.thankYou{
+    font-weight: 500;
+}
+
+p.payment{
+    margin: auto;
+    font-size: 1rem;
+    width: 50%
+}
+
+.imageContainer {
+    position: relative;
+  }
+  
+//   .productImage {
+//     width: 100%;
+//     height: 100%;
+//     cursor: pointer;
+//   }
+  
+//   .largeImagePreview {
+//     display: none;
+//     position: fixed;
+//     width: 200px;
+//     height: 200px;
+//     // top: 15%;
+//     // left: 11%;
+//     // left: 12%;
+//     z-index: 1000;
+//   }
+
+.largeImagePreview {
+    // display: none;
+    // position:absolute;
+    // bottom: -7rem;
+    // left: 105%;
+    // box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    // z-index: 1000;
+    display: none;
+    position: fixed; /* Change to fixed to escape the overflow */
+    // bottom: 20rem; /* Dynamically adjust the position *
+    left: 12%; /* Position it to the right of the image */
+    // box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    pointer-events: none;
+
+    // animation: fadeIn 0.5s ease-in-out; 
+    // // animation-duration: 0.5s;
+
+    // @keyframes fadeIn {
+    //     from {
+    //       opacity: 0;
+    //     }
+    //     to {
+    //       opacity: 1;
+    //     }
+    //   }
+  }
+
+  .largeImage{
+    border-radius: 0.2rem;
+    // box-shadow: 0 0 5px rgb(120, 120, 120);
+  }
+  
+  .largeImagePreview img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    // box-shadow: 0 0 0 16px rgb(236, 236, 236), 0 5px 15px rgba(0, 0, 0, 0.3);
+    // transition: 
+    // border: 16px solid rgb(236, 236, 236);
+    border-radius: 1rem;
+    box-shadow: 0 0 5px rgb(120, 120, 120);
+  }
+  
+  .imageContainer:hover .largeImagePreview {
+    display: block;
+    // opacity: 1;
+    // visibility: visible;
+  }
+
+::ng-deep select[matNativeControl] {
+    border-color: #ffffff !important; /* Change the border color when focused */
+    outline: none; /* Remove the default outline */
+    box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+    color: #000000 !important; /* Change the text color when focused */
+    border-radius: 0.2rem !important;
+  }
+
+
+
+@media screen and (min-width: 500px) and (max-width: 1286px){
+
+// .cartContainer{
+//     height: fit-content;
+//     width: 50rem;
+// }
+
+// div.quantity{
+//     position:absolute;
+//     left: 28rem;
+//     top: 2rem;
+// }
+
+// div.removeButton{
+//     position: absolute;
+//     left: 42rem;
+//     top: 1.5rem;
+// }
+
+// div.priceContainer{
+//     position: absolute;
+//     margin-left: 10rem;
+//     top: 2rem;
+//     left: 25rem;
+// }
+
+// p.price{
+//     font-size: 2rem;
+//     font-weight: 600;
+// }
+
+// h1.totalText{
+//     font-size: 3rem;
+//     font-weight: 500;
+//     margin-top: 1rem;
+// }
+
+// .totalContainer{
+//     display:inline-flex;
+//     justify-content: right;
+//     margin-right: 7rem;
+// }
+
+// .totalCountContainer{
+//     margin-top: 4rem;
+//     margin-right: 2rem;
+// }
+
+// p.totalCount{
+//     font-size: 1.3rem;
+//     font-weight: 500;
+// }
+
+// p.totalPrice{
+//     font-size: 3rem;
+//     font-weight: 500;
+// }
+
+// .totalPriceContainer{
+//     margin-top: 3.9rem;
+// }
+
+// button.buttonCheckOut{
+//     display: inline-flex;
+//     background-color: rgb(236, 236, 236);
+//     width: 12rem;
+//     margin-left: 24rem;
+// }
+
+}
+

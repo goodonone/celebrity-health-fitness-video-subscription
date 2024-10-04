@@ -132,20 +132,110 @@
 //   }
 // }
 
+// import { Injectable } from '@angular/core';
+// import { Router } from '@angular/router';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class AuthService {
+//   private redirectUrl: string | null = null;
+
+//   constructor(private router: Router) {}
+
+//   isAuthenticated(): boolean {
+//     const token = localStorage.getItem("token");
+//     return !!token && !this.isTokenExpired(token);
+//   }
+
+//   private isTokenExpired(token: string): boolean {
+//     try {
+//       const payload = this.parseJwt(token);
+//       if (payload && payload.exp) {
+//         return Date.now() >= payload.exp * 1000;
+//       }
+//     } catch (error) {
+//       console.error('Error checking token expiration:', error);
+//     }
+//     return true;
+//   }
+
+//   private parseJwt(token: string): any {
+//     try {
+//       const base64Url = token.split('.')[1];
+//       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+//       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+//         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+//       }).join(''));
+
+//       return JSON.parse(jsonPayload);
+//     } catch (error) {
+//       console.error('Error parsing token:', error);
+//       return null;
+//     }
+//   }
+
+//   setRedirectUrl(url: string): void {
+//     this.redirectUrl = url;
+//   }
+
+//   getRedirectUrl(): string | null {
+//     return this.redirectUrl;
+//   }
+
+//   login(token: string): void {
+//     localStorage.setItem("token", token);
+//     const redirect = this.getRedirectUrl();
+//     if (redirect) {
+//       this.router.navigateByUrl(redirect);
+//       this.redirectUrl = null;
+//     }
+//   }
+
+//   logout(): void {
+//     localStorage.removeItem("token");
+//     this.router.navigate(['/sign-in']);
+//   }
+
+//   getUserIdFromToken(): string | null {
+//     const token = localStorage.getItem("token");
+//     if (token) {
+//       const payload = this.parseJwt(token);
+//       return payload?.userId || null;
+//     }
+//     return null;
+//   }
+// }
+
+
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private redirectUrl: string | null = null;
+  public authStateSubject: BehaviorSubject<boolean>;
+  public authState$: Observable<boolean>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    const isAuthenticated = this.checkInitialAuthState();
+    this.authStateSubject = new BehaviorSubject<boolean>(isAuthenticated);
+    this.authState$ = this.authStateSubject.asObservable();
+  }
+
+  private checkInitialAuthState(): boolean {
+    const token = localStorage.getItem("token");
+    return !!token && !this.isTokenExpired(token);
+  }
 
   isAuthenticated(): boolean {
     const token = localStorage.getItem("token");
-    return !!token && !this.isTokenExpired(token);
+    const isAuth = !!token && !this.isTokenExpired(token);
+    this.authStateSubject.next(isAuth);
+    return isAuth;
   }
 
   private isTokenExpired(token: string): boolean {
@@ -183,26 +273,122 @@ export class AuthService {
     return this.redirectUrl;
   }
 
-  login(token: string): void {
-    localStorage.setItem("token", token);
-    const redirect = this.getRedirectUrl();
-    if (redirect) {
-      this.router.navigateByUrl(redirect);
-      this.redirectUrl = null;
+  // login(token: string): void {
+  //   localStorage.setItem("token", token);
+  //   this.authStateSubject.next(true);
+  //   const redirect = this.getRedirectUrl();
+  //   if (redirect) {
+  //     this.router.navigateByUrl(redirect);
+  //     this.redirectUrl = null;
+  //   }
+  // }
+
+  login(token: string, isGoogleAuth: boolean = false): void {
+    if (isGoogleAuth) {
+      // For Google auth, store the token but don't set auth state to true
+      localStorage.setItem("googleAuthToken", token);
+      this.authStateSubject.next(false);
+    } else {
+      localStorage.setItem("token", token);
+      this.authStateSubject.next(true);
+      const redirect = this.getRedirectUrl();
+      if (redirect) {
+        this.router.navigateByUrl(redirect);
+        this.redirectUrl = null;
+      }
     }
   }
 
-  logout(): void {
-    localStorage.removeItem("token");
-    this.router.navigate(['/sign-in']);
-  }
+  // login(token: string, isGoogleAuth: boolean = false): void {
+  //   localStorage.setItem("token", token);
+  //   if (!isGoogleAuth) {
+  //     // Only set auth state to true for non-Google auth logins
+  //     this.authStateSubject.next(true);
+  //     const redirect = this.getRedirectUrl();
+  //     if (redirect) {
+  //       this.router.navigateByUrl(redirect);
+  //       this.redirectUrl = null;
+  //     }
+  //   } else {
+  //     // For Google auth, store the token but don't set auth state to true
+  //     localStorage.setItem("googleAuthToken", token);
+  //   }
+  // }
+
+  // logout(): void {
+  //   localStorage.removeItem("token");
+  //   this.authStateSubject.next(false);
+  //   this.router.navigate(['/sign-in']);
+  // }
+
+  // getUserIdFromToken(): string | null {
+  //   const token = localStorage.getItem("token")||localStorage.getItem("googleAuthToken");
+  //   if (token) {
+  //     const payload = this.parseJwt(token);
+  //     return payload?.userId || null;
+  //   }
+  //   return null;
+  // }
+
+  // getUserIdFromToken(): string | null {
+  //   // First, try to get the userId from the stored user object
+  //   const userString = localStorage.getItem('user');
+  //   if (userString) {
+  //     try {
+  //       const user = JSON.parse(userString);
+  //       if (user && user.userId) {
+  //         return user.userId;
+  //       }
+  //     } catch (error) {
+  //       console.error('Error parsing user data from localStorage:', error);
+  //     }
+  //   }
+
+  //   // If not found in user object, try to get from the token
+  //   const token = localStorage.getItem("token") || localStorage.getItem("googleAuthToken");
+  //   if (token) {
+  //     const payload = this.parseJwt(token);
+  //     return payload?.userId || null;
+  //   }
+
+  //   return null;
+  // }
 
   getUserIdFromToken(): string | null {
-    const token = localStorage.getItem("token");
+    // console.log('AuthService: getUserIdFromToken called');
+    
+    // Check user object in localStorage
+    const userString = localStorage.getItem('user');
+    // console.log('AuthService: user string from localStorage:', userString);
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+        // console.log('AuthService: parsed user object:', user);
+        if (user && user.userId) {
+          // console.log('AuthService: userId from user object:', user.userId);
+          return user.userId;
+        }
+      } catch (error) {
+        // console.error('Error parsing user data from localStorage:', error);
+      }
+    }
+
+    // Check token
+    const token = localStorage.getItem("token") || localStorage.getItem("googleAuthToken");
+    // console.log('AuthService: token from localStorage:', token);
     if (token) {
       const payload = this.parseJwt(token);
+      // console.log('AuthService: parsed JWT payload:', payload);
       return payload?.userId || null;
     }
+
+    // console.log('AuthService: No userId found');
     return null;
+  }
+
+  clearAuthState(): void {
+    localStorage.removeItem("token");
+    localStorage.removeItem("googleAuthToken");
+    this.authStateSubject.next(false);
   }
 }

@@ -22,8 +22,12 @@ export class StepTrackerIconsCheckout implements OnInit {
   }
 
   stepDetails: { step: number; description: string; }[] = [
-    { step: 1, description: 'Payment' },
-    { step: 2, description: 'Confirmation' },
+    { step: 1, description: 'Summary' },
+    { step: 2, description: 'Payment' },
+    { step: 3, description: 'Confirmation' },
+
+    // { step: 1, description: 'Payment' },
+    // { step: 2, description: 'Confirmation' },
   ]
 
 }

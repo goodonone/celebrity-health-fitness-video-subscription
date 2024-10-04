@@ -75,6 +75,8 @@ export class ProfileComponent implements OnInit {
   isValidAge: boolean = true;  
   twentyOneError: boolean = false;
   firstTimeAnimation: boolean = true;
+  buttonText: string = 'Cancel Subscription';
+  isProcessingGoodbye: boolean = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
   // firstTimeAnimationTierThree: boolean = true;
@@ -90,7 +92,7 @@ export class ProfileComponent implements OnInit {
 
   // Handler properties
   keydownHandler: (event: KeyboardEvent) => void;
-  mousedownHandler: (event: MouseEvent) => void;
+  // mousedownHandler: (event: MouseEvent) => void;
 
   private oldPasswordSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -103,7 +105,7 @@ export class ProfileComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private elementRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
   ) {
     this.keydownHandler = (event) => {
       const toggleDiv = document.getElementById('deleteProfile');
@@ -113,17 +115,18 @@ export class ProfileComponent implements OnInit {
       }
     };
 
-    this.mousedownHandler = (event) => {
-      const toggleDiv = document.getElementById('deleteProfile');
-      if (
-        toggleDiv &&
-        !toggleDiv.contains(event.target as Node) &&
-        toggleDiv.classList.contains('active')
-      ) {
-        toggleDiv.classList.toggle('active');
-        this.currentState = ProfileState.Viewing;
-      }
-    };
+  //   this.mousedownHandler = (event) => {
+  //     const toggleDiv = document.getElementById('deleteProfile');
+  //     if (
+  //       toggleDiv &&
+  //       !toggleDiv.contains(event.target as Node) &&
+  //       toggleDiv.classList.contains('active')
+  //     ) {
+  //       toggleDiv.classList.toggle('active');
+  //       this.currentState = ProfileState.Viewing;
+  //     }
+  //   };
+  // }
   }
 
   ngOnInit(): void {
@@ -132,6 +135,16 @@ export class ProfileComponent implements OnInit {
     //  this.firstTimeAnimationTierTwo = localStorage.getItem('hasVisitedProfileBeforeTierTwo') !== 'true';
     //  this.firstTimeAnimationTierThree = localStorage.getItem('hasVisitedProfileBeforeTierThree') !== 'true';
   
+    const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
+    if (!hasVisited) {
+      // Trigger animations
+      this.triggerAnimations();
+      // Store the flag in localStorage
+      localStorage.setItem('hasVisitedProfileBefore', 'true');
+    } else {
+      // Skip animations
+      this.skipAnimations();
+    }
 
     this.loadProfile();
 
@@ -306,12 +319,12 @@ export class ProfileComponent implements OnInit {
 
   initializeEventListeners(): void {
     document.addEventListener('keydown', this.keydownHandler);
-    document.addEventListener('mousedown', this.mousedownHandler);
+    // document.addEventListener('mousedown', this.mousedownHandler);
   }
 
   removeEventListeners(): void {
     document.removeEventListener('keydown', this.keydownHandler);
-    document.removeEventListener('mousedown', this.mousedownHandler);
+    // document.removeEventListener('mousedown', this.mousedownHandler);
   }
 
   loadProfile() {
@@ -401,16 +414,7 @@ export class ProfileComponent implements OnInit {
         this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
 
          //  // Check if the user has visited the page before to serve animations or not
-        const hasVisited = localStorage.getItem('hasVisitedProfileBefore');
-        if (!hasVisited) {
-          // Trigger animations
-          this.triggerAnimations();
-          // Store the flag in localStorage
-          localStorage.setItem('hasVisitedProfileBefore', 'true');
-        } else {
-          // Skip animations
-          this.skipAnimations();
-        }
+        
          
       },
       (error) => {
@@ -525,6 +529,9 @@ export class ProfileComponent implements OnInit {
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.add('firstTimeAnimation');
 
+    // const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    // arrows?.classList.add('firstTimeAnimation');
+
     this.firstTimeAnimation = true;
     this.cdr.detectChanges();
   }
@@ -534,6 +541,9 @@ export class ProfileComponent implements OnInit {
     
     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
     profileNameTier?.classList.remove('firstTimeAnimation');
+
+    // const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    // arrows?.classList.remove('firstTimeAnimation');
 
     this.firstTimeAnimation = false;
     this.cdr.detectChanges();
@@ -1262,16 +1272,80 @@ isWeightValid(): boolean {
   }
 
   goodbye() {
-    (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
-      'Deleting Profile...';
+    this.buttonText = 'Deleting Profile...';
     setTimeout(() => {
-      (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
-        'Goodbye';
+      this.buttonText = 'Goodbye';
     }, 1000);
     setTimeout(() => {
       this.deleteProfileUser();
     }, 2000);
   }
+
+  // goodbye(event?: Event): void {
+  //   if (event) {
+  //     event.stopPropagation();  // Prevent the click from propagating to the parent div
+  //   }
+  //     (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
+  //     'Deleting Profile...';
+  //     setTimeout(() => {
+  //       (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
+  //         'Goodbye';
+  //     }, 1000);
+  //     setTimeout(() => {
+  //       this.deleteProfileUser();
+  //     }, 2000);
+  // }
+
+  // goodbye(): void {
+  //   const cancelSubButton = document.getElementById('cancelSub') as HTMLButtonElement;
+  //   cancelSubButton.innerText = 'Deleting Profile...';
+    
+  //   setTimeout(() => {
+  //     cancelSubButton.innerText = 'Goodbye';
+  //   }, 1000);
+    
+  //   setTimeout(() => {
+  //     this.deleteProfileUser();
+  //   }, 2000);
+  // }
+
+  // goodbye(event: MouseEvent): void {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+    
+  //   const cancelSubButton = event.target as HTMLButtonElement;
+  //   cancelSubButton.innerText = 'Deleting Profile...';
+    
+  //   setTimeout(() => {
+  //     cancelSubButton.innerText = 'Goodbye';
+  //   }, 1000);
+    
+  //   setTimeout(() => {
+  //     this.deleteProfileUser();
+  //   }, 2000);
+  // }
+
+  // goodbye(){
+    // event.stopPropagation();
+    // event.preventDefault();
+    
+    // if (this.isProcessingGoodbye) return;
+    
+    // this.isProcessingGoodbye = true;
+    
+  //   const cancelSubButton = event.target as HTMLButtonElement;
+  //   cancelSubButton.innerText = 'Deleting Profile...';
+    
+  //   setTimeout(() => {
+  //     cancelSubButton.innerText = 'Goodbye';
+  //   }, 1000);
+    
+  //   setTimeout(() => {
+  //     this.deleteProfileUser();
+  //     this.isProcessingGoodbye = false;
+  //   }, 2000);
+  // }
+  
 
   deleteProfileUser() {
     this.userService.deleteUser(this.userId).subscribe(() => {
@@ -1365,14 +1439,58 @@ isWeightValid(): boolean {
     this.classAppliedDeleteProfile = true;
   }
 
-  cancelAction() {
+  // cancelAction() {
+  //   this.currentState = ProfileState.Viewing;
+  //   this.stepForm.reset();
+  //   this.passwordGroup.disable();
+  //   this.authenticating = false;
+  //   this.oldPasswordError = '';
+  //   this.reloadProfile();
+  //   // this.loadProfile();
+  //   this.stepForm.clearValidators();
+  // }
+
+  // cancelAction(event?: Event): void {
+  //   if (event) {
+  //     event.stopPropagation();  // Prevent the click from propagating to the parent div
+  //   }
+  //   this.stepForm.reset();
+  //   this.passwordGroup.disable();
+  //   this.authenticating = false;
+  //   this.oldPasswordError = '';
+  //   this.reloadProfile();
+  //   // this.loadProfile();
+  //   this.stepForm.clearValidators();
+  //   this.currentState = ProfileState.Viewing;
+  // }
+
+  // cancelAction(event?: MouseEvent): void {
+  //   if (event) {
+  //     event.stopPropagation();  // This prevents the "Keep Subscription" button from triggering the parent div's click
+  //   }
+    
+  //   this.currentState = ProfileState.Viewing;
+  //   this.stepForm.reset();
+  //   this.passwordGroup.disable();
+  //   this.authenticating = false;
+  //   this.oldPasswordError = '';
+  //   this.reloadProfile();
+  //   this.stepForm.clearValidators();
+  // }
+
+  cancelAction(event?: MouseEvent): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (this.isProcessingGoodbye) return;
+    
     this.currentState = ProfileState.Viewing;
     this.stepForm.reset();
     this.passwordGroup.disable();
     this.authenticating = false;
     this.oldPasswordError = '';
     this.reloadProfile();
-    // this.loadProfile();
     this.stepForm.clearValidators();
   }
 

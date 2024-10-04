@@ -69,6 +69,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -82,7 +83,10 @@ export class SignInComponent implements OnInit {
   navbar!: HTMLElement | null;
   menu!: HTMLElement | null;
   passwordVisible = false;
-
+  isLoadingGoogle = false;
+  isLoadingApple = false;
+  buttonText = 'Log In';
+  
   // Icons
   faEye = faEye;
   faEyeSlash = faEyeSlash;
@@ -90,7 +94,8 @@ export class SignInComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService, // Inject AuthService
-    private router: Router
+    private router: Router,
+    private oauthService: CustomOAuthService
   ) {}
 
   ngOnInit(): void {
@@ -126,22 +131,63 @@ export class SignInComponent implements OnInit {
       (error) => {
         console.log('Error: ', error);
         this.errorMessage = true;
+        this.buttonText = "Invalid Email or Password";
+        setTimeout(() => {
+          this.buttonText = 'Log In';
+          this.errorMessage = false;
+        }, 1800);
         this.router.navigateByUrl('/sign-in');
       }
     );
   }
 
+  onClickGoogle() {
+    this.isLoadingGoogle = true;
+    this.oauthService.initiateLogin();
+    
+    this.oauthService.authResult$.subscribe(
+      (user) => {
+        this.isLoadingGoogle = false;
+        if (user) {
+          this.router.navigate(['/content', user.userId]);
+        }
+      },
+      (error) => {
+        this.isLoadingGoogle = false;
+        console.error('Google login error:', error);
+        // Handle error (e.g., show error message)
+      }
+    );
+  }
+
   resetNavbarState(): void {
-    this.navbar?.classList.remove('black');
-    this.menu?.classList.remove('black');
-    const navBarTextElements = document.querySelectorAll('.navBarText');
-    navBarTextElements.forEach((element) => {
-      element.classList.remove('black');
-    });
+    this.navbar?.classList.remove('shadow');
+    this.menu?.classList.remove('shadow');
+    // const navBarTextElements = document.querySelectorAll('.navBarText');
+    // navBarTextElements.forEach((element) => {
+    //   element.classList.remove('black');
+    // });
   }
 
 
   togglePasswordVisibility() {
     this.passwordVisible = !this.passwordVisible;
+  }
+
+  // onClickGoogle() {
+  //   this.isLoadingGoogle = true;
+  //   this.isLoadingApple = false;
+
+  // }
+
+  onClickApple() {
+    this.isLoadingApple = true;
+    this.isLoadingGoogle = false;
+    // Simulating authentication process
+    // setTimeout(() => {
+    //   this.isLoading = false;
+    // }, 3000); 
+
+    // keep spinning until the user is authenticated, if user clicks google apple oauth is cancelled
   }
 }
