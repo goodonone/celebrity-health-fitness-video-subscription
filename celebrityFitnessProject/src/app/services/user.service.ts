@@ -565,6 +565,10 @@ logoutUser() {
   this.authService.authStateSubject.next(false);
 }
 
+checkUserExists(email: string): Observable<boolean> {
+  return this.http.get<boolean>(`${this.baseURL}/check-user-exists/${email}`);
+}
+
 checkEmail(email: string): Observable<{exists: boolean, message: string}> {
   return this.http.post<{exists: boolean, message: string}>(`${this.baseURL}/check-email`, { email });
 }

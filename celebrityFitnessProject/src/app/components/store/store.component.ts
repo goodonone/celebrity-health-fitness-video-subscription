@@ -136,6 +136,7 @@ export class StoreComponent implements OnInit {
   error: string | null = null;
   cartItems: CartItem[] = [];
   maxReachedForProducts: { [productId: string]: boolean } = {};
+  buttonTexts: { [productId: string]: string } = {};
   
   constructor(
     private productService: ProductService,
@@ -154,12 +155,13 @@ export class StoreComponent implements OnInit {
   ngOnInit(): void {
     this.cartService.getCartObservable().subscribe(cart => {
       this.cartItems = cart.CartProducts;
-
-      this.cartItems.forEach(item => {
-        if (item.quantity >= 10) {
-          this.maxReachedForProducts[item.productId] = true;
-        }
-      });
+      this.updateAllButtonTexts();
+      // this.cartItems.forEach(item => {
+      //   if (item.quantity >= 10) {
+      //     this.maxReachedForProducts[item.productId] = true;
+      //   }
+      //   this.buttonTexts[item.productId] = this.getButtonText(item.productId);
+      // });
     });
   }
 
@@ -170,38 +172,82 @@ export class StoreComponent implements OnInit {
   //   );
   // }
 
+  // addToCart(selectedProduct: Product) {
+  //   const cartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
+  //   if (cartItem && cartItem.quantity >= 10) {
+  //     // Max quantity reached, don't add to cart
+  //     this.maxReachedForProducts[selectedProduct.productId] = true;
+  //     return;
+  //   }
+
+  //   this.cartService.addToCart(selectedProduct).subscribe(
+  //     () => {
+  //       console.log('Product added to cart:', selectedProduct);
+  //       // Update the cart and check if max quantity is reached
+  //       this.cartService.getCartObservable().subscribe(cart => {
+  //         this.cartItems = cart.CartProducts;
+  //         const updatedCartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
+  //         if (updatedCartItem && updatedCartItem.quantity >= 10) {
+  //           this.maxReachedForProducts[selectedProduct.productId] = true; // Set max quantity reached
+  //         }
+  //       });
+  //     },
+  //     error => console.error('Error adding product to cart:', error)
+  //   );
+  // }
+
+  // getButtonText(product: Product): string {
+  //   return this.maxReachedForProducts[product.productId] ? 'Limit Reached' : '+Cart';
+  // }
+
   addToCart(selectedProduct: Product) {
     const cartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
     if (cartItem && cartItem.quantity >= 10) {
-      // Max quantity reached, don't add to cart
-      this.maxReachedForProducts[selectedProduct.productId] = true;
-      return;
+      return; // Max quantity reached, don't add to cart
     }
 
     this.cartService.addToCart(selectedProduct).subscribe(
       () => {
         console.log('Product added to cart:', selectedProduct);
-        // Update the cart and check if max quantity is reached
         this.cartService.getCartObservable().subscribe(cart => {
           this.cartItems = cart.CartProducts;
-          const updatedCartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
-          if (updatedCartItem && updatedCartItem.quantity >= 10) {
-            this.maxReachedForProducts[selectedProduct.productId] = true; // Set max quantity reached
-          }
+          this.updateAllButtonTexts();
+          this.showQuantityTemporarily(selectedProduct.productId);
         });
       },
       error => console.error('Error adding product to cart:', error)
     );
   }
 
-  getButtonText(product: Product): string {
-    return this.maxReachedForProducts[product.productId] ? 'Limit Reached' : '+Cart';
+  updateAllButtonTexts() {
+    this.cartItems.forEach(item => {
+      if (item.quantity >= 10) {
+        this.maxReachedForProducts[item.productId] = true;
+        this.buttonTexts[item.productId] = 'Limit Reached';
+      } else {
+        this.maxReachedForProducts[item.productId] = false;
+        this.buttonTexts[item.productId] = '+Cart';
+      }
+    });
   }
-  // 10 Items Max
 
-  // isMaxQuantityReached(product: Product): boolean {
-  //   const cartItem = this.cartItems.find(item => item.productId === product.productId);
-  //   return cartItem ? cartItem.quantity >= 10 : false;
-  // }
+  showQuantityTemporarily(productId: string) {
+    const cartItem = this.cartItems.find(item => item.productId === productId);
+    if (cartItem && !this.maxReachedForProducts[productId]) {
+      const originalText = this.buttonTexts[productId];
+      this.buttonTexts[productId] = `+${cartItem.quantity}`;
+      setTimeout(() => {
+        if (!this.maxReachedForProducts[productId]) {
+          this.buttonTexts[productId] = originalText;
+        }
+      }, 200);
+    }
+  }
+
+  getButtonText(product: Product): string {
+    return this.buttonTexts[product.productId] || '+Cart';
+  }
+
+
 }
 

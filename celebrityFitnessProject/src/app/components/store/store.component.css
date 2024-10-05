@@ -146,12 +146,12 @@ mat-card.products {
     /* text-transform: uppercase; */
 }
 
-.buttonView {
+.buttonView, .buttonAdd {
     border-radius: 0;
 }
 
-.buttonAdd {
-    border-radius: 0;
+.buttonAdd:disabled {
+    color: black;
 }
 
 .buttonView:hover,

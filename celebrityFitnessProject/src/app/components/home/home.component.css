@@ -156,8 +156,8 @@
 .card {
   height: auto;
   max-height: 650px;
-  aspect-ratio: 5/7;
-  width: 35vw;
+  aspect-ratio: 4.5/7;
+  width: 30vw;
   max-width: 500px;
   background-image: url("/assets/Images/joseph-gonzalez-fdlZBWIP0aM-unsplash.jpg");
   background-size: cover;
@@ -223,8 +223,8 @@
   border-radius: 8px; */
   height: auto;
   max-height: 650px;
-  aspect-ratio: 5/7;
-  width: 35vw;
+  aspect-ratio: 4.5/7;
+  width: 30vw;
   max-width: 500px;
   overflow: hidden;
   border-radius: 1rem;

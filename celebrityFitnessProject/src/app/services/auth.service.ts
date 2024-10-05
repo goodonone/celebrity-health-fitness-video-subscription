@@ -386,9 +386,9 @@ export class AuthService {
     return null;
   }
 
-  clearAuthState(): void {
-    localStorage.removeItem("token");
-    localStorage.removeItem("googleAuthToken");
-    this.authStateSubject.next(false);
-  }
+  // clearAuthState(): void {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("googleAuthToken");
+  //   this.authStateSubject.next(false);
+  // }
 }

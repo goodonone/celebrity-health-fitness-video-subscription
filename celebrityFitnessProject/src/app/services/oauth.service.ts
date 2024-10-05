@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-import { BehaviorSubject, catchError, from, Observable, Subject, tap } from 'rxjs';
+import { BehaviorSubject, catchError, from, Observable, of, Subject, switchMap, tap, throwError } from 'rxjs';
 import { StateManagementService } from './statemanagement.service';
 import { FormService } from '../shared/Multi-Step-Form/form/form.service';
+import { UserService } from './user.service';
 // import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 // import { AuthFormService } from './authform.service';
 
@@ -26,18 +27,25 @@ import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 export class CustomOAuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-  private popupClosedSubject = new Subject<void>();
-  popupClosed$ = this.popupClosedSubject.asObservable();
+  // private popupClosedSubject = new Subject<void>();
+  // popupClosed$ = this.popupClosedSubject.asObservable();
   private authResultSubject = new Subject<any>();
   // authResult$ = this.authResultSubject.asObservable();
   private popupRef: Window | null = null;
   authResult$ = new Subject<any>();
+
+  private authErrorSubject = new Subject<string>();
+  authError$ = this.authErrorSubject.asObservable();
+
+  private popupClosedSubject = new Subject<void>();
+  popupClosed$ = this.popupClosedSubject.asObservable();
   
-  constructor( private http: HttpClient, private router: Router, private stateManagementService: StateManagementService, private formService: FormService, private zone: NgZone) {
+  constructor( private http: HttpClient, private router: Router, private stateManagementService: StateManagementService, private formService: FormService, private zone: NgZone, private userService: UserService) {
     // this.configureOAuth();
     // this.checkAuthStatus();
     // window.addEventListener('message', this.handleAuthMessage.bind(this));
-    
+
+    window.addEventListener('message', this.handleMessage.bind(this), false);
     window.addEventListener('message', this.handleAuthMessage.bind(this), false);
   }
 
@@ -76,47 +84,268 @@ export class CustomOAuthService {
   //   }
   // }
 
-  initiateLogin(isSignUp: boolean = false) {
-    // const authUrl = 'http://localhost:3000/api/auth/google';
-    const authUrl = `http://localhost:3000/api/auth/google${isSignUp ? '?signup=true' : ''}`;
+  // initiateLogin(isSignUp: boolean = false) {
+  //   const authUrl = `http://localhost:3000/api/auth/google${isSignUp ? '?signup=true' : '?signup=false'}`;
 
-    // Open the popup window
-    const popup = window.open(authUrl, 'google_oauth_popup', 'width=500,height=600');
+  //   // Open the popup window
+  //   // const popup = window.open(authUrl, 'google_oauth_popup', 'width=500,height=600');
+  //   const width = 500;
+  //   const height = 600;
+  //   const left = (window.screen.width / 2) - (width / 2);
+  //   const top = (window.screen.height / 2) - (height / 2);
 
-    if (popup) {
-      // Listen for messages from the popup
-      window.addEventListener('message', this.handleMessage.bind(this), false);
-    } else {
-      console.error('Failed to open popup window');
-    }
+  //   const popup = window.open(
+  //     authUrl,
+  //     'google_oauth_popup',
+  //     `width=${width},height=${height},left=${left},top=${top}`
+  //   );
+
+  //   if (popup) {
+  //     // Listen for messages from the popup
+  //     window.addEventListener('message', this.handleMessage.bind(this), false);
+  //   } else {
+  //     console.error('Failed to open popup window');
+  //   }
+  // }
+
+//   initiateLogin(isSignUp: boolean = false) {
+//     const state = isSignUp ? 'signup' : 'login';
+//     const authUrl = `http://localhost:3000/api/auth/google?state=${state}`;
+  
+//     const width = 500;
+//     const height = 550;
+//     const left = (window.screen.width / 2) - (width / 2);
+//     const top = (window.screen.height / 2) - (height / 2);
+  
+//     const popup = window.open(
+//       authUrl,
+//       'google_oauth_popup',
+//       `width=${width},height=${height},left=${left},top=${top}`
+//     );
+  
+//   //   if (popup) {
+//   //     window.addEventListener('message', (event) => this.handleMessage(event, isSignUp), false);
+//   //   } else {
+//   //     console.error('Failed to open popup window');
+//   //   }
+//   // }
+
+//   if (popup) {
+//     const popupClosedCheck = setInterval(() => {
+//       if (popup.closed) {
+//         clearInterval(popupClosedCheck);
+//         this.zone.run(() => {
+//           this.popupClosedSubject.next();
+//         });
+//       }
+//       console.log('Popup closed:', popup.closed);
+//     }, 1000);
+
+//   if (popup) {
+//     popup.addEventListener('message', (event) => {
+//       if (event.origin !== 'http://localhost:3000') return;
+
+//       const data = event.data;
+//       if (data.type === 'GOOGLE_AUTH_SUCCESS') {
+//         const email = data.payload.user.email;
+        
+//         this.userService.checkUserExists(email).pipe(
+//           switchMap(exists => {
+//             if (isSignUp && exists) {
+//               return throwError('User already exists. Please log in instead.');
+//             } else if (!isSignUp && !exists) {
+//               return throwError('User does not exist. Please sign up first.');
+//             }
+//             return [data.payload];
+//           })
+//         ).subscribe(
+//           payload => {
+//             // Handle successful auth
+//             localStorage.setItem('authToken', payload.token);
+//             localStorage.setItem('user', JSON.stringify(payload.user));
+//             this.authResult$.next(payload.user);
+//           },
+//           error => {
+//             console.error('Authentication error:', error);
+//             this.authResult$.error(error);
+//           }
+//         );
+//       } else if (data.type === 'GOOGLE_AUTH_ERROR') {
+//         this.authResult$.error(data.error);
+//       }
+//     });
+//   } else {
+//     console.error('Failed to open popup window');
+//   }
+// }
+// }
+
+initiateLogin(isSignUp: boolean = false) {
+  const state = isSignUp ? 'signup' : 'login';
+  const authUrl = `http://localhost:3000/api/auth/google?state=${state}`;
+
+  const width = 500;
+  const height = 550;
+  const left = (window.screen.width / 2) - (width / 2);
+  const top = (window.screen.height / 2) - (height / 2);
+
+  const popup = window.open(
+    authUrl,
+    'google_oauth_popup',
+    `width=${width},height=${height},left=${left},top=${top}`
+  );
+
+  if (popup) {
+    let authFinished = false;
+    const timeoutDuration = 60000; // 1 minute timeout
+
+    const authTimeout = setTimeout(() => {
+      if (!authFinished) {
+        this.zone.run(() => {
+          this.popupClosedSubject.next();
+        });
+      }
+    }, timeoutDuration);
+
+    window.addEventListener('focus', () => {
+      if (!authFinished) {
+        // Check if the popup is closed when the main window regains focus
+        setTimeout(() => {
+          try {
+            if (!popup || popup.closed) {
+              authFinished = true;
+              clearTimeout(authTimeout);
+              this.zone.run(() => {
+                this.popupClosedSubject.next();
+              });
+            }
+          } catch (e) {
+            // If we can't access popup.closed, assume it's closed
+            authFinished = true;
+            clearTimeout(authTimeout);
+            this.zone.run(() => {
+              this.popupClosedSubject.next();
+            });
+          }
+        }, 300);
+      }
+    });
+
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'http://localhost:3000') return;
+
+      const data = event.data;
+      this.zone.run(() => {
+        authFinished = true;
+        clearTimeout(authTimeout);
+
+        if (data.type === 'GOOGLE_AUTH_SUCCESS') {
+          const email = data.payload.user.email;
+          
+          this.userService.checkUserExists(email).pipe(
+            switchMap(exists => {
+              if (isSignUp && exists) {
+                return throwError('User already exists. Please log in instead.');
+              } else if (!isSignUp && !exists) {
+                return throwError('User does not exist. Please sign up first.');
+              }
+              return of(data.payload);
+            })
+          ).subscribe(
+            payload => {
+              localStorage.setItem('authToken', payload.token);
+              localStorage.setItem('user', JSON.stringify(payload.user));
+              this.authResult$.next(payload.user);
+            },
+            error => {
+              console.error('Authentication error:', error);
+              this.authErrorSubject.next(error);
+            }
+          );
+        } else if (data.type === 'GOOGLE_AUTH_ERROR') {
+          this.authErrorSubject.next(data.error);
+        }
+      });
+    });
+  } else {
+    console.error('Failed to open popup window');
+    this.authErrorSubject.next('Failed to open authentication window');
   }
+}
   
 
-  private handleMessage(event: MessageEvent) {
-    if (event.origin !== 'http://localhost:3000') {
-      console.warn('Received message from unexpected origin:', event.origin);
-      return;
-    }
+  // private handleMessage(event: MessageEvent) {
+  //   if (event.origin !== 'http://localhost:3000') {
+  //     console.warn('Received message from unexpected origin:', event.origin);
+  //     return;
+  //   }
+
+  //   const data = event.data;
+  //   if (data.type === 'GOOGLE_AUTH_SUCCESS') {
+  //     this.zone.run(() => {
+  //       // Store the token and user data as needed
+  //       const token = data.payload.token;
+  //       const user = data.payload.user;
+  //       localStorage.setItem('authToken', token);
+  //       localStorage.setItem('user', JSON.stringify(user));
+
+  //       // Emit the user data to subscribers
+  //       this.authResult$.next(user);
+  //     });
+  //   } else if (data.type === 'GOOGLE_AUTH_ERROR') {
+  //     this.zone.run(() => {
+  //       console.error('Authentication failed:', data.error);
+  //       this.authResult$.error(data.error);
+  //     });
+  //   }
+  // }
+
+  
+  //  getAuthComplete(): Observable<boolean> {
+  //   return this.authComplete$.asObservable();
+  // }
+
+  // private handleMessage(event: MessageEvent, isSignUp: boolean) {
+  //   if (event.origin !== 'http://localhost:3000') {
+  //     console.warn('Received message from unexpected origin:', event.origin);
+  //     return;
+  //   }
+  
+  //   const data = event.data;
+  //   if (data.type === 'GOOGLE_AUTH_SUCCESS') {
+  //     this.zone.run(() => {
+  //       const token = data.payload.token;
+  //       const user = data.payload.user;
+  //       localStorage.setItem('authToken', token);
+  //       localStorage.setItem('user', JSON.stringify(user));
+  //       this.authResult$.next({ user, isSignUp });
+  //     });
+  //   } else if (data.type === 'GOOGLE_AUTH_ERROR') {
+  //     this.zone.run(() => {
+  //       console.error('Authentication failed:', data.error);
+  //       this.authResult$.error({ error: data.error, isSignUp });
+  //     });
+  //   }
+  // }
+
+  private handleMessage(event: MessageEvent): void {
+    if (event.origin !== 'http://localhost:3000') return;
 
     const data = event.data;
-    if (data.type === 'GOOGLE_AUTH_SUCCESS') {
-      this.zone.run(() => {
-        // Store the token and user data as needed
+    this.zone.run(() => {
+      if (data.type === 'GOOGLE_AUTH_SUCCESS') {
         const token = data.payload.token;
         const user = data.payload.user;
         localStorage.setItem('authToken', token);
         localStorage.setItem('user', JSON.stringify(user));
-
-        // Emit the user data to subscribers
-        this.authResult$.next(user);
-      });
-    } else if (data.type === 'GOOGLE_AUTH_ERROR') {
-      this.zone.run(() => {
+        this.authResultSubject.next(user);
+      } else if (data.type === 'GOOGLE_AUTH_ERROR') {
         console.error('Authentication failed:', data.error);
-        this.authResult$.error(data.error);
-      });
-    }
+        this.authErrorSubject.next(data.error);
+      }
+    });
   }
+
 
   public checkForStoredAuthResult(): void {
     const storedResult = localStorage.getItem('oauthResult');
@@ -162,9 +391,9 @@ export class CustomOAuthService {
 
   private handleAuthMessage(event: MessageEvent): void {
     // Ignore Angular DevTools messages
-    if (event.data.source && event.data.source.startsWith('angular-devtools')) {
-      return;
-    }
+    // if (event.data.source && event.data.source.startsWith('angular-devtools')) {
+    //   return;
+    // }
   
     console.log('Received message:', event.data, 'from origin:', event.origin);
     
@@ -193,28 +422,28 @@ export class CustomOAuthService {
   //   // this.popupClosedSubject.next();
   // }
 
-  private handlePopupClosed(): void {
-    // console.log('Authentication popup closed');
-    // Check localStorage for OAuth result
-    const oauthResult = localStorage.getItem('oauthResult');
-    if (oauthResult) {
-      const parsedResult = JSON.parse(oauthResult);
-      if (parsedResult.type === 'GOOGLE_AUTH_SUCCESS') {
-        this.handleSuccessfulAuth(parsedResult.payload);
-      } else if (parsedResult.type === 'GOOGLE_AUTH_ERROR') {
-        this.handleLoginError(parsedResult.error);
-      }
-      localStorage.removeItem('oauthResult');
-    }
-  }
+  // private handlePopupClosed(): void {
+  //   // console.log('Authentication popup closed');
+  //   // Check localStorage for OAuth result
+  //   const oauthResult = localStorage.getItem('oauthResult');
+  //   if (oauthResult) {
+  //     const parsedResult = JSON.parse(oauthResult);
+  //     if (parsedResult.type === 'GOOGLE_AUTH_SUCCESS') {
+  //       this.handleSuccessfulAuth(parsedResult.payload);
+  //     } else if (parsedResult.type === 'GOOGLE_AUTH_ERROR') {
+  //       this.handleLoginError(parsedResult.error);
+  //     }
+  //     localStorage.removeItem('oauthResult');
+  //   }
+  // }
 
-  private handleRedirect(): void {
-    // Save current state if needed
-    localStorage.setItem('preAuthPath', window.location.pathname);
+  // private handleRedirect(): void {
+  //   // Save current state if needed
+  //   localStorage.setItem('preAuthPath', window.location.pathname);
     
-    // Redirect to the OAuth URL
-    window.location.href = 'http://localhost:3000/api/auth/google';
-  }
+  //   // Redirect to the OAuth URL
+  //   window.location.href = 'http://localhost:3000/api/auth/google';
+  // }
 
   private handleAuthError(error: string): void {
     console.error('Authentication error:', error);
@@ -287,6 +516,7 @@ export class CustomOAuthService {
           : user.imgUrl
       };
       localStorage.setItem('user', JSON.stringify(updatedUser));
+      // this.authResultSubject.next(user);
     } else {
       // If no existing user, store the new user data as is
       localStorage.setItem('user', JSON.stringify(user));
@@ -304,11 +534,11 @@ export class CustomOAuthService {
     }
   }
 
-  private checkAuthStatus() {
-    const token = localStorage.getItem('token');
-    this.stateManagementService.setAuthenticationStatus(!!token);
-    this.isAuthenticatedSubject.next(!!token);
-  }
+  // private checkAuthStatus() {
+  //   const token = localStorage.getItem('token');
+  //   this.stateManagementService.setAuthenticationStatus(!!token);
+  //   this.isAuthenticatedSubject.next(!!token);
+  // }
 
   getUser(): Observable<any> {
     return this.http.get('http://localhost:3000/api/user').pipe(

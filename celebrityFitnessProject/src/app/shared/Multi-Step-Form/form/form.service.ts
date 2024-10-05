@@ -560,7 +560,7 @@ public getTierAndBilling(user?: User): { tier: string, billing: string } {
       }
       this.multiStepForm.reset();
       this.activeStepSubject.next(1);
-    }, 4000);
+    }, 3000);
   }
 
   // private clearGoogleAuthState() {

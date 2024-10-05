@@ -28,20 +28,18 @@ export class ProgressionButtonsComponent implements OnInit {
 
 
   constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService, private cdr: ChangeDetectorRef) {
-    this.cdr.detectChanges = (...args) => {
-      console.log('Change detection run in ProgressionButtonsComponent');
-      Object.getPrototypeOf(this.cdr).detectChanges.apply(this.cdr, args);
+    // this.cdr.detectChanges = (...args) => {
+    //   console.log('Change detection run in ProgressionButtonsComponent');
+    //   Object.getPrototypeOf(this.cdr).detectChanges.apply(this.cdr, args);
     };
-   }
+   
 
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
-    this.formService.activeStep$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(
+    this.formService.activeStep$.subscribe(
       step => {
-        console.log('Form state:', JSON.stringify(this.stepForm.value, null, 2));
-        console.log('ProgressionButtonsComponent received new step:', step);
+        // console.log('Form state:', JSON.stringify(this.stepForm.value, null, 2));
+        // console.log('ProgressionButtonsComponent received new step:', step);
         this.activeStep$ = step;
         this.planCost = this.stepForm.controls['planDetails'].value.planCost;
         // this.cdr.detectChanges();
@@ -89,59 +87,59 @@ export class ProgressionButtonsComponent implements OnInit {
   // }
 
 
-  // canProceed(): boolean {
-  //   const personalDetails = this.stepForm.get('personalDetails');
-  //   const planDetails = this.stepForm.get('planDetails');
-  //   const paymentDetails = this.stepForm.get('paymentDetails');
-  
-  //   // For logged-in users upgrading their plan
-  //   if (this.loggedIn) {
-  //     if (this.activeStep$ === 1) {
-  //       return planDetails?.valid ?? true;
-  //     }
-  //     if (this.activeStep$ === 2) {
-  //       return true; // Summary step, always valid
-  //     }
-  //     if (this.activeStep$ === 3 && this.payment) {
-  //       return paymentDetails?.valid ?? true;
-  //     }
-  //   }
-  
-  //   // For checkout process
-  //   if (this.checkout) {
-  //     if (this.activeStep$ === 1) {
-  //       return true; // Summary step, always valid
-  //     }
-  //     if (this.activeStep$ === 2) {
-  //       return paymentDetails?.valid ?? true;
-  //     }
-  //   }
-  
-  //   // For new users signing up
-  //   if (!this.loggedIn && !this.checkout) {
-  //     if (this.activeStep$ === 1) {
-  //       return personalDetails?.valid || personalDetails?.get('isGoogleAuth')?.value === true || true;
-  //     }
-  //     if (this.activeStep$ === 2) {
-  //       return planDetails?.valid ?? true;
-  //     }
-  //     if (this.activeStep$ === 3) {
-  //       return true; // Summary step, always valid
-  //     }
-  //     if (this.activeStep$ === 4) {
-  //       return paymentDetails?.valid ?? true;
-  //     }
-  //   }
-  
-  //   // Default to true for any unhandled cases
-  //   return true;
-  // }
-
-
   canProceed(): boolean {
-    console.log('canProceed called');
-    return true; // Temporarily always return true for testing
+    const personalDetails = this.stepForm.get('personalDetails');
+    const planDetails = this.stepForm.get('planDetails');
+    const paymentDetails = this.stepForm.get('paymentDetails');
+  
+    // For logged-in users upgrading their plan
+    if (this.loggedIn) {
+      if (this.activeStep$ === 1) {
+        return planDetails?.valid ?? true;
+      }
+      if (this.activeStep$ === 2) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 3 && this.payment) {
+        return paymentDetails?.valid ?? true;
+      }
+    }
+  
+    // For checkout process
+    else if (this.checkout) {
+      if (this.activeStep$ === 1) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 2) {
+        return paymentDetails?.valid ?? true;
+      }
+    }
+  
+    // For new users signing up
+    else if (!this.loggedIn && !this.checkout) {
+      if (this.activeStep$ === 1) {
+        return personalDetails?.valid || personalDetails?.get('isGoogleAuth')?.value === true || true;
+      }
+      if (this.activeStep$ === 2) {
+        return planDetails?.valid ?? true;
+      }
+      if (this.activeStep$ === 3) {
+        return true; // Summary step, always valid
+      }
+      if (this.activeStep$ === 4) {
+        return paymentDetails?.valid ?? true;
+      }
+    }
+  
+    // Default to true for any unhandled cases
+    return true;
   }
+
+
+  // canProceed(): boolean {
+  //   console.log('canProceed called');
+  //   return true; // Temporarily always return true for testing
+  // }
 
   // nextStep() {
   //   if (!this.loggedIn) {
@@ -269,7 +267,7 @@ export class ProgressionButtonsComponent implements OnInit {
     if (this.loggedIn) {
       return this.payment ? 3 : 2;
     }
-    if (this.checkout) {
+    else if (this.checkout) {
       return 2;
     }
     return this.planCost > 0 ? 5 : 4;

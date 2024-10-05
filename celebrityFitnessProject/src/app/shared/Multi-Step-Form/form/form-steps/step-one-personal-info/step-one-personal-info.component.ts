@@ -32,8 +32,9 @@ export class StepOnePersonalInfoComponent implements OnInit {
   private loginTimeout: any;
   isGoogleAuthEnabled: boolean = false;
 
-  private popupClosedSubscription!: Subscription;
+  // private popupClosedSubscription!: Subscription;
 
+  private subscriptions: Subscription = new Subscription();
 
   private destroy$ = new Subject<void>();
 
@@ -127,6 +128,42 @@ export class StepOnePersonalInfoComponent implements OnInit {
       }
     );
 
+    // handle loading spinner and error messages
+    this.authSubscription.add(
+      this.oauthService.authError$.subscribe(error => {
+        this.zone.run(() => {
+          this.isLoadingGoogle = false;
+          // console.error('Authentication error:', error);
+          // Handle error (e.g., show error message to user)
+          this.cdr.detectChanges();
+        });
+      })
+    );
+
+    // handle closing the popup
+    this.subscriptions.add(
+      this.oauthService.popupClosed$.subscribe(() => {
+        this.zone.run(() => {
+          if (this.isLoadingGoogle) {
+            this.isLoadingGoogle = false;
+            console.log('OAuth popup closed without completing authentication');
+            // Optionally, show a message to the user
+            this.cdr.detectChanges();
+          }
+        });
+      })
+    );
+
+    // this.subscriptions.add(
+    //   this.oauthService.popupClosed$.subscribe(() => {
+    //     if (this.isLoadingGoogle) {
+    //       this.isLoadingGoogle = false;
+    //       // Handle popup closed without completing authentication
+    //     }
+    //   })
+    // );
+  
+
     this.authStateService.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
         this.handleSuccessfulLogin();
@@ -134,13 +171,13 @@ export class StepOnePersonalInfoComponent implements OnInit {
     });
 
     // Check if user data exists in localStorage
-    this.authSubscription = this.oauthService.authResult$.subscribe(
-      user => {
-        if (user) {
-          // console.log('Received user data:', user);
-          this.populateFormWithUserData(user);
-        }
-      });
+    // this.authSubscription = this.oauthService.authResult$.subscribe(
+    //   user => {
+    //     if (user) {
+    //       // console.log('Received user data:', user);
+    //       this.populateFormWithUserData(user);
+    //     }
+    //   });
   
     
      // Check if user data exists in localStorage
@@ -174,6 +211,11 @@ export class StepOnePersonalInfoComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(() => this.checkPasswords());
 
+
+    // this.oauthService.getAuthComplete().subscribe(() => {
+    //   this.isLoadingGoogle = false;
+    // });
+
   }
 
   ngOnDestroy(): void {
@@ -185,9 +227,9 @@ export class StepOnePersonalInfoComponent implements OnInit {
     }
     // window.removeEventListener('message', this.handleAuthMessage.bind(this), false);
     
-    if (this.popupClosedSubscription) {
-      this.popupClosedSubscription.unsubscribe();
-    }
+    // if (this.popupClosedSubscription) {
+    //   this.popupClosedSubscription.unsubscribe();
+    // }
   
   }
 
@@ -324,19 +366,8 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
 
   onClickGoogle(): void {
-    // console.log('StepOnePersonalInfoComponent: Google login button clicked');
     this.isLoadingGoogle = true;
     this.oauthService.initiateLogin(true);
-    // this.oauthService.initiateLogin();
-    // // Set up a check for the auth result
-    // const checkAuthResult = setInterval(() => {
-    //   const storedResult = localStorage.getItem('oauthResult');
-    //   if (storedResult) {
-    //     clearInterval(checkAuthResult);
-    //     this.oauthService['checkForStoredAuthResult'](); // Access private method
-    //     this.isLoadingGoogle = false;
-    //   }
-    // }, 1000);
   }
 
 
