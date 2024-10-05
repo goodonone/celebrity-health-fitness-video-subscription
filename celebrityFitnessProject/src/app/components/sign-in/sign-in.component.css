@@ -424,7 +424,7 @@ input[matInput]:focus {
 }
 
 input[matInput]:focus::placeholder {
-  color: #000000 !important; /* Change the placeholder color when focused */
+  color: #000000 !important; 
 }
 
 

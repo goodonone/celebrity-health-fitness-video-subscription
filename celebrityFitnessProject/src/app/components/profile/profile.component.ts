@@ -337,9 +337,13 @@ export class ProfileComponent implements OnInit {
 
 
     this.userService.getUser(this.userId).subscribe(
-      (user) => {
+      (user: any) => {
         // const previousTier = this.currentUser?.tier;
-        this.currentUser = user;
+        this.currentUser = {
+          ...user,
+          paymentFrequency: user.billing
+        };
+        console.log('User loaded:', user);
         
         // this.updateTierFlags();
 

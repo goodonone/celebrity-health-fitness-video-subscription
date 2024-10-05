@@ -1,5 +1,6 @@
 * {
     font-family: 'Outfit', sans-serif;
+    user-select: none;
 }
 
 a {
@@ -122,7 +123,7 @@ mat-card.products {
     width: 23rem;
     /* margin-top: -2rem; */
     /* margin-left: -0.7rem; */
-    background-color: transparent !important;
+    background-color: white;
     border-radius: 0 0 8px 8px;
     max-width: 23rem;
     overflow: hidden;

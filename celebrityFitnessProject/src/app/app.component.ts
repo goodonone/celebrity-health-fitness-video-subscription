@@ -80,8 +80,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     // this.oauthService.handleRedirectResult();
-    this.oauthService.checkForRedirectResult();
-    this.oauthService.checkForStoredAuthResult();
+    // this.oauthService.checkForRedirectResult();
+    // this.oauthService.checkForStoredAuthResult();
     // this.loadUserId();
     // this.UpdateStatus();
 

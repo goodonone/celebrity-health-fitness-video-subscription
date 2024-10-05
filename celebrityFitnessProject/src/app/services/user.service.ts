@@ -554,7 +554,7 @@ logoutUser() {
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
   // localStorage.removeItem("cart");
-  localStorage.removeItem("hasVisitedHomeBefore");
+  // localStorage.removeItem("hasVisitedHomeBefore");
   localStorage.removeItem("hasVisitedProfileBefore");
   localStorage.removeItem("isUserLoggedIn");
   this.updateLoginStatus(false);

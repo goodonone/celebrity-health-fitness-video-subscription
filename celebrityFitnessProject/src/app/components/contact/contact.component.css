@@ -24,6 +24,7 @@ h1.contactUs {
   padding-top: 8rem;
   /* padding-bottom: 1rem; */
   font-weight: 600;
+  user-select: none;
 }
 
 h1.findUs {
@@ -35,6 +36,7 @@ h1.findUs {
   padding-top: 2rem;
   padding-bottom: 4rem;
   font-weight: 600;
+  user-select: none;
 }
 
 .contactForm {
@@ -43,6 +45,7 @@ h1.findUs {
   height: 35rem;
   margin: 4rem auto 7rem auto;
   border-radius: 1rem;
+  user-select: none;
 }
 
 .mapSocialContainer {
@@ -185,6 +188,7 @@ iframe {
   padding-left: 1rem;
   font-size: 3rem;
   font-weight: 500;
+  user-select: none;
 }
 
 .mapSocialFlex {
@@ -205,6 +209,7 @@ iframe {
 
 .socialBusinessHeadingTwo {
   padding-top: 2rem;
+  user-select: none;
 }
 
 a {
@@ -221,11 +226,34 @@ a {
 
 .socialMedia {
   padding-right: 2rem;
+  user-select: none;
 }
 
 iframe {
   width: 600px;
   height: 450px;
+}
+
+input[matInput]:focus {
+  border-color: #000000 !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #000000 !important; /* Change the text color when focused */
+}
+
+input[matInput]:focus::placeholder {
+  color: #000000 !important; 
+}
+
+textarea:focus {
+  border-color: #000000 !important; 
+  outline: none; 
+  box-shadow: 0 0 0 1px #000000 !important; 
+  color: #000000 !important; 
+}
+
+textarea:focus::placeholder {
+  color: #000000 !important; 
 }
 
 @media screen and (min-width: 500px) and (max-width: 1135px) {

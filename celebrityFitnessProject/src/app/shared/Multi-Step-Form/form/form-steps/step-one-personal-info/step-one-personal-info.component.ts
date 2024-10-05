@@ -189,7 +189,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
       // console.log('StepOnePersonalInfoComponent: No user data found in localStorage');
     }
 
-    this.oauthService.checkForStoredAuthResult();
+    // this.oauthService.checkForStoredAuthResult();
 
     // const oauthResult = localStorage.getItem('oauthResult');
     // if (oauthResult) {
