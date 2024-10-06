@@ -203,6 +203,8 @@ export class StoreComponent implements OnInit {
   addToCart(selectedProduct: Product) {
     const cartItem = this.cartItems.find(item => item.productId === selectedProduct.productId);
     if (cartItem && cartItem.quantity >= 10) {
+      this.buttonTexts[selectedProduct.productId] = 'Limit Reached';
+      this.maxReachedForProducts[selectedProduct.productId] = true;
       return; // Max quantity reached, don't add to cart
     }
 
@@ -219,35 +221,96 @@ export class StoreComponent implements OnInit {
     );
   }
 
+  // updateAllButtonTexts() {
+  //   this.cartItems.forEach(item => {
+  //     if (item.quantity >= 10) {
+  //       this.maxReachedForProducts[item.productId] = true;
+  //       this.buttonTexts[item.productId] = 'Limit Reached';
+  //     } else {
+  //       this.maxReachedForProducts[item.productId] = false;
+  //       this.buttonTexts[item.productId] = '+Cart';
+  //     }
+  //   });
+  // }
+
   updateAllButtonTexts() {
     this.cartItems.forEach(item => {
       if (item.quantity >= 10) {
         this.maxReachedForProducts[item.productId] = true;
-        this.buttonTexts[item.productId] = 'Limit Reached';
       } else {
         this.maxReachedForProducts[item.productId] = false;
-        this.buttonTexts[item.productId] = '+Cart';
       }
+      this.buttonTexts[item.productId] = '+Cart';
     });
   }
 
+  // updateAllButtonTexts() {
+  //   this.cartItems.forEach(item => {
+  //     if (item.quantity >= 10) {
+  //       this.maxReachedForProducts[item.productId] = true;
+  //       this.buttonTexts[item.productId] = 'Limit Reached';
+  //     } else {
+  //       this.maxReachedForProducts[item.productId] = false;
+  //       this.buttonTexts[item.productId] = '+Cart';
+  //     }
+  //   });
+  // }
+
+  // showQuantityTemporarily(productId: string) {
+  //   const cartItem = this.cartItems.find(item => item.productId === productId);
+  //   if (cartItem && !this.maxReachedForProducts[productId]) {
+  //     const originalText = this.buttonTexts[productId];
+  //     this.buttonTexts[productId] = `+${cartItem.quantity}`;
+  //     setTimeout(() => {
+  //       if (!this.maxReachedForProducts[productId]) {
+  //         this.buttonTexts[productId] = originalText;
+  //       }
+  //       // this.buttonTexts[cartItem.productId] = 'Limit Reached';
+  //     }, 200);
+  //   }
+  // }
+
   showQuantityTemporarily(productId: string) {
     const cartItem = this.cartItems.find(item => item.productId === productId);
-    if (cartItem && !this.maxReachedForProducts[productId]) {
-      const originalText = this.buttonTexts[productId];
-      this.buttonTexts[productId] = `+${cartItem.quantity}`;
-      setTimeout(() => {
-        if (!this.maxReachedForProducts[productId]) {
-          this.buttonTexts[productId] = originalText;
-        }
-      }, 200);
+    if (cartItem) {
+      if (cartItem.quantity >= 10) {
+        this.buttonTexts[productId] = 'Limit Reached';
+        this.maxReachedForProducts[productId] = true;
+      } else {
+        const originalText = this.buttonTexts[productId];
+        this.buttonTexts[productId] = `+${cartItem.quantity}`;
+        setTimeout(() => {
+          if (!this.maxReachedForProducts[productId]) {
+            this.buttonTexts[productId] = originalText;
+          }
+        }, 200);
+      }
     }
   }
+
+  // getButtonText(product: Product): string {
+  //   return this.buttonTexts[product.productId] || '+Cart';
+  // }
 
   getButtonText(product: Product): string {
     return this.buttonTexts[product.productId] || '+Cart';
   }
 
+  isLimitReached(product: Product): boolean {
+    return this.maxReachedForProducts[product.productId] || false;
+  }
+
+  onMouseEnter(product: Product): void {
+    if (this.isLimitReached(product)) {
+      this.buttonTexts[product.productId] = 'Limit Reached';
+    }
+  }
+
+  onMouseLeave(product: Product): void {
+    // if (this.isLimitReached(product)) {
+      this.buttonTexts[product.productId] = '+Cart';
+    // }
+  }
 
 }
 
