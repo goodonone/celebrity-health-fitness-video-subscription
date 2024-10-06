@@ -106,7 +106,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.cartSubscription =this.cartService.getCartObservable().subscribe((newCart) => {
+    this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
       // console.log('Cart received in navbar:', newCart); 
       this.cartQuantity = newCart.totalCount || 0;
       });
@@ -146,9 +146,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   
       this.UpdateStatus();
 
-      this.userService.isLoggedIn$.subscribe(status => {
-        this.userIsLoggedIn = status;
-      });
+      // this.userService.isLoggedIn$.subscribe(status => {
+      //   this.userIsLoggedIn = status;
+      // });
 
       // Check if the user has visited the page before to serve animations or not
       const hasVisited = localStorage.getItem('hasVisitedHomeBefore');

@@ -268,7 +268,7 @@ label {
   align-items: center;
   position: relative;
   height: 100%;
-  min-height: 110vh;
+  min-height: 120vh;
   width: 100%;
   max-width: 3000px;
   background: black;
@@ -289,10 +289,12 @@ label {
   color: white;
   font-size: 70px;
   height: 3vw;
+  padding-top: 2rem;
 }
 
 .app-carousel {
   max-height: 100%;
+  /* min-height: 100vh; */
   height: auto;
   width: 100%;
   overflow: hidden;
@@ -542,13 +544,15 @@ label {
     transform: scale(85%, 85%);
     width: auto;
     min-width: 250px;
-    max-width: 400px;
+    max-width: 450px;
     height: auto;
     min-height: 600px;
     max-height: 650px;
     aspect-ratio: 3/5;
     margin-top: 7rem;
     overflow: hidden;
+    margin-right: auto;
+    margin-left: auto;
   }
 
   .workoutText {
@@ -587,20 +591,22 @@ label {
 
   .bannerFive {
     height: 100%;
-    min-height: 150vh;
+    min-height: 130vh;
     /* padding-top: 15rem; */
   }
 
   .carouselHeading {
     font-size: clamp(3rem, 10vw, 4rem);
     z-index: 1;
-    top: 1rem;
+    top: -1rem;
+    bottom: 50rem;
     left: 0;
     right: 0;
     /* margin-top: 100px; */
     width: 100%;
-    height: 15vw;
+    /* height: 15rem; */
     /* margin-bottom: 10rem; */
     line-height: 3rem;
+    /* margin-bottom: 10rem; */
   }
 }

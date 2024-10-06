@@ -572,23 +572,62 @@ export class CartService {
   //   );
   // }
 
+  // loadCart(): void {
+  //   if (!this.authService.isAuthenticated()) {
+  //     // console.log('User is not authenticated, not loading cart');
+  //     return;
+  //   }
+
+  //   const userId = this.getCurrentUserId();
+  //   if (!userId) {
+  //     // console.log('No user ID found, not loading cart');
+  //     return;
+  //   }
+
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     take(1),
+  //     catchError((error: HttpErrorResponse) => {
+  //       if (error.status === 404) {
+  //         // console.log('Cart not found for user, initializing empty cart');
+  //         return of(new Cart());
+  //       }
+  //       throw error;
+  //     })
+  //   ).subscribe(
+  //     (cart) => {
+  //       if (cart && cart.totalCount > 0) {
+  //         // console.log('Cart loaded successfully with items');
+  //         this.cartSubject.next(cart);
+  //       } else {
+  //         // console.log('Cart is empty');
+  //         this.cartSubject.next(new Cart());
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //       this.cartSubject.next(new Cart());
+  //     }
+  //   );
+  // }
+
   loadCart(): void {
+    
     if (!this.authService.isAuthenticated()) {
-      // console.log('User is not authenticated, not loading cart');
       return;
     }
 
     const userId = this.getCurrentUserId();
     if (!userId) {
-      // console.log('No user ID found, not loading cart');
       return;
     }
+
+    console.log('Loading cart for user:', userId); 
 
     this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
       take(1),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 404) {
-          // console.log('Cart not found for user, initializing empty cart');
+          console.log('Received cart:');
           return of(new Cart());
         }
         throw error;
@@ -596,10 +635,8 @@ export class CartService {
     ).subscribe(
       (cart) => {
         if (cart && cart.totalCount > 0) {
-          // console.log('Cart loaded successfully with items');
           this.cartSubject.next(cart);
         } else {
-          // console.log('Cart is empty');
           this.cartSubject.next(new Cart());
         }
       },
