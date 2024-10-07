@@ -3,7 +3,7 @@
     <div class="flexContainer" *ngIf="loadingComplete">
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! <br>You're {{currentUser.tier | uppercase}}</h1>
-            <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}!  <br> You are {{currentUser.tier | uppercase}} </h1>
+            <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}!  <br> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
             <h1 class="profileNameTier tierThree" id="tierThree" *ngIf="tierThree" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! <br> You are {{currentUser.tier | uppercase}}</h1>
             <div class="arrowContainer" [ngClass]="{'firstTimeAnimation': firstTimeAnimation, 'narrow': true}">
                 <div class="arrows">
@@ -122,17 +122,25 @@
                                     <span class="spanProfileCategory">Name</span><br>
                                     <input class="name" matInput placeholder="Enter Full Name" name="name" 
                                            [(ngModel)]="currentUser.name" required #name="ngModel" [ngStyle]="{'border-color': name.invalid && (name.dirty || name.touched) ? 'red' : 'white'}">
-                                    <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
+                                    <!-- <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
                                         Name is required
-                                    </mat-error>
+                                    </mat-error> -->
                                 </h3>
                                 <h3 class="profileDetailsInput email">
-                                    <span class="spanProfileCategory">Email Address</span><br>
-                                    <input class="email" matInput placeholder="Enter Email" name="email" 
-                                           [(ngModel)]="currentUser.email" required email #email="ngModel" [ngStyle]="{'border-color': email.invalid && (email.dirty || email.touched) ? 'red' : 'white'}">
-                                    <!-- <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">
-                                        Please enter a valid email address
-                                    </mat-error> -->
+                                    <span class="spanProfileCategory email">Email Address</span><br>
+                                        <!-- <label for="error"
+                                        *ngIf="this.stepForm.get('email')?.hasError('emailExists')"
+                                        class="error-alert">Email exists</label>    -->
+                   
+                                    
+                                    <!-- <input class="email" matInput placeholder="Enter Email" name="email" formControlName="email"
+                                           [(ngModel)]="currentUser.email" required email [ngStyle]="{'border-color': email.invalid && (email.dirty || email.touched) ? 'red' : 'white'}" (blur)="checkEmail()"> -->
+                                    <input class="email" matInput placeholder="Enter Email" 
+                                           [formControlName]="currentState === ProfileState.EditingProfile ? 'email' : ''"
+                                           [value]="currentUser.email"
+                                           [disabled]="currentUser.isGoogleAuth === true"
+                                           (blur)="checkEmail($event)"
+                                           [ngStyle]="{'border-color': this.stepForm.get('email')?.invalid || this.stepForm.get('email')?.hasError('emailExists') ? 'red' : 'white'}">
                                 </h3>
                                 <!-- <h3 class="profileDetailsInput">
                                     <span class="spanProfileCategory">Date Of Birth</span><br> -->
@@ -156,7 +164,8 @@
                                 
                                 <h3 class="profileDetailsInputGender">
                                     <span class="spanProfileCategory">Gender</span><br>
-                                    <select matNativeControl name="gender" [(ngModel)]="currentUser.gender">
+                                    <select matNativeControl name="gender"[(ngModel)]="currentUser.gender" >
+                                        <option value="" disabled selected>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
@@ -170,6 +179,7 @@
                                         Please enter a valid weight (numbers only)
                                     </mat-error> -->
                                 </h3>
+                                
                                 <h3 class="profileDetailsInputHeight">
                                     <span class="spanProfileCategory">Height</span><br>
                                     <input matInput 
@@ -184,6 +194,7 @@
                                 <h3 class="profileDetailsInputObjective">
                                     <span class="spanProfileCategory">Objective</span><br>
                                     <select matNativeControl name="goals" [(ngModel)]="currentUser.goals">
+                                        <option value="" disabled selected>Select Objective</option>
                                         <option value="Lose Fat">Lose Fat</option>
                                         <option value="Maintain Weight">Maintain Weight</option>
                                         <option value="Build Muscle">Build Muscle</option>

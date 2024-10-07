@@ -154,6 +154,12 @@
   }
 }
 
+.mobileTierTwo{
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+}
+
 .profileNameTier.tierThree {
   display: flex;
   flex-direction: column;
@@ -500,6 +506,11 @@ h3.profileDetailsInput.email {
   margin-bottom: 1.4rem;
 }
 
+.email:disabled {
+  background-color: rgb(50, 50, 50);
+  color: white;
+}
+
 // h3.profileDetailsInput.name {
 //     color: white;
 //     font-weight: 500;
@@ -644,6 +655,10 @@ h3.profileDetails.plan{
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
   width: 100%;
+}
+
+.spanProfileCategory.email{
+  width: 10rem;
 }
 
 .buttons {
@@ -1131,6 +1146,7 @@ img.warningImg {
 input,
 select {
   // width: 20rem;
+  // display: block;
   width: 17rem;
   height: 2.5rem;
   font-size: large;
@@ -1143,6 +1159,61 @@ select {
   color: white;
   padding-left: 0.2rem;
 }
+
+select {
+    // width: 17rem;
+    // height: 2.5rem;
+    // font-size: large;
+    // font-weight: 400;
+    // background-color: rgb(25, 25, 25);
+    // border-radius: 6px;
+    // border: 1px solid white;
+    // color: white;
+    // padding: 0 0.2rem;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+}
+
+// /* Style for the placeholder option */
+// select option[value=""] {
+//   color: gray;
+// }
+
+// /* Style for the select when the placeholder is selected */
+// select:invalid,
+// select option:first-child {
+//   color: gray;
+// }
+
+// /* Style for the other options */
+// select option:not(:first-child) {
+//   color: white;
+// }
+
+// /* Ensure the select and its options are visible */
+// .profileDetailsInputGender select,
+// .profileDetailsInputObjective select {
+//   display: block;
+//   visibility: visible;
+//   opacity: 1;
+// }
+
+// select:required:invalid {
+//   color: gray;
+// }
+
+// option[value=""][disabled] {
+//   display: block
+// }
+
+// option {
+//   color: white;
+// }
 
 // input#dob, {
 //   padding-left: 0.2rem;
@@ -1267,8 +1338,6 @@ input[matInput]:focus {
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */
   outline: none; /* Remove the default outline */
-  // box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
-  // color: #ffffff !important; /* Change the text color when focused */
 }
 
 @media screen and (min-width: 2400px) {
@@ -1293,6 +1362,15 @@ input[matInput]:focus {
     // padding-right: 0.5rem;
     font-size: clamp(5rem, 8vw, 9rem);
     // font-weight: 1000;
+  }
+
+ .profileNameTier.tierTwo{
+    display: flex;
+    flex-direction: column;
+    // flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    // font-size: clamp(4rem, 8vw, 9rem);
   }
 
   .profileContainer {
@@ -1407,9 +1485,9 @@ input[matInput]:focus {
     // max-width: 18rem;
     // min-width: 13rem;
     // font-size: 1rem;
-    width: 21vw;
-    max-width: 250px;
-    min-width: 230px;
+    width: 25vw;
+    max-width: 220px;
+    min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
     // width: 10vw;
@@ -1422,9 +1500,9 @@ input[matInput]:focus {
     //   max-width: 18rem;
     //   min-width: 13rem;
     //   font-size: 1rem;
-    width: 15.3vw;
-    max-width: 250px;
-    min-width: 100px;
+    width: 25vw;
+    max-width: 220px;
+    min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
   }
@@ -1782,6 +1860,10 @@ input[matInput]:focus {
     padding-right: 0;
   }
 
+  .mobileTierTwo{
+    font-size: 4.2rem; 
+  }
+
   .editProfilePictureButtonsContainer {
     // position: absolute;
     // top: 0;
@@ -2071,7 +2153,7 @@ input[matInput]:focus {
     margin-bottom: 0.5rem;
   }
 
-  input {
+  input, select {
     width: 97%;
     max-width: 40rem;
     height: 2rem;
@@ -2085,12 +2167,29 @@ input[matInput]:focus {
     color: white;
   }
 
-  select {
-    width: 10rem;
-    min-width: 10rem;
-    max-width: 15rem;
-    height: 2rem;
-  }
+  
+
+  
+  // select {
+  //   -webkit-appearance: none; /* Remove default styles */
+  //   appearance: none;
+  //   border: 1px solid #ccc; /* Adjust the border style */
+  //   background-color: #000; /* Ensure background matches */
+  //   padding: 8px; /* Add some padding */
+  // }
+
+  // select{
+  //   display: block;
+  //   width: 100%;
+  //   box-sizing: border-box;
+  // }
+
+  // select {
+  //   width: 10rem;
+  //   min-width: 10rem;
+  //   max-width: 15rem;
+  //   height: 2rem;
+  // }
 
   .absoluteContainer {
     position: relative;

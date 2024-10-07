@@ -481,6 +481,7 @@ import { AuthService } from './auth.service';
 export class CartService {
   private apiUrl = 'http://localhost:3000/api/cart'; // Replace with your actual API URL
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
+  private cartChangedSubject = new BehaviorSubject<{ action: 'clear' | 'remove' | 'init', productId?: string }>({ action: 'init' });
 
   isLoggedIn: boolean = false;
   private isInitialized = false;
@@ -505,8 +506,6 @@ export class CartService {
       this.isInitialized = true;
       // console.log('Initializing cart');
       this.loadCart();
-    } else {
-      // console.log('Not initializing cart: user not authenticated or already initialized');
     }
   }
 
@@ -679,6 +678,7 @@ export class CartService {
         updatedCart.totalCount = updatedCart.calculatedTotalCount;
         updatedCart.totalPrice = updatedCart.calculatedTotalPrice;
         this.cartSubject.next(updatedCart);
+        this.cartChangedSubject.next({ action: 'remove', productId });
       })
     );
   }
@@ -715,13 +715,20 @@ export class CartService {
   clearCart(): Observable<Cart> {
     const userId = this.getCurrentUserId();
     return this.http.delete<Cart>(`${this.apiUrl}/${userId}`).pipe(
-      tap(() => this.cartSubject.next(new Cart()))
+      tap(() => {
+        this.cartSubject.next(new Cart())
+        this.cartChangedSubject.next({ action: 'clear' });
+      })
     );
   }
 
   getCartObservable(): Observable<Cart> {
     // console.log('CartService: getCartObservable called');
     return this.cartSubject.asObservable();
+  }
+
+  getCartChangedObservable(): Observable<{ action: 'clear' | 'remove' | 'init', productId?: string }> {
+    return this.cartChangedSubject.asObservable();
   }
 
   getTotalPrice(): Observable<number> {

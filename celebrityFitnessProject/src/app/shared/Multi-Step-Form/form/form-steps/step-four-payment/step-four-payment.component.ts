@@ -54,15 +54,16 @@ export class StepFourPaymentComponent implements OnInit {
       }
     });
 
-    const expDateControl = this.stepForm.get('expDate');
-    if (expDateControl) {
-      expDateControl.setValidators([
-        Validators.required,
-        Validators.pattern(/^\d{2}\/\d{2}$/),
-      ]);
-      expDateControl.setAsyncValidators(expirationDateValidator());
-      expDateControl.updateValueAndValidity();
-    }
+    // Validate expiration date
+    // const expDateControl = this.stepForm.get('expDate');
+    // if (expDateControl) {
+    //   expDateControl.setValidators([
+    //     Validators.required,
+    //     Validators.pattern(/^\d{2}\/\d{2}$/),
+    //   ]);
+    //   expDateControl.setAsyncValidators(expirationDateValidator());
+    //   expDateControl.updateValueAndValidity();
+    // }
 
     // Format credit card number
     const ccNumber: number | any = document.getElementById('ccNumber');
@@ -86,6 +87,7 @@ export class StepFourPaymentComponent implements OnInit {
         }
       });
 
+    // For shipping address
     this.billingZipSubscription = this.stepForm
       .get('billingZip')
       ?.valueChanges.subscribe(() => {
@@ -231,6 +233,33 @@ export class StepFourPaymentComponent implements OnInit {
       ?.setValue(formattedValue, { emitEvent: true });
     this.isCCNumberMasked = false;
     this.originalCCNumber = value;
+  }
+
+  // checkExpirationDate() {
+  // const expDateControl = this.stepForm.get('expDate');
+  //   if (expDateControl) {
+  //     expDateControl.setValidators([
+  //       Validators.required,
+  //       Validators.pattern(/^\d{2}\/\d{2}$/),
+  //     ]);
+  //     expDateControl.setAsyncValidators(expirationDateValidator());
+  //     expDateControl.updateValueAndValidity();
+  //   }
+  // }
+
+  checkExpirationDate() {
+    const expDateControl = this.stepForm.get('expDate');
+    if (expDateControl) {
+      expDateControl.setValidators([
+        Validators.required,
+        Validators.pattern(/^\d{2}\/\d{2}$/),
+      ]);
+      expDateControl.setAsyncValidators(expirationDateValidator());
+      // Only update on blur, not on every keystroke
+      if (expDateControl.touched || expDateControl.dirty) {
+        expDateControl.updateValueAndValidity();
+      }
+    }
   }
 
 }

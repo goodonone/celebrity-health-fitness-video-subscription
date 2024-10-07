@@ -5,8 +5,8 @@ import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
 import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { AbstractControl, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { catchError, debounceTime, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 
 enum ProfileState {
@@ -77,6 +77,7 @@ export class ProfileComponent implements OnInit {
   firstTimeAnimation: boolean = true;
   buttonText: string = 'Cancel Subscription';
   isProcessingGoodbye: boolean = false;
+  emailExists: boolean = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
   // firstTimeAnimationTierThree: boolean = true;
@@ -96,6 +97,8 @@ export class ProfileComponent implements OnInit {
 
   private oldPasswordSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+  private formSubscription: Subscription | null = null;
+
 
   constructor(
     private userService: UserService,
@@ -114,6 +117,12 @@ export class ProfileComponent implements OnInit {
         this.currentState = ProfileState.Viewing;
       }
     };
+
+    this.stepForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]]
+      // ... other form controls
+    });
 
   //   this.mousedownHandler = (event) => {
   //     const toggleDiv = document.getElementById('deleteProfile');
@@ -211,7 +220,13 @@ export class ProfileComponent implements OnInit {
     // if(!hasVisited) {
     //   setTimeout(() => this.triggerAnimations(), 100);
     // }
-    
+    // const selectElement = document.getElementById('gender');
+    // if (selectElement) {
+    //   selectElement.addEventListener('click', () => {
+    //     selectElement.style.position = 'relative';
+    //     selectElement.style.left = '0';
+    //   });
+    // }
   }
 
   // triggerAnimations() {
@@ -343,7 +358,8 @@ export class ProfileComponent implements OnInit {
           ...user,
           paymentFrequency: user.billing
         };
-        console.log('User loaded:', user);
+        this.updateFormWithUserData();
+        // console.log('User loaded:', user);
         
         // this.updateTierFlags();
 
@@ -430,6 +446,14 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  updateFormWithUserData(): void {
+    console.log('Updating form with user data' + this.currentUser.email);
+    this.stepForm.patchValue({
+      email: this.currentUser.email,
+      // Update other form controls here
+    });
+    this.cdr.detectChanges();
+  }
   // loadProfile() {
   //   console.log('Loading profile');
   //   this.loadingComplete = false;
@@ -1417,17 +1441,50 @@ isWeightValid(): boolean {
   //   this.firstTimeAnimationTierThree = true;
   // }
 
-  editProfile() {
+  // editProfile() {
+  //   if (this.currentState === ProfileState.EditingProfile) {
+  //     // Save the profile
+  //     this.userService.updateUser(this.currentUser).subscribe(() => {
+  //       this.currentState = ProfileState.Viewing;
+  //       this.reloadProfile();
+  //       // this.loadProfile();
+  //     });
+  //   } else {
+  //     this.currentState = ProfileState.EditingProfile;
+  //     this.stepForm = this.fb.group({
+  //       // ... other form controls ...
+  //       email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+  //     });
+  //   }
+  // }
+
+  editProfile(): void {
     if (this.currentState === ProfileState.EditingProfile) {
       // Save the profile
-      this.userService.updateUser(this.currentUser).subscribe(() => {
+      const updatedUser = { ...this.currentUser, ...this.stepForm.value };
+      this.userService.updateUser(updatedUser).subscribe(() => {
         this.currentState = ProfileState.Viewing;
-        this.reloadProfile();
-        // this.loadProfile();
+        this.loadProfile();
       });
     } else {
       this.currentState = ProfileState.EditingProfile;
+      // Initialize the stepForm with current user data
+      this.stepForm = this.fb.group({
+        email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+        // Add other form controls here, initialized with current user data
+      });
+      this.updateFormWithUserData();
+      this.syncFormWithCurrentUser();
     }
+  }
+
+  syncFormWithCurrentUser(): void {
+    if (this.formSubscription) {
+      this.formSubscription.unsubscribe();
+    }
+    this.formSubscription = this.stepForm.valueChanges.subscribe(formValue => {
+      this.currentUser = { ...this.currentUser, ...formValue };
+    });
   }
 
   changePicture() {
@@ -1519,6 +1576,103 @@ isWeightValid(): boolean {
     }
     return 'Invalid confirm password';
   }
+
+  // checkEmail() {
+  //   console.log('checking email');
+  //   const emailControl = this.stepForm.get('email');
+  //   const email = emailControl?.value;
+  //   if (email && emailControl?.valid) {
+  //     console.log('checking email 2');
+  //     this.userService.checkEmail(email).subscribe(
+  //       (response: {exists: boolean, message: string}) => {
+  //         if (response.exists) {
+  //           emailControl.setErrors({'emailExists': true});
+  //         } else {
+  //           // Only clear the 'emailExists' error, preserve other validation errors if any
+  //           const currentErrors = emailControl.errors;
+  //           if (currentErrors) {
+  //             delete currentErrors['emailExists'];
+  //             emailControl.setErrors(Object.keys(currentErrors).length === 0 ? null : currentErrors);
+  //           }
+  //         }
+  //       },
+  //       (error) => console.error('Error checking email:', error)
+  //     );
+  //   }
+  // }
+
+  // checkEmail(event: Event) {
+  //   // console.log('Checking email method called');
+  //   const input = event.target as HTMLInputElement;
+  //   const email = input.value;
+  //   // console.log('Email value:', email);
+  
+  //   let emailControl: AbstractControl | null;
+  //   if (this.currentState === ProfileState.EditingProfile) {
+  //     emailControl = this.stepForm.get('email');
+  //   } else {
+  //     emailControl = this.profileForm?.form.get('email');
+  //   }
+  //   // console.log('Email control:', emailControl);
+  //   // console.log('Email control valid:', emailControl?.valid);
+  
+  //   if (email && emailControl?.valid) {
+  //     // console.log('Email is valid, proceeding with check');
+  //     this.userService.checkEmail(email).subscribe(
+  //       (response: {exists: boolean, message: string}) => {
+  //         // console.log('Email check response:', response);
+  //         if (response.exists) {
+  //           if (email !== this.currentUser.email) {
+  //             // console.log('Email exists and is different from current, setting error');
+  //             emailControl?.setErrors({'emailExists': true});
+  //           } else {
+  //             // console.log('Email exists but is current user email, no error');
+  //             emailControl?.setErrors(null);
+  //           }
+  //         } else {
+  //           // console.log('Email does not exist, clearing errors');
+  //           emailControl?.setErrors(null);
+  //         }
+  //         this.cdr.detectChanges(); // Force change detection
+  //       },
+  //       (error) => {
+  //         console.error('Error checking email:', error);
+  //       }
+  //     );
+  //   } else {
+  //     console.log('Email is either empty or invalid, skipping check');
+  //   }
+  // }
+
+  checkEmail(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const email = input.value;
+    console.log('Checking email:', email);
+  
+    const emailControl = this.stepForm.get('email');
+    
+    if (email && emailControl && emailControl.valid) {
+      this.userService.checkEmail(email).subscribe(
+        (response: {exists: boolean, message: string}) => {
+          console.log('Email check response:', response);
+          if (response.exists && email !== this.currentUser.email) {
+            emailControl.setErrors({...emailControl.errors, 'emailExists': true});
+          } else {
+            const currentErrors = {...emailControl.errors};
+            if (currentErrors) {
+              delete currentErrors['emailExists'];
+              emailControl.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+            }
+          }
+          this.cdr.detectChanges(); // Force change detection
+        },
+        (error) => {
+          console.error('Error checking email:', error);
+        }
+      );
+    }
+  }
+  // 
 
   // updateTierFlags(): void {
   //   this.tierOne = this.currentUser.tier === 'Just Looking';

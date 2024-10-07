@@ -100,9 +100,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { ProductStatusService } from 'src/app/services/ProductStatus.service';
+import { ProductStatusService } from 'src/app/services/productstatus.service';
 
 @Component({
   selector: 'app-product',
@@ -112,7 +112,11 @@ import { ProductStatusService } from 'src/app/services/ProductStatus.service';
 export class ProductComponent implements OnInit {
   currentProduct$: Observable<Product | null> = of(null);
   errorMessage: string = '';
-  isLimitReached: boolean = false;
+  private cartChangedSubscription?: Subscription;
+  private cartSubscription?: Subscription;
+  isCartEmpty: boolean = true;
+  viewCartButtonText: string = 'View Cart';
+  // isLimitReached: boolean = false;
   
   constructor(
     private actRoute: ActivatedRoute,
@@ -139,11 +143,48 @@ export class ProductComponent implements OnInit {
       this.errorMessage = 'Invalid product ID.';
       this.router.navigate(['/store']);
     }
+
+    this.cartChangedSubscription = this.cartService.getCartChangedObservable().subscribe(change => {
+      if (change) {
+        if (change.action === 'clear') {
+          this.productStatusService.resetAllProductStatuses();
+        } else if (change.action === 'remove' && change.productId) {
+          this.productStatusService.resetProductStatus(change.productId);
+        }
+      }
+    });
+
+    // this.cartSubscription = this.cartService.getCartObservable().subscribe(cart => {
+    //   this.isCartEmpty = cart.CartProducts.length === 0;
+    // });
+
+    this.cartSubscription = this.cartService.getCartObservable().subscribe(cart => {
+      this.isCartEmpty = cart.CartProducts.length === 0;
+      this.updateViewCartButtonText();
+    });
+
+    this.updateProductStatuses();
+  }
+
+  ngOnDestroy(): void {
+    if (this.cartChangedSubscription) {
+      this.cartChangedSubscription.unsubscribe();
+    }
+    if (this.cartSubscription) {
+      this.cartSubscription.unsubscribe();
+    }
   }
 
   // addToCart(product: Product) {
+  //   if (this.productStatusService.isLimitReached(product.productId)) {
+  //     console.log('Limit reached, cannot add to cart');
+  //     return;
+  //   }
   //   this.cartService.addToCart(product).subscribe(
-  //     () => console.log('Product added to cart:', product),
+  //     () => {
+  //       console.log('Product added to cart:', product);
+  //       this.updateProductStatus(product);
+  //     },
   //     error => console.error('Error adding product to cart:', error)
   //   );
   // }
@@ -156,7 +197,11 @@ export class ProductComponent implements OnInit {
     this.cartService.addToCart(product).subscribe(
       () => {
         console.log('Product added to cart:', product);
-        this.updateProductStatus(product);
+        this.updateProductStatuses();
+        this.cartService.getCartObservable().subscribe(cart => {
+          const updatedQuantity = cart.CartProducts.find(item => item.productId === product.productId)?.quantity || 0;
+          this.productStatusService.setTemporaryQuantity(product.productId, updatedQuantity);
+        });
       },
       error => console.error('Error adding product to cart:', error)
     );
@@ -166,13 +211,32 @@ export class ProductComponent implements OnInit {
     return product?.productUrl ?? "";
   }
 
-  updateProductStatus(product: Product) {
+  // updateProductStatus(product: Product) {
+  //   this.cartService.getCartObservable().pipe(
+  //     switchMap(cart => {
+  //       const cartItem = cart.CartProducts.find(item => item.productId === product.productId);
+  //       if (cartItem && cartItem.quantity >= 10) {
+  //         this.productStatusService.setLimitReached(product.productId, true);
+  //       }
+  //       return of(null);
+  //     })
+  //   ).subscribe();
+  // }
+
+  // getButtonText(product: Product): string {
+  //   return this.productStatusService.getButtonText(product.productId);
+  // }
+
+  isProductLimitReached(product: Product): boolean {
+    return this.productStatusService.isLimitReached(product.productId);
+  }
+
+  updateProductStatuses() {
     this.cartService.getCartObservable().pipe(
       switchMap(cart => {
-        const cartItem = cart.CartProducts.find(item => item.productId === product.productId);
-        if (cartItem && cartItem.quantity >= 10) {
-          this.productStatusService.setLimitReached(product.productId, true);
-        }
+        cart.CartProducts.forEach(item => {
+          this.productStatusService.setLimitReached(item.productId, item.quantity >= 10);
+        });
         return of(null);
       })
     ).subscribe();
@@ -182,8 +246,36 @@ export class ProductComponent implements OnInit {
     return this.productStatusService.getButtonText(product.productId);
   }
 
-  isProductLimitReached(product: Product): boolean {
+  isLimitReached(product: Product): boolean {
     return this.productStatusService.isLimitReached(product.productId);
   }
+
+  onMouseEnter(product: Product): void {
+    this.productStatusService.setHoverState(product.productId, true);
+  }
+
+  onMouseLeave(product: Product): void {
+    this.productStatusService.setHoverState(product.productId, false);
+  }
+
+  onViewCartMouseEnter(): void {
+    if (this.isCartEmpty) {
+      this.viewCartButtonText = 'Empty';
+    }
+  }
+
+  onViewCartMouseLeave(): void {
+    this.updateViewCartButtonText();
+  }
+
+  private updateViewCartButtonText(): void {
+    this.viewCartButtonText = this.isCartEmpty ? 'View Cart' : 'View Cart';
+  }
+
+  // emptyCart(): void {
+  //   this.cartService.clearCart().subscribe(() => {
+  //     console.log('Cart emptied');
+  //   });
+  // }
   
 }
