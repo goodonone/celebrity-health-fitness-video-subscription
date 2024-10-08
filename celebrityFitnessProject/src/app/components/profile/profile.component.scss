@@ -508,7 +508,7 @@ h3.profileDetailsInput.email {
 
 .email:disabled {
   background-color: rgb(50, 50, 50);
-  color: white;
+  color: rgb(97, 97, 97);
 }
 
 // h3.profileDetailsInput.name {
@@ -569,15 +569,15 @@ h3.profileDetailsInputDOB {
   width: 100%;
 }
 
-.errorTwentyOne {
-  color: red;
-  font-weight: bold;
-  text-align: right;
-  font-size: 0.875rem;
-  width: auto;
-  width: 100%;
-  // line-height: 1rem;
-}
+// .errorTwentyOne {
+//   color: red;
+//   font-weight: bold;
+//   text-align: right;
+//   font-size: 0.875rem;
+//   width: auto;
+//   width: 100%;
+//   // line-height: 1rem;
+// }
 
 h3.profileDetailsInputGender {
   color: white;
@@ -773,6 +773,11 @@ h3.profileDetails.plan{
   /* margin-left: 1rem; */
 }
 
+.btn-changePasswordButton:disabled {
+  background-color: rgb(62, 61, 61);
+  color:rgb(94, 94, 94) !important;
+}
+
 .planContainer {
   display: flex;
   // justify-content: space-between;
@@ -953,7 +958,17 @@ input:disabled:-moz-placeholder {
   font-weight: bold;
   text-align: right;
   font-size: 0.875rem;
+  line-height: 1.2rem;
   // line-height: 1rem;
+}
+
+.error-alert-input{
+  color: red;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.875rem;
+  line-height: 1.2rem;
+  justify-content: right;
 }
 
 .authenticating {
@@ -961,7 +976,7 @@ input:disabled:-moz-placeholder {
   font-weight: bold;
   text-align: right;
   font-size: 0.875rem;
-  line-height: 1rem;
+  line-height: 1.2rem;
 }
 
 .label {
@@ -1306,6 +1321,7 @@ input#weight,
   align-items: center;
   margin: auto;
   margin-top: 0.5rem;
+  // margin-top: 2rem;
 }
 
 .narrow {
@@ -1326,6 +1342,59 @@ input#weight,
   text-align: left;
   padding-left: 0.2rem;
   text-overflow: ellipsis;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  animation: rotate 2s linear infinite;
+}
+
+.spinner .path {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+.spinner-text {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
 }
 
 input[matInput]:focus {
@@ -1514,9 +1583,9 @@ input[matInput]:focus {
     // max-width: 18rem;
     // min-width: 13rem;
     // font-size: 1rem;
-    width: 21vw;
-    max-width: 250px;
-    min-width: 230px;
+    width: 25vw;
+    max-width: 220px;
+    min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
   }
@@ -1776,6 +1845,17 @@ input[matInput]:focus {
     gap: clamp(0rem, 2vw, 1rem);
   }
 
+  .updatePasswordButtonContainer{
+    width: 97%;
+    max-width: 40rem;
+  }
+
+  .savePictureButtonContainer{
+    width: 97%;
+    max-width: 40rem;
+    padding-left: 0;
+  }
+
   // .profilePictureAndButtons {
   //   display: flex;
   //   flex-direction: column;
@@ -1897,7 +1977,7 @@ input[matInput]:focus {
   // }
 
   .updatePassword {
-    padding-left: 0rem;
+    padding-left: 0.8rem;
     width: 100%;
     max-width: 96%;
     // background-color: #c7ff20;
@@ -1946,10 +2026,11 @@ input[matInput]:focus {
     // margin: auto;
     // padding-left: 0;
     // padding-left: 0.5rem;
+    padding-left: 0.2rem;
     width: 100%;
-    max-width: 98%;
+    max-width: 96%;
     margin: auto;
-    padding-left: 0rem;
+    // padding-left: 0rem;
 
     // width: fit-content;
     // max-width: 100%;
@@ -1961,19 +2042,6 @@ input[matInput]:focus {
     // padding: 0.5rem;
     // border-color: #605f5f;
     // border-style: solid;
-  }
-
-  h3.profileDetails.name {
-    width: 100%;
-    max-width: 2rem;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
-    overflow: auto;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
   }
 
   // h3.profileDetails.name {
@@ -2069,7 +2137,7 @@ input[matInput]:focus {
   .planContainer {
     display: flex;
     width: 18rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0rem;
   }
 
   .editButtonsContainer {
@@ -2156,7 +2224,7 @@ input[matInput]:focus {
   input, select {
     width: 97%;
     max-width: 40rem;
-    height: 2rem;
+    height: 2.5rem;
     font-size: large;
     font-weight: 400;
     /* Comment out following text if you want to revert to white background input and select */
@@ -2242,7 +2310,7 @@ input[matInput]:focus {
     color: white;
     font-weight: 500;
     font-size: 1.4rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1.5rem;
   }
 
   h3.profileDetailsInput {
@@ -2251,150 +2319,122 @@ input[matInput]:focus {
     font-size: 1.9rem;
     margin-bottom: 0rem;
   }
+
+  // h3.profileDetails.name {
+  //   width: 100%;
+  //   max-width: 25rem;
+  //   min-width: 5rem;
+  //   overflow: hidden;
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap;
+  //   margin-bottom: 1.5rem;
+  // }
+
+  // h3.profileDetails.name {
+  //   width: 100%;
+  //   max-width: 2rem;
+  //   // width: 18rem;
+  //   // min-width: 5rem;
+  //   // max-width: 25rem;
+  //   overflow: auto;
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap;
+  //   //   overflow: visible;
+  //   /* background-color: #C7FF20; */
+  // }
+
+  h3.profileDetailsInput.name {
+    margin-bottom: 0.4rem;
+  }
+
+  // h3.profileDetails.email {
+  //   width: 100%;
+  //   max-width: 100%;
+  //   overflow: auto;
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap;
+  // }
 
   h3.profileDetails.email {
-    width: 100%;
-    max-width: 100%;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
-    overflow: auto;
+    width: 18rem;
+    overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-bottom: 0.8rem;
-  }
-
-  h3.profileDetails.plan {
-    color: white;
-    font-weight: 500;
-    font-size: 1.4rem;
-    margin-bottom: 0rem;
-  }
-
-  h3.profileDetailsInput {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0.2rem;
+    height: 100%;
   }
 
   h3.profileDetailsInput.email {
     color: white;
     font-weight: 500;
     font-size: 1.9rem;
-    // margin-top: 0.2rem;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.6rem;
   }
 
-  // h3.profileDetailsInput.name {
-  //     color: white;
-  //     font-weight: 500;
-  //     font-size: 1.9rem;
-  //     margin-bottom: 1.1rem;
+  // h3.profileDetails.DOB{
+  //   margin-bottom: 1.5rem;
   // }
 
-  h3.profileDetails.name {
-    width: 100%;
-    max-width: 25rem;
-    // width: 18rem;
-    min-width: 5rem;
-    // max-width: 25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
-  }
+  // h3.profileDetailsInput.DOB {
+  //   margin-bottom: 1.9rem;
+  // }
 
-  h3.profileDetails.email {
-    width: 18rem;
-    // overflow: visible;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    height: 4rem;
-    // margin-bottom: 1.5rem;
-    // overflow-y: visible;
-    //   box-sizing: border-box;
-    //   background-color: #C7FF20;
-    // padding-bottom: 0.2rem;
-    //   height: auto;
-    //   background-color: #c7ff20;
+  h3.profileDetails.plan {
+    color: white;
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
   }
 
   h3.profileDetailsInputDOB {
     color: white;
     font-weight: 500;
     font-size: 1.9rem;
-    // margin-bottom: 2rem;
     margin-top: 0rem;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.7rem;
   }
 
-  // .dateOfBirthSpanAndErrorContainer {
-  //   display: flex;
-  //   width: 100%;
-  //   justify-content: space-between;
-  //   padding: 0;
-  //   margin: 0;
-  // }
-
-  // .spanProfileCategoryDOB {
-  //   font-size: 1.4rem;
-  //   width: 100%;
-  // }
-
-  // .errorTwentyOne {
-  //   color: red;
-  //   font-weight: bold;
-  //   text-align: right;
-  //   font-size: 0.875rem;
-  //   width: auto;
-  //   width: 100%;
-  //   // line-height: 1rem;
-  // }
-
-  h3.profileDetailsInputGender {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0.2rem;
+  h3.profileDetailsInput.DOB,
+   h3.profileDetailsInputGender, 
+   h3.profileDetailsInputWeight, 
+   h3.profileDetailsInputHeight, 
+   h3.profileDetailsInputObjective {
+    margin-bottom: 0.6rem;
   }
+
+  // h3.profileDetailsInputGender {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0.2rem;
+  // }
+
+  // h3.profileDetailsInputWeight {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0.2rem;
+  // }
+
+  // h3.profileDetailsInputHeight {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0.2rem;
+  // }
+
+  // h3.profileDetailsInputObjective {
+  //   color: white;
+  //   font-weight: 500;
+  //   font-size: 1.9rem;
+  //   margin-bottom: 0.2rem;
+  // }
 
   // h3.profileDetailsInputPhoto {
   //   color: white;
   //   font-weight: 500;
   //   font-size: 1.9rem;
-  //   margin-bottom: 0.8rem;
+  //   margin-bottom: 0rem;
   // }
-
-  h3.profileDetailsInputWeight {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0.2rem;
-  }
-
-  h3.profileDetailsInputHeight {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0.2rem;
-  }
-
-  h3.profileDetailsInputObjective {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0.2rem;
-  }
-
-  h3.profileDetailsInputPhoto {
-    color: white;
-    font-weight: 500;
-    font-size: 1.9rem;
-    margin-bottom: 0rem;
-  }
 
   .btn-changePasswordButton,
   .btn-billingDetailsButton {
@@ -2535,8 +2575,20 @@ input[matInput]:focus {
   }
 
   .arrow-size {
-    font-size: 5rem;
-    margin-bottom: -3rem;
+    font-size: 4.5rem;
+    margin-bottom: -2.5rem;
+  }
+
+  .spinner {
+    width: 60px;
+    height: 60px;
+    animation: rotate 2s linear infinite;
+  }
+  
+  .spinner-text {
+    color: #ffffff;
+    font-size: 1rem;
+    margin-top: 1rem;
   }
 }
 

@@ -5,8 +5,8 @@ import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
 import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { AbstractControl, FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
-import { catchError, debounceTime, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { catchError, debounceTime, distinctUntilChanged, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 
 enum ProfileState {
@@ -26,7 +26,7 @@ enum ProfileState {
 
 export class ProfileComponent implements OnInit {
 
-  @ViewChild('profileForm') profileForm!: NgForm;
+  // @ViewChild('profileForm') profileForm!: NgForm;
   // @ViewChild('profileNameTier') profileNameTierElement!: ElementRef;
   // @ViewChild('profilePicture') profilePictureElement!: ElementRef;
   
@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit {
   passwordVisible = false;
   isUpdatingPassword!: boolean;
   oldPasswordVisible = false;
-  stepForm!: FormGroup;
+  // stepForm!: FormGroup;
   oldPasswordError: string = '';
   authenticating: boolean = false;
   isOldPasswordCorrect: boolean = false;
@@ -78,11 +78,14 @@ export class ProfileComponent implements OnInit {
   buttonText: string = 'Cancel Subscription';
   isProcessingGoodbye: boolean = false;
   emailExists: boolean = false;
+  isWaitingToCheck = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
   // firstTimeAnimationTierThree: boolean = true;
   // currentTier: string = '';
   // lastAnimatedTier: string | null = null;
+  profileForm!: FormGroup;
+  passwordForm!: FormGroup; 
 
 
   // Icons
@@ -117,12 +120,6 @@ export class ProfileComponent implements OnInit {
         this.currentState = ProfileState.Viewing;
       }
     };
-
-    this.stepForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]]
-      // ... other form controls
-    });
 
   //   this.mousedownHandler = (event) => {
   //     const toggleDiv = document.getElementById('deleteProfile');
@@ -171,7 +168,19 @@ export class ProfileComponent implements OnInit {
 
     this.initializeEventListeners();
 
-    this.stepForm = this.fb.group({
+    this.profileForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      dateOfBirth: ['',[]],
+      gender: ['', []],
+      weight: ['', []],
+      height: ['', []],
+      goals: ['', []],
+      imgUrl: ['', []],
+      isGoogleAuth: [false]
+    });
+
+    this.passwordForm = this.fb.group({
       oldPassword: ['', [Validators.required]],
       passwordGroup: this.fb.group({
         password: [
@@ -192,15 +201,17 @@ export class ProfileComponent implements OnInit {
       }, { validators: passwordMatchValidator })
     });
 
-    this.stepForm.get('oldPassword')?.valueChanges.pipe(
-      debounceTime(1500),
-      takeUntil(this.destroy$)
-    ).subscribe(() => {
-      // this.oldPasswordError = 'Authenticating';
-      this.checkOldPassword();
-    });
+    // this.passwordForm.get('oldPassword')?.valueChanges.pipe(
+    //   debounceTime(1500),
+    //   takeUntil(this.destroy$)
+    // ).subscribe(() => {
+    //   // this.oldPasswordError = 'Authenticating';
+    //   this.checkOldPassword();
+    // });
 
-    this.stepForm.get('passwordGroup')?.valueChanges.pipe(
+    this.checkOldPassword();
+
+    this.passwordGroup.get('passwordGroup')?.valueChanges.pipe(
       debounceTime(1500),
       takeUntil(this.destroy$)
     ).subscribe(() => {
@@ -213,6 +224,16 @@ export class ProfileComponent implements OnInit {
       this.passwordGroup.updateValueAndValidity({ emitEvent: false });
       this.cdr.detectChanges(); // Trigger change detection
     });
+
+    // this.logFormState();
+
+    // if (this.currentState === ProfileState.EditingProfile) {
+    //   this.updateFormWithUserData();
+    // }
+
+    // this.profileForm.get('name')?.valueChanges.subscribe(() => {
+    //   this.profileForm.get('name')?.updateValueAndValidity({ emitEvent: false });
+    // });
   }
 
   ngAfterViewInit() {
@@ -229,108 +250,23 @@ export class ProfileComponent implements OnInit {
     // }
   }
 
-  // triggerAnimations() {
-  //   if (this.tierOne && this.firstTimeAnimationTierOne) {
-  //     this.firstTimeAnimationTierOne = false;
-  //     localStorage.setItem('hasVisitedProfileBeforeTierOne', 'true');
-  //   } else if (this.tierTwo && this.firstTimeAnimationTierTwo) {
-  //     this.firstTimeAnimationTierTwo = false;
-  //     localStorage.setItem('hasVisitedProfileBeforeTierTwo', 'true');
-  //   } else if (this.tierThree && this.firstTimeAnimationTierThree) {
-  //     this.firstTimeAnimationTierThree = false;
-  //     localStorage.setItem('hasVisitedProfileBeforeTierThree', 'true');
-      
-  //     // Trigger the expand box shadow animation for tierThree
-  //     const profilePicture = this.elementRef.nativeElement.querySelector('#profilePicture');
-  //     if (profilePicture) {
-  //       this.renderer.addClass(profilePicture, 'animateBoxShadow');
-  //       setTimeout(() => {
-  //         this.renderer.removeClass(profilePicture, 'animateBoxShadow');
-  //       }, 500); // Match this to your animation duration
-  //     }
-  //   }
-    
-  //   // Force change detection
-  //   this.cdr.detectChanges();
-  // }
-
-  // triggerAnimations(): void {
-  //   if (this.tierOne && this.firstTimeAnimationTierOne) {
-  //     this.firstTimeAnimationTierOne = false;
-  //     localStorage.setItem('hasVisitedTierOne', 'true');
-  //   } else if (this.tierTwo && this.firstTimeAnimationTierTwo) {
-  //     this.firstTimeAnimationTierTwo = false;
-  //     localStorage.setItem('hasVisitedTierTwo', 'true');
-  //   } else if (this.tierThree && this.firstTimeAnimationTierThree) {
-  //     this.firstTimeAnimationTierThree = false;
-  //     localStorage.setItem('hasVisitedTierThree', 'true');
-      
-  //     // Trigger the expand box shadow animation for tierThree
-  //     setTimeout(() => {
-  //       const profilePicture = this.elementRef.nativeElement.querySelector('#profilePicture');
-  //       if (profilePicture) {
-  //         this.renderer.addClass(profilePicture, 'animateBoxShadow');
-  //         setTimeout(() => {
-  //           this.renderer.removeClass(profilePicture, 'animateBoxShadow');
-  //         }, 500); // Match this to your animation duration
-  //       }
-  //     }, 100);
-  //   }
-    
-  //   this.cdr.detectChanges();
-  // }
-
-  // triggerAnimations(): void {
-  //   console.log('Triggering animations');
-  //   console.log('Tier One:', this.tierOne, 'First Time:', this.firstTimeAnimationTierOne);
-  //   console.log('Tier Two:', this.tierTwo, 'First Time:', this.firstTimeAnimationTierTwo);
-  //   console.log('Tier Three:', this.tierThree, 'First Time:', this.firstTimeAnimationTierThree);
-  
-  //   if (this.tierOne && this.firstTimeAnimationTierOne) {
-  //     console.log('Triggering Tier One animation');
-  //     this.firstTimeAnimationTierOne = false;
-  //     localStorage.setItem('hasVisitedTierOne', 'true');
-  //   } else if (this.tierTwo && this.firstTimeAnimationTierTwo) {
-  //     console.log('Triggering Tier Two animation');
-  //     this.firstTimeAnimationTierTwo = false;
-  //     localStorage.setItem('hasVisitedTierTwo', 'true');
-  //   } else if (this.tierThree && this.firstTimeAnimationTierThree) {
-  //     console.log('Triggering Tier Three animation');
-  //     this.firstTimeAnimationTierThree = false;
-  //     localStorage.setItem('hasVisitedTierThree', 'true');
-      
-  //     // Trigger the expand box shadow animation for tierThree
-  //     setTimeout(() => {
-  //       const profilePicture = this.elementRef.nativeElement.querySelector('#profilePicture');
-  //       if (profilePicture) {
-  //         console.log('Adding animateBoxShadow class to profile picture');
-  //         this.renderer.addClass(profilePicture, 'animateBoxShadow');
-  //         setTimeout(() => {
-  //           this.renderer.removeClass(profilePicture, 'animateBoxShadow');
-  //         }, 500);
-  //       } else {
-  //         console.log('Profile picture element not found');
-  //       }
-  //     }, 100);
-  //   }
-    
-  //   // Force a repaint
-  //   this.cdr.detectChanges();
-  //   requestAnimationFrame(() => {
-  //     const element = this.elementRef.nativeElement;
-  //     element.style.display = 'none';
-  //     element.offsetHeight; // Trigger a reflow
-  //     element.style.display = '';
-  //   });
-  // }
-
-
   ngOnDestroy(): void {
     // Cleanup any remaining event listeners to prevent memory leaks
     // this.removeEventListeners();
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+  // ngOnDestroy() {
+  //   this.destroy$.next();
+  //   this.destroy$.complete();
+  // }
+
+  // logFormState(): void {
+  //   console.log('Form valid:', this.profileForm.valid);
+  //   console.log('Form values:', this.profileForm.value);
+  //   console.log('Is form valid (profile):', this.isFormValid('profile'));
+  // }
 
   initializeEventListeners(): void {
     document.addEventListener('keydown', this.keydownHandler);
@@ -358,6 +294,35 @@ export class ProfileComponent implements OnInit {
           ...user,
           paymentFrequency: user.billing
         };
+        // this.stepForm.patchValue({
+        //   name: this.currentUser.name,
+        //   email: this.currentUser.email,
+        //   // ... other fields if necessary
+        // });
+  
+        // Update the validation status of the controls
+        this.profileForm.patchValue({
+          name: this.currentUser.name,
+          email: this.currentUser.email,
+          dateOfBirth: this.currentUser.dateOfBirth,
+          gender: this.currentUser.gender,
+          weight: this.currentUser.weight,
+          height: this.currentUser.height,
+          goals: this.currentUser.goals,
+          imgUrl: this.currentUser.imgUrl,
+          isGoogleAuth: this.currentUser.isGoogleAuth
+        });
+
+        if (this.currentUser.isGoogleAuth) {
+          this.profileForm.get('email')?.disable();
+          this.passwordForm.get('oldPassword')?.disable();
+          this.passwordForm.get('passwordGroup')?.disable();
+        } else {
+          this.profileForm.get('email')?.enable();
+        }
+
+        console.log(`goals ${this.currentUser.goals}`);
+
         this.updateFormWithUserData();
         // console.log('User loaded:', user);
         
@@ -446,109 +411,31 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  isEmailDisabled(): boolean {
+    return this.profileForm.get('isGoogleAuth')?.value === true;
+  }
+
   updateFormWithUserData(): void {
     console.log('Updating form with user data' + this.currentUser.email);
-    this.stepForm.patchValue({
+    this.profileForm.patchValue({
+      name: this.currentUser.name,
       email: this.currentUser.email,
-      // Update other form controls here
+      dateOfBirth: this.currentUser.dateOfBirth,
+      gender: this.currentUser.gender,
+      weight: this.currentUser.weight,
+      height: this.currentUser.height,
+      goals: this.currentUser.goals,
+      imgUrl: this.currentUser.imgUrl,
+      isGoogleAuth: this.currentUser.isGoogleAuth
     });
+
+      // Update other form controls here
+
+    this.profileForm.get('name')?.updateValueAndValidity();
+    this.profileForm.get('email')?.updateValueAndValidity();
+
     this.cdr.detectChanges();
   }
-  // loadProfile() {
-  //   console.log('Loading profile');
-  //   this.loadingComplete = false;
-  //   this.imageLoaded = false;
-  //   const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
-  //   this.userId = parseInt(UserId);
-  
-  //   // const previousTier = this.currentUser?.tier;
-  //   const storedTier = localStorage.getItem('currentTier');
-  //   this.lastAnimatedTier = localStorage.getItem('lastAnimatedTier');
-  
-  //   this.userService.getUser(this.userId).subscribe(
-  //     (user) => {
-  //       console.log('User data received:', user);
-  //       this.currentUser = user;
-        
-  //       this.updateTierFlags();
-
-  //       // const storedTier = localStorage.getItem('currentTier');
-  //       const currentTier = this.currentUser.tier || 'Unknown';
-  //       console.log('Stored tier:', storedTier, 'Current tier:', currentTier);
-
-
-  //       if (storedTier !== currentTier || this.lastAnimatedTier !== currentTier) {
-  //         console.log('Tier changed or not animated yet. Resetting animations.');
-  //         this.resetAnimationFlags();
-  //         // setTimeout(() => {
-  //         //   this.triggerAnimations();
-  //         //   if (currentTier !== 'Unknown') {
-  //         //     localStorage.setItem('currentTier', currentTier);
-  //         //   }
-  //         // }, 0);
-  //       // } else {
-  //       //   console.log('Same tier. No animation needed.');
-  //       //   this.loadAnimationState();
-  //       }
-  //       localStorage.setItem('currentTier', currentTier);
-  
-  //       // if (currentTier !== 'Unknown') {
-  //       //   localStorage.setItem('currentTier', currentTier);
-  //       // }
-  
-  //       if (this.currentUser.height) {
-  //         this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
-  //       }
-  
-  //       this.monthOrYear = this.currentUser.paymentFrequency === 'monthly' ? 'month' : 'year';
-  //       this.freeTier = this.currentUser.tier === 'Just Looking';
-  
-  //       if (user.imgUrl) {
-  //         this.preloadImage(user.imgUrl);
-  //       } else {
-  //         this.imageLoaded = true;
-  //         this.checkLoadingComplete();
-  //       }
-  
-  //       const displayName = this.currentUser.name;
-  //       this.firstName = displayName?.split(' ')[0];
-  
-  //       // console.log('About to trigger animations');
-  //       // this.triggerAnimations();
-  
-  //       this.cdr.detectChanges();
-  //       setTimeout(() => this.triggerAnimations(), 0);
-  //     },
-  //     (error) => {
-  //       console.error('Error loading user profile:', error);
-  //       this.loadingComplete = true;
-  //       this.imageLoaded = true;
-  //       this.cdr.detectChanges();
-  //     }
-  //   );
-  // }
-
-  // resetAnimationFlags() {
-  //   this.firstTimeAnimationTierOne = true;
-  //   this.firstTimeAnimationTierTwo = true;
-  //   this.firstTimeAnimationTierThree = true;
-  //   localStorage.removeItem('animationTierOne');
-  //   localStorage.removeItem('animationTierTwo');
-  //   localStorage.removeItem('animationTierThree');
-  // }
-
-  // resetAnimationFlags() {
-  //   this.firstTimeAnimationTierOne = true;
-  //   this.firstTimeAnimationTierTwo = true;
-  //   this.firstTimeAnimationTierThree = true;
-  //   localStorage.removeItem('lastAnimatedTier');
-  // }
-
-  // loadAnimationState() {
-  //   this.firstTimeAnimationTierOne = localStorage.getItem('animationTierOne') !== 'done';
-  //   this.firstTimeAnimationTierTwo = localStorage.getItem('animationTierTwo') !== 'done';
-  //   this.firstTimeAnimationTierThree = localStorage.getItem('animationTierThree') !== 'done';
-  // }
 
   triggerAnimations(){
     const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
@@ -577,372 +464,37 @@ export class ProfileComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  // triggerAnimations(): void {
-  //   console.log('Triggering animations');
-  //   console.log('Current tier:', this.currentUser.tier);
-  //   console.log('First time animation flag:', this.firstTimeAnimation);
-  
-  //   if (this.firstTimeAnimation) {
-  //     console.log('Animating for tier:', this.currentUser.tier);
-      
-  //     const tierElement = this.elementRef.nativeElement.querySelector('.profileNameTier');
-  //     if (tierElement) {
-  //       console.log('Found tier element, adding fade-in class');
-  //       this.renderer.addClass(tierElement, 'fade-in');
-  //     } else {
-  //       console.log('Tier element not found');
-  //     }
-  
-  //     if (this.currentUser.tier === 'All In') {
-  //       console.log('Tier Three: Adding animateBoxShadow class to profile picture');
-  //       const profilePicture = this.elementRef.nativeElement.querySelector('#profilePicture');
-  //       if (profilePicture) {
-  //         this.renderer.addClass(profilePicture, 'animateBoxShadow');
-  //         setTimeout(() => {
-  //           this.renderer.removeClass(profilePicture, 'animateBoxShadow');
-  //         }, 500);
-  //       } else {
-  //         console.log('Profile picture element not found');
-  //       }
-  //     }
-  
-  //     this.firstTimeAnimation = false;
-  //   } else {
-  //     console.log('No animation triggered');
-  //   }
-    
-  //   this.cdr.detectChanges();
-  // }
-
-
-// triggerAnimations(): void {
-//   console.log('Triggering animations');
-//   console.log('Current tier:', this.currentUser.tier);
-//   console.log('First time animation flag:', this.firstTimeAnimation);
-
-//   if (this.firstTimeAnimation) {
-//     console.log('Animating for tier:', this.currentUser.tier);
-    
-//     if (this.profileNameTierElement) {
-//       console.log('Found tier element, adding fade-in class');
-//       this.renderer.addClass(this.profileNameTierElement.nativeElement, 'fade-in');
-//     } else {
-//       console.log('Tier element not found');
-//     }
-
-//     if (this.currentUser.tier === 'All In' && this.profilePictureElement) {
-//       console.log('Tier Three: Adding animateBoxShadow class to profile picture');
-//       this.renderer.addClass(this.profilePictureElement.nativeElement, 'animateBoxShadow');
-//       setTimeout(() => {
-//         this.renderer.removeClass(this.profilePictureElement.nativeElement, 'animateBoxShadow');
-//       }, 500);
-//     }
-
-//     this.firstTimeAnimation = false;
-//   } else {
-//     console.log('No animation triggered');
-//   }
-  
-//   this.cdr.detectChanges();
-// }
-
-// triggerAnimations(): void {
-//   console.log('Triggering animations');
-//   console.log('Current tier:', this.currentUser.tier);
-//   console.log('First time animation flag:', this.firstTimeAnimation);
-
-//   if (this.firstTimeAnimation) {
-//     console.log('Animating for tier:', this.currentUser.tier);
-    
-//     let tierElement = this.profileNameTierElement?.nativeElement;
-//     if (!tierElement) {
-//       console.log('Tier element not found via ViewChild, trying querySelector');
-//       tierElement = this.elementRef.nativeElement.querySelector('.profileNameTier');
-//     }
-
-//     if (tierElement) {
-//       console.log('Found tier element, adding fade-in class');
-//       this.renderer.addClass(tierElement, 'fade-in');
-//     } else {
-//       console.log('Tier element not found');
-//     }
-
-//     if (this.currentUser.tier === 'All In') {
-//       let profilePicture = this.profilePictureElement?.nativeElement;
-//       if (!profilePicture) {
-//         console.log('Profile picture not found via ViewChild, trying querySelector');
-//         profilePicture = this.elementRef.nativeElement.querySelector('#profilePicture');
-//       }
-
-//       if (profilePicture) {
-//         console.log('Adding animateBoxShadow class to profile picture');
-//         this.renderer.addClass(profilePicture, 'animateBoxShadow');
-//         setTimeout(() => {
-//           this.renderer.removeClass(profilePicture, 'animateBoxShadow');
-//         }, 500);
-//       } else {
-//         console.log('Profile picture element not found');
-//       }
-//     }
-
-//     this.firstTimeAnimation = false;
-//   } else {
-//     console.log('No animation triggered');
-//   }
-  
-//   this.cdr.detectChanges();
-// }
-
-// triggerAnimations(): void {
-//   console.log('Triggering animations');
-//   console.log('Current tier:', this.currentUser.tier);
-
-//   if (this.tierOne && this.firstTimeAnimationTierOne) {
-//     this.animateTier('One');
-//   } else if (this.tierTwo && this.firstTimeAnimationTierTwo) {
-//     this.animateTier('Two');
-//   } else if (this.tierThree && this.firstTimeAnimationTierThree) {
-//     this.animateTier('Three');
-//   } else {
-//     console.log('No animation triggered');
-//   }
-  
-//   this.cdr.detectChanges();
-// }
-
-// triggerAnimations(): void {
-//   console.log('Triggering animations');
-//   console.log('Current tier:', this.currentUser.tier);
-
-//   switch(this.currentUser.tier) {
-//     case 'Just Looking':
-//       if (this.firstTimeAnimationTierOne) {
-//         this.animateTier('One');
-//       }
-//       break;
-//     case 'Motivated':
-//       if (this.firstTimeAnimationTierTwo) {
-//         this.animateTier('Two');
-//       }
-//       break;
-//     case 'All In':
-//       if (this.firstTimeAnimationTierThree) {
-//         this.animateTier('Three');
-//       }
-//       break;
-//     default:
-//       console.log('No animation triggered');
-//   }
-  
-//   this.cdr.detectChanges();
-// }
-
-// triggerAnimations(): void {
-//   console.log('Triggering animations');
-//   console.log('Current tier:', this.currentUser.tier);
-
-//   if (this.currentUser.tier !== this.lastAnimatedTier) {
-//     switch(this.currentUser.tier) {
-//       case 'Just Looking':
-//         this.animateTier('One');
-//         break;
-//       case 'Motivated':
-//         this.animateTier('Two');
-//         break;
-//       case 'All In':
-//         this.animateTier('Three');
-//         break;
-//       default:
-//         console.log('No animation triggered');
-//     }
-//   } else {
-//     console.log('Animation already played for this tier');
-//   }
-  
-//   this.cdr.detectChanges();
-// }
-
-// animateTier(tier: string) {
-//   console.log(`Animating Tier ${tier}`);
-//   const element = document.getElementById(`tier${tier}`);
-//   if (element) {
-//     element.classList.add('fade-in');
-//     if (tier === 'Three') {
-//       const profilePicture = document.getElementById('profilePicture');
-//       if (profilePicture) {
-//         profilePicture.classList.add('animateBoxShadow');
-//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-//       }
-//     }
-//     localStorage.setItem(`animationTier${tier}`, 'done');
-    
-//     // Update the corresponding flag
-//     switch(tier) {
-//       case 'One':
-//         this.firstTimeAnimationTierOne = false;
-//         break;
-//       case 'Two':
-//         this.firstTimeAnimationTierTwo = false;
-//         break;
-//       case 'Three':
-//         this.firstTimeAnimationTierThree = false;
-//         break;
-//     }
-//   }
-// }
-
-// animateTier(tier: string) {
-//   console.log(`Animating Tier ${tier}`);
-//   const element = document.getElementById(`tier${tier}`);
-//   if (element) {
-//     element.classList.add('fade-in');
-//     if (tier === 'Three') {
-//       const profilePicture = document.getElementById('profilePicture');
-//       if (profilePicture) {
-//         profilePicture.classList.add('animateBoxShadow');
-//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-//       }
-//     }
-//     localStorage.setItem(`animationTier${tier}`, 'done');
-    
-//     // Update the corresponding flag
-//     switch(tier) {
-//       case 'One':
-//         this.firstTimeAnimationTierOne = false;
-//         break;
-//       case 'Two':
-//         this.firstTimeAnimationTierTwo = false;
-//         break;
-//       case 'Three':
-//         this.firstTimeAnimationTierThree = false;
-//         break;
-//     }
-//   }
-// }
-
-// animateTier(tier: string) {
-//   console.log(`Animating Tier ${tier}`);
-//   const element = document.getElementById(`tier${tier}`);
-//   if (element) {
-//     element.classList.add('fade-in');
-//     if (tier === 'Three') {
-//       const profilePicture = document.getElementById('profilePicture');
-//       if (profilePicture && this.currentUser.tier === 'All In') {
-//         profilePicture.classList.add('animateBoxShadow');
-//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-//       }
-//     }
-//     localStorage.setItem(`animationTier${tier}`, 'done');
-    
-//     switch(tier) {
-//       case 'One':
-//         this.firstTimeAnimationTierOne = false;
-//         break;
-//       case 'Two':
-//         this.firstTimeAnimationTierTwo = false;
-//         break;
-//       case 'Three':
-//         this.firstTimeAnimationTierThree = false;
-//         break;
-//     }
-//   }
-// }
-
-// animateTier(tier: string) {
-//   console.log(`Animating Tier ${tier}`);
-//   const elementId = `tier${tier}`;
-//   const element = document.getElementById(elementId);
-//   if (element) {
-//     element.classList.remove('fade-in');
-//     void element.offsetWidth; // Trigger a reflow
-//     element.classList.add('fade-in');
-    
-//     if (tier === 'Three') {
-//       const profilePicture = document.getElementById('profilePicture');
-//       if (profilePicture && this.currentUser.tier === 'All In') {
-//         profilePicture.classList.remove('animateBoxShadow');
-//         void profilePicture.offsetWidth; // Trigger a reflow
-//         profilePicture.classList.add('animateBoxShadow');
-//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-//       }
-//     }
-    
-//     this.lastAnimatedTier = this.currentUser.tier;
-//     localStorage.setItem('lastAnimatedTier', this.currentUser.tier);
-    
-//     switch(tier) {
-//       case 'One':
-//         this.firstTimeAnimationTierOne = false;
-//         break;
-//       case 'Two':
-//         this.firstTimeAnimationTierTwo = false;
-//         break;
-//       case 'Three':
-//         this.firstTimeAnimationTierThree = false;
-//         break;
-//     }
-//   } else {
-//     console.log(`Element for Tier ${tier} not found`);
-//   }
-// }
-
-// animateTier(tier: string) {
-//   console.log(`Animating Tier ${tier}`);
-//   const elementId = `tier${tier}`;
-//   const element = document.getElementById(elementId);
-//   if (element) {
-//     element.classList.remove('fade-in');
-//     void element.offsetWidth; // Trigger a reflow
-//     element.classList.add('fade-in');
-    
-//     if (tier === 'Three') {
-//       const profilePicture = document.getElementById('profilePicture');
-//       if (profilePicture && this.currentUser.tier === 'All In') {
-//         profilePicture.classList.remove('animateBoxShadow');
-//         void profilePicture.offsetWidth; // Trigger a reflow
-//         profilePicture.classList.add('animateBoxShadow');
-//         setTimeout(() => profilePicture.classList.remove('animateBoxShadow'), 500);
-//       }
-//     }
-    
-//     if (this.currentUser.tier) {
-//       this.lastAnimatedTier = this.currentUser.tier;
-//       localStorage.setItem('lastAnimatedTier', this.currentUser.tier);
-//     } else {
-//       this.lastAnimatedTier = null;
-//       localStorage.removeItem('lastAnimatedTier');
-//     }
-    
-//     switch(tier) {
-//       case 'One':
-//         this.firstTimeAnimationTierOne = false;
-//         break;
-//       case 'Two':
-//         this.firstTimeAnimationTierTwo = false;
-//         break;
-//       case 'Three':
-//         this.firstTimeAnimationTierThree = false;
-//         break;
-//     }
-//   } else {
-//     console.log(`Element for Tier ${tier} not found`);
-//   }
-// }
-
-// updateTierFlags(): void {
-//   this.tierOne = this.currentUser.tier === 'Just Looking';
-//   this.tierTwo = this.currentUser.tier === 'Motivated';
-//   this.tierThree = this.currentUser.tier === 'All In';
-// }
-
   reloadProfile() {
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
 
     this.userId = UserId;
 
     this.userService.getUser(this.userId).subscribe(
-      (user) => {
-        this.currentUser = user;
+      (user: any) => {
+        this.currentUser = {
+          ...user,
+          paymentFrequency: user.billing
+        };
+        // this.stepForm.patchValue({
+        //   name: this.currentUser.name,
+        //   email: this.currentUser.email,
+        //   // ... other fields if necessary
+        // });
+  
+        // Update the validation status of the controls
+        this.profileForm.patchValue({
+          name: this.currentUser.name,
+          email: this.currentUser.email,
+          dateOfBirth: this.currentUser.dateOfBirth,
+          gender: this.currentUser.gender,
+          weight: this.currentUser.weight,
+          height: this.currentUser.height,
+          goals: this.currentUser.goals,
+          imgUrl: this.currentUser.imgUrl,
+        });
+
+        this.updateFormWithUserData();
+
         if (this.currentUser.height) {
           this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
         }
@@ -984,14 +536,14 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  formatHeightForDisplay(height: string): string {
+  formatHeightForDisplay(height?: string): string {
     // If it's already in the correct format (e.g., 6'10"), return it
-    if (/^\d+'\d+"?$/.test(height)) {
-      return height.replace('"', '');
+    if (/^\d+'\d+"?$/.test(height!)) {
+      return height!.replace('"', '');
     }
   
     // Convert from decimal feet to feet and inches
-    const totalInches = parseFloat(height) * 12;
+    const totalInches = parseFloat(height!) * 12;
     const feet = Math.floor(totalInches / 12);
     const inches = Math.floor(totalInches % 12); // Use Math.floor to avoid rounding up
   
@@ -1004,19 +556,53 @@ export class ProfileComponent implements OnInit {
     return `${feet}'${inches}"`;
   }
 
+  // onHeightInput(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   const value = input.value;
+  //   this.heightTouched = true;
+  
+  //   if (this.heightPattern.test(value)) {
+  //     this.currentUser.height = value;
+  //     this.displayHeight = this.formatHeightForDisplay(value);
+  //   } else {
+  //     // If invalid, don't update currentUser.height
+  //     this.currentUser.height = value;
+  //     this.displayHeight = 'Invalid input';
+  //   }
+  // }
+
   onHeightInput(event: Event) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
     this.heightTouched = true;
   
-    if (this.heightPattern.test(value)) {
-      this.currentUser.height = value;
+    if (this.isHeightValid(value)) {
+      this.profileForm.patchValue({ height: value });
       this.displayHeight = this.formatHeightForDisplay(value);
     } else {
-      // If invalid, don't update currentUser.height
-      this.currentUser.height = value;
+      this.profileForm.get('height')?.setErrors({ 'invalidFormat': true });
       this.displayHeight = 'Invalid input';
     }
+  }
+
+  isHeightValid(height: string): boolean {
+    const heightPattern = /^(\d+(\.\d+)?|\d+'\d+(\.\d+)?"?)$/;
+    if (!heightPattern.test(height)) {
+      return false;
+    }
+  
+    let heightInInches: number;
+    if (height.includes("'")) {
+      // Format: X'Y" or X'Y
+      const [feet, inches] = height.replace('"', '').split("'");
+      heightInInches = parseInt(feet) * 12 + (inches ? parseFloat(inches) : 0);
+    } else {
+      // Format: X.Y (decimal feet)
+      heightInInches = parseFloat(height) * 12;
+    }
+  
+    // Check if height is within a reasonable range (3 feet to 9 feet)
+    return heightInInches >= 36 && heightInInches <= 108;
   }
 
   initializePictureForm() {
@@ -1024,39 +610,88 @@ export class ProfileComponent implements OnInit {
       imgUrl: [this.currentUser.imgUrl]
     });
   }
+  // validateAge(): void {
+  //   let dob: Date | undefined;
+  
+  //   // Convert to Date object if necessary
+  //   if (typeof this.currentUser.dateOfBirth === 'string') {
+  //     dob = new Date(this.currentUser.dateOfBirth);
+  //   } else {
+  //     dob = this.currentUser.dateOfBirth;
+  //   }
+  
+  //   if (dob && !isNaN(dob.getTime())) {
+  //     const today = new Date();
+  //     if (dob > today) {
+  //       this.isValidAge = false;
+  //       this.twentyOneError = true;  // You can remove or repurpose this
+  //       return;
+  //     }
+  
+  //     const maxDate = new Date();
+  //     maxDate.setFullYear(maxDate.getFullYear() - 124);
+  
+  //     this.isValidAge = dob >= maxDate;
+  //     if (!this.isValidAge) {
+  //       // Handle the case where the person is older than 124 years
+  //       this.twentyOneError = true;  // You can rename this variable to something like "maxAgeError"
+  //     } else {
+  //       this.twentyOneError = false;
+  //     }
+  //   } else {
+  //     this.isValidAge = false;
+  //   }
+  // }
+  
   validateAge(): void {
-    let dob: Date | undefined;
+    const dobControl = this.profileForm.get('dateOfBirth');
+    if (!dobControl) return;
   
-    // Convert to Date object if necessary
-    if (typeof this.currentUser.dateOfBirth === 'string') {
-      dob = new Date(this.currentUser.dateOfBirth);
-    } else {
-      dob = this.currentUser.dateOfBirth;
+    const dobString = dobControl.value;
+    if (!dobString) {
+      this.isValidAge = true; // Consider empty as valid
+      return;
     }
   
-    if (dob && !isNaN(dob.getTime())) {
-      const today = new Date();
-      if (dob > today) {
-        this.isValidAge = false;
-        this.twentyOneError = true;  // You can remove or repurpose this
-        return;
-      }
+    // Parse the date string (assuming mm/dd/yyyy format)
+    const [month, day, year] = dobString.split('/').map(Number);
+    const dob = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
   
-      const maxDate = new Date();
-      maxDate.setFullYear(maxDate.getFullYear() - 124);
-  
-      this.isValidAge = dob >= maxDate;
-      if (!this.isValidAge) {
-        // Handle the case where the person is older than 124 years
-        this.twentyOneError = true;  // You can rename this variable to something like "maxAgeError"
-      } else {
-        this.twentyOneError = false;
-      }
-    } else {
+    if (isNaN(dob.getTime())) {
       this.isValidAge = false;
+      dobControl.setErrors({...dobControl.errors, invalidDate: true});
+      return;
     }
+  
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() - 124);
+    const minDate = new Date();
+    minDate.setFullYear(minDate.getFullYear() - 18); // Assuming minimum age is 18
+  
+    if (dob > today) {
+      this.isValidAge = false;
+      dobControl.setErrors({...dobControl.errors, futureDate: true});
+    } else if (dob < maxDate) {
+      this.isValidAge = false;
+      dobControl.setErrors({...dobControl.errors, tooOld: true});
+    } else if (dob > minDate) {
+      this.isValidAge = false;
+      dobControl.setErrors({...dobControl.errors, tooYoung: true});
+    } else {
+      this.isValidAge = true;
+      const currentErrors = {...dobControl.errors};
+      if (currentErrors) {
+        delete currentErrors['invalidDate'];
+        delete currentErrors['futureDate'];
+        delete currentErrors['tooOld'];
+        delete currentErrors['tooYoung'];
+        dobControl.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+      }
+    }
+  
+    this.cdr.detectChanges(); // Force change detection
   }
-
  
   saveProfilePicture() {
     if (this.currentState === ProfileState.ChangingPicture) {
@@ -1097,21 +732,95 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+// saveProfile() {
+//   // this.markFormGroupTouched(this.profileForm.form);
+//   if (this.currentState === ProfileState.EditingProfile && this.isFormValid('profile')) {
+//     // Convert height to decimal feet before saving if it's in feet and inches format
+//     if (this.currentUser.height && this.currentUser.height.includes("'")) {
+//       const [feet, inches] = this.currentUser.height.split("'");
+//       const cleanedInches = inches.replace('"', '');
+//       const totalInches = parseInt(feet) * 12 + parseInt(cleanedInches);
+//       this.currentUser.height = (totalInches / 12).toFixed(2);
+//     }
+//     if (this.stepForm.valid) {
+//     const updatedUser = { ...this.currentUser, ...this.stepForm.value };
+//     this.userService.updateUser(updatedUser).subscribe(
+//       () => {
+//         console.log('Profile updated successfully');
+//         this.currentState = ProfileState.Viewing;
+//         this.loadProfile();
+//         // this.loadProfile();
+//       },
+//       error => {
+//         console.error('Error updating profile:', error);
+//         // Handle error (e.g., show error message to user)
+//       }
+//     );
+//   } else {
+//     console.log('Form is invalid or not in editing state');
+//     // Optionally, you can show an error message to the user here
+//   }
+// }
+// }
+
 saveProfile() {
-  if (this.currentState === ProfileState.EditingProfile && this.isFormValid('profile')) {
+  if (this.isFormValid('profile')) {
+    console.log('Saving profile...');
+    // Merge the values from both forms
+
+    const formValue = this.profileForm.getRawValue();
+
+    const updatedUser = {
+      ...this.currentUser,
+      ...formValue,
+      // ...this.profileForm.form.value,
+      // name: this.stepForm.get('name')?.value,
+      // email: this.stepForm.get('email')?.value,
+      // dateOfBirth: this.stepForm.get('dateOfBirth')?.value,
+      // height: this.stepForm.get('height')?.value,
+      // weight: this.stepForm.get('weight')?.value,
+      // goals: this.stepForm.get('goals')?.value,
+      // imgUrl: this.stepForm.get('imgUrl')?.value,
+    };
+
     // Convert height to decimal feet before saving if it's in feet and inches format
-    if (this.currentUser.height && this.currentUser.height.includes("'")) {
-      const [feet, inches] = this.currentUser.height.split("'");
-      const cleanedInches = inches.replace('"', '');
-      const totalInches = parseInt(feet) * 12 + parseInt(cleanedInches);
-      this.currentUser.height = (totalInches / 12).toFixed(2);
+    // if (updatedUser.height && updatedUser.height.includes("'")) {
+    //   const [feet, inches] = updatedUser.height.split("'");
+    //   const cleanedInches = inches.replace('"', '');
+    //   const totalInches = parseInt(feet) * 12 + parseInt(cleanedInches);
+    //   updatedUser.height = (totalInches / 12).toFixed(2);
+    // }
+
+    // Convert height to decimal feet before saving if it's in feet and inches forma
+    if (updatedUser.height) {
+      if (updatedUser.height.includes("'")) {
+        const [feet, inches] = updatedUser.height.replace('"', '').split("'");
+        const totalInches = parseInt(feet) * 12 + (inches ? parseFloat(inches) : 0);
+        updatedUser.height = (totalInches / 12).toFixed(2);
+      } else {
+        // Ensure height is stored as a string with 2 decimal places
+        updatedUser.height = parseFloat(updatedUser.height).toFixed(2);
+      }
     }
 
-    this.userService.updateUser(this.currentUser).subscribe(
-      () => {
-        console.log('Profile updated successfully');
+
+    console.log('Updated user data:', updatedUser);
+
+    // this.userService.updateUser(updatedUser).subscribe(
+    //   () => {
+    //     console.log('Profile updated successfully');
+    //     this.currentState = ProfileState.Viewing;
+    //     this.reloadProfile();
+    //   },
+    this.userService.updateUser(updatedUser).subscribe(
+      (response) => {
+        console.log('Profile updated successfully', response);
+        this.currentUser = { ...this.currentUser, ...updatedUser };
         this.currentState = ProfileState.Viewing;
+        this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
+        this.cdr.detectChanges(); // Force change detection
         this.reloadProfile();
+        // Optionally, you can still call loadProfile to ensure all data is fresh
         // this.loadProfile();
       },
       error => {
@@ -1120,85 +829,433 @@ saveProfile() {
       }
     );
   } else {
-    console.log('Form is invalid or not in editing state');
-    // Optionally, you can show an error message to the user here
+    console.log('Form is invalid, cannot save profile');
   }
 }
+
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'password') {
+//     return this.stepForm.valid && 
+//            this.isOldPasswordCorrect && 
+//            !this.passwordGroup.errors?.['passwordMismatch'] &&
+//            this.passwordGroup.valid;
+//   } else { // profile form
+//     if (!this.profileForm) return false;
+    
+//     const nameControl = this.profileForm.form.get('name');
+//     const emailControl = this.profileForm.form.get('email');
+
+//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
+
+//     const heightValid = this.isHeightValid();
+//     const weightValid = this.isWeightValid();
+
+//     const optionalFieldsValid = ['height', 'dateOfBirth', 'weight', 'imgUrl'].every(field => {
+//       const control = this.profileForm.form.get(field);
+//       return !control?.value || control?.valid;
+//     }) ?? true;
+
+//      // Validate age
+//     //  this.validateAge();
+
+//     return requiredFieldsValid && optionalFieldsValid && heightValid && weightValid && this.isValidAge;
+//   }
+// }
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'password') {
+//     const oldPasswordControl = this.stepForm.get('oldPassword');
+//     const passwordGroup = this.stepForm.get('passwordGroup');
+//     const passwordControl = passwordGroup?.get('password');
+//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+//     // Check for specific errors
+//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
+//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
+//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
+
+//     return !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+//   } else { // profile form
+//     if (!this.profileForm) return false;
+    
+//     const nameControl = this.profileForm.form.get('name');
+//     const emailControl = this.profileForm.form.get('email');
+
+//     // Check required fields
+//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
+
+//     // Check optional fields only if they have a value
+//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
+//     const optionalFieldsValid = optionalFields.every(field => {
+//       const control = this.profileForm.form.get(field);
+//       return !control?.value || control?.valid;
+//     });
+
+//     return requiredFieldsValid && optionalFieldsValid;
+//   }
+// }
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'password') {
+//     // Password logic remains unchanged
+//     const oldPasswordControl = this.stepForm.get('oldPassword');
+//     const passwordGroup = this.stepForm.get('passwordGroup');
+//     const passwordControl = passwordGroup?.get('password');
+//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
+//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
+//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
+
+//     return !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+//   } else { // profile form
+//     if (!this.profileForm) {
+//       console.log('Profile form is not initialized');
+//       return false;
+//     }
+    
+//     const nameControl = this.profileForm.form.get('name');
+//     const emailControl = this.profileForm.form.get('email');
+
+//     console.log('Name valid:', nameControl?.valid);
+//     console.log('Email valid:', emailControl?.valid);
+
+//     // Check only required fields: name and email
+//     const requiredFieldsValid = nameControl?.valid && emailControl?.valid;
+
+//     console.log('Required fields valid:', requiredFieldsValid);
+
+//     return requiredFieldsValid ?? false;
+//   }
+// }
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'profile') {
+//     if (!this.profileForm || !this.stepForm) {
+//       console.log('Profile form or step form is not initialized');
+//       return false;
+//     }
+
+//     const nameControl = this.profileForm.form.get('name');
+//     const emailControl = this.stepForm.get('email');
+
+//     console.log('Name valid:', nameControl?.valid);
+//     console.log('Email valid:', emailControl?.valid);
+
+//     // Check required fields: name and email
+//     const requiredFieldsValid = nameControl?.valid && emailControl?.valid;
+
+//     console.log('Required fields valid:', requiredFieldsValid);
+
+//     // Check optional fields only if they have a value
+//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
+//     const optionalFieldsValid = optionalFields.every(field => {
+//       const control = this.profileForm.form.get(field);
+//       console.log(`${field} valid:`, !control?.value || control?.valid);
+//       return !control?.value || control?.valid;
+//     });
+
+//     console.log('Optional fields valid:', optionalFieldsValid);
+
+//     const formValid = (requiredFieldsValid && optionalFieldsValid) ?? false;
+//     console.log('Form valid:', formValid);
+
+//     return formValid;
+//   } else if (formType === 'password') {
+//     const oldPasswordControl = this.stepForm.get('oldPassword');
+//     const passwordGroup = this.stepForm.get('passwordGroup');
+//     const passwordControl = passwordGroup?.get('password');
+//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+//     console.log('Old password valid:', oldPasswordControl?.valid);
+//     console.log('New password valid:', passwordControl?.valid);
+//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
+
+//     // Check for specific errors
+//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
+//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
+//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
+
+//     console.log('Has old password error:', hasOldPasswordError);
+//     console.log('Has new password error:', hasPasswordError);
+//     console.log('Has confirm password error:', hasConfirmPasswordError);
+
+//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+//     console.log('Password form valid:', passwordFormValid);
+
+//     return passwordFormValid;
+//   }
+
+//   console.log('Invalid form type');
+//   return false;
+// }
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'profile') {
+//     if (!this.profileForm || !this.stepForm) {
+//       console.log('Profile form or step form is not initialized');
+//       return false;
+//     }
+
+//     const nameControl = this.stepForm.get('name');
+//     const emailControl = this.stepForm.get('email');
+
+//     console.log('Name valid:', nameControl?.valid);
+//     console.log('Email valid:', emailControl?.valid);
+
+//     // Check required fields: name and email
+//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
+
+//     console.log('Required fields valid:', requiredFieldsValid);
+
+//     // Check optional fields
+//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
+//     const optionalFieldsValid = optionalFields.every(field => {
+//       const control = this.profileForm.form.get(field);
+//       const isValid = !control?.value || control?.valid;
+//       console.log(`${field} valid:`, isValid);
+//       return isValid;
+//     });
+
+//     console.log('Optional fields valid:', optionalFieldsValid);
+
+//     const formValid = requiredFieldsValid && optionalFieldsValid;
+//     console.log('Profile form valid:', formValid);
+
+//     return formValid;
+//   } else if (formType === 'password') {
+//     if (!this.stepForm) {
+//       console.log('Password form is not initialized');
+//       return false;
+//     }
+
+//     const oldPasswordControl = this.stepForm.get('oldPassword');
+//     const passwordGroup = this.stepForm.get('passwordGroup');
+//     const passwordControl = passwordGroup?.get('password');
+//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+//     console.log('Old password valid:', oldPasswordControl?.valid);
+//     console.log('New password valid:', passwordControl?.valid);
+//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
+
+//     // Check for specific errors
+//     const hasOldPasswordError = (oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect) ?? true;
+//     const hasPasswordError = (passwordControl?.hasError('required') || passwordControl?.hasError('pattern')) ?? true;
+//     const hasConfirmPasswordError = (confirmPasswordControl?.hasError('required') || this.passwordMismatch) ?? true;
+
+//     console.log('Has old password error:', hasOldPasswordError);
+//     console.log('Has new password error:', hasPasswordError);
+//     console.log('Has confirm password error:', hasConfirmPasswordError);
+
+//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+//     console.log('Password form valid:', passwordFormValid);
+
+//     return passwordFormValid;
+//   }
+
+//   console.log('Invalid form type');
+//   return false;
+// }
+
+// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
+//   if (formType === 'profile') {
+//     if (!this.profileForm || !this.stepForm) {
+//       console.log('Profile form or step form is not initialized');
+//       return false;
+//     }
+
+//     const nameControl = this.stepForm.get('name');
+//     const emailControl = this.stepForm.get('email');
+
+//     console.log('Name valid:', nameControl?.valid);
+//     console.log('Email valid:', emailControl?.valid);
+
+//     // Check required fields: name and email
+//     // Allow the form to be valid if it hasn't been touched yet
+//     const requiredFieldsValid = 
+//       (nameControl?.valid || !nameControl?.touched) && 
+//       (emailControl?.valid || !emailControl?.touched);
+
+//     console.log('Required fields valid:', requiredFieldsValid);
+
+//     // Check optional fields
+//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
+//     const optionalFieldsValid = optionalFields.every(field => {
+//       const control = this.profileForm.form.get(field);
+//       const isValid = !control?.value || control?.valid || !control?.touched;
+//       console.log(`${field} valid:`, isValid);
+//       return isValid;
+//     });
+
+//     console.log('Optional fields valid:', optionalFieldsValid);
+
+//     const formValid = requiredFieldsValid && optionalFieldsValid;
+//     console.log('Profile form valid:', formValid);
+
+//     return formValid;
+//   } else if (formType === 'password') {
+//     if (!this.stepForm) {
+//       console.log('Password form is not initialized');
+//       return false;
+//     }
+
+//     const oldPasswordControl = this.stepForm.get('oldPassword');
+//     const passwordGroup = this.stepForm.get('passwordGroup');
+//     const passwordControl = passwordGroup?.get('password');
+//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+//     console.log('Old password valid:', oldPasswordControl?.valid);
+//     console.log('New password valid:', passwordControl?.valid);
+//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
+
+//     // Check for specific errors
+//     const hasOldPasswordError = (oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect) ?? true;
+//     const hasPasswordError = (passwordControl?.hasError('required') || passwordControl?.hasError('pattern')) ?? true;
+//     const hasConfirmPasswordError = (confirmPasswordControl?.hasError('required') || this.passwordMismatch) ?? true;
+
+//     console.log('Has old password error:', hasOldPasswordError);
+//     console.log('Has new password error:', hasPasswordError);
+//     console.log('Has confirm password error:', hasConfirmPasswordError);
+
+//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+//     console.log('Password form valid:', passwordFormValid);
+
+//     return passwordFormValid;
+//   }
+
+//   console.log('Invalid form type');
+//   return false;
+// }
 
 isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-  if (formType === 'password') {
-    return this.stepForm.valid && 
-           this.isOldPasswordCorrect && 
-           !this.passwordGroup.errors?.['passwordMismatch'] &&
-           this.passwordGroup.valid;
-  } else { // profile form
-    if (!this.profileForm) return false;
-    
-    const nameControl = this.profileForm.form.get('name');
-    const emailControl = this.profileForm.form.get('email');
+  if (formType === 'profile') {
+    if (!this.profileForm) {
+      console.log('Profile form is not initialized');
+      return false;
+    }
+    const nameControl = this.profileForm.get('name');
+    const emailControl = this.profileForm.get('email');
+    const isGoogleAuth = this.profileForm.get('isGoogleAuth')?.value;
 
-    const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
+    // console.log('Name valid:', nameControl?.valid);
+    // console.log('Email valid:', emailControl?.valid);
+    // console.log('Email exists:', this.emailExists);
 
-    const heightValid = this.isHeightValid();
-    const weightValid = this.isWeightValid();
+    const requiredFieldsValid = 
+      (nameControl?.valid ?? false) && 
+      ((emailControl?.disabled || emailControl?.valid) ?? false) && 
+      !this.emailExists;
 
-    const optionalFieldsValid = ['height', 'dateOfBirth', 'weight', 'imgUrl'].every(field => {
-      const control = this.profileForm.form.get(field);
-      return !control?.value || control?.valid;
-    }) ?? true;
+    // console.log('Required fields valid:', requiredFieldsValid);
 
-     // Validate age
-    //  this.validateAge();
+    const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
+    const optionalFieldsValid = optionalFields.every(field => {
+      const control = this.profileForm.get(field);
+      const isValid = !control?.value || control.valid;
+      // console.log(`${field} valid:`, isValid);
+      return isValid;
+    });
 
-    return requiredFieldsValid && optionalFieldsValid && heightValid && weightValid && this.isValidAge;
+    // console.log('Optional fields valid:', optionalFieldsValid);
+
+    const formValid = requiredFieldsValid && optionalFieldsValid;
+    // console.log('Profile form valid:', formValid);
+
+    return formValid;
+  } else if (formType === 'password') {
+    if (!this.passwordForm) {
+      // console.log('Password form is not initialized');
+      return false;
+    }
+
+    const oldPasswordControl = this.passwordForm.get('oldPassword');
+    const passwordGroup = this.passwordForm.get('passwordGroup') as FormGroup;
+    const passwordControl = passwordGroup?.get('password');
+    const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+    console.log('Old password valid:', oldPasswordControl?.valid);
+    console.log('New password valid:', passwordControl?.valid);
+    console.log('Confirm password valid:', confirmPasswordControl?.valid);
+
+    const hasOldPasswordError = (oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect) ?? true;
+    const hasPasswordError = (passwordControl?.hasError('required') || passwordControl?.hasError('pattern')) ?? true;
+    const hasConfirmPasswordError = (confirmPasswordControl?.hasError('required') || this.passwordMismatch) ?? true;
+
+    console.log('Has old password error:', hasOldPasswordError);
+    console.log('Has new password error:', hasPasswordError);
+    console.log('Has confirm password error:', hasConfirmPasswordError);
+
+    const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
+    console.log('Password form valid:', passwordFormValid);
+
+    return passwordFormValid;
   }
+
+  console.log('Invalid form type');
+  return false;
 }
 
-isHeightValid(): boolean {
-  const heightPattern = /^(\d+(\.\d+)?|\d+'\d+(\.\d+)?"?)$/;
-  return heightPattern.test(this.currentUser.height || '');
-}
+// isHeightValid(): boolean {
+//   const heightPattern = /^(\d+(\.\d+)?|\d+'\d+(\.\d+)?"?)$/;
+//   return heightPattern.test(this.currentUser.height || '');
+// }
 
 // isWeightValid(): boolean {
+//   console.log("Validating weight");
 //   const weightString = this.currentUser.weight || '';
+  
+//   // Check if weight contains only numbers and at most one decimal
+//   const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightString);
+//   if (!isNumeric) {
+//     return false;
+//   }
+
 //   const weightValue = parseFloat(weightString);
-  
-//   if (isNaN(weightValue)) {
+
+//   // Check if weight is within the valid range
+//   if (weightValue < 50 || weightValue > 600) {
 //     return false;
 //   }
-//   else if(weightValue < 50 || weightValue > 600) {
-//     return false;
-//   }
-  
-//   return weightValue >= 50 && weightValue <= 600;
+
+//   return true;
 // }
 
 isWeightValid(): boolean {
-  const weightString = this.currentUser.weight || '';
-  
-  // Check if weight contains only numbers and at most one decimal
-  const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightString);
+  const weightControl = this.profileForm.get('weight');
+  if (!weightControl) return true; // If control doesn't exist, consider it valid
+
+  const weightValue = weightControl.value;
+  if (!weightValue) return true; // Empty value is considered valid (assuming weight is optional)
+
+  // Check if weight is a valid number with up to two decimal places
+  const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightValue);
   if (!isNumeric) {
+    weightControl.setErrors({...weightControl.errors, invalidFormat: true});
     return false;
   }
 
-  const weightValue = parseFloat(weightString);
-
-  // Check if weight is within the valid range
-  if (weightValue < 50 || weightValue > 600) {
+  const weight = parseFloat(weightValue);
+  if (weight < 50 || weight > 600) {
+    weightControl.setErrors({...weightControl.errors, outOfRange: true});
     return false;
+  }
+
+  // Clear custom errors if weight is valid
+  const currentErrors = {...weightControl.errors};
+  if (currentErrors) {
+    delete currentErrors['invalidFormat'];
+    delete currentErrors['outOfRange'];
+    weightControl.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
   }
 
   return true;
 }
 
-  get passwordGroup() {
-    return this.stepForm.get('passwordGroup') as FormGroup;
-  }
-
+  
   checkPasswords(): void {
     this.authenticating = false;
-    const passwordGroup = this.stepForm.get('passwordGroup');
+    const passwordGroup = this.passwordForm.get('passwordGroup');
     const password = passwordGroup?.get('password')?.value;
     const confirmPassword = passwordGroup?.get('confirmPassword')?.value;
 
@@ -1213,47 +1270,362 @@ isWeightValid(): boolean {
     this.cdr.detectChanges();
   }
 
-  checkOldPassword() {
-    const oldPassword = this.stepForm.get('oldPassword')?.value;
-    if(oldPassword === '') {
+//   checkOldPassword() {
+//     const oldPassword = this.passwordForm.get('oldPassword')?.value;
+//     if(oldPassword === '') {
+//       this.authenticating = false;
+//       return;
+//     }
+//     if (oldPassword) {
+//       this.authenticating = true;
+//       this.userService.checkPassword(this.userId, oldPassword).subscribe(
+//         (isCorrect) => {
+//           this.isOldPasswordCorrect = isCorrect;
+//           this.authenticating = false;
+//           if (isCorrect) {
+//             this.oldPasswordError = '';
+//             // this.stepForm.get('passwordGroup.password')?.enable();
+//             // this.stepForm.get('passwordGroup.confirmPassword')?.enable();
+//             this.passwordGroup.enable();
+//           } else {
+//             this.oldPasswordError = 'Incorrect';
+//             this.passwordGroup.disable();
+//             // this.stepForm.get('passwordGroup.password')?.disable();
+//             // this.stepForm.get('passwordGroup.confirmPassword')?.disable();
+//           }
+//           // this.stepForm.updateValueAndValidity();
+//           this.cdr.detectChanges();
+//         },
+//         (error) => {
+//           console.error('Error checking password:', error);
+//           this.oldPasswordError = 'Error checking password';
+//           this.isOldPasswordCorrect = false;
+//           this.passwordGroup.disable();
+//           this.cdr.detectChanges();
+//         }
+//       );
+//     }
+//     else {
+//       this.isOldPasswordCorrect = false;
+//       this.passwordGroup.disable();
+//   }
+// }
+
+// checkOldPassword() {
+//   const oldPasswordControl = this.passwordForm.get('oldPassword');
+  
+//   if (!oldPasswordControl) return;
+
+//   oldPasswordControl.valueChanges.pipe(
+//     debounceTime(300),
+//     distinctUntilChanged()
+//   ).subscribe(oldPassword => {
+//     if (oldPassword === '') {
+//       this.authenticating = false;
+//       this.oldPasswordError = '';
+//       this.isOldPasswordCorrect = false;
+//       this.passwordGroup.disable();
+//       return;
+//     }
+
+//     this.authenticating = true;
+//     this.oldPasswordError = '';
+
+//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
+//       (isCorrect) => {
+//         this.isOldPasswordCorrect = isCorrect;
+//         this.authenticating = false;
+        
+//         if (isCorrect) {
+//           this.oldPasswordError = '';
+//           this.passwordGroup.enable();
+//         } else {
+//           this.oldPasswordError = 'Incorrect';
+//           this.passwordGroup.disable();
+//         }
+//         this.cdr.detectChanges();
+//       },
+//       (error) => {
+//         console.error('Error checking password:', error);
+//         this.authenticating = false;
+//         this.oldPasswordError = 'Error checking password';
+//         this.isOldPasswordCorrect = false;
+//         this.passwordGroup.disable();
+//         this.cdr.detectChanges();
+//       }
+//     );
+//   });
+// }
+
+// checkOldPassword() {
+//   const oldPasswordControl = this.passwordForm.get('oldPassword');
+  
+//   if (!oldPasswordControl) return;
+
+//   oldPasswordControl.valueChanges.pipe(
+//     debounceTime(1500),
+//     distinctUntilChanged(),
+//     takeUntil(this.destroy$)
+//   ).subscribe(oldPassword => {
+//     if (oldPassword === '') {
+//       this.authenticating = false;
+//       this.oldPasswordError = '';
+//       this.isOldPasswordCorrect = false;
+//       this.passwordGroup.disable();
+//       return;
+//     }
+
+//     this.authenticating = true;
+//     this.oldPasswordError = '';
+
+//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
+//       (isCorrect) => {
+//         this.isOldPasswordCorrect = isCorrect;
+//         this.authenticating = false;
+        
+//         if (isCorrect) {
+//           this.oldPasswordError = '';
+//           this.passwordGroup.enable();
+//         } else {
+//           this.oldPasswordError = 'Incorrect';
+//           this.passwordGroup.disable();
+//         }
+//         this.cdr.detectChanges();
+//       },
+//       (error) => {
+//         console.error('Error checking password:', error);
+//         this.authenticating = false;
+//         this.oldPasswordError = 'Invalid';
+//         this.isOldPasswordCorrect = false;
+//         this.passwordGroup.disable();
+//         this.cdr.detectChanges();
+//       }
+//     );
+//   });
+// }
+
+// checkOldPassword() {
+//   const oldPasswordControl = this.passwordForm.get('oldPassword');
+  
+//   if (!oldPasswordControl) return;
+
+//   // Reset states when the input changes
+//   oldPasswordControl.valueChanges.pipe(
+//     takeUntil(this.destroy$)
+//   ).subscribe(() => {
+//     this.isWaitingToCheck = true;
+//     this.authenticating = false;
+//     this.oldPasswordError = '';
+//     this.cdr.detectChanges();
+//   });
+
+//   // Main password checking logic with debounce
+//   oldPasswordControl.valueChanges.pipe(
+//     debounceTime(1200),
+//     distinctUntilChanged(),
+//     takeUntil(this.destroy$)
+//   ).subscribe(oldPassword => {
+//     this.isWaitingToCheck = false;
+
+//     if (oldPassword === '') {
+//       this.authenticating = false;
+//       this.oldPasswordError = '';
+//       this.isOldPasswordCorrect = false;
+//       this.passwordGroup.disable();
+//       this.cdr.detectChanges();
+//       return;
+//     }
+
+//     this.authenticating = true;
+//     this.oldPasswordError = '';
+//     this.cdr.detectChanges();
+
+//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
+//       (isCorrect) => {
+//         this.isOldPasswordCorrect = isCorrect;
+//         this.authenticating = false;
+        
+//         if (isCorrect) {
+//           this.oldPasswordError = '';
+//           this.passwordGroup.enable();
+//         } else {
+//           this.oldPasswordError = 'Incorrect';
+//           this.passwordGroup.disable();
+//         }
+//         this.cdr.detectChanges();
+//       },
+//       (error) => {
+//         console.error('Error checking password:', error);
+//         this.authenticating = false;
+//         this.oldPasswordError = '';
+//         this.isOldPasswordCorrect = false;
+//         this.passwordGroup.disable();
+//         this.cdr.detectChanges();
+//       }
+//     );
+//   });
+// }
+
+// checkOldPassword() {
+//   const oldPasswordControl = this.passwordForm.get('oldPassword');
+  
+//   if (!oldPasswordControl) return;
+
+//   // Reset states when the input changes
+//   oldPasswordControl.valueChanges.pipe(
+//     takeUntil(this.destroy$)
+//   ).subscribe(() => {
+//     this.isWaitingToCheck = true;
+//     this.authenticating = false;
+//     this.oldPasswordError = '';
+//     oldPasswordControl.setErrors(null);  // Clear any previous errors
+//     this.cdr.detectChanges();
+//   });
+
+//   // Main password checking logic with debounce
+//   oldPasswordControl.valueChanges.pipe(
+//     debounceTime(1500),
+//     distinctUntilChanged(),
+//     takeUntil(this.destroy$)
+//   ).subscribe(oldPassword => {
+//     this.isWaitingToCheck = false;
+
+//     if (oldPassword === '') {
+//       this.authenticating = false;
+//       this.oldPasswordError = '';
+//       this.isOldPasswordCorrect = false;
+//       this.passwordGroup.disable();
+//       oldPasswordControl.setErrors(null);  // Clear errors for empty input
+//       this.cdr.detectChanges();
+//       return;
+//     }
+
+//     this.authenticating = true;
+//     this.oldPasswordError = '';
+//     this.cdr.detectChanges();
+
+//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
+//       (isCorrect) => {
+//         this.isOldPasswordCorrect = isCorrect;
+//         this.authenticating = false;
+        
+//         if (isCorrect) {
+//           this.oldPasswordError = '';
+//           oldPasswordControl.setErrors(null);  // Clear errors if password is correct
+//           this.passwordGroup.enable();
+//         } else {
+//           this.oldPasswordError = 'Incorrect';
+//           oldPasswordControl.setErrors({ 'incorrect': true });  // Set error if password is incorrect
+//           this.passwordGroup.disable();
+//         }
+//         this.cdr.detectChanges();
+//       },
+//       (error) => {
+//         console.error('Error checking password:', error);
+//         this.authenticating = false;
+//         if(this.passwordForm.get('oldPassword')?.touched){
+//           this.oldPasswordError = 'Invalid';
+//         }
+//         this.isOldPasswordCorrect = false;
+//         oldPasswordControl.setErrors({ 'serverError': true });  // Set error for server errors
+//         this.passwordGroup.disable();
+//         this.cdr.detectChanges();
+//       }
+//     );
+//   });
+// }
+
+checkOldPassword() {
+  if (this.currentState !== ProfileState.ChangingPassword) {
+    return; // Exit if not in password changing state
+  }
+
+  const oldPasswordControl = this.passwordForm.get('oldPassword');
+  
+  if (!oldPasswordControl) return;
+
+  let authenticatingTimeout: any;
+
+  // Reset states when the input changes
+  oldPasswordControl.valueChanges.pipe(
+    takeUntil(this.destroy$)
+  ).subscribe(() => {
+    this.isWaitingToCheck = true;
+    this.authenticating = false;
+    this.oldPasswordError = '';
+    oldPasswordControl.setErrors(null);
+    if (authenticatingTimeout) {
+      clearTimeout(authenticatingTimeout);
+    }
+    this.cdr.detectChanges();
+  });
+
+  // Main password checking logic with debounce
+  oldPasswordControl.valueChanges.pipe(
+    debounceTime(1500),
+    distinctUntilChanged(),
+    takeUntil(this.destroy$)
+  ).subscribe(oldPassword => {
+    this.isWaitingToCheck = false;
+
+    if (oldPassword === '') {
       this.authenticating = false;
-      return;
-    }
-    if (oldPassword) {
-      this.authenticating = true;
-      this.userService.checkPassword(this.userId, oldPassword).subscribe(
-        (isCorrect) => {
-          this.isOldPasswordCorrect = isCorrect;
-          this.authenticating = false;
-          if (isCorrect) {
-            this.oldPasswordError = '';
-            // this.stepForm.get('passwordGroup.password')?.enable();
-            // this.stepForm.get('passwordGroup.confirmPassword')?.enable();
-            this.passwordGroup.enable();
-          } else {
-            this.oldPasswordError = 'Incorrect';
-            this.passwordGroup.disable();
-            // this.stepForm.get('passwordGroup.password')?.disable();
-            // this.stepForm.get('passwordGroup.confirmPassword')?.disable();
-          }
-          // this.stepForm.updateValueAndValidity();
-          this.cdr.detectChanges();
-        },
-        (error) => {
-          console.error('Error checking password:', error);
-          this.oldPasswordError = 'Error checking password';
-          this.isOldPasswordCorrect = false;
-          this.passwordGroup.disable();
-          this.cdr.detectChanges();
-        }
-      );
-    }
-    else {
+      this.oldPasswordError = '';
       this.isOldPasswordCorrect = false;
       this.passwordGroup.disable();
-  }
+      oldPasswordControl.setErrors(null);
+      this.cdr.detectChanges();
+      return;
+    }
+
+    authenticatingTimeout = setTimeout(() => {
+      this.authenticating = true;
+      this.cdr.detectChanges();
+    }, 100);
+
+    this.userService.checkPassword(this.userId, oldPassword).subscribe(
+      (isCorrect) => {
+        clearTimeout(authenticatingTimeout);
+        this.isOldPasswordCorrect = isCorrect;
+        this.authenticating = false;
+        
+        if (isCorrect) {
+          this.oldPasswordError = '';
+          oldPasswordControl.setErrors(null);
+          this.passwordGroup.enable();
+        } else {
+          if (oldPasswordControl.touched) {
+            this.oldPasswordError = 'Incorrect';
+            oldPasswordControl.setErrors({ 'incorrect': true });
+          }
+          this.passwordGroup.disable();
+        }
+        this.cdr.detectChanges();
+      },
+      (error) => {
+        clearTimeout(authenticatingTimeout);
+        console.error('Error checking password:', error);
+        this.authenticating = false;
+        this.isOldPasswordCorrect = false;
+        if (oldPasswordControl.touched) {
+          this.oldPasswordError = 'Invalid';
+          oldPasswordControl.setErrors({ 'serverError': true });
+        }
+        this.passwordGroup.disable();
+        this.cdr.detectChanges();
+      }
+    );
+  });
 }
 
+isOldPasswordError(): boolean {
+  const control = this.passwordForm.get('oldPassword');
+  return !!this.oldPasswordError && !!control?.invalid && !!control?.touched;
+}
+
+get passwordGroup() {
+  return this.passwordForm.get('passwordGroup') as FormGroup;
+}
 
   updateUserPassword() {
     console.log('Update button clicked');
@@ -1308,71 +1680,6 @@ isWeightValid(): boolean {
       this.deleteProfileUser();
     }, 2000);
   }
-
-  // goodbye(event?: Event): void {
-  //   if (event) {
-  //     event.stopPropagation();  // Prevent the click from propagating to the parent div
-  //   }
-  //     (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
-  //     'Deleting Profile...';
-  //     setTimeout(() => {
-  //       (document.getElementById('cancelSub') as HTMLButtonElement).innerText =
-  //         'Goodbye';
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       this.deleteProfileUser();
-  //     }, 2000);
-  // }
-
-  // goodbye(): void {
-  //   const cancelSubButton = document.getElementById('cancelSub') as HTMLButtonElement;
-  //   cancelSubButton.innerText = 'Deleting Profile...';
-    
-  //   setTimeout(() => {
-  //     cancelSubButton.innerText = 'Goodbye';
-  //   }, 1000);
-    
-  //   setTimeout(() => {
-  //     this.deleteProfileUser();
-  //   }, 2000);
-  // }
-
-  // goodbye(event: MouseEvent): void {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-    
-  //   const cancelSubButton = event.target as HTMLButtonElement;
-  //   cancelSubButton.innerText = 'Deleting Profile...';
-    
-  //   setTimeout(() => {
-  //     cancelSubButton.innerText = 'Goodbye';
-  //   }, 1000);
-    
-  //   setTimeout(() => {
-  //     this.deleteProfileUser();
-  //   }, 2000);
-  // }
-
-  // goodbye(){
-    // event.stopPropagation();
-    // event.preventDefault();
-    
-    // if (this.isProcessingGoodbye) return;
-    
-    // this.isProcessingGoodbye = true;
-    
-  //   const cancelSubButton = event.target as HTMLButtonElement;
-  //   cancelSubButton.innerText = 'Deleting Profile...';
-    
-  //   setTimeout(() => {
-  //     cancelSubButton.innerText = 'Goodbye';
-  //   }, 1000);
-    
-  //   setTimeout(() => {
-  //     this.deleteProfileUser();
-  //     this.isProcessingGoodbye = false;
-  //   }, 2000);
-  // }
   
 
   deleteProfileUser() {
@@ -1382,28 +1689,6 @@ isWeightValid(): boolean {
     });
   }
 
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.userService.isloggedIn();
-  //   if (this.userIsLoggedIn) {
-  //     this.UserId = this.userService.getUserId() ?? '';
-  //   }
-  // }
-
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.userService.isloggedIn();
-    
-  //   if (this.userIsLoggedIn) {
-  //     this.userService.getUserId().subscribe(
-  //       (userId) => {
-  //         this.UserId = userId || '';  // Assign the userId once fetched or fallback to an empty string
-  //       },
-  //       (error) => {
-  //         console.error('Error fetching userId:', error);
-  //         this.UserId = '';  // Fallback in case of error
-  //       }
-  //     );
-  //   }
-  // }
 
   UpdateStatus() {
     this.userIsLoggedIn = this.userService.isloggedIn();
@@ -1411,15 +1696,6 @@ isWeightValid(): boolean {
       this.UserId = this.userService.getUserId() ?? '';
     }
   }
-
-  // logOut() {
-  //   this.cartService.clearCart();
-  //   this.userService.logoutUser();
-  //   this.UpdateStatus();
-  //   this.router.navigate(['/home']);
-  //   this.resetAnimationFlags();
-  //   localStorage.removeItem('currentTier');
-  // }
 
   logOut() {
     this.cartService.clearCart();
@@ -1432,57 +1708,40 @@ isWeightValid(): boolean {
     this.router.navigate(['/home']);
   }
 
-  // resetAnimationFlags() {
-  //   localStorage.removeItem('hasVisitedProfileBeforeTierOne');
-  //   localStorage.removeItem('hasVisitedProfileBeforeTierTwo');
-  //   localStorage.removeItem('hasVisitedProfileBeforeTierThree');
-  //   this.firstTimeAnimationTierOne = true;
-  //   this.firstTimeAnimationTierTwo = true;
-  //   this.firstTimeAnimationTierThree = true;
-  // }
-
-  // editProfile() {
-  //   if (this.currentState === ProfileState.EditingProfile) {
-  //     // Save the profile
-  //     this.userService.updateUser(this.currentUser).subscribe(() => {
-  //       this.currentState = ProfileState.Viewing;
-  //       this.reloadProfile();
-  //       // this.loadProfile();
-  //     });
-  //   } else {
-  //     this.currentState = ProfileState.EditingProfile;
-  //     this.stepForm = this.fb.group({
-  //       // ... other form controls ...
-  //       email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-  //     });
-  //   }
-  // }
-
   editProfile(): void {
-    if (this.currentState === ProfileState.EditingProfile) {
-      // Save the profile
-      const updatedUser = { ...this.currentUser, ...this.stepForm.value };
-      this.userService.updateUser(updatedUser).subscribe(() => {
-        this.currentState = ProfileState.Viewing;
-        this.loadProfile();
-      });
-    } else {
-      this.currentState = ProfileState.EditingProfile;
-      // Initialize the stepForm with current user data
-      this.stepForm = this.fb.group({
-        email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-        // Add other form controls here, initialized with current user data
-      });
-      this.updateFormWithUserData();
-      this.syncFormWithCurrentUser();
-    }
+    this.currentState = ProfileState.EditingProfile;
+    // if (this.currentState === ProfileState.EditingProfile) {
+    //   // Save the profile
+    //   const updatedUser = { ...this.currentUser, ...this.stepForm.value };
+    //   this.userService.updateUser(updatedUser).subscribe(() => {
+    //     this.currentState = ProfileState.Viewing;
+    //     this.loadProfile();
+    //   });
+    // } else {
+    //   this.currentState = ProfileState.EditingProfile;
+    //   // Initialize the stepForm with current user data
+    //   this.stepForm = this.fb.group({
+    //       name: [this.currentUser.name, [Validators.required, Validators.minLength(4), Validators.pattern((/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/))]],
+    //       email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+    //       dateOfBirth: [this.currentUser.dateOfBirth, []],
+    //       gender: [this.currentUser.gender],
+    //       weight: [this.currentUser.weight, []],
+    //       height: [this.currentUser.height, []],
+    //       goals: [this.currentUser.goals],
+    //       imgUrl: [this.currentUser.imgUrl, []],
+    //   });
+    //   this.stepForm.get('name')?.updateValueAndValidity();
+    //   this.stepForm.get('email')?.updateValueAndValidity();
+
+    //   this.syncFormWithCurrentUser();
+    // }
   }
 
   syncFormWithCurrentUser(): void {
     if (this.formSubscription) {
       this.formSubscription.unsubscribe();
     }
-    this.formSubscription = this.stepForm.valueChanges.subscribe(formValue => {
+    this.formSubscription = this.profileForm.valueChanges.subscribe(formValue => {
       this.currentUser = { ...this.currentUser, ...formValue };
     });
   }
@@ -1493,6 +1752,7 @@ isWeightValid(): boolean {
 
   changePassword() {
     this.currentState = ProfileState.ChangingPassword;
+    this.resetPasswordForm();
   }
 
   deleteProfile() {
@@ -1539,26 +1799,97 @@ isWeightValid(): boolean {
   //   this.stepForm.clearValidators();
   // }
 
-  cancelAction(event?: MouseEvent): void {
-    if (event) {
-      event.stopPropagation();
-    }
+  // cancelAction(event?: MouseEvent): void {
+  //   if (event) {
+  //     event.stopPropagation();
+  //   }
+    
+  //   if (this.isProcessingGoodbye) return;
+    
+  //   this.currentState = ProfileState.Viewing;
+  //   this.profileForm.reset();
+  //   this.passwordForm.markAsPristine();
+  //   this.passwordForm.reset();
+  //   this.passwordGroup.disable();
+  //   this.authenticating = false;
+  //   this.oldPasswordError = '';
+  //   this.reloadProfile();
+  //   this.passwordForm.clearValidators();
+  // }
+
+  cancelAction(): void {
+    // if (event) {
+    //   event.stopPropagation();
+    // }
     
     if (this.isProcessingGoodbye) return;
     
     this.currentState = ProfileState.Viewing;
-    this.stepForm.reset();
+  
+    // Reset profile form
+    this.profileForm.reset();
+  
+    // Reset password form and clear all errors
+    this.passwordForm.reset();
+    Object.keys(this.passwordForm.controls).forEach(key => {
+      const control = this.passwordForm.get(key);
+      control?.setErrors(null);
+      control?.updateValueAndValidity();
+    });
+  
+    // Specifically reset the old password control
+    const oldPasswordControl = this.passwordForm.get('oldPassword');
+    if (oldPasswordControl) {
+      oldPasswordControl.setErrors(null);
+      oldPasswordControl.updateValueAndValidity();
+    }
+
+  
+    // Reset password group
+    this.passwordGroup.reset();
+    this.passwordGroup.disable();
+  
+    // Clear custom error flags
+    this.authenticating = false;
+    this.oldPasswordError = '';
+    this.isOldPasswordCorrect = false;
+    this.isWaitingToCheck = false;
+  
+    // Reset any other custom states
+    this.passwordMismatch = false;
+    this.isPopupVisible = false;
+  
+    // Reload profile data
+    this.reloadProfile();
+  
+    // Trigger change detection
+    this.cdr.detectChanges();
+
+    this.resetPasswordForm();
+  }
+
+  resetPasswordForm(): void {
+    this.passwordForm.reset();
+    Object.keys(this.passwordForm.controls).forEach(key => {
+      const control = this.passwordForm.get(key);
+      control?.setErrors(null);
+      control?.updateValueAndValidity();
+    });
+    this.passwordGroup.reset();
     this.passwordGroup.disable();
     this.authenticating = false;
     this.oldPasswordError = '';
-    this.reloadProfile();
-    this.stepForm.clearValidators();
+    this.isOldPasswordCorrect = false;
+    this.isWaitingToCheck = false;
+    this.passwordMismatch = false;
+    this.isPopupVisible = false;
+    this.cdr.detectChanges();
   }
 
   getPasswordErrorMessage(): string {
     const passwordControl = this.passwordGroup.get('password');
     if (passwordControl?.hasError('required')) {
-      return 'Password is required';
+      return 'Required';
     }
     if (passwordControl?.hasError('pattern')) {
       return 'Invalid';
@@ -1569,7 +1900,7 @@ isWeightValid(): boolean {
   getConfirmPasswordErrorMessage(): string {
     const confirmPasswordControl = this.passwordGroup.get('confirmPassword');
     if (confirmPasswordControl?.hasError('required')) {
-      return 'Password is required';
+      return 'Required';
     }
     if (confirmPasswordControl?.hasError('pattern')) {
       return 'Invalid';
@@ -1649,8 +1980,12 @@ isWeightValid(): boolean {
     const email = input.value;
     console.log('Checking email:', email);
   
-    const emailControl = this.stepForm.get('email');
-    
+    const emailControl = this.profileForm.get('email');
+    if(email === this.currentUser.email) {
+      console.log('Email is same as current user email, skipping check' + email + "current email"+ this.currentUser.email);
+      emailControl?.setErrors(null);
+      return;
+    }
     if (email && emailControl && emailControl.valid) {
       this.userService.checkEmail(email).subscribe(
         (response: {exists: boolean, message: string}) => {
@@ -1672,49 +2007,6 @@ isWeightValid(): boolean {
       );
     }
   }
-  // 
 
-  // updateTierFlags(): void {
-  //   this.tierOne = this.currentUser.tier === 'Just Looking';
-  //   this.tierTwo = this.currentUser.tier === 'Motivated';
-  //   this.tierThree = this.currentUser.tier === 'All In';
-  // }
 
-  // updateTierFlags(): void {
-  //   const previousTier = this.tierOne ? 'Just Looking' : (this.tierTwo ? 'Motivated' : 'All In');
-  //   this.tierOne = this.currentUser.tier === 'Just Looking';
-  //   this.tierTwo = this.currentUser.tier === 'Motivated';
-  //   this.tierThree = this.currentUser.tier === 'All In';
-  //   if (previousTier !== this.currentUser.tier) {
-  //     this.firstTimeAnimation = true;
-  //   }
-  // }
 }
-
-  // initializeAnimationFlags(): void {
-  //   console.log('Initializing animation flags');
-  //   this.firstTimeAnimationTierOne = localStorage.getItem('hasVisitedTierOne') !== 'true';
-  //   this.firstTimeAnimationTierTwo = localStorage.getItem('hasVisitedTierTwo') !== 'true';
-  //   this.firstTimeAnimationTierThree = localStorage.getItem('hasVisitedTierThree') !== 'true';
-  //   console.log('Animation flags:', {
-  //     tierOne: this.firstTimeAnimationTierOne,
-  //     tierTwo: this.firstTimeAnimationTierTwo,
-  //     tierThree: this.firstTimeAnimationTierThree
-  //   });
-  // }
-
-//   resetAnimationFlags(): void {
-//     console.log('Resetting animation flags');
-//     localStorage.removeItem('hasVisitedTierOne');
-//     localStorage.removeItem('hasVisitedTierTwo');
-//     localStorage.removeItem('hasVisitedTierThree');
-//     this.firstTimeAnimationTierOne = true;
-//     this.firstTimeAnimationTierTwo = true;
-//     this.firstTimeAnimationTierThree = true;
-//   }
-// }
-
-/*lets make a simpler solution instead of adding more methods. Lets do this:when the user for example is in tierThree we set one  
-firstTimeAnimation flag not three to true, and localStorage.setItem({currentTier: currentUser.tier{) Then when upgrading or downgrading
-we check in the loadProfile method, if (currentUser.tier === localStorage.setItem({currentTier: currentUser.tier{) if not trigger animations once, then set 
-firstTimeAnimation to true in the triggerAnimation method. If this is not a safe method make it better and safer. Or complete the solution*/

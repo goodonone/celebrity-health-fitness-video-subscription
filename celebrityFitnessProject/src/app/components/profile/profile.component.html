@@ -1,5 +1,14 @@
 <div class="pageContainer">
 
+    <ng-container *ngIf="!loadingComplete" class="spinnerContainer">
+        <div class="spinner-overlay">
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+            <div class="spinner-text">Loading...</div>
+        </div>
+    </ng-container>
+
     <div class="flexContainer" *ngIf="loadingComplete">
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}">Hi {{firstName}}! <br>You're {{currentUser.tier | uppercase}}</h1>
@@ -46,7 +55,7 @@
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()" (click)="changePicture()">Change Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
-                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Change Password</button>
+                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Cancel Subscription</button>
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Sign Out</button>
@@ -54,7 +63,7 @@
                         </div>
                         <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Edit Profile</button>
-                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Change Password</button>
+                                <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}">Billing Details</button>
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Cancel Subscription</button>
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Sign Out</button>
@@ -69,11 +78,11 @@
                     <div class="profileDataContainer">
                         <h3 class="profileDetails name"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
                         <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
-                        <h3 class="profileDetails" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
-                        <h3 class="profileDetails" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
-                        <h3 class="profileDetails" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
-                        <h3 class="profileDetails" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{displayHeight}}ft</h3>
-                        <h3 class="profileDetails" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
+                        <h3 class="profileDetails DOB" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
+                        <h3 class="profileDetails gender" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
+                        <h3 class="profileDetails weight" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
+                        <h3 class="profileDetails height" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{displayHeight}}ft</h3>
+                        <h3 class="profileDetails objective" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
                         <div class="planContainer">
                             <h3 class="profileDetails plan" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
@@ -116,12 +125,16 @@
                                 <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" type="submit">Update</button>
                             </div>
                         </form>  -->
-                        <form #profileForm="ngForm" (ngSubmit)="saveProfile()" id="profileForm">
+                        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" id="profileForm">
                             <div class="updateOnlyPicture">
                                 <h3 class="profileDetailsInput name">
-                                    <span class="spanProfileCategory">Name</span><br>
+                                    <!-- <div class="titleError"> -->
+                                        <span class="spanProfileCategory">Name</span><br>
+                                        <!-- <label for="error" *ngIf="profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)" class="error-alert-input">Invalid</label> -->
+                                    <!-- </div> -->
                                     <input class="name" matInput placeholder="Enter Full Name" name="name" 
-                                           [(ngModel)]="currentUser.name" required #name="ngModel" [ngStyle]="{'border-color': name.invalid && (name.dirty || name.touched) ? 'red' : 'white'}">
+                                    formControlName="name"
+                                    [value]="currentUser.name" required [ngStyle]="{'border-color': profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched) ? 'red' : 'white'}">
                                     <!-- <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
                                         Name is required
                                     </mat-error> -->
@@ -136,11 +149,11 @@
                                     <!-- <input class="email" matInput placeholder="Enter Email" name="email" formControlName="email"
                                            [(ngModel)]="currentUser.email" required email [ngStyle]="{'border-color': email.invalid && (email.dirty || email.touched) ? 'red' : 'white'}" (blur)="checkEmail()"> -->
                                     <input class="email" matInput placeholder="Enter Email" 
-                                           [formControlName]="currentState === ProfileState.EditingProfile ? 'email' : ''"
+                                           formControlName="email"
                                            [value]="currentUser.email"
-                                           [disabled]="currentUser.isGoogleAuth === true"
+                                           [attr.disabled]="profileForm.get('email')?.disabled ? '' : null"
                                            (blur)="checkEmail($event)"
-                                           [ngStyle]="{'border-color': this.stepForm.get('email')?.invalid || this.stepForm.get('email')?.hasError('emailExists') ? 'red' : 'white'}">
+                                           [ngStyle]="{'border-color': profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched) || this.profileForm.get('email')?.hasError('emailExists') ? 'red' : 'white'}" required>
                                 </h3>
                                 <!-- <h3 class="profileDetailsInput">
                                     <span class="spanProfileCategory">Date Of Birth</span><br> -->
@@ -156,15 +169,17 @@
                                         <!-- <label for="error" *ngIf="twentyOneError" class="errorTwentyOne">21+ Only</label> -->
                                     </div>
                                     <input placeholder="mm/dd/yyyy" matInput name="dateOfBirth"
-                                            [(ngModel)]="currentUser.dateOfBirth" (blur)="validateAge()"
+                                            formControlName="dateOfBirth"
+                                            [value]="currentUser.dateOfBirth"
+                                            (blur)="validateAge()"
                                             pattern="^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/([0-9]{4})$"
-                                            maxlength="10" #dob="ngModel"
-                                            [ngStyle]="{'border-color': (!dob.valid || !isValidAge) && (dob.dirty || dob.touched) ? 'red' : 'white'}">
+                                            maxlength="10" 
+                                            [ngStyle]="{'border-color': (!isValidAge || profileForm.get('dateOfBirth')?.invalid) && (profileForm.get('dateOfBirth')?.dirty || profileForm.get('dateOfBirth')?.touched) ? 'red' : 'white'}">
                                 </h3>
                                 
                                 <h3 class="profileDetailsInputGender">
                                     <span class="spanProfileCategory">Gender</span><br>
-                                    <select matNativeControl name="gender"[(ngModel)]="currentUser.gender" >
+                                    <select matNativeControl name="gender"[value]="currentUser.gender" formControlName="gender">
                                         <option value="" disabled selected>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -173,8 +188,12 @@
                                 <h3 class="profileDetailsInputWeight">
                                     <span class="spanProfileCategory">Weight</span><br>
                                     <input matInput placeholder="Enter Weight in lbs (e.g., 245)" min="50" 
+                                            formControlName="weight"
                                             max="600"  name="weight" type="text"
-                                           [(ngModel)]="currentUser.weight" [ngModelOptions]="{ updateOn: 'blur' }" pattern="^\d+(\.\d{1,2})?$" step="0.01" #weight="ngModel" [ngStyle]="{'border-color': !isWeightValid() && (weight.dirty || weight.touched) ? 'red' : 'white'}">
+                                            [value]="currentUser.weight" pattern="^\d+(\.\d{1,2})?$" 
+                                            step="0.01" 
+                                            (blur)="isWeightValid()"
+                                            [ngStyle]="{'border-color': !isWeightValid() && (profileForm.get('weight')?.dirty || profileForm.get('weight')?.touched) ? 'red' : 'white'}">
                                     <!-- <mat-error *ngIf="weight.invalid && (weight.dirty || weight.touched)">
                                         Please enter a valid weight (numbers only)
                                     </mat-error> -->
@@ -185,15 +204,15 @@
                                     <input matInput 
                                            placeholder="Enter Height (e.g., 6.5 or 6'6&quot;)" 
                                            name="height"
-                                           [(ngModel)]="currentUser.height" 
+                                           formControlName="height"
+                                           [value]="currentUser.height" 
                                            (input)="onHeightInput($event)" 
-                                           #height="ngModel"
-                                           [ngStyle]="{'border-color': (!isHeightValid() && heightTouched) ? 'red' : 'white'}">
+                                           [ngStyle]="{'border-color': profileForm.get('height')?.invalid && (profileForm.get('height')?.dirty || profileForm.get('height')?.touched) ? 'red' : 'white'}">
                                     <!-- <span *ngIf="!isHeightValid() && heightTouched" style="color: red;">Invalid height format</span> -->
                                 </h3>
                                 <h3 class="profileDetailsInputObjective">
                                     <span class="spanProfileCategory">Objective</span><br>
-                                    <select matNativeControl name="goals" [(ngModel)]="currentUser.goals">
+                                    <select matNativeControl name="goals" [value]="currentUser.goals" formControlName="goals">
                                         <option value="" disabled selected>Select Objective</option>
                                         <option value="Lose Fat">Lose Fat</option>
                                         <option value="Maintain Weight">Maintain Weight</option>
@@ -206,8 +225,9 @@
                                     <span class="spanProfileCategory">Profile Picture Link</span><br>
                                 </h3>
                                 <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" name="imgUrl" 
-                                       [(ngModel)]="currentUser.imgUrl" 
-                                       pattern="https?://.+" #imgUrl="ngModel" [ngStyle]="{'border-color': imgUrl.invalid && (imgUrl.dirty || imgUrl.touched) ? 'red' : 'white'}">
+                                       formControlName="imgUrl"
+                                       [value]="currentUser.imgUrl"
+                                       pattern="https?://.+" [ngStyle]="{'border-color': profileForm.get('imgUrl')?.invalid && (profileForm.get('imgUrl')?.dirty || profileForm.get('imgUrl')?.touched) ? 'red' : 'white'}">
                                 <!-- <mat-error *ngIf="imgUrl.invalid && (imgUrl.dirty || imgUrl.touched)">
                                     Please enter a valid URL
                                 </mat-error> -->
@@ -216,8 +236,8 @@
                                 <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
                                 <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
                                         type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
-                                <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
-                                type="submit" [disabled]="!isFormValid('profile')">Update</button>
+                                <button mat-button style="color:white" class="btn btn-updateProfileButton" 
+                                type="submit" [disabled]="!isFormValid('profile')" (click)="saveProfile()">Update</button>
                             </div>
                         </form>
                     </div>
@@ -273,12 +293,12 @@
                 <ng-container *ngSwitchCase="ProfileState.ChangingPassword">
                         <div class="updatePassword">
                             <h3 class="profileDetailsChangePassword"><span class="spanProfileCategory">Change Password</span> <br> </h3>
-                            <form [formGroup]="stepForm" (ngSubmit)="updateUserPassword()" id="passwordForm">
+                            <form [formGroup]="passwordForm" (ngSubmit)="updateUserPassword()" id="passwordForm">
                                 <div class="oldPassword">
                                     <div class="input-details">
                                         <label class="label" for="oldPassword">Current Password</label>
                                         <label for="error" *ngIf="authenticating" class="authenticating">Authenticating</label>
-                                        <label for="error" *ngIf="oldPasswordError && !authenticating" class="error-alert">{{oldPasswordError}}</label>
+                                        <label for="error" *ngIf="isOldPasswordError() && !authenticating" class="error-alert">{{oldPasswordError}}</label>
                                     </div>
                                     <div class="passwordInput">
                                         <input type="password"
@@ -287,7 +307,8 @@
                                             formControlName="oldPassword"
                                             (blur)="checkOldPassword()"
                                             placeholder="Enter Current Password"
-                                            required>
+                                            required
+                                            [ngStyle]="{'border-color': isOldPasswordError() ? 'red' : 'white'}">
                                         <fa-icon [icon]="oldPasswordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="toggleOldPasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#oldPassword']"></fa-icon>        
                                     </div>
                                 </div>        
@@ -316,7 +337,8 @@
                                                 (blur)="hidePasswordPopup()"
                                                 placeholder="Enter New Password"
                                                 formControlName="password"
-                                                required>
+                                                required
+                                                [ngStyle]="{'border-color': passwordGroup.get('password')?.invalid && (passwordGroup.get('password')?.dirty || passwordGroup.get('password')?.touched) ? 'red' : 'white'}">
                                             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
@@ -337,7 +359,8 @@
                                                 (copy)="preventCopyPaste($event)"
                                                 (cut)="preventCopyPaste($event)" 
                                                 (paste)="preventCopyPaste($event)"
-                                                required>
+                                                required
+                                                [ngStyle]="{'border-color': passwordGroup.get('confirmPassword')?.invalid && (passwordGroup.get('confirmPassword')?.dirty || passwordGroup.get('confirmPassword')?.touched) ? 'red' : 'white'}">
                                             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
@@ -363,7 +386,7 @@
                 <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
                         type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
                 <button mat-button style="color:white" class="btn btn-updateProfileButton mobile" form="profileForm" 
-                type="submit" [disabled]="!isFormValid('profile')">Update</button>
+                type="submit" [disabled]="!isFormValid('profile')" (click)="saveProfile()">Update</button>
             </div>
 
             </mat-card>  
