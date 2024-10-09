@@ -17,8 +17,8 @@ import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form/s
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { ScrollToTopDirective } from './scroll-to-top.directive';
-import { HeightFormatDirective } from './height-format.directive';
 import { PriceFormatPipe } from './price-format.pipe';
+import { FormService } from './Multi-Step-Form/form/form.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,6 @@ import { PriceFormatPipe } from './price-format.pipe';
     StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
     ScrollToTopDirective,
-    HeightFormatDirective,
     PriceFormatPipe
   ],
   imports: [
@@ -64,9 +63,9 @@ import { PriceFormatPipe } from './price-format.pipe';
     StepTrackerIconsUpgradeComponentWithPayment,
     FontAwesomeModule,
     ScrollToTopDirective,
-    HeightFormatDirective,
     PriceFormatPipe
-  ] 
+  ],
+  providers: [FormService]
 })
 export class SharedModule { 
 

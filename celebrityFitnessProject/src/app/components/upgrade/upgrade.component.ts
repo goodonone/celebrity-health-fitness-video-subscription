@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { FormService } from 'src/app/shared/Multi-Step-Form/form/form.service';
-import { Subject, take, takeUntil } from 'rxjs';
+import { filter, Subject, Subscription, take, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-upgrade',
@@ -22,14 +22,14 @@ export class UpgradeComponent implements OnInit, OnDestroy {
   currentUser: User = new User();
   
   private unsubscribe$ = new Subject<void>();
+  private routerSubscription?: Subscription;
 
   constructor(
     private router: Router,
     private userService: UserService,
     private actRoute: ActivatedRoute,
-    private authService: AuthService,
     private formService: FormService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {
     this.initializeFromAvailableData();
   }
@@ -65,6 +65,18 @@ export class UpgradeComponent implements OnInit, OnDestroy {
     // ).subscribe(() => {
     //   this.initializePlanDetails();
     // });
+
+    // this.routerSubscription = this.router.events.pipe(
+    //   filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    // ).subscribe((event: NavigationEnd) => {
+    //   if (!event.urlAfterRedirects.includes('change-plan') && 
+    //       !event.urlAfterRedirects.includes('signup') && 
+    //       !event.urlAfterRedirects.includes('checkout') && 
+    //       !event.urlAfterRedirects.includes('upgrade')) {
+    //     this.formService.resetForm();
+    //   }
+    // });
+  
   
    
     // if (localStorage.getItem('tier')) {
@@ -107,7 +119,6 @@ export class UpgradeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     location.reload();
     this.formService.resetForm();
-
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
     // this.formService.resetForm();

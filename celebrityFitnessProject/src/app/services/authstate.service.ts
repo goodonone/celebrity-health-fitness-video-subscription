@@ -40,6 +40,7 @@
 
 import { Injectable } from '@angular/core';
 import { CustomOAuthService } from './oauth.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +48,11 @@ import { CustomOAuthService } from './oauth.service';
 export class AuthStateService {
   isAuthenticated$ = this.oauthService.isAuthenticated$;
 
+ 
+
   constructor(private oauthService: CustomOAuthService) {}
+
+  
 
   checkAuthStatus(): boolean {
     return this.oauthService.isLoggedIn;

@@ -334,6 +334,9 @@ export class CustomOAuthService {
 
   private popupClosedSubject = new Subject<void>();
   popupClosed$ = this.popupClosedSubject.asObservable();
+
+  private oauthSuccessSubject = new Subject<any>();
+  oauthSuccess$ = this.oauthSuccessSubject.asObservable();
   
   constructor(
     private http: HttpClient,
@@ -401,8 +404,10 @@ export class CustomOAuthService {
   }
 
   public handleSuccessfulAuth(payload: any): void {
+
     const { token, user } = payload;
     localStorage.setItem('token', token);
+
 
     const existingUserString = localStorage.getItem('user');
     if (existingUserString) {
@@ -425,6 +430,7 @@ export class CustomOAuthService {
 
     if (this.router.url.includes('signup')) {
       this.formService.updateFormWithGoogleData(user);
+      this.oauthSuccessSubject.next(user);
     } else {
       this.router.navigate(['/content', user.userId]);
     }

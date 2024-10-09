@@ -535,7 +535,7 @@ h3.profileDetails.email {
   width: 18rem;
   // overflow: visible;
   overflow-x: hidden;
-  text-overflow: ellipsis;
+  text-overflow:ellipsis;
   white-space: nowrap;
   height: 4rem;
   // margin-bottom: 1.5rem;
@@ -2000,7 +2000,7 @@ input[matInput]:focus {
     // max-width: auto;
     // max-width: 100%;
     // padding-left: 2.5rem;
-    padding-left: 2.5rem;
+    padding-left: 3rem;
     padding-bottom: 20rem;
     // padding-right: 2rem;
   }
@@ -2463,8 +2463,7 @@ input[matInput]:focus {
     min-width: 70%;
     max-width: 80%;
     height: auto;
-    // padding-bottom: 3rem;
-    margin: 2rem auto 7rem auto;
+    // margin: 2rem auto 7rem auto;
   }
 
   h1.deleteProfileText {

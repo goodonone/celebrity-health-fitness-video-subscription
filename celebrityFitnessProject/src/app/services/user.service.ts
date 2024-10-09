@@ -471,6 +471,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
+import { AuthStateService } from './authstate.service';
+import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 
 
 
@@ -483,6 +485,9 @@ export class UserService {
   tokenKey: string = "token";
   tierKey: string = "tier";
   userIdKey: string = "userId";
+
+  private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
+  isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -561,7 +566,10 @@ logoutUser() {
   localStorage.removeItem("token");
   localStorage.removeItem("googleAuthToken");
   localStorage.removeItem("user");
+  localStorage.removeItem("userId");
   localStorage.removeItem("authToken");
+  this.setGoogleAuthEnabled(false);
+  // this.authStateService.setAuthenticationState(false);
   this.authService.authStateSubject.next(false);
 }
 
@@ -668,5 +676,8 @@ updateLoginStatus(status: boolean) {
   this.isLoggedInSubject.next(status);
 }
 
+setGoogleAuthEnabled(value: boolean) {
+  this.isGoogleAuthEnabledSubject.next(value);
+}
 
 }

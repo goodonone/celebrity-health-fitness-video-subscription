@@ -77,8 +77,8 @@
                (blur)="hidePasswordPopup(); checkPasswords()"
                placeholder="Enter Password"
                formControlName="password"
-               [disabled]="isGoogleAuthEnabled"
-               [class.disabled-input]="isGoogleAuthEnabled"
+               [attr.disabled]="isFieldDisabled('password') ? '' : null"
+               [class.disabled-input]="isFieldDisabled('password')"
                required>
                <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']" [class.disabled-icon]="isGoogleAuthEnabled"></fa-icon>
         </div>
@@ -110,8 +110,8 @@
              (copy)="preventCopyPaste($event)"
              (cut)="preventCopyPaste($event)" 
              (paste)="preventCopyPaste($event)"
-             [disabled]="isGoogleAuthEnabled"
-             [class.disabled-input]="isGoogleAuthEnabled"
+             [attr.disabled]="isFieldDisabled('password') ? '' : null"
+             [class.disabled-input]="isFieldDisabled('password')"
              required>
              <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']" [class.disabled-icon]="isGoogleAuthEnabled"></fa-icon>
        </div>

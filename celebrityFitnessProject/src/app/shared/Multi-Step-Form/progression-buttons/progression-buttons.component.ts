@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
+import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 
 @Component({
@@ -25,9 +26,12 @@ export class ProgressionButtonsComponent implements OnInit {
   @Input() checkout!: boolean;
 
   private destroy$ = new Subject<void>();
+  isGoogleAuthEnabled: boolean = false;
 
 
-  constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService, private cdr: ChangeDetectorRef) {
+  constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService, private cdr: ChangeDetectorRef,
+    private oauthService: CustomOAuthService
+  ) {
     // this.cdr.detectChanges = (...args) => {
     //   console.log('Change detection run in ProgressionButtonsComponent');
     //   Object.getPrototypeOf(this.cdr).detectChanges.apply(this.cdr, args);
@@ -52,6 +56,47 @@ export class ProgressionButtonsComponent implements OnInit {
       }
     });
 
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   this.isGoogleAuthEnabled = isEnabled;
+    // })
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   console.log('Google Auth Enabled:', isEnabled);  // Add this log
+    //   this.isGoogleAuthEnabled = isEnabled;
+    //   console.log('isGoogleAuthEnabled:', this.isGoogleAuthEnabled);
+    //   this.cdr.detectChanges();  // Force change detection
+    // });
+
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   console.log('Google Auth Enabled changed:', isEnabled);
+    //   this.isGoogleAuthEnabled = isEnabled;
+    //   console.log('Current step:', this.activeStep$);
+    //   console.log('Back button should be disabled:', this.isBackButtonDisabled());
+    //   this.cdr.detectChanges();
+    // });
+  
+    // this.formService.activeStep$.subscribe(step => {
+    //   console.log('Active step changed:', step);
+    //   this.activeStep$ = step;
+    //   console.log('Google Auth Enabled:', this.isGoogleAuthEnabled);
+    //   console.log('Back button should be disabled:', this.isBackButtonDisabled());
+    //   this.cdr.detectChanges();
+    // });
+
+    // this.formService.formUpdatedWithGoogleData$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   console.log('Form updated with Google data');
+    //   this.checkGoogleAuthState();
+    // });
+      
+    this.formService.isGoogleAuthEnabled$.subscribe((value) => {
+      this.isGoogleAuthEnabled = value;
+      console.log('OISHFOSEIFHSEPIFHESFPIEH' + value);
+    })
+
+    this.oauthService.oauthSuccess$.subscribe(user => {
+      console.log('OAuth successful, moving to next step');
+      this.isGoogleAuthEnabled = true;
+       // Or whatever step number is appropriate
+    })
   }
 
   ngOnDestroy(): void {
@@ -75,6 +120,19 @@ export class ProgressionButtonsComponent implements OnInit {
       }
     }
   }
+
+  // private checkGoogleAuthState(): void {
+  //   const personalDetails = this.stepForm.get('personalDetails');
+  //   if (personalDetails) {
+  //     const isGoogleAuth = personalDetails.get('isGoogleAuth')?.value;
+  //     console.log('Is Google Auth (from form):', isGoogleAuth);
+  //     if (isGoogleAuth) {
+  //       this.isGoogleAuthEnabled = true;
+  //       this.formService.setGoogleAuthEnabled(true);
+  //     }
+  //   }
+  //   console.log('Current Google Auth state:', this.isGoogleAuthEnabled);
+  // }
  
 
   // canProceed(): boolean {
@@ -318,8 +376,22 @@ export class ProgressionButtonsComponent implements OnInit {
   //   }
   // }
 
+  // goBack() {
+  //   this.formService.goBackToPreviousStep(this.activeStep$);
+  // }
+
   goBack() {
+    if (this.isBackButtonDisabled()) {
+      console.log('Back button is disabled, cannot go back');
+      return;
+    }
     this.formService.goBackToPreviousStep(this.activeStep$);
+  }
+
+  isBackButtonDisabled(): boolean {
+    const isDisabled = this.activeStep$ === 2 && this.isGoogleAuthEnabled;
+    console.log('Is back button disabled:', isDisabled, 'Step:', this.activeStep$, 'Google Auth:', this.isGoogleAuthEnabled);
+    return isDisabled;
   }
 
   confirmAndSubmitForm() {

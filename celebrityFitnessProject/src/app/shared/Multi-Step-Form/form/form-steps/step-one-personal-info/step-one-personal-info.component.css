@@ -303,6 +303,13 @@ input[matInput]:focus::placeholder {
   color: #000000 !important; /* Change the placeholder color when focused */
 }
 
+/* input:disabled{
+  background-color: #f5f5f5 !important;
+  color: rgba(0, 0, 0, 0.38) !important;
+  cursor: not-allowed !important;
+  border-color: #dcdcdc !important;
+} */
+
 input.disabled-input {
   background-color: #f5f5f5 !important;
   color: rgba(0, 0, 0, 0.38) !important;

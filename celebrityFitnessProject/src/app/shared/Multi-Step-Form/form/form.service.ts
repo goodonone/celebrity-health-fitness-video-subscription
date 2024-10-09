@@ -1,13 +1,14 @@
 import { Injectable, OnInit } from '@angular/core';
 import { AbstractControl, ValidationErrors, ValidatorFn, 
          Validator, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { Router } from '@angular/router';
+import { BehaviorSubject, filter, Subject, Subscription, takeUntil } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user';
 import { PaymentService } from 'src/app/services/payment.service';
 import { expirationDateValidator } from '../../expiry-date-validator';
 import { AuthService } from 'src/app/services/auth.service';
+import { NavigationService } from 'src/app/services/navigation.service';
 // import { CustomOAuthService} from 'src/app/services/oauth.service';
 // import { expirationDateValidator } from '../../expiry-date-validator';
 
@@ -40,9 +41,20 @@ export class FormService implements OnInit {
   public activeStepSubject = new BehaviorSubject<number>(1);
   activeStep$ = this.activeStepSubject.asObservable();
 
-  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private authService: AuthService) {
+  private formResetSubject = new BehaviorSubject<boolean>(false);
+  formReset$ = this.formResetSubject.asObservable();
+
+  private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
+  isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
+
+  // private destroy$ = new Subject<void>();
+
+  private navigationSubscription!: Subscription;
+
+  constructor(private fb: FormBuilder, private user: UserService, private router: Router, private payment: PaymentService, private authService: AuthService, private navigationService: NavigationService) {
     this.multiStepForm = this.createForm();
     // this.loadFormState();
+    this.setupNavigationListener();
   }
 
   ngOnInit(): void {
@@ -53,6 +65,25 @@ export class FormService implements OnInit {
     if (personalDetailsGroup && personalDetailsGroup.valid) {
       personalDetailsGroup.removeControl('confirmPassword');
     }
+  }
+
+  ngOnDestroy() {
+    // this.destroy$.next();
+    // this.destroy$.complete();
+      if (this.navigationSubscription) {
+        this.navigationSubscription.unsubscribe();
+      }
+  }
+
+  private setupNavigationListener() {
+    this.navigationSubscription = this.navigationService.getNavigationEndEvents()
+      .subscribe(event => {
+        console.log('Navigation event:', event.url);
+        if (this.navigationService.isLeavingFormPages(event.urlAfterRedirects)) {
+          console.log('Navigating away from form pages');
+          this.resetForm();
+        }
+      });
   }
 
   private createForm(): FormGroup {
@@ -307,8 +338,8 @@ export class FormService implements OnInit {
         email: user.email,
         isGoogleAuth: true
       });
-      personalDetails.get('password')?.disable();
-      personalDetails.get('confirmPassword')?.disable();
+      // personalDetails.get('password')?.disable();
+      // personalDetails.get('confirmPassword')?.disable();
 
       // Manually mark the fields as touched and trigger validation
       Object.keys(personalDetails.controls).forEach(key => {
@@ -317,13 +348,21 @@ export class FormService implements OnInit {
         control?.updateValueAndValidity();
       });
 
+      this.setGoogleAuthEnabled(true);
       // Manually validate the entire form group
       personalDetails.updateValueAndValidity();
+      this.formUpdatedWithGoogleData.next(true);
+
+    // this.formUpdatedWithGoogleData.subscribe((value) => {
+    //   console.log("FORM SERVICE" + value);
+    // });
+      
     }
+    
     // this.saveFormState();
     
     // Emit an event to notify that the form has been updated with Google data
-    this.formUpdatedWithGoogleData.next(true);
+    
   }
 
   isPersonalDetailsValid(): boolean {
@@ -692,7 +731,7 @@ export class FormService implements OnInit {
       }
       this.multiStepForm.reset();
       this.activeStepSubject.next(1);
-    }, 3000);
+    }, 2000);
   }
 
   // private clearGoogleAuthState() {
@@ -714,13 +753,71 @@ export class FormService implements OnInit {
     this.router.navigateByUrl(`/content/${this.UserId}`);
   }
   
+  // resetForm() {
+  //   const initialValues = this.getInitialTierAndBilling();
+  //   this.multiStepForm.patchValue({
+  //     planDetails: initialValues
+  //   }, { emitEvent: false });  // Prevent unnecessary form value changes
+  //   this.upgradeDataLoaded.next(false);
+  // }
+
+
   resetForm() {
+    console.log('Form reset triggered');
     const initialValues = this.getInitialTierAndBilling();
-    this.multiStepForm.patchValue({
-      planDetails: initialValues
-    }, { emitEvent: false });  // Prevent unnecessary form value changes
+    console.log('FormService.resetForm(): isGoogleAuth before reset:', this.multiStepForm.get('personalDetails.isGoogleAuth')?.value);
+    this.multiStepForm.reset({
+      personalDetails: {
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        isGoogleAuth: false
+      },
+      planDetails: initialValues,
+      paymentDetails: {
+        nameOnCard: '',
+        ccNumber: '',
+        expDate: '',
+        cvv: '',
+        zipCode: '',
+        billingAddress: '',
+        billingZip: ''
+      }
+    });
+    console.log('FormService.resetForm(): isGoogleAuth after reset:', this.multiStepForm.get('personalDetails.isGoogleAuth')?.value);
+    const personalDetails = this.multiStepForm.get('personalDetails');
+    if (personalDetails) {
+      // Instead of enabling, respect the current disabled state
+      const passwordControl = personalDetails.get('password');
+      const confirmPasswordControl = personalDetails.get('confirmPassword');
+      
+      if (passwordControl?.disabled) {
+        passwordControl.reset('', {onlySelf: true});
+      } else {
+        passwordControl?.reset('');
+      }
+      
+      if (confirmPasswordControl?.disabled) {
+        confirmPasswordControl.reset('', {onlySelf: true});
+      } else {
+        confirmPasswordControl?.reset('');
+      }
+    }
+    this.activeStepSubject.next(1);
     this.upgradeDataLoaded.next(false);
+    this.formResetSubject.next(true);
+    // this.isGoogleAuthEnabledSubject.next(false);
+    this.setGoogleAuthEnabled(false);
+    console.log('FormService: Form reset event emitted');
+    console.log('Form reset');
   }
+
+  setGoogleAuthEnabled(value: boolean) {
+    console.log('Setting Google Auth Enabled:', value);
+    this.isGoogleAuthEnabledSubject.next(value);
+  }
+
 }
     // this.multiStepForm.reset(this.getInitialTierAndBilling);
     // this.upgradeDataLoaded.next(false);

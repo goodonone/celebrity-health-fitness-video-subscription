@@ -256,7 +256,7 @@ input[matInput]:focus::placeholder {
 }
 
 ::ng-deep .mdc-switch--unselected.mdc-switch--disabled .mdc-switch__shadow {
-  fill: rgb(184, 7, 7) !important;
+  fill: rgb(22, 22, 22) !important;
 }
 
 /* ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {

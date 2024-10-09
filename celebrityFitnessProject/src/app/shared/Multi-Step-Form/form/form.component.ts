@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from './form.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -11,6 +12,7 @@ import { FormService } from './form.service';
 export class FormComponent implements OnInit {
   stepForm!: FormGroup;
   activeStep$?: number;
+  
   
   @Input() loggedIn!: boolean;
   @Input() payment!: boolean;
@@ -30,6 +32,8 @@ export class FormComponent implements OnInit {
     this.formService.getTierAndBilling();
 
     console.log('FormComponent: tierTwoThree value received:', this.tierTwoThree);
+
+  
   }
 
   confirmAndSubmitForm() {

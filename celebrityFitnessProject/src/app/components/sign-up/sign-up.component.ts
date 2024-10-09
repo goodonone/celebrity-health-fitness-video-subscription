@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service'; 
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
+import { FormService } from 'src/app/shared/Multi-Step-Form/form/form.service';
+import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 
 @Component({
@@ -12,18 +15,61 @@ import { Router } from '@angular/router';
 export class SignUpComponent implements OnInit {
 
   newUser: User = new User();
+  private routerSubscription?: Subscription;
+  // private routerSubscription?: Subscription;
 
-  constructor(private userService: UserService, private router: Router) { }
+  
+
+  constructor(private userService: UserService, private router: Router, private formService: FormService, private oauthService: CustomOAuthService) { }
+
+  private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
+
+    console.log('SignUpComponent initialized');
+    this.clearUserData();
+    
 
     // window.addEventListener('message', (event) => {
     //   console.log('Received message:', event);
     //   // Validate the origin to prevent security issues
     //   if (event.origin !== 'http://localhost:3000') {
     //     return;
+    //   
+   
+    
+    // this.routerSubscription = this.router.events.pipe(
+    //   filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    // ).subscribe((event: NavigationEnd) => {
+    //   if (!event.urlAfterRedirects.includes('change-plan') && 
+    //       !event.urlAfterRedirects.includes('signup') && 
+    //       !event.urlAfterRedirects.includes('checkout') && 
+    //       !event.urlAfterRedirects.includes('upgrade')) {
+    //         console.log('Form reset');
+    //     this.formService.resetForm();
     //   }
+    // });
 
+    // this.routerSubscription = this.router.events.pipe(
+    //   filter((event): event is NavigationEnd => {
+    //     console.log('Router event:', event);
+    //     return event instanceof NavigationEnd;
+    //   })
+    // ).subscribe((event: NavigationEnd) => {
+    //   console.log('NavigationEnd event:', event.urlAfterRedirects);
+    //   if (!event.urlAfterRedirects.includes('change-plan') && 
+    //       !event.urlAfterRedirects.includes('signup') && 
+    //       !event.urlAfterRedirects.includes('checkout') && 
+    //       !event.urlAfterRedirects.includes('upgrade')) {
+    //     console.log('Form reset');
+    //     this.formService.resetForm();
+    //   } else {
+    //     console.log('Not resetting form - URL includes one of the specified paths');
+    //   }
+    // });
+  
+    
+    
     //   const { type, payload } = event.data;
 
     //   if (type === 'GOOGLE_AUTH_SUCCESS') {
@@ -35,6 +81,11 @@ export class SignUpComponent implements OnInit {
     //     console.error('Google auth error:', event.data.error);
     //   }
     // }, false);
+
+    // this.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd) {
+    //     this.formSevice
+    //   }
 
 
     // Check if the user has visited the page before to serve animations or not
@@ -48,7 +99,33 @@ export class SignUpComponent implements OnInit {
       // Skip animations
       this.skipAnimations();
     }
+
+    this.subscription.add(
+      this.oauthService.oauthSuccess$.subscribe(user => {
+        console.log('OAuth successful, moving to next step');
+        this.formService.goToNextStep(1); 
+         // Or whatever step number is appropriate
+      })
+    );
   }
+
+  ngOnDestroy(): void {
+    console.log('SignUpComponent destroyed');
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  private clearUserData(): void {
+    localStorage.removeItem('user');
+    this.userService.setGoogleAuthEnabled(false);
+    this.formService.resetForm();
+  }
+
+
 
    // Trigger animations when page is loaded for the first time
    triggerAnimations() {
