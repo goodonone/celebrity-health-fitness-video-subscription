@@ -374,7 +374,6 @@ The Form will revert back to its original state in a set amount of time.
 ## Future Development:
 - State validation and CSRF protection for Oauth.
 - HTTPONLY Cookies setup the project to procure user information using secure routes - /me.
-- 
 - Utilize a facedetection API such as face-api.js to center profile picture around user's face automatically or a modal where the image can centered based on user's needs.
   
 
