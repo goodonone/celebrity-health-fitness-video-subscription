@@ -372,12 +372,10 @@ The Form will revert back to its original state in a set amount of time.
 
 
 ## Future Development:
-- [In-Progress] Store the cart in the backend, so if the user doesn't checkout and logs out and logs back in their cart is still intact with all the items they added.
-- Stripe Payment Platform Integration.
-- OAuth
-- Complete Search functionlity, to be able to search for specific videos and do a site-wide search for items in the store.
-- Check for all edge cases in the Password Missmatch check in the Sign-Up Form.
-
+- State validation and CSRF protection for Oauth.
+- HTTPONLY Cookies setup the project to procure user information using secure routes, /me.
+- Utilize a facedetection API such as face-api.js to center profile picture around user's face automatically.
+  
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
