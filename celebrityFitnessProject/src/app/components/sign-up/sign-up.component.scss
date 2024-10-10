@@ -170,6 +170,11 @@
   cursor: pointer;
 }
 
+.alreadyMemberText .highlight:hover {
+  text-shadow: 0 0 3px #365d7b;
+  // text-decoration: underline;
+}
+
 /* @media screen and (min-width: 1080px) and (max-width: 1367px) {
 
     .background {
@@ -217,6 +222,18 @@
         line-height: 5rem;
     }
 } */
+
+.disabled-text{
+  color: grey;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.highlight.disabled-text{
+  color: grey;
+  pointer-events: none;
+  opacity: 0.7;
+}
 
 @media screen and (min-width: 938px) and (max-width: 1300px) {
   /* .card{

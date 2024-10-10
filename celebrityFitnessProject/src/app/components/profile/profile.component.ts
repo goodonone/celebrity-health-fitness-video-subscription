@@ -93,6 +93,8 @@ export class ProfileComponent implements OnInit {
   faEyeSlash = faEyeSlash;
   faAngleDown = faAngleDown;
 
+  private subscription: Subscription = new Subscription();
+
 
   // Handler properties
   keydownHandler: (event: KeyboardEvent) => void;
@@ -255,6 +257,7 @@ export class ProfileComponent implements OnInit {
     // this.removeEventListeners();
     this.destroy$.next();
     this.destroy$.complete();
+    this.subscription.unsubscribe();
   }
 
   // ngOnDestroy() {
@@ -1690,11 +1693,25 @@ get passwordGroup() {
   }
 
 
-  UpdateStatus() {
-    this.userIsLoggedIn = this.userService.isloggedIn();
-    if (this.userIsLoggedIn) {
-      this.UserId = this.userService.getUserId() ?? '';
-    }
+  // UpdateStatus() {
+  //   this.userIsLoggedIn = this.userService.isloggedIn();
+  //   if (this.userIsLoggedIn) {
+  //     this.UserId = this.userService.getUserId() ?? '';
+  //   }
+  // }
+
+  private UpdateStatus(): void {
+    this.subscription.add(
+      this.userService.isloggedIn().subscribe(isLoggedIn => {
+        this.userIsLoggedIn = isLoggedIn;
+        if (isLoggedIn) {
+          this.UserId = this.userService.getUserId() ?? '';
+        } else {
+          this.UserId = '';
+        }
+        // You may want to perform additional actions here based on the login state
+      })
+    );
   }
 
   logOut() {

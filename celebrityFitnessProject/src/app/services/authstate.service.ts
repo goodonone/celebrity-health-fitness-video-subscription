@@ -38,31 +38,66 @@
 //   }
 // }
 
+
+
+// import { Injectable } from '@angular/core';
+// import { CustomOAuthService } from './oauth.service';
+// import { BehaviorSubject } from 'rxjs';
+
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class AuthStateService {
+//   isAuthenticated$ = this.oauthService.isAuthenticated$;
+
+ 
+
+//   constructor(private oauthService: CustomOAuthService) {}
+
+  
+
+//   checkAuthStatus(): boolean {
+//     return this.oauthService.isLoggedIn;
+//   }
+
+//   login() {
+//     this.oauthService.initiateLogin();
+//   }
+
+//   logout() {
+//     this.oauthService.logout().subscribe();
+//   }
+// }
+
+
 import { Injectable } from '@angular/core';
-import { CustomOAuthService } from './oauth.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthStateService {
-  isAuthenticated$ = this.oauthService.isAuthenticated$;
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.getInitialAuthState());
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
- 
+  constructor() {}
 
-  constructor(private oauthService: CustomOAuthService) {}
+  private getInitialAuthState(): boolean {
+    return !!localStorage.getItem('token') && !!localStorage.getItem('userId') && localStorage.getItem('isUserLoggedIn') === 'true';
+  }
 
-  
+  setAuthState(isAuthenticated: boolean): void {
+    this.isAuthenticatedSubject.next(isAuthenticated);
+    localStorage.setItem('isUserLoggedIn', isAuthenticated ? 'true' : 'false');
+  }
+
+  getAuthState(): Observable<boolean> {
+    return this.isAuthenticated$;
+  }
 
   checkAuthStatus(): boolean {
-    return this.oauthService.isLoggedIn;
-  }
-
-  login() {
-    this.oauthService.initiateLogin();
-  }
-
-  logout() {
-    this.oauthService.logout().subscribe();
+    const isAuthenticated = this.getInitialAuthState();
+    this.setAuthState(isAuthenticated);
+    return isAuthenticated;
   }
 }

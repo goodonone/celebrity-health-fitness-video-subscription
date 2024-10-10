@@ -39,4 +39,8 @@ export class FormComponent implements OnInit {
   confirmAndSubmitForm() {
     this.formService.submit();
   }
+
+  updateActiveStep(step: number) {
+    this.formService.setActiveStep(step);
+  }
 }

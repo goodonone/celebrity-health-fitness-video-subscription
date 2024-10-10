@@ -1,8 +1,8 @@
 <div class="container">
         <!-- If New Subscriber and free tier -->
         <div class="signUp" *ngIf="!loggedIn && !checkout">
-                <a *ngIf="activeStep$ > 1 && activeStep$ <= 4" (click)="goBack()" [attr.disabled]="isGoogleAuthEnabled"  
-                        [attr.tabindex]="isBackButtonDisabled() ? '-1' : null" [class.disabled]="isGoogleAuthEnabled">Go Back</a>
+                <a *ngIf="activeStep$ > 1 && activeStep$ <= 4" (click)="goBack()" [attr.disabled]="activeStep$ === 2 && isGoogleAuthEnabled"  
+                 [class.disabled]="activeStep$ === 2 && isGoogleAuthEnabled">Go Back</a>
         </div>
 
         <!-- If logged in and upgrading/changing tier from free tier -->

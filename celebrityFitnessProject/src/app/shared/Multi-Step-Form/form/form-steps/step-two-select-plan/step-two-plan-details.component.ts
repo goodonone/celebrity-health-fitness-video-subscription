@@ -33,6 +33,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
     this.planType = formVals?.plan || 'Just Looking';
     this.updateBilling();
 
+    this.formService.setSelectedPlan(this.planType);
+
     // this.formService.upgradeDataLoaded$.subscribe(loaded => {
     //   if (loaded) {
     //     const { tier, billing } = this.formService.getTierAndBilling();
@@ -71,6 +73,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       planCost: cost,
       totalCost: cost,
     })
+
+    this.formService.setSelectedPlan(plan);
 
     // setTimeout(() => {
     //   this.cdr.detectChanges();

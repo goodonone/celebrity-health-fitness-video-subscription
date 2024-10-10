@@ -5,7 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 
@@ -28,6 +28,7 @@ export class ProgressionButtonsComponent implements OnInit {
   private destroy$ = new Subject<void>();
   isGoogleAuthEnabled: boolean = false;
 
+  private subscription: Subscription = new Subscription();
 
   constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService, private cdr: ChangeDetectorRef,
     private oauthService: CustomOAuthService
@@ -40,21 +41,17 @@ export class ProgressionButtonsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
-    this.formService.activeStep$.subscribe(
-      step => {
-        // console.log('Form state:', JSON.stringify(this.stepForm.value, null, 2));
-        // console.log('ProgressionButtonsComponent received new step:', step);
-        this.activeStep$ = step;
-        this.planCost = this.stepForm.controls['planDetails'].value.planCost;
-        // this.cdr.detectChanges();
-      });
+    // this.formService.activeStep$.subscribe(
+    //   step => {
+    //     // console.log('Form state:', JSON.stringify(this.stepForm.value, null, 2));
+    //     // console.log('ProgressionButtonsComponent received new step:', step);
+    //     this.activeStep$ = step;
+    //     console.log('ACTIVE STEP:', this.activeStep$);
+    //     this.planCost = this.stepForm.controls['planDetails'].value.planCost;
+    //     // this.cdr.detectChanges();
+    //   });
 
-    this.formService.formUpdatedWithGoogleData$.subscribe(() => {
-      // Check if we can proceed after Google data is loaded
-      if (this.canProceed()) {
-        console.log('Form is valid after Google OAuth, ready to proceed');
-      }
-    });
+     
 
     // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
     //   this.isGoogleAuthEnabled = isEnabled;
@@ -86,22 +83,46 @@ export class ProgressionButtonsComponent implements OnInit {
     //   console.log('Form updated with Google data');
     //   this.checkGoogleAuthState();
     // });
-      
-    this.formService.isGoogleAuthEnabled$.subscribe((value) => {
-      this.isGoogleAuthEnabled = value;
-      console.log('OISHFOSEIFHSEPIFHESFPIEH' + value);
-    })
 
-    this.oauthService.oauthSuccess$.subscribe(user => {
-      console.log('OAuth successful, moving to next step');
-      this.isGoogleAuthEnabled = true;
-       // Or whatever step number is appropriate
-    })
+    this.subscription.add(
+      this.formService.activeStep$.subscribe(step => {
+        this.activeStep$ = step;
+        this.planCost = this.stepForm.controls['planDetails'].value.planCost;
+        console.log('ACTIVE STEP:', this.activeStep$);
+      })
+    );
+
+  this.formService.formUpdatedWithGoogleData$.subscribe(() => {
+    // Check if we can proceed after Google data is loaded
+    if (this.canProceed()) {
+      console.log('Form is valid after Google OAuth, ready to proceed');
+    }
+  });
+      
+    this.subscription.add(
+      this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+        this.isGoogleAuthEnabled = isEnabled;
+        console.log('Google Auth Enabled:', this.isGoogleAuthEnabled);
+      })
+    );
+
+    // this.oauthService.oauthSuccess$.subscribe(user => {
+    //   console.log('OAuth successful, moving to next step');
+    //   this.isGoogleAuthEnabled = true;
+    //    // Or whatever step number is appropriate
+    // })
+    this.subscription.add(
+      this.oauthService.oauthSuccess$.subscribe(() => {
+        console.log('OAuth successful, updating button state');
+        this.isGoogleAuthEnabled = true;
+      })
+    );
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.subscription.unsubscribe();
   }
 
   @HostListener('document:keydown', ['$event'])

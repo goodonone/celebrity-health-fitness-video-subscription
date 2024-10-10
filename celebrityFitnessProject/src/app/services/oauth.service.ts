@@ -319,6 +319,7 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { StateManagementService } from './statemanagement.service';
 import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 import { UserService } from './user.service';
+import { AuthStateService } from './authstate.service';
 
 @Injectable({
   providedIn: 'root'
@@ -344,7 +345,8 @@ export class CustomOAuthService {
     private stateManagementService: StateManagementService,
     private formService: FormService,
     private zone: NgZone,
-    private userService: UserService
+    private userService: UserService,
+    private authStateService: AuthStateService
   ) {
     window.addEventListener('message', this.handleAuthMessage.bind(this), false);
   }
@@ -427,6 +429,9 @@ export class CustomOAuthService {
     this.stateManagementService.setAuthenticationStatus(true);
     this.isAuthenticatedSubject.next(true);
     this.authResultSubject.next(user);
+    this.authStateService.setAuthState(true);
+    this.formService.updateFormWithGoogleData(payload.user);
+    this.oauthSuccessSubject.next(payload.user);
 
     if (this.router.url.includes('signup')) {
       this.formService.updateFormWithGoogleData(user);
@@ -450,10 +455,15 @@ export class CustomOAuthService {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       this.isAuthenticatedSubject.next(false);
+      this.authStateService.setAuthState(false);
       this.stateManagementService.setAuthenticationStatus(false);
       observer.next({ success: true });
       observer.complete();
     });
+  }
+
+  setAuthenticationState(isAuthenticated: boolean) {
+    this.isAuthenticatedSubject.next(isAuthenticated);
   }
 
   get token(): string | null {

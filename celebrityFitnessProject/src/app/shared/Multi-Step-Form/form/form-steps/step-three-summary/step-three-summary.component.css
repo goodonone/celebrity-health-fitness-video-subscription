@@ -165,7 +165,7 @@ div.cost.summary{
   mat-card{
     /* width: 27rem; */
     width: auto;
-    height: 27rem;
+    height: 26rem;
     max-height: 27rem;
     /* overflow: hidden; */
   }

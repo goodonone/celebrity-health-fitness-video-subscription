@@ -16,8 +16,8 @@ export class SignUpComponent implements OnInit {
 
   newUser: User = new User();
   private routerSubscription?: Subscription;
+  disableLoginButton: boolean = false;
   // private routerSubscription?: Subscription;
-
   
 
   constructor(private userService: UserService, private router: Router, private formService: FormService, private oauthService: CustomOAuthService) { }
@@ -103,8 +103,19 @@ export class SignUpComponent implements OnInit {
     this.subscription.add(
       this.oauthService.oauthSuccess$.subscribe(user => {
         console.log('OAuth successful, moving to next step');
+        this.formService.updateFormWithGoogleData(user);
         this.formService.goToNextStep(1); 
+        this.formService.isGoogleAuthEnabled$.subscribe(isGoogleAuthEnabled => {
+        this.disableLoginButton = isGoogleAuthEnabled;
+        })
          // Or whatever step number is appropriate
+      })
+    );
+
+    this.subscription.add(
+      this.formService.formUpdatedWithGoogleData$.subscribe(() => {
+        console.log('Form updated with Google data');
+        // Trigger any additional actions if needed
       })
     );
   }
@@ -129,7 +140,6 @@ export class SignUpComponent implements OnInit {
 
    // Trigger animations when page is loaded for the first time
    triggerAnimations() {
-
     // Triggers animation when page is loaded only for the first time
     const welcomeAnimation = document.querySelector('.welcome') as HTMLElement;
     welcomeAnimation?.classList.add('firstVisitAnimation');

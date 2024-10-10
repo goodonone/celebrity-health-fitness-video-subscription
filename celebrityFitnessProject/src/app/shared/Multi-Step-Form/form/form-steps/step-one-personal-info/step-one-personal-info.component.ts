@@ -258,7 +258,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
     // );
 
     // handle loading spinner and error messages
-    this.authSubscription.add(
+    this.subscriptions.add(
       this.oauthService.authError$.subscribe(error => {
         this.zone.run(() => {
           this.isLoadingGoogle = false;
@@ -603,6 +603,26 @@ export class StepOnePersonalInfoComponent implements OnInit {
   onClickGoogle(): void {
     this.isLoadingGoogle = true;
     this.oauthService.initiateLogin(true);
+    this.subscriptions.add(
+      this.oauthService.authResult$.subscribe(
+        (user) => {
+          this.zone.run(() => {
+            this.isLoadingGoogle = false;
+            if (user) {
+              this.populateFormWithUserData(user);
+            }
+            this.cdr.detectChanges();
+          });
+        },
+        (error) => {
+          this.zone.run(() => {
+            this.isLoadingGoogle = false;
+            console.error('Google login error:', error);
+            this.cdr.detectChanges();
+          });
+        }
+      )
+    );
   }
 
 

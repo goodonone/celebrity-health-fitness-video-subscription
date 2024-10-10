@@ -163,10 +163,14 @@ ngAfterViewInit(): void {
   }
 
   UpdateStatus() {
-    this.userIsLoggedIn = this.userService.isloggedIn();
-    if (this.userIsLoggedIn) {
-      localStorage.setItem("isUserLoggedIn", "true");
-    }
+    this.userService.isloggedIn().subscribe(isLoggedIn => {
+      this.userIsLoggedIn = isLoggedIn;
+      if (this.userIsLoggedIn) {
+        localStorage.setItem("isUserLoggedIn", "true");
+      }
+    })
+    // this.userIsLoggedIn = this.userService.isloggedIn();
+    
   }
 
   onLogout() {

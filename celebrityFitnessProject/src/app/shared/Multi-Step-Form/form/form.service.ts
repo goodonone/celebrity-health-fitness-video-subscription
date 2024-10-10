@@ -47,6 +47,13 @@ export class FormService implements OnInit {
   private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
   isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
 
+  private selectedPlanTypeSubject = new BehaviorSubject<string>('Just Looking');
+  selectedPlanType$ = this.selectedPlanTypeSubject.asObservable();
+
+  private selectedPlanSubject = new BehaviorSubject<string>('Just Looking');
+  selectedPlan$ = this.selectedPlanSubject.asObservable();
+
+
   // private destroy$ = new Subject<void>();
 
   private navigationSubscription!: Subscription;
@@ -338,8 +345,8 @@ export class FormService implements OnInit {
         email: user.email,
         isGoogleAuth: true
       });
-      // personalDetails.get('password')?.disable();
-      // personalDetails.get('confirmPassword')?.disable();
+      personalDetails.get('password')?.disable();
+      personalDetails.get('confirmPassword')?.disable();
 
       // Manually mark the fields as touched and trigger validation
       Object.keys(personalDetails.controls).forEach(key => {
@@ -353,17 +360,25 @@ export class FormService implements OnInit {
       personalDetails.updateValueAndValidity();
       this.formUpdatedWithGoogleData.next(true);
 
+      setTimeout(() => {
+        this.formUpdatedWithGoogleData.next(true);
+      }, 0);
+
     // this.formUpdatedWithGoogleData.subscribe((value) => {
     //   console.log("FORM SERVICE" + value);
     // });
       
     }
+  }
+
+    // const userInfo = this.multiStepForm.get('personalDetails')?.value;
+    // console.log("MUlti step form value" + userInfo);
     
     // this.saveFormState();
     
     // Emit an event to notify that the form has been updated with Google data
     
-  }
+  
 
   isPersonalDetailsValid(): boolean {
     const personalDetails = this.multiStepForm.get('personalDetails');
@@ -488,9 +503,10 @@ export class FormService implements OnInit {
   // }
 
   goToNextStep(number: number) {
-    console.log('Going to next step from:', number, 'Stack:', new Error().stack);
+    // console.log('Going to next step from:', number, 'Stack:', new Error().stack);
     console.log('Going to next step from:', number);
     this.activeStepSubject.next(number + 1);
+    console.log("Current step" + this.activeStepSubject.value)
   }
 
   // goBackToPreviousStep(number: number) {
@@ -502,7 +518,7 @@ export class FormService implements OnInit {
   // }
 
   goBackToPreviousStep(number: number) {
-    console.log('Going back from step:', number, 'Stack:', new Error().stack);
+    console.log('Going back from step:', number);
     if (number > 1) {
       console.log('Going back to previous step from:', number);
       this.activeStepSubject.next(number - 1);
@@ -574,7 +590,7 @@ export class FormService implements OnInit {
 
 
   submit() {
-    console.log('Form submitted');
+    console.log("Submit button clicked");
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
@@ -596,6 +612,8 @@ export class FormService implements OnInit {
       }
     }
 
+    console.log('USER ID!!!!!!!!!!! AREA 1', userId);
+
     if (!userId) {
       userId = this.user.getUserId();
     }
@@ -614,7 +632,39 @@ export class FormService implements OnInit {
         paymentType: type
       }
   
-      if(userInfo.isGoogleAuth) {
+      console.log('USER ID!!!!!!!!!!! AREA 2', userId);
+
+      this.user.signUp(userData).subscribe(() => {
+        this.handleNewUserSignup(false);
+      });
+      // if(userInfo.isGoogleAuth) {
+      //   console.log('GOOGLE AUTH USER DATA:');
+      //   const userDataString = localStorage.getItem('user');
+      //   if (userDataString) {
+      //     const userData = JSON.parse(userDataString);
+      //     const googleAuthUser = {
+      //       userId: userData.userId, // Extract userId from localStorage
+      //       tier: planInfo.plan,
+      //       paymentFrequency: planInfo.billing,
+      //       price: planInfo.totalCost
+      //     };
+      //     console.log('USER ID!!!!!!!!!!! AREA 3', userId);
+      //     this.user.updateUser(googleAuthUser).subscribe(() => {
+      //       this.handleNewUserSignup(true);
+      //     });
+      //   } 
+      // } else {
+      //   this.user.signUp(userData).subscribe(() => {
+      //     this.handleNewUserSignup(false);
+      //   });
+      //   console.log('USER ID!!!!!!!!!!! AREA 4', userId);
+      // }
+
+    // Upgrading Plan for existing user
+    } else {
+
+       if(userInfo.isGoogleAuth) {
+        console.log('GOOGLE AUTH USER DATA:');
         const userDataString = localStorage.getItem('user');
         if (userDataString) {
           const userData = JSON.parse(userDataString);
@@ -624,18 +674,14 @@ export class FormService implements OnInit {
             paymentFrequency: planInfo.billing,
             price: planInfo.totalCost
           };
+          console.log('USER ID!!!!!!!!!!! AREA 3', userId);
           this.user.updateUser(googleAuthUser).subscribe(() => {
             this.handleNewUserSignup(true);
           });
-        } 
-      } else {
-        this.user.signUp(userData).subscribe(() => {
-          this.handleNewUserSignup(false);
-        });
+      }
       }
 
-    // Upgrading Plan for existing user
-    } else {
+      console.log('USER ID!!!!!!!!!!! AREA 5', userId);
       this.UserId = this.user.getUserId() ?? "";
       this.userId = this.UserId;
   
@@ -662,6 +708,8 @@ export class FormService implements OnInit {
   
       this.handleExistingUserUpdate(planInfo);
     }
+
+    // implement checkout for store page here
   }
   
   // private handleNewUserSignup(isGoogleAuth: boolean) {
@@ -708,7 +756,11 @@ export class FormService implements OnInit {
   // }
 
   private handleNewUserSignup(isGoogleAuth: boolean) {
-    this.goToNextStep(4); // Move to the final step (5)
+    // const planInfo = this.multiStepForm.get('planDetails')?.value;
+    // if(planInfo.plan === 'Just Looking') {
+    //   this.goToNextStep(3);
+    // }
+    this.goToNextStep(4); 
     setTimeout(() => {
       if (isGoogleAuth) {
         const userDataString = localStorage.getItem('user');
@@ -730,10 +782,21 @@ export class FormService implements OnInit {
         this.router.navigate(['sign-in']);
       }
       this.multiStepForm.reset();
-      this.activeStepSubject.next(1);
+      // this.activeStepSubject.next(1);
     }, 2000);
   }
 
+  // setSelectedPlanType(planType: string) {
+  //   this.selectedPlanTypeSubject.next(planType);
+  // }
+
+  setActiveStep(step: number) {
+    this.activeStepSubject.next(step);
+  }
+
+  setSelectedPlan(plan: string) {
+    this.selectedPlanSubject.next(plan);
+  }
   // private clearGoogleAuthState() {
   //   localStorage.removeItem('user');
   //   localStorage.removeItem('userId');
@@ -749,8 +812,27 @@ export class FormService implements OnInit {
     localStorage.removeItem('hasVisitedProfileBefore');
     console.log("removed from local storage");
     // this.activeStepSubject.next(1);
-    // this.goToNextStep(4);
+    console.log("Current URL:", this.router.url); // Log current URL
+
+  if (this.router.url.includes('signup')) {
+    console.log("Signup URL detected, initiating goToNextStep...");
+    setTimeout(() => {
+      this.goToNextStep(4);
+      this.router.navigateByUrl(`/content/${this.UserId}`);
+    }, 2000);
+  } else {
+    console.log("Signup URL not detected, redirecting immediately.");
     this.router.navigateByUrl(`/content/${this.UserId}`);
+  }
+  
+    // if(this.router.url.includes('signup')) {
+    //   setTimeout(() => {
+    //     this.goToNextStep(4);
+    //     this.router.navigateByUrl(`/content/${this.UserId}`);
+    //   }, 2000);
+    // }
+
+    // this.router.navigateByUrl(`/content/${this.UserId}`);
   }
   
   // resetForm() {

@@ -211,6 +211,11 @@ input:valid {
   cursor: pointer;
 }
 
+.resetPassword:hover{
+  text-decoration: underline;
+  transition: visibility 0.2s ease;
+}
+
 ::placeholder {
   font-size: 1rem;
 }
