@@ -375,7 +375,7 @@ The Form will revert back to its original state in a set amount of time.
 - State validation and CSRF protection for Oauth.
 - HTTPONLY Cookies setup the project to procure user information using secure routes - /me.
 - Utilize a facedetection API such as face-api.js to center profile picture around user's face automatically or a modal where the image can centered based on user's needs.
-  
+- A State management solution like NgRx.
 
 # Backend
 The Backend for Celebrity Health & Fitness App was developed using MVC based Node.js and Express.js, utilizing Sequalize. With a RESTful API that can scale based on demands reliably; with MySQL as the database.
