@@ -86,16 +86,21 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from './services/auth.service'; // Adjust the path to your AuthService
+import { FormService } from './shared/Multi-Step-Form/form/form.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private formService: FormService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     // Check if user is logged in
+    if (state.url.includes('/signup')) {
+      this.formService.setGoogleAuthEnabled(false);
+    }
+
     if (this.authService.isAuthenticated()) {
       return true;
     } else {
@@ -103,7 +108,7 @@ export class AuthGuard implements CanActivate {
       this.authService.setRedirectUrl(state.url);
 
       // Navigate to the login page
-      this.router.navigate(['/sign-in']);
+      this.router.navigate(['/login']);
       return false;
     }
   }

@@ -211,6 +211,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 
 @Injectable({
   providedIn: 'root'
@@ -386,9 +387,10 @@ export class AuthService {
     return null;
   }
 
-  clearAuthState(): void {
-    localStorage.removeItem("token");
-    localStorage.removeItem("googleAuthToken");
-    this.authStateSubject.next(false);
-  }
+
+  // clearAuthState(): void {
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("googleAuthToken");
+  //   this.authStateSubject.next(false);
+  // }
 }

@@ -25,23 +25,25 @@ export class StepTwoPlanDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stepForm = this.rootFormGroup.control.get('planDetails') as FormGroup;
-    // const formVals = this.rootFormGroup.form.get('planDetails') ?.value;
+    const formVals = this.rootFormGroup.form.get('planDetails') ?.value;
     
-    // this.typeOfBilling = formVals?.billing || 'monthly';
-    // this.chosenPlan = formVals?.plan;
-    // this.checked = this.typeOfBilling === 'monthly' ? false : true;
-    // this.planType = formVals?.plan || 'Just Looking';
-    // this.updateBilling();
+    this.typeOfBilling = formVals?.billing || 'monthly';
+    this.chosenPlan = formVals?.plan;
+    this.checked = this.typeOfBilling === 'monthly' ? false : true;
+    this.planType = formVals?.plan || 'Just Looking';
+    this.updateBilling();
 
-    this.formService.upgradeDataLoaded$.subscribe(loaded => {
-      if (loaded) {
-        const { tier, billing } = this.formService.getTierAndBilling();
-        this.planType = tier;
-        this.typeOfBilling = billing;
-        this.checked = this.typeOfBilling === 'monthly' ? false : true;
-        this.updateBilling();
-      }
-    });
+    this.formService.setSelectedPlan(this.planType);
+
+    // this.formService.upgradeDataLoaded$.subscribe(loaded => {
+    //   if (loaded) {
+    //     const { tier, billing } = this.formService.getTierAndBilling();
+    //     this.planType = tier;
+    //     this.typeOfBilling = billing;
+    //     this.checked = this.typeOfBilling === 'monthly' ? false : true;
+    //     this.updateBilling();
+    //   }
+    // });
   }
 
   ngAfterViewInit(): void {
@@ -71,6 +73,8 @@ export class StepTwoPlanDetailsComponent implements OnInit {
       planCost: cost,
       totalCost: cost,
     })
+
+    this.formService.setSelectedPlan(plan);
 
     // setTimeout(() => {
     //   this.cdr.detectChanges();

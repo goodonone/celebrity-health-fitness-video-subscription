@@ -466,11 +466,14 @@
 // }
 
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, take, tap } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
+import { AuthStateService } from './authstate.service';
+import { FormService } from '../shared/Multi-Step-Form/form/form.service';
+import { CustomOAuthService } from './oauth.service';
 
 
 
@@ -484,12 +487,44 @@ export class UserService {
   tierKey: string = "tier";
   userIdKey: string = "userId";
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  private oauthService!: CustomOAuthService;
 
-  private isLoggedInSubject = new BehaviorSubject<boolean>(this.isloggedIn());
+  private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
+  isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
+
+  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector) {
+    // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
+    //   this.isLoggedInSubject.next(isAuthenticated);
+    // });
+    this.authStateService.isAuthenticated$.subscribe(
+      isAuthenticated => this.isLoggedInSubject.next(isAuthenticated && this.checkLocalStorageAuth())
+    );
+   }
+
+  // private isLoggedInSubject = new BehaviorSubject<boolean>(this.isloggedIn());
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkInitialLoginState());
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   // Observable for components to subscribe to
-  isLoggedIn$ = this.isLoggedInSubject.asObservable();
+  // isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
+  private checkInitialLoginState(): boolean {
+    return this.checkLocalStorageAuth() && this.authStateService.checkAuthStatus();
+  }
+
+  private getOAuthService(): CustomOAuthService {
+    if (!this.oauthService) {
+      this.oauthService = this.injector.get(CustomOAuthService);
+    }
+    return this.oauthService;
+  }
+
+  private checkLocalStorageAuth(): boolean {
+    return !!localStorage.getItem(this.tokenKey) && 
+           !!localStorage.getItem(this.userIdKey) && 
+           (localStorage.getItem('isUserLoggedIn') === 'true' || 
+            !!localStorage.getItem('user'));
+  }
 
   checkEmailAvailability(email: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.baseURL}/check-email/${email}`);
@@ -517,14 +552,25 @@ login(email: string, password: string) {
   return this.http.post(`${this.baseURL}/login`, request)
     .pipe(tap((response: any) => {
       this.updateLoginStatus(true);
-      localStorage.setItem(this.tokenKey, response.token);
-      localStorage.setItem(this.userIdKey , response.userId);
-      localStorage.setItem(this.tierKey, response.tier);
-      localStorage.setItem('billing', response.paymentFrequency);
+      this.handleSuccessfulAuth(response);
+      return response;
+      // localStorage.setItem(this.tokenKey, response.token);
+      // localStorage.setItem(this.userIdKey , response.userId);
+      // localStorage.setItem(this.tierKey, response.tier);
+      // localStorage.setItem('billing', response.paymentFrequency);
 
-      // Update login state after successful login
-      localStorage.setItem("isUserLoggedIn", "true");
+      // // Update login state after successful login
+      // localStorage.setItem("isUserLoggedIn", "true");
     }));
+}
+
+private handleSuccessfulAuth(response: any) {
+  localStorage.setItem(this.tokenKey, response.token);
+  localStorage.setItem(this.userIdKey, response.userId);
+  localStorage.setItem(this.tierKey, response.tier);
+  localStorage.setItem('billing', response.paymentFrequency);
+  localStorage.setItem('isUserLoggedIn', 'true');
+  this.updateLoginStatus(true);
 }
 
   loginWithGoogle(token: string): Observable<any> {
@@ -542,10 +588,30 @@ login(email: string, password: string) {
 //   return !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true';
 // }
 
-isloggedIn(): boolean {
-  const isLoggedIn = !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true' || !!localStorage.getItem('user');
-  // console.log('UserService: isLoggedIn:', isLoggedIn);
-  return isLoggedIn;
+// isloggedIn(): boolean {
+//   const isLoggedIn = !!localStorage.getItem(this.tokenKey) && !!localStorage.getItem(this.userIdKey) && localStorage.getItem('isUserLoggedIn') === 'true' || !!localStorage.getItem('user');
+//   // console.log('UserService: isLoggedIn:', isLoggedIn);
+//   return isLoggedIn;
+// }
+
+// isloggedIn(): Observable<boolean> {
+//   const localStorageCheck = !!localStorage.getItem(this.tokenKey) && 
+//                             !!localStorage.getItem(this.userIdKey) && 
+//                             (localStorage.getItem('isUserLoggedIn') === 'true' || 
+//                              !!localStorage.getItem('user'));
+
+//   return this.authStateService.getAuthState().pipe(
+//     take(1),
+//     map(authState => {
+//       const isLoggedIn = localStorageCheck && authState;
+//       // console.log('UserService: isLoggedIn:', isLoggedIn);
+//       return isLoggedIn;
+//     })
+//   );
+// }
+
+isloggedIn(): Observable<boolean> {
+  return this.isLoggedIn$;
 }
 
 logoutUser() {
@@ -554,15 +620,27 @@ logoutUser() {
   localStorage.removeItem(this.tierKey);
   localStorage.removeItem(this.userIdKey);
   // localStorage.removeItem("cart");
-  localStorage.removeItem("hasVisitedHomeBefore");
+  // localStorage.removeItem("hasVisitedHomeBefore");
   localStorage.removeItem("hasVisitedProfileBefore");
   localStorage.removeItem("isUserLoggedIn");
-  this.updateLoginStatus(false);
   localStorage.removeItem("token");
   localStorage.removeItem("googleAuthToken");
   localStorage.removeItem("user");
+  localStorage.removeItem("userId");
   localStorage.removeItem("authToken");
+  this.updateLoginStatus(false);
+  this.setGoogleAuthEnabled(false);
+  // this.authStateService.setAuthenticationState(false);
   this.authService.authStateSubject.next(false);
+
+  const oauthService = this.getOAuthService();
+    oauthService.logout().subscribe(() => {
+      oauthService.setAuthenticationState(false);
+    });
+}
+
+checkUserExists(email: string): Observable<boolean> {
+  return this.http.get<boolean>(`${this.baseURL}/check-user-exists/${email}`);
 }
 
 checkEmail(email: string): Observable<{exists: boolean, message: string}> {
@@ -646,8 +724,6 @@ updateUser(updatedUser: User): Observable<User> {
     return this.http.put<any>(`${this.baseURL}/update-password/${userId}`, { newPassword }, { headers: reqHeaders });
   }
 
-
-
 getUser(userId: string): Observable<User> {
   let reqHeaders = {
     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
@@ -664,7 +740,11 @@ deleteUser(userId: string) : Observable<any> {
 
 updateLoginStatus(status: boolean) {
   this.isLoggedInSubject.next(status);
+  this.authStateService.setAuthState(status);
 }
 
+setGoogleAuthEnabled(value: boolean) {
+  this.isGoogleAuthEnabledSubject.next(value);
+}
 
 }

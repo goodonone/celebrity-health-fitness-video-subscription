@@ -10,7 +10,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from './services/user.service';
 import { CartService } from './services/cart.service';
-import { catchError, filter, of, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, combineLatest, filter, of, Subscription, switchMap, tap } from 'rxjs';
 import { AuthService } from './services/auth.service';
 import { CustomOAuthService } from './services/oauth.service';
 import { AuthStateService } from './services/authstate.service';
@@ -80,8 +80,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     // this.oauthService.handleRedirectResult();
-    this.oauthService.checkForRedirectResult();
-    this.oauthService.checkForStoredAuthResult();
+    // this.oauthService.checkForRedirectResult();
+    // this.oauthService.checkForStoredAuthResult();
     // this.loadUserId();
     // this.UpdateStatus();
 
@@ -96,17 +96,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   console.error('Error during OAuth initialization:', error);
     // });
 
-    this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        console.log('User logged in successfully');
-        // You can perform any actions needed when the user becomes authenticated
-      } else {
-        console.log('User is not authenticated');
-        // You can perform any actions needed when the user becomes unauthenticated
-      }
-    });
+    // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
+    //   if (isAuthenticated) {
+    //     console.log('User logged in successfully');
+    //     // You can perform any actions needed when the user becomes authenticated
+    //   } else {
+    //     console.log('User is not authenticated');
+    //     // You can perform any actions needed when the user becomes unauthenticated
+    //   }
+    // });
 
-    this.cartSubscription =this.cartService.getCartObservable().subscribe((newCart) => {
+    this.cartSubscription = this.cartService.getCartObservable().subscribe((newCart) => {
       // console.log('Cart received in navbar:', newCart); 
       this.cartQuantity = newCart.totalCount || 0;
       });
@@ -127,6 +127,41 @@ export class AppComponent implements OnInit, AfterViewInit {
           // console.log('Cart received in navbar:', cart);
         })
       );
+
+      // this.subscription.add(
+      //   combineLatest([
+      //     this.userService.isLoggedIn$,
+      //     this.authStateService.isAuthenticated$
+      //   ]).subscribe(([userServiceLoggedIn, authStateLoggedIn]) => {
+      //     this.userIsLoggedIn = userServiceLoggedIn || authStateLoggedIn;
+      //     if (this.userIsLoggedIn) {
+      //       this.UserId = this.userService.getUserId();
+      //     } else {
+      //       this.UserId = '';
+      //     }
+      //     console.log('Login state updated:', this.userIsLoggedIn);
+      //   })
+      // );
+
+      this.subscription.add(
+        combineLatest([
+          this.userService.isLoggedIn$,
+          this.authStateService.isAuthenticated$,
+          this.oauthService.isAuthenticated$
+        ]).subscribe(([userServiceLoggedIn, authStateLoggedIn, oauthLoggedIn]) => {
+          this.userIsLoggedIn = userServiceLoggedIn || authStateLoggedIn || oauthLoggedIn;
+          if (this.userIsLoggedIn) {
+            this.UserId = this.userService.getUserId();
+          } else {
+            this.UserId = '';
+          }
+          console.log('Login state updated:', this.userIsLoggedIn);
+          console.log("user service logged in", userServiceLoggedIn);
+          console.log("auth state logged in", authStateLoggedIn);
+          console.log("oauth logged in", oauthLoggedIn);
+        })
+      );
+    
   
       // this.subscription.add(
       //   this.router.events.subscribe((event) => {
@@ -146,9 +181,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   
       this.UpdateStatus();
 
-      this.userService.isLoggedIn$.subscribe(status => {
-        this.userIsLoggedIn = status;
-      });
+      // this.userService.isLoggedIn$.subscribe(status => {
+      //   this.userIsLoggedIn = status;
+      // });
 
       // Check if the user has visited the page before to serve animations or not
       const hasVisited = localStorage.getItem('hasVisitedHomeBefore');
@@ -167,7 +202,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationEnd) {
         if (
           !this.router.url.includes('home') ||
-          !this.router.url.includes('sign-in') ||
+          !this.router.url.includes('login') ||
           !this.router.url.includes('reset-password')
         ) {
           this.isVisibleNavbar = false; // Reset when navigating away from home

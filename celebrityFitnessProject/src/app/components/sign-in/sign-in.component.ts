@@ -64,12 +64,13 @@
 //   }
 // }
 
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service'; // Import AuthService
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { CustomOAuthService } from 'src/app/services/oauth.service';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -91,11 +92,18 @@ export class SignInComponent implements OnInit {
   faEye = faEye;
   faEyeSlash = faEyeSlash;
 
+  private authSubscription: Subscription = new Subscription();
+  private subscriptions: Subscription = new Subscription();
+
+  // isLoadingGoogleSignin$!: Observable<boolean>;
+
   constructor(
     private userService: UserService,
     private authService: AuthService, // Inject AuthService
     private router: Router,
-    private oauthService: CustomOAuthService
+    private oauthService: CustomOAuthService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -113,6 +121,53 @@ export class SignInComponent implements OnInit {
         this.resetNavbarState();
       }
     });
+
+    // Handle loading spinner oauth - error
+    this.subscriptions.add(
+      this.oauthService.authError$.subscribe(error => {
+        this.zone.run(() => {
+          this.isLoadingGoogle = false;
+          this.cdr.detectChanges();
+        });
+      })
+    );
+
+    // Reset loading spinner state upon error
+    // this.authSubscription.add(
+    //   this.oauthService.authError$.subscribe(error => {
+    //     this.zone.run(() => {
+    //       this.isLoadingGoogle = false;
+    //       console.error('Authentication error:', error);
+    //       // Handle error (e.g., show error message to user)
+    //       this.cdr.detectChanges();
+    //     });
+    //   })
+    // );
+
+    // // Handle popup closed without completing authentication
+    this.subscriptions.add(
+      this.oauthService.popupClosed$.subscribe(() => {
+        if (this.isLoadingGoogle) {
+          this.isLoadingGoogle = false;
+          // Handle popup closed without completing authentication
+        }
+      })
+    );
+
+    // Handle loading spinner oauth
+    // this.subscriptions.add(
+    //   this.oauthService.isLoadingLogin$.subscribe(isLoading => {
+    //     this.zone.run(() => {
+    //       this.isLoadingGoogle = isLoading;
+    //       console.log('isLoadingGoogle changed:', isLoading);
+    //       this.cdr.detectChanges();
+    //     });
+    //   })
+    // );
+
+    // this.oauthService.getAuthComplete().subscribe(() => {
+    //   this.isLoadingGoogle = false;
+    // });
   }
 
   signIn() {
@@ -136,28 +191,34 @@ export class SignInComponent implements OnInit {
           this.buttonText = 'Log In';
           this.errorMessage = false;
         }, 1800);
-        this.router.navigateByUrl('/sign-in');
+        this.router.navigateByUrl('/login');
       }
     );
   }
 
   onClickGoogle() {
     this.isLoadingGoogle = true;
-    this.oauthService.initiateLogin();
+    this.oauthService.initiateLogin(false);
+
+    // this.oauthService.isLoadingLogin$.subscribe((isLoading) => {
+    //   this.isLoadingGoogle = isLoading;
+    //   console.log('isLoadingGoogle changed:', isLoading);
+    // })
+  
     
-    this.oauthService.authResult$.subscribe(
-      (user) => {
-        this.isLoadingGoogle = false;
-        if (user) {
-          this.router.navigate(['/content', user.userId]);
-        }
-      },
-      (error) => {
-        this.isLoadingGoogle = false;
-        console.error('Google login error:', error);
-        // Handle error (e.g., show error message)
-      }
-    );
+    // this.oauthService.authResult$.subscribe(
+    //   (user) => {
+    //     this.isLoadingGoogle = false;
+    //     if (user) {
+    //       this.router.navigate(['/content', user.userId]);
+    //     }
+    //   },
+    //   (error) => {
+    //     this.isLoadingGoogle = false;
+    //     console.error('Google login error:', error);
+    //     // Handle error (e.g., show error message)
+    //   }
+    // );
   }
 
   resetNavbarState(): void {

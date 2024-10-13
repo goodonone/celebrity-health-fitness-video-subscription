@@ -37,7 +37,18 @@
                             </div>
                             <div class="buttonContainer">
                                 <button mat-button [routerLink]="['/store/product', product.productId]" class="buttonView">View</button>
-                                <button mat-button (click)="addToCart(product)" class="buttonAdd">{{ getButtonText(product) }}</button>
+                                <!-- <button mat-button (click)="addToCart(product)" class="buttonAdd">{{ getButtonText(product) }}</button> -->
+                                <!-- <button mat-button (click)="addToCart(product)" class="buttonAdd" [disabled]="maxReachedForProducts[product.productId]">
+                                    {{ buttonTexts[product.productId] || '+Cart' }}
+                                  </button> -->
+                                  <button mat-button 
+                                    (click)="addToCart(product)" 
+                                    (mouseenter)="onMouseEnter(product)"
+                                    (mouseleave)="onMouseLeave(product)"
+                                    class="buttonAdd"
+                                    [class.limit-reached]="isLimitReached(product)">
+                                    {{ getButtonText(product) }}
+                                </button>
                             </div>
                         </div>
                     </mat-card>

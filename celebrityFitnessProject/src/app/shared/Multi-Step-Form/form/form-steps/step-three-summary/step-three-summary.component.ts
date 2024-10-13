@@ -30,14 +30,16 @@ export class StepThreeSummaryComponent implements OnInit {
     console.log(`This is step three summary component${this.tierTwoThree}`);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tierTwoThree']) {
-      console.log('StepThreeSummaryComponent ngOnChanges - tierTwoThree:', changes['tierTwoThree'].currentValue);
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (changes['tierTwoThree']) {
+  //     console.log('StepThreeSummaryComponent ngOnChanges - tierTwoThree:', changes['tierTwoThree'].currentValue);
+  //   }
+  // }
 
   changePlan() {
+    console.log('Change plan clicked, current step:', this.formService.activeStepSubject.value);
     this.formService.goBackToPreviousStep(3);
+    console.log('After goBackToPreviousStep, current step:', this.formService.activeStepSubject.value);
   }
 
   // onEnterPress() {

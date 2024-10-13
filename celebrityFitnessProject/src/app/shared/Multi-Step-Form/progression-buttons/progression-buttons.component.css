@@ -98,6 +98,15 @@ a:hover {
   /* } 
 } */
 
+a.disabled:hover{
+  text-shadow: none;
+}
+
+a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 @media screen and (min-width: 872px) and (max-width: 1300px){
 
   :host {

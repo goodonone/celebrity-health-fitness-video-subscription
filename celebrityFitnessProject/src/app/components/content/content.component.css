@@ -573,8 +573,37 @@ button.btn-showMore:hover {
 ::ng-deep
   .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled)
   .mdc-switch__track::after {
-  background-color: rgb(252, 0, 0) !important;
+  background-color: rgb(52, 52, 52) !important;
 }/*this one*/
+
+/* ::ng-deep .mat-mdc-slide-toggle:hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.5); 
+} */
+
+/* ::ng-deep .mat-mdc-slide-toggle:hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.3); /* Ripple color when hovered */
+/* } */
+
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):hover .mdc-switch__ripple::after {
+  background-color: rgba(255, 255, 255, 0.05); /* Customize your ripple color for unchecked hover */
+}
+
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.05); /* Ripple color for hover state when unchecked */
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-accent {
+  --mdc-switch-selected-focus-state-layer-color: #ffffff;
+  --mdc-switch-selected-hover-state-layer-color: #ffffff;
+  --mdc-switch-selected-pressed-state-layer-color: #ffffff;
+  --mdc-switch-selected-focus-handle-color: #ffffff;
+    --mdc-switch-selected-hover-handle-color: #ffffff;
+    --mdc-switch-selected-pressed-handle-color: #ffffff;
+    --mdc-switch-selected-focus-track-color: #7b7a7a;
+    --mdc-switch-selected-hover-track-color: #373636;
+    --mdc-switch-selected-pressed-track-color: #ffffff;
+    --mdc-switch-selected-track-color: #ffffff; 
+}
 
 ::ng-deep
   .mat-mdc-slide-toggle.mat-mdc-slide-toggle-unchecked

@@ -40,7 +40,7 @@
 
 .productImage{
     height: 38rem;
-    width: 40rem;
+    width: 38rem;
     background-size: cover;
     border-radius: 1rem;
 }
@@ -94,12 +94,18 @@ p.price{
 
 .buttonContainer{
     position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
     /* top: 101.5%; */
-    left: 0;
+    right: 0rem;
     margin: auto;
     bottom: 2rem;
     /* width: 28rem; */
     width: 100%;
+    min-width: 29rem;
+    /* max-width: 40rem; */
 }
 
 .addToCartButton, .viewCartButton {
@@ -107,6 +113,19 @@ p.price{
     margin-top: 3.3rem;
     background-color: rgb(255, 255, 255) !important;
 }
+
+.addToCartButton, .viewCartButton, .backButton{
+    width: 10rem;
+}
+
+/* .viewCartButton{
+    width: 8rem;
+} */
+
+/* .viewCartButton:disabled{
+    background: white;
+    color: black;
+} */
 
 .viewCartButton{
     padding: 0 1rem 0 1rem;
@@ -122,6 +141,11 @@ background-color: rgb(255, 255, 255) !important;
 .addToCartButton:hover, .viewCartButton:hover, .backButton:hover{
     color: white !important;
     background-color: rgb(0, 0, 0) !important;
+}
+
+.addToCartButton.limit-reached:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
 }
 
 .loadingContainer {

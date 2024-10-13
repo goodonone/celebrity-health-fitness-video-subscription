@@ -24,7 +24,8 @@
   color: #C7FF20;
   border-radius: 50%;
   text-align: center;
-  line-height: 32px;
+  line-height: 35px;
+  margin-left: 0.1rem;
 }
 
 .step_number.selected {
@@ -35,11 +36,16 @@
   width: 2.1rem;
   height: 2.1rem;
   text-align: center;
-  line-height: 32px;
+  line-height: 35px;
+  margin-left: 0.1rem;
 }
 
 .step_details {
   display: none;
+}
+
+.disabled-step {
+  opacity: 0.5;
 }
 
 @media (min-width: 30.5em) {
@@ -110,6 +116,8 @@
     justify-content: center;
     align-items: center;
     padding: 0;
+    top: 0;
+    /* margin: auto; */
   }
 
   .step-display {
@@ -122,14 +130,29 @@
     margin-left: auto;
     margin-right: auto;
     width: 100%; */
-    padding: 0;
+
+    /* padding: 0;
     margin: 0;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     width: 100%;
+    height: auto; */
+
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    /* padding-bottom: clamp(0rem, 1.5vw, 2rem); */
+    /* padding-bottom: 1rem; */
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     height: auto;
+/* 
+    width: 100%;
+    height: auto; */
   }
 
   .step_details {
@@ -150,7 +173,7 @@
     color: #C7FF20;
     border-radius: 50%;
     text-align: center;
-    line-height: 3rem;
+    line-height: 3.1rem;
   }
 
   .step_number.selected {
@@ -161,7 +184,7 @@
     width: 3.1rem;
     height: 3.1rem;
     text-align: center;
-    line-height: 3rem;
+    line-height: 3.1rem;
   }
 
 }

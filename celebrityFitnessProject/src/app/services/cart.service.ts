@@ -481,6 +481,7 @@ import { AuthService } from './auth.service';
 export class CartService {
   private apiUrl = 'http://localhost:3000/api/cart'; // Replace with your actual API URL
   private cartSubject: BehaviorSubject<Cart> = new BehaviorSubject<Cart>(new Cart());
+  private cartChangedSubject = new BehaviorSubject<{ action: 'clear' | 'remove' | 'init', productId?: string }>({ action: 'init' });
 
   isLoggedIn: boolean = false;
   private isInitialized = false;
@@ -505,8 +506,6 @@ export class CartService {
       this.isInitialized = true;
       // console.log('Initializing cart');
       this.loadCart();
-    } else {
-      // console.log('Not initializing cart: user not authenticated or already initialized');
     }
   }
 
@@ -572,23 +571,62 @@ export class CartService {
   //   );
   // }
 
+  // loadCart(): void {
+  //   if (!this.authService.isAuthenticated()) {
+  //     // console.log('User is not authenticated, not loading cart');
+  //     return;
+  //   }
+
+  //   const userId = this.getCurrentUserId();
+  //   if (!userId) {
+  //     // console.log('No user ID found, not loading cart');
+  //     return;
+  //   }
+
+  //   this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
+  //     take(1),
+  //     catchError((error: HttpErrorResponse) => {
+  //       if (error.status === 404) {
+  //         // console.log('Cart not found for user, initializing empty cart');
+  //         return of(new Cart());
+  //       }
+  //       throw error;
+  //     })
+  //   ).subscribe(
+  //     (cart) => {
+  //       if (cart && cart.totalCount > 0) {
+  //         // console.log('Cart loaded successfully with items');
+  //         this.cartSubject.next(cart);
+  //       } else {
+  //         // console.log('Cart is empty');
+  //         this.cartSubject.next(new Cart());
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error loading cart', error);
+  //       this.cartSubject.next(new Cart());
+  //     }
+  //   );
+  // }
+
   loadCart(): void {
+    
     if (!this.authService.isAuthenticated()) {
-      // console.log('User is not authenticated, not loading cart');
       return;
     }
 
     const userId = this.getCurrentUserId();
     if (!userId) {
-      // console.log('No user ID found, not loading cart');
       return;
     }
+
+    console.log('Loading cart for user:', userId); 
 
     this.http.get<Cart>(`${this.apiUrl}/${userId}`).pipe(
       take(1),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 404) {
-          // console.log('Cart not found for user, initializing empty cart');
+          console.log('Received cart:');
           return of(new Cart());
         }
         throw error;
@@ -596,10 +634,8 @@ export class CartService {
     ).subscribe(
       (cart) => {
         if (cart && cart.totalCount > 0) {
-          // console.log('Cart loaded successfully with items');
           this.cartSubject.next(cart);
         } else {
-          // console.log('Cart is empty');
           this.cartSubject.next(new Cart());
         }
       },
@@ -642,6 +678,7 @@ export class CartService {
         updatedCart.totalCount = updatedCart.calculatedTotalCount;
         updatedCart.totalPrice = updatedCart.calculatedTotalPrice;
         this.cartSubject.next(updatedCart);
+        this.cartChangedSubject.next({ action: 'remove', productId });
       })
     );
   }
@@ -678,13 +715,20 @@ export class CartService {
   clearCart(): Observable<Cart> {
     const userId = this.getCurrentUserId();
     return this.http.delete<Cart>(`${this.apiUrl}/${userId}`).pipe(
-      tap(() => this.cartSubject.next(new Cart()))
+      tap(() => {
+        this.cartSubject.next(new Cart())
+        this.cartChangedSubject.next({ action: 'clear' });
+      })
     );
   }
 
   getCartObservable(): Observable<Cart> {
     // console.log('CartService: getCartObservable called');
     return this.cartSubject.asObservable();
+  }
+
+  getCartChangedObservable(): Observable<{ action: 'clear' | 'remove' | 'init', productId?: string }> {
+    return this.cartChangedSubject.asObservable();
   }
 
   getTotalPrice(): Observable<number> {
@@ -699,8 +743,19 @@ export class CartService {
     );
   }
 
+  // private getCurrentUserId(): string {
+  //   return localStorage.getItem('userId') || '';
+  // }
+
   private getCurrentUserId(): string {
-    return localStorage.getItem('userId') || '';
+    const userId = localStorage.getItem('userId');
+  
+    if (!userId) {
+      const userObject = JSON.parse(localStorage.getItem('user') || '{}');
+      return userObject.userId || '';
+    }
+  
+    return userId || '';
   }
 
   // loadCart(): void {

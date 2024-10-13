@@ -1,10 +1,12 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormService } from '../form/form.service';
 import { UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { CartService } from 'src/app/services/cart.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import { CustomOAuthService } from 'src/app/services/oauth.service';
 
 
 @Component({
@@ -23,42 +25,135 @@ export class ProgressionButtonsComponent implements OnInit {
   @Input() payment!: boolean;
   @Input() checkout!: boolean;
 
+  private destroy$ = new Subject<void>();
+  isGoogleAuthEnabled: boolean = false;
 
-  constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService) { }
+  private subscription: Subscription = new Subscription();
+
+  constructor(private formService: FormService, private user: UserService, private router: Router, private cartService: CartService, private authService: AuthService, private cdr: ChangeDetectorRef,
+    private oauthService: CustomOAuthService
+  ) {
+    // this.cdr.detectChanges = (...args) => {
+    //   console.log('Change detection run in ProgressionButtonsComponent');
+    //   Object.getPrototypeOf(this.cdr).detectChanges.apply(this.cdr, args);
+    };
+   
 
   ngOnInit(): void {
     this.stepForm = this.formService.stepForm;
-    this.formService.activeStep$.subscribe(
-      step => {
+    // this.formService.activeStep$.subscribe(
+    //   step => {
+    //     // console.log('Form state:', JSON.stringify(this.stepForm.value, null, 2));
+    //     // console.log('ProgressionButtonsComponent received new step:', step);
+    //     this.activeStep$ = step;
+    //     console.log('ACTIVE STEP:', this.activeStep$);
+    //     this.planCost = this.stepForm.controls['planDetails'].value.planCost;
+    //     // this.cdr.detectChanges();
+    //   });
+
+     
+
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   this.isGoogleAuthEnabled = isEnabled;
+    // })
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   console.log('Google Auth Enabled:', isEnabled);  // Add this log
+    //   this.isGoogleAuthEnabled = isEnabled;
+    //   console.log('isGoogleAuthEnabled:', this.isGoogleAuthEnabled);
+    //   this.cdr.detectChanges();  // Force change detection
+    // });
+
+    // this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+    //   console.log('Google Auth Enabled changed:', isEnabled);
+    //   this.isGoogleAuthEnabled = isEnabled;
+    //   console.log('Current step:', this.activeStep$);
+    //   console.log('Back button should be disabled:', this.isBackButtonDisabled());
+    //   this.cdr.detectChanges();
+    // });
+  
+    // this.formService.activeStep$.subscribe(step => {
+    //   console.log('Active step changed:', step);
+    //   this.activeStep$ = step;
+    //   console.log('Google Auth Enabled:', this.isGoogleAuthEnabled);
+    //   console.log('Back button should be disabled:', this.isBackButtonDisabled());
+    //   this.cdr.detectChanges();
+    // });
+
+    // this.formService.formUpdatedWithGoogleData$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    //   console.log('Form updated with Google data');
+    //   this.checkGoogleAuthState();
+    // });
+
+    this.subscription.add(
+      this.formService.activeStep$.subscribe(step => {
         this.activeStep$ = step;
         this.planCost = this.stepForm.controls['planDetails'].value.planCost;
-      });
+        console.log('ACTIVE STEP:', this.activeStep$);
+      })
+    );
 
-    this.formService.formUpdatedWithGoogleData$.subscribe(() => {
-      // Check if we can proceed after Google data is loaded
-      if (this.canProceed()) {
-        console.log('Form is valid after Google OAuth, ready to proceed');
-      }
-    });
+  this.formService.formUpdatedWithGoogleData$.subscribe(() => {
+    // Check if we can proceed after Google data is loaded
+    if (this.canProceed()) {
+      console.log('Form is valid after Google OAuth, ready to proceed');
+    }
+  });
+      
+    this.subscription.add(
+      this.formService.isGoogleAuthEnabled$.subscribe(isEnabled => {
+        this.isGoogleAuthEnabled = isEnabled;
+        console.log('Google Auth Enabled:', this.isGoogleAuthEnabled);
+      })
+    );
 
+    // this.oauthService.oauthSuccess$.subscribe(user => {
+    //   console.log('OAuth successful, moving to next step');
+    //   this.isGoogleAuthEnabled = true;
+    //    // Or whatever step number is appropriate
+    // })
+    this.subscription.add(
+      this.oauthService.oauthSuccess$.subscribe(() => {
+        console.log('OAuth successful, updating button state');
+        this.isGoogleAuthEnabled = true;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.subscription.unsubscribe();
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    console.log('Key pressed:', event.key);
+    // console.log('Key pressed:', event.key);
     if (event.key === 'Enter') {
-      console.log('Enter key pressed');
+      // console.log('Enter key pressed');
       const maxStep = this.getMaxStep();
       
       if (this.activeStep$ === maxStep) {
-        console.log('Calling confirmAndSubmitForm');
+        // console.log('Calling confirmAndSubmitForm');
         this.confirmAndSubmitForm();
       } else if (this.checkout) {
-        console.log('Calling purchase');
+        // console.log('Calling purchase');
         this.purchase();
       }
     }
   }
+
+  // private checkGoogleAuthState(): void {
+  //   const personalDetails = this.stepForm.get('personalDetails');
+  //   if (personalDetails) {
+  //     const isGoogleAuth = personalDetails.get('isGoogleAuth')?.value;
+  //     console.log('Is Google Auth (from form):', isGoogleAuth);
+  //     if (isGoogleAuth) {
+  //       this.isGoogleAuthEnabled = true;
+  //       this.formService.setGoogleAuthEnabled(true);
+  //     }
+  //   }
+  //   console.log('Current Google Auth state:', this.isGoogleAuthEnabled);
+  // }
  
 
   // canProceed(): boolean {
@@ -69,6 +164,7 @@ export class ProgressionButtonsComponent implements OnInit {
   //   // Add logic for other steps if needed
   //   return true;
   // }
+
 
   canProceed(): boolean {
     const personalDetails = this.stepForm.get('personalDetails');
@@ -89,7 +185,7 @@ export class ProgressionButtonsComponent implements OnInit {
     }
   
     // For checkout process
-    if (this.checkout) {
+    else if (this.checkout) {
       if (this.activeStep$ === 1) {
         return true; // Summary step, always valid
       }
@@ -99,7 +195,7 @@ export class ProgressionButtonsComponent implements OnInit {
     }
   
     // For new users signing up
-    if (!this.loggedIn && !this.checkout) {
+    else if (!this.loggedIn && !this.checkout) {
       if (this.activeStep$ === 1) {
         return personalDetails?.valid || personalDetails?.get('isGoogleAuth')?.value === true || true;
       }
@@ -117,6 +213,12 @@ export class ProgressionButtonsComponent implements OnInit {
     // Default to true for any unhandled cases
     return true;
   }
+
+
+  // canProceed(): boolean {
+  //   console.log('canProceed called');
+  //   return true; // Temporarily always return true for testing
+  // }
 
   // nextStep() {
   //   if (!this.loggedIn) {
@@ -185,16 +287,28 @@ export class ProgressionButtonsComponent implements OnInit {
   //   }
   // }
 
+  // nextStep() {
+  //   if (this.canProceed()) {
+  //     const maxStep = this.getMaxStep();
+      
+  //     if (this.activeStep$ < maxStep) {
+  //       this.formService.goToNextStep(this.activeStep$);
+  //     } else if (this.activeStep$ === maxStep) {
+  //       this.confirmAndSubmitForm();
+  //     }
+  //     // } else if (this.activeStep$ === maxStep + 1) {
+  //     //   this.handlePostConfirmation();
+  //     // }
+  //   }
+  // }
+
   nextStep() {
     if (this.canProceed()) {
       const maxStep = this.getMaxStep();
-      
       if (this.activeStep$ < maxStep) {
         this.formService.goToNextStep(this.activeStep$);
       } else if (this.activeStep$ === maxStep) {
         this.confirmAndSubmitForm();
-      } else if (this.activeStep$ === maxStep + 1) {
-        this.handlePostConfirmation();
       }
     }
   }
@@ -209,36 +323,65 @@ export class ProgressionButtonsComponent implements OnInit {
   //   return 4; // For new user signup
   // }
 
+  // private getMaxStep(): number {
+  //   if (this.loggedIn) {
+  //     // For logged-in users upgrading their plan
+  //     return this.payment ? 3 : 2;
+  //   }
+  //   if (this.checkout) {
+  //     // For checkout process
+  //     return 2;
+  //   }
+  //   // For new user signup
+  //   if (this.planCost > 0) {
+  //     // Paid plan: Personal Details, Plan Selection, Summary, Payment, Confirmation
+  //     return 5;
+  //   } else {
+  //     // Free plan: Personal Details, Plan Selection, Summary, Confirmation
+  //     return 4;
+  //   }
+  // }
+
   private getMaxStep(): number {
     if (this.loggedIn) {
       return this.payment ? 3 : 2;
     }
-    if (this.checkout) {
-      return 2; // Assuming checkout is always 2 steps
+    else if (this.checkout) {
+      return 2;
     }
-    // For new user signup
-    return this.planCost > 0 ? 4 : 3; // 4 steps if payment is required, 3 if it's a free plan
+    return this.planCost > 0 ? 5 : 4;
   }
 
-  private handlePostConfirmation() {
-    setTimeout(() => {
-      const isGoogleAuth = this.stepForm.get('personalDetails.isGoogleAuth')?.value;
-      if (isGoogleAuth || !this.loggedIn) {
-        // For Google auth users and new non-Google auth users
-        this.authService.clearAuthState();
-        this.router.navigate(['sign-in']);
-      } else {
-        // For existing non-Google auth users
-        const userId = this.user.getUserId();
-        if (userId) {
-          this.router.navigateByUrl(`/content/${userId}`);
-        } else {
-          this.router.navigate(['sign-in']);
-        }
-      }
-      this.formService.resetForm();
-    }, 100); 
-  }
+  // private getMaxStep(): number {
+  //   if (this.loggedIn) {
+  //     return this.payment ? 3 : 2;
+  //   }
+  //   if (this.checkout) {
+  //     return 2; // Assuming checkout is always 2 steps
+  //   }
+  //   // For new user signup
+  //   return this.planCost > 0 ? 4 : 3; // 4 steps if payment is required, 3 if it's a free plan
+  // }
+
+  // private handlePostConfirmation() {
+  //   setTimeout(() => {
+  //     const isGoogleAuth = this.stepForm.get('personalDetails.isGoogleAuth')?.value;
+  //     if (isGoogleAuth || !this.loggedIn) {
+  //       // For Google auth users and new non-Google auth users
+  //       this.authService.clearAuthState();
+  //       this.router.navigate(['sign-in']);
+  //     } else {
+  //       // For existing non-Google auth users
+  //       const userId = this.user.getUserId();
+  //       if (userId) {
+  //         this.router.navigateByUrl(`/content/${userId}`);
+  //       } else {
+  //         this.router.navigate(['sign-in']);
+  //       }
+  //     }
+  //     this.formService.resetForm();
+  //   }, 100); 
+  // }
 
   // onEnterKey(event: KeyboardEvent) {
   //   // Check if the pressed key is Enter
@@ -254,12 +397,27 @@ export class ProgressionButtonsComponent implements OnInit {
   //   }
   // }
 
+  // goBack() {
+  //   this.formService.goBackToPreviousStep(this.activeStep$);
+  // }
+
   goBack() {
+    if (this.isBackButtonDisabled()) {
+      console.log('Back button is disabled, cannot go back');
+      return;
+    }
     this.formService.goBackToPreviousStep(this.activeStep$);
+  }
+
+  isBackButtonDisabled(): boolean {
+    const isDisabled = this.activeStep$ === 2 && this.isGoogleAuthEnabled;
+    console.log('Is back button disabled:', isDisabled, 'Step:', this.activeStep$, 'Google Auth:', this.isGoogleAuthEnabled);
+    return isDisabled;
   }
 
   confirmAndSubmitForm() {
     this.formService.submit();
+    // this.formService.goToNextStep(this.activeStep$);
   }
 
   // onExternalSubmit() {

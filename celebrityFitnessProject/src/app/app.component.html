@@ -23,8 +23,8 @@
 
       <h6 class="navBarText" routerLink="/home">Home</h6>
 
-      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/signup">Sign Up</h6>
-      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/sign-in">Log In</h6>
+      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/sign-up">Sign Up</h6>
+      <h6 *ngIf="!userIsLoggedIn" class="navBarText" routerLink="/login">Log In</h6>
 
       <h6 *ngIf="userIsLoggedIn" class="navBarText" [routerLink]="['/content/', UserId]">Workouts</h6>
 

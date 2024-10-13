@@ -691,7 +691,7 @@ onMouseEnter(event: MouseEvent) {
     // Ensure the preview is displayed only after the position is set
     preview.style.display = 'block';
 
-    console.log('Preview top:', preview.style.top);
+    // console.log('Preview top:', preview.style.top);
   }, 100); // Trigger after 150ms
 }
 

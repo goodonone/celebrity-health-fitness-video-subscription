@@ -74,6 +74,7 @@
               placeholder="01/25" 
               formControlName="expDate"
               (input)="formatExpirationDate($event)"
+              (blur)="checkExpirationDate()"
               required>
        </div>
        <!-- cvv number input -->

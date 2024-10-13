@@ -7,7 +7,7 @@
     margin: auto auto 0 auto;
     align-items: center;
     position: absolute;
-    top: 50%;
+    top: clamp(20%, 50vw, 50%);
     /* right: 0; */
     left: 50%;
     transform: translate(-50%, -50%);
@@ -33,14 +33,14 @@
 .text-container {
     padding-bottom: 20px;
     text-align: center;
-    width: 750px
+    width: 750px;
 }
 
 
 p {
     font-family: 'Outfit', sans-serif;
     /* font-size: 30px; */
-    font-size: clamp(1rem, 1.5vw, 2rem);
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
     line-height: 1.5;
 }
 
@@ -61,19 +61,37 @@ p {
     object-fit: cover;
     border-radius: 1rem;
     aspect-ratio: 3/5;
+    margin-left: 3rem;
 }
 
 .text-container p.image-active {
     display: block;
     position: absolute;
-    top: 30%;
+    top: 35%;
     left: 50%;
     transition: translate(-50%);
     margin: auto;
-    width: 50%;
+    width: 30vw;
+    min-width: 200px;
+    max-width: 700px;
+    /* max-height: 550px; */
+    /* max-width: 300px; */
     text-align: left;
     color: white;
     padding-bottom: 180px;
+    height: clamp(4rem, 11vw, 200px);
+    min-height: 7rem;
+    max-height: 500px;
+    /* max-width: 10rem; */
+    /* aspect-ratio:inherit; */
+    /* min-height: 4rem;
+    max-height: 6.5rem; */
+    /* max-height: 0px; */
+    
+    /* min-height: 170px; */
+    /* background-color: rgb(23, 23, 23); */
+    background-color: rgb(18, 17, 17);
+    padding: 2rem;
 }
 
 
@@ -83,6 +101,7 @@ p {
     color: #ffffff;
     padding: 0.2rem 0.5rem 0.3rem 0.5rem;
     border: 0.063rem solid white;
+    border-radius: 0.3rem;
     /* font-style: italic; */
 }
 
@@ -91,6 +110,7 @@ p {
     background-color: #C7FF20;
     color: black;
     padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+    border-radius: 0.2rem;
     /* font-style: italic; */
 }  
 
@@ -104,22 +124,28 @@ p {
         margin-top:0;
         margin: auto;
         position: absolute;
-        top:55%;
+        /* top:56%; */
+        top: 2%;
+        bottom: 2rem;
+        /* bottom: clamp(1vw, 0.5vw, 1vw); */
         /* top: 60%; */
         /* right: 0; */
         left: 50%;
         /* bottom: 0; */
-        transform: translate(-50%, -60%);
+        transform: translate(-50%);
         /* height: auto;
         min-height: 100vh; */
-        width: 100%;
+        width: auto;
         /* height: auto; */
         /* overflow: hidden; */
+        /* justify-content: space-between; */
+        gap:50px;
     }
+
 
     .image-container {
         position: relative;
-        transform: scale(0.8);
+        transform: scale(0.85);
         width: 100%;
     }
 
@@ -137,45 +163,69 @@ p {
         /* transform: scale(85%, 85%); */
         /* width: 100%; */
         width: auto;
-        min-width: 250px;
-       
-        height: auto;
-        min-height: 600px;
-        max-height: 650px;
-        aspect-ratio: 3/5;
+        min-width: 380px;
+        max-width: 400px;
+        height: 620px;
+        /* min-height: 600px;
+        max-height: 650px; */
+        aspect-ratio: 3/4.8;
         /* width: 60%; */
         /* height: 700px; */
         /* height: 85vh; */
         /* height: auto;
         max-height: 700px; */
         /* min-height: 600px; */
-        max-width: 400px;
+        
         margin: 0 auto;
         border-radius: 1rem;
         margin-bottom: 0.5rem;
+        /* margin-top: 1rem; */
     }
 
     .text-container {
-        width: 90%;
+        width: 100%;
+        /* min-width: 400px; */
+        /* min-width: 300px; */
         max-width: 400px;
         position: relative;
         /* padding: 1rem; */
-        padding: 0 1rem
+
+        /* padding: 0 1rem */
     }
 
     .text-container p.image-active {
         position: relative;
-        width: 90%;
-        /* max-width: 500px; */
-        /* max-width: 100%; */
-        text-align: center;
+        /* display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        /* justify-content: center; */
+        /* align-items: center; */
+        /* min-height: 10rem; */
+        width: 100%;
+        min-width:100px;
+        max-width: 19rem;
+        height: 100%;
+        min-height: 120px;
+        max-height: 120px;
         color: white;
-        font-size: 1.5rem;
-        margin: 0.5rem auto;
-        padding: 0;
+        /* font-size: 1.5rem; */
+        font-size: clamp(1rem, 1.5vw, 1.8rem);;
+        margin: auto;
+        padding: 1rem;
         left: 0;
+        /* left: 50%;
+        transform: translate(-50%); */
         right: 0;
-        top: 0rem;
+        top: -50%;
+        /* bottom: 100%; */
+        /* bottom: -100rem;/ */
+        /* margin-top: -90px; */
+        /* bottom: 20rem; */
+        /* width: 100%; */
+        
+        /* min-width: 30rem; */
+        /* padding: 1rem; */
+        /* margin-left: -1rem; */
     }
 
     /* .text-container {

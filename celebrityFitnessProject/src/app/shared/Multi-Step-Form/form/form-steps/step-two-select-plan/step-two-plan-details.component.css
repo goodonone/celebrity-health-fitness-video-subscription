@@ -228,11 +228,11 @@ input[matInput]:focus::placeholder {
   /* box-shadow: 0px 0px 4px #868686; */
 }
 
-::ng-deep
+/* ::ng-deep
   .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled)
   .mdc-switch__track::after {
   background-color: rgb(52, 52, 52) !important;
-}
+} */
 
 ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked).mat-disabled .mdc-switch__shadow {
   background-color: #000000 !important;
@@ -256,8 +256,72 @@ input[matInput]:focus::placeholder {
 }
 
 ::ng-deep .mdc-switch--unselected.mdc-switch--disabled .mdc-switch__shadow {
-  fill: rgb(184, 7, 7) !important;
+  fill: rgb(22, 22, 22) !important;
 }
+
+::ng-deep
+  .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled)
+  .mdc-switch__track::after {
+  background-color: rgb(52, 52, 52) !important;
+}/*this one*/
+
+/* ::ng-deep .mat-mdc-slide-toggle.mat-accent .mdc-switch__thumb-underlay:hover .mdc-ripple-surface {
+  background-color: rgba(255, 87, 34, 1); /* Ripple color when hovered */
+/* } */ 
+
+/* Ripple color on focus */
+/* ::ng-deep .mat-mdc-slide-toggle .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(158, 158, 158); /* Default ripple color */
+/* } */ 
+
+/* ::ng-deep .mat-mdc-slide-toggle:hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.2); /* Ripple color when hovered */
+/* } */ 
+
+::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(251, 251, 251, 0.7); 
+}
+
+/* ::ng-deep .mat-mdc-slide-toggle:focus .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.2); /* Ripple color when focused */
+/* }  */
+
+/* ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):hover .mdc-switch__ripple::after {
+  background-color: rgba(255, 255, 255, 1); /* Customize your ripple color for unchecked hover */
+/* } */
+
+/* ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-unchecked:hover .mat-mdc-slide-toggle-ripple {
+  background-color: rgb(243, 10, 10); /* Ripple color for hover state when unchecked */
+/* }  */ 
+
+/* ::ng-deep .mat-mdc-slide-toggle.mat-mdc-focused .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255, 0.5); /* Ripple color when focused */
+/* } */ 
+
+::ng-deep .mat-mdc-slide-toggle.mat-accent {
+  --mdc-switch-selected-focus-state-layer-color: #ffffff;
+  --mdc-switch-selected-hover-state-layer-color: #ffffff;
+  --mdc-switch-selected-pressed-state-layer-color: #ffffff;
+  --mdc-switch-selected-focus-handle-color: #ffffff;
+    --mdc-switch-selected-hover-handle-color: #ffffff;
+    --mdc-switch-selected-pressed-handle-color: #ffffff;
+    --mdc-switch-selected-focus-track-color: #7b7a7a;
+    --mdc-switch-selected-hover-track-color: #373636;
+    --mdc-switch-selected-pressed-track-color: #ffffff;
+    --mdc-switch-selected-track-color: #ffffff; 
+}
+/* ::ng-deep .mat-mdc-slide-toggle-checked .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255); 
+}
+
+::ng-deep .mat-mdc-slide-toggle-unchecked .mat-mdc-slide-toggle-ripple {
+  background-color: rgba(255, 255, 255); 
+} */
 
 /* ::ng-deep .mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
   background-color: #e90e0e !important;
@@ -374,7 +438,7 @@ input[matInput]:focus::placeholder {
 
   mat-card {
     width: auto;
-    height: 27rem;
+    height: 26rem;
     max-height: 27rem;
   }
 
@@ -452,7 +516,7 @@ input[matInput]:focus::placeholder {
 }
 
 
-@media screen and (min-width: 0px) and (max-width: 938px) {
+@media screen and (min-width: 300px) and (max-width: 938px) {
 
   mat-card{
     

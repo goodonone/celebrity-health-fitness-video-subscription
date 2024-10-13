@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective } from '@angular/forms';
 import { FormService } from '../../form.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import { debounceTime, Subject, Subscription, takeUntil } from 'rxjs';
+import { debounceTime, Observable, Subject, Subscription, takeUntil } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { CustomOAuthService } from 'src/app/services/oauth.service';
 import { AuthStateService } from 'src/app/services/authstate.service';
@@ -32,10 +32,19 @@ export class StepOnePersonalInfoComponent implements OnInit {
   private loginTimeout: any;
   isGoogleAuthEnabled: boolean = false;
 
-  private popupClosedSubscription!: Subscription;
 
+  // private popupClosedSubscription!: Subscription;
+
+  private subscriptions: Subscription = new Subscription();
 
   private destroy$ = new Subject<void>();
+  private formResetSubscription!: Subscription;
+
+  isGoogleAuthEnabled$: Observable<boolean>;
+
+  // isLoadingSignup$!: Observable<boolean>;
+
+  // popupClosedSubject: Subject<void> = new Subject<void>();
 
 
   constructor(private inputFormGroup: FormGroupDirective, 
@@ -59,20 +68,142 @@ export class StepOnePersonalInfoComponent implements OnInit {
       //   this.handlePopupClosed();
       // });
       
+      // this.isLoadingSignup$ = this.oauthService.isLoadingSignup$;
+      this.isGoogleAuthEnabled$ = this.userService.isGoogleAuthEnabled$;
     }
 
 
   ngOnInit(): void {
-    // console.log('StepOnePersonalInfoComponent: Initializing');
 
-    // this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
-    this.stepForm = this.formService.multiStepForm.get('personalDetails') as FormGroup;
+  console.log('StepOnePersonalInfoComponent: Initializing');
+
+  this.formService.setGoogleAuthEnabled(false);
+  console.log('ngOnInit: isGoogleAuthEnabled at start:', this.isGoogleAuthEnabled);
+
+  // After setting initial value
+  // this.isGoogleAuthEnabled = this.stepForm.get('isGoogleAuth')?.value || false;
+  this.isGoogleAuthEnabled = false;
+  console.log('ngOnInit: isGoogleAuthEnabled after initialization:', this.isGoogleAuthEnabled);
+
+  // this.stepForm = this.inputFormGroup.control.get(this.formGroupName) as FormGroup;
+  this.stepForm = this.formService.multiStepForm.get('personalDetails') as FormGroup;
     
+  // Disable password inputs on Google Auth
+  // this.stepForm.get('isGoogleAuth')?.valueChanges.subscribe((value) => {
+  //   this.isGoogleAuthEnabled = value;
+  //   this.cdr.detectChanges();
+  // });
 
-    this.stepForm.get('isGoogleAuth')?.valueChanges.subscribe((value) => {
-      this.isGoogleAuthEnabled = value;
-      this.cdr.detectChanges();
-    });
+    // this.subscriptions.add(
+    //   this.stepForm.get('isGoogleAuth')?.valueChanges.subscribe((value) => {
+    //     console.log('isGoogleAuth value changed:', value);
+    //     if (this.authStateService.isAuthenticated$) {
+    //       this.isGoogleAuthEnabled = value;
+    //       console.log('isGoogleAuthEnabled set to:', this.isGoogleAuthEnabled);
+    //       this.cdr.detectChanges();
+    //     }
+    //   })
+    // );
+
+    // this.subscriptions.add(
+    //   this.formService.isGoogleAuthEnabled$.subscribe(value => {
+    //     this.isGoogleAuthEnabled = value;
+    //     this.cdr.detectChanges();
+    //   })
+    // );
+
+    // this.subscriptions.add(
+    //   this.formService.isGoogleAuthEnabled$.subscribe(value => {
+    //     console.log('isGoogleAuthEnabled changed:', value);
+    //     this.updatePasswordFieldsState(value);
+    //     this.cdr.detectChanges();
+    //   })
+    // );
+
+    // this.subscriptions.add(
+    //   this.userService.isGoogleAuthEnabled$.subscribe(value => {
+    //     console.log('isGoogleAuthEnabled changed:', value);
+    //     this.isGoogleAuthEnabled = value;
+    //     this.updatePasswordFieldsState(value);
+    //     this.cdr.detectChanges();
+    //   })
+    // );
+
+    this.subscriptions.add(
+      this.isGoogleAuthEnabled$.subscribe(isEnabled => {
+        this.updatePasswordFieldsState(isEnabled);
+      })
+    );
+
+    this.subscriptions.add(
+      this.isGoogleAuthEnabled$.subscribe(isEnabled => {
+        console.log('isGoogleAuthEnabled changed:', isEnabled);
+        this.updatePasswordFieldsState(isEnabled);
+        this.cdr.detectChanges();
+      })
+    );
+
+    // Subscribe to form reset events: enable password inputs on form reset
+    // this.formResetSubscription = this.formService.formReset$.subscribe(() => {
+    //   this.isGoogleAuthEnabled = false;
+    //   // If you need to update the view immediately
+    //   this.cdr.detectChanges();
+    // });
+    // this.subscriptions.add(
+    //   this.formService.formReset$.subscribe(() => {
+    //     this.isGoogleAuthEnabled = false;
+    //     this.stepForm.get('password')?.enable();
+    //     this.stepForm.get('confirmPassword')?.enable();
+    //     console.log("Passwords enabled");
+    //     this.cdr.detectChanges();
+    //   })
+    // );
+
+    // this.subscriptions.add(
+    //   this.formService.formReset$.subscribe((reset) => {
+    //     console.log('StepOnePersonalInfoComponent: Form reset event received');
+    //     if(reset){
+    //     this.isGoogleAuthEnabled = false;
+    //     console.log('isGoogleAuthEnabled set to false after form reset');
+    //     this.stepForm.get('password')?.enable();
+    //     this.stepForm.get('confirmPassword')?.enable();
+    //     console.log("PASSWORDS ENABLED!!!!!");
+    //     console.log("StepOnePersonalInfoComponent: Passwords enabled");
+    //     console.log('STATE OF GOOGLE AUTH:', this.isGoogleAuthEnabled);
+    //     this.cdr.detectChanges();
+    //     }
+    //   })
+    // );
+
+    // this.formService.resetForm();
+
+    this.resetGoogleAuthState();
+
+    // Force reset Google Auth state
+  this.userService.setGoogleAuthEnabled(false);
+  this.updatePasswordFieldsState(false);
+
+  // Remove any stored user data
+  localStorage.removeItem('user');
+
+  // Ensure the fields are enabled after a short delay
+  setTimeout(() => {
+    this.updatePasswordFieldsState(false);
+    this.cdr.detectChanges();
+  }, 0);
+
+  // Trigger loading spinner for oauth
+  // this.subscriptions.add(
+  //   this.isLoadingSignup$.subscribe(isLoading => {
+  //     this.zone.run(() => {
+  //       this.isLoadingGoogle = isLoading;
+  //       console.log('isLoadingGoogle changed:', isLoading);
+  //       this.cdr.detectChanges();
+  //     });
+  //   })
+  // );
+
+    console.log('StepOnePersonalInfoComponent: Subscribed to formReset$');
   
     // window.addEventListener('message', this.handleAuthMessage.bind(this), false);
 
@@ -102,30 +233,73 @@ export class StepOnePersonalInfoComponent implements OnInit {
     //   }
     // });
 
+    this.authStateService.isAuthenticated$.subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.authSubscription = this.oauthService.authResult$.subscribe(
+          user => {
+            // console.log('StepOnePersonalInfoComponent: Received auth result:', user);
+            if (user) {
+              this.populateFormWithUserData(user);
+            }
+          },
+          // error => console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error),
+          () => console.log('StepOnePersonalInfoComponent: Auth subscription completed')
+        );
+      }
+      else{
+        this.resetGoogleAuthState();
+      }
+      this.cdr.detectChanges();
+    });
+    
+
     // this.authSubscription = this.oauthService.authResult$.subscribe(
     //   user => {
-    //     console.log('StepOnePersonalInfoComponent: Received auth result:', user);
+    //     // console.log('StepOnePersonalInfoComponent: Received auth result:', user);
     //     if (user) {
     //       this.populateFormWithUserData(user);
     //     }
     //   },
-    //   error => console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error),
-    //   () => console.log('StepOnePersonalInfoComponent: Auth subscription completed')
+    //   error => {
+    //     // console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error);
+    //     // Handle authentication error if necessary
+    //     this.isLoadingGoogle = false;
+    //   }
     // );
 
-    this.authSubscription = this.oauthService.authResult$.subscribe(
-      user => {
-        // console.log('StepOnePersonalInfoComponent: Received auth result:', user);
-        if (user) {
-          this.populateFormWithUserData(user);
-        }
-      },
-      error => {
-        // console.error('StepOnePersonalInfoComponent: Error in auth subscription:', error);
-        // Handle authentication error if necessary
-        this.isLoadingGoogle = false;
-      }
+     // Handle loading spinner oauth - error
+    this.subscriptions.add(
+      this.oauthService.authError$.subscribe(error => {
+        this.zone.run(() => {
+          this.isLoadingGoogle = false;
+          this.cdr.detectChanges();
+        });
+      })
     );
+
+    // handle closing the popup
+    this.subscriptions.add(
+      this.oauthService.popupClosed$.subscribe(() => {
+        this.zone.run(() => {
+          if (this.isLoadingGoogle) {
+            this.isLoadingGoogle = false;
+            console.log('OAuth popup closed without completing authentication');
+            // Optionally, show a message to the user
+            this.cdr.detectChanges();
+          }
+        });
+      })
+    );
+
+    // this.subscriptions.add(
+    //   this.oauthService.popupClosed$.subscribe(() => {
+    //     if (this.isLoadingGoogle) {
+    //       this.isLoadingGoogle = false;
+    //       // Handle popup closed without completing authentication
+    //     }
+    //   })
+    // );
+  
 
     this.authStateService.isAuthenticated$.subscribe(isAuthenticated => {
       if (isAuthenticated) {
@@ -134,25 +308,68 @@ export class StepOnePersonalInfoComponent implements OnInit {
     });
 
     // Check if user data exists in localStorage
-    this.authSubscription = this.oauthService.authResult$.subscribe(
-      user => {
-        if (user) {
-          // console.log('Received user data:', user);
-          this.populateFormWithUserData(user);
-        }
-      });
+    // this.authSubscription = this.oauthService.authResult$.subscribe(
+    //   user => {
+    //     if (user) {
+    //       // console.log('Received user data:', user);
+    //       this.populateFormWithUserData(user);
+    //     }
+    //   });
   
     
      // Check if user data exists in localStorage
-     const userData = localStorage.getItem('user');
-    if (userData) {
-      // console.log('StepOnePersonalInfoComponent: User data found in localStorage:', userData);
-      this.populateFormWithUserData(JSON.parse(userData));
-    } else {
-      // console.log('StepOnePersonalInfoComponent: No user data found in localStorage');
-    }
+    //  const userData = localStorage.getItem('user');
+    // if (userData) {
+    //   this.populateFormWithUserData(JSON.parse(userData));
+    // } else {
+    // }
+    // this.authStateService.isAuthenticated$.subscribe(isAuthenticated => {
+    //   if (isAuthenticated) {
+    //     console.log('Authentication state:', isAuthenticated);
+    //     if (!isAuthenticated) {
+    //       this.resetGoogleAuthState();
+    //     } else{
+    //     const userData = localStorage.getItem('user');
+    //     if (userData) {
+    //       this.populateFormWithUserData(JSON.parse(userData));
+    //     }
+    //   }
+    //   } else {
+    //     // Ensure that isGoogleAuthEnabled is false when not authenticated
+    //     this.isGoogleAuthEnabled = false;
+    //     this.resetGoogleAuthState();
+    //     // this.stepForm.get('isGoogleAuth')?.setValue(false, { emitEvent: false });
+    //     // this.stepForm.get('password')?.enable();
+    //     // this.stepForm.get('confirmPassword')?.enable();
+    //   }
+    //   this.cdr.detectChanges();
+    // });
 
-    this.oauthService.checkForStoredAuthResult();
+    this.subscriptions.add(
+      this.authStateService.isAuthenticated$.subscribe(isAuthenticated => {
+        console.log('Authentication state:', isAuthenticated);
+        if (!isAuthenticated) {
+          this.resetGoogleAuthState();
+        } else {
+          // Only populate form if we're not on the signup page
+          if (!this.router.url.includes('/signup')) {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+              this.populateFormWithUserData(JSON.parse(userData));
+            }
+          } else {
+            // If we are on the signup page and authenticated, we should log out
+            // if (this.stepForm.pristine) {
+            //   this.userService.logoutUser();
+            //   this.resetGoogleAuthState();
+            // }
+          }
+        }
+        this.cdr.detectChanges();
+      })
+    );
+
+    // this.oauthService.checkForStoredAuthResult();
 
     // const oauthResult = localStorage.getItem('oauthResult');
     // if (oauthResult) {
@@ -176,18 +393,57 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
   }
 
+    
+  isFieldDisabled(fieldName: string): boolean {
+    const control = this.stepForm.get(fieldName);
+    return control ? control.disabled : false;
+  }
+
+  // private updatePasswordFieldsState(isEnabled: boolean): void {
+  //   const passwordControl = this.stepForm.get('password');
+  //   const confirmPasswordControl = this.stepForm.get('confirmPassword');
+
+  //   if (isEnabled) {
+  //     passwordControl?.disable();
+  //     confirmPasswordControl?.disable();
+  //   } else {
+  //     passwordControl?.enable();
+  //     confirmPasswordControl?.enable();
+  //   }
+  // }
+
+  private updatePasswordFieldsState(isEnabled: boolean): void {
+    const passwordControl = this.stepForm.get('password');
+    const confirmPasswordControl = this.stepForm.get('confirmPassword');
+  
+    if (isEnabled) {
+      passwordControl?.disable({ emitEvent: false });
+      confirmPasswordControl?.disable({ emitEvent: false });
+    } else {
+      passwordControl?.enable({ emitEvent: false });
+      confirmPasswordControl?.enable({ emitEvent: false });
+    }
+    this.cdr.detectChanges(); // Trigger change detection
+  }
+
   ngOnDestroy(): void {
     // console.log('StepOnePersonalInfoComponent: Destroying');
     this.destroy$.next();
     this.destroy$.complete();
+
+    console.log('StepOnePersonalInfoComponent: Destroying');
+    this.subscriptions.unsubscribe();
     if (this.authSubscription) {
       this.authSubscription.unsubscribe();
     }
+    if (this.formResetSubscription) {
+      this.formResetSubscription.unsubscribe();
+    }
     // window.removeEventListener('message', this.handleAuthMessage.bind(this), false);
     
-    if (this.popupClosedSubscription) {
-      this.popupClosedSubscription.unsubscribe();
-    }
+    // if (this.popupClosedSubscription) {
+    //   this.popupClosedSubscription.unsubscribe();
+    // }
   
   }
 
@@ -196,6 +452,35 @@ export class StepOnePersonalInfoComponent implements OnInit {
   }
   
 
+  // private resetGoogleAuthState(): void {
+  //   console.log('Resetting Google Auth state');
+  //   this.isGoogleAuthEnabled = false;
+  //   this.userService.setGoogleAuthEnabled(false);
+  //   this.stepForm.patchValue({ isGoogleAuth: false });
+  //   this.updatePasswordFieldsState(false);
+  // }
+
+  private resetGoogleAuthState(): void {
+    console.log('Resetting Google Auth state');
+    this.userService.setGoogleAuthEnabled(false);
+    const currentFormValue = this.stepForm.value;
+    this.stepForm.patchValue({
+      ...currentFormValue,
+      isGoogleAuth: false
+    }, { emitEvent: false });
+    this.updatePasswordFieldsState(false);
+    // localStorage.removeItem('user');
+  }
+
+  // private updatePasswordFieldsState(isEnabled: boolean): void {
+  //   if (isEnabled) {
+  //     this.stepForm.get('password')?.disable();
+  //     this.stepForm.get('confirmPassword')?.disable();
+  //   } else {
+  //     this.stepForm.get('password')?.enable();
+  //     this.stepForm.get('confirmPassword')?.enable();
+  //   }
+  // }
   // checkEmail() {
   //   const email = this.stepForm.get('email')?.value;
   //   if (email) {
@@ -324,19 +609,32 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
 
   onClickGoogle(): void {
-    // console.log('StepOnePersonalInfoComponent: Google login button clicked');
+    
+    console.log('onClickGoogle called');
     this.isLoadingGoogle = true;
     this.oauthService.initiateLogin(true);
-    // this.oauthService.initiateLogin();
-    // // Set up a check for the auth result
-    // const checkAuthResult = setInterval(() => {
-    //   const storedResult = localStorage.getItem('oauthResult');
-    //   if (storedResult) {
-    //     clearInterval(checkAuthResult);
-    //     this.oauthService['checkForStoredAuthResult'](); // Access private method
-    //     this.isLoadingGoogle = false;
-    //   }
-    // }, 1000);
+
+    
+    // this.subscriptions.add(
+    //   this.oauthService.authResult$.subscribe(
+    //     (user) => {
+    //       this.zone.run(() => {
+    //         this.isLoadingGoogle = false;
+    //         if (user) {
+    //           this.populateFormWithUserData(user);
+    //         }
+    //         this.cdr.detectChanges();
+    //       });
+    //     },
+    //     (error) => {
+    //       this.zone.run(() => {
+    //         this.isLoadingGoogle = false;
+    //         console.error('Google login error:', error);
+    //         this.cdr.detectChanges();
+    //       });
+    //     }
+    //   )
+    // );
   }
 
 
@@ -370,17 +668,58 @@ export class StepOnePersonalInfoComponent implements OnInit {
     //   this.cdr.detectChanges();
     // }
 
+    // private populateFormWithUserData(user: any): void {
+
+    //   console.log('populateFormWithUserData called with user:', user);
+    //   // console.log('StepOnePersonalInfoComponent: Populating form with user data:', user);
+    //   if (!this.authStateService.isAuthenticated$) {
+    //     return;
+    //   }
+
+    //   this.stepForm.patchValue({
+    //     name: user.name,
+    //     email: user.email,
+    //     isGoogleAuth: true
+    //   });
+    //   this.stepForm.get('password')?.disable();
+    //   this.stepForm.get('confirmPassword')?.disable();
+    //   this.isGoogleAuthEnabled = true;
+    //   // console.log('StepOnePersonalInfoComponent: Form updated:', this.stepForm.value);
+    //   this.isLoadingGoogle = false;
+    //   this.cdr.detectChanges();
+    // }
+
+    // private populateFormWithUserData(user: any): void {
+    //   console.log('populateFormWithUserData called with user:', user);
+    //   if (!this.authStateService.isAuthenticated$) {
+    //     return;
+    //   }
+  
+    //   this.stepForm.patchValue({
+    //     name: user.name,
+    //     email: user.email,
+    //     isGoogleAuth: true
+    //   });
+    //   // this.isGoogleAuthEnabled = true;
+    //   this.userService.setGoogleAuthEnabled(true);
+    //   // this.updatePasswordFieldsState();
+    //   this.isLoadingGoogle = false;
+    //   this.cdr.detectChanges();
+    // }
+
     private populateFormWithUserData(user: any): void {
-      // console.log('StepOnePersonalInfoComponent: Populating form with user data:', user);
+      console.log('populateFormWithUserData called with user:', user);
+      if (!this.authStateService.isAuthenticated$) {
+        return;
+      }
+    
       this.stepForm.patchValue({
         name: user.name,
         email: user.email,
         isGoogleAuth: true
-      });
-      this.stepForm.get('password')?.disable();
-      this.stepForm.get('confirmPassword')?.disable();
-      this.isGoogleAuthEnabled = true;
-      // console.log('StepOnePersonalInfoComponent: Form updated:', this.stepForm.value);
+      }, { emitEvent: false });
+      this.userService.setGoogleAuthEnabled(true);
+      this.updatePasswordFieldsState(true);
       this.isLoadingGoogle = false;
       this.cdr.detectChanges();
     }

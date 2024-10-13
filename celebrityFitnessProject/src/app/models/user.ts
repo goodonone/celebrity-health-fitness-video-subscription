@@ -12,6 +12,7 @@ export class User {
     price?: number;
     dateOfBirth?: Date;
     imgUrl?: string;
+    isGoogleAuth?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
 
@@ -30,6 +31,7 @@ constructor(
         price?: number,
         dateOfBirth?: Date,
         imgUrl?: string,
+        isGoogleAuth?: boolean,
         createdAt?: Date,
         updatedAt?: Date,
         )
@@ -47,6 +49,7 @@ constructor(
         this.price = price;
         this.dateOfBirth = dateOfBirth;
         this.imgUrl = imgUrl;
+        this.isGoogleAuth = isGoogleAuth;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

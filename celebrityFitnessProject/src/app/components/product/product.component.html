@@ -58,8 +58,23 @@
                         </div>
                         <div class="buttonContainer">
                             <button mat-button class="backButton" routerLink="/store">Back To Store</button>
-                            <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">Add to Cart</button>
-                            <button mat-button class="viewCartButton" routerLink="/cart">View Cart</button>
+                            <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
+                            <button mat-button 
+                                class="addToCartButton" 
+                                (click)="addToCart(currentProduct)"
+                                (mouseenter)="onMouseEnter(currentProduct)"
+                                (mouseleave)="onMouseLeave(currentProduct)"
+                                [class.limit-reached]="isLimitReached(currentProduct)">
+                                {{ getButtonText(currentProduct) }}
+                            </button>
+                            <!-- <button mat-button class="viewCartButton" routerLink="/cart" [disabled]="isCartEmpty">View Cart</button> -->
+                            <button mat-button 
+                                class="viewCartButton" 
+                                [routerLink]="isCartEmpty ? null : '/cart'"
+                                (mouseenter)="onViewCartMouseEnter()"
+                                (mouseleave)="onViewCartMouseLeave()">
+                                {{ viewCartButtonText }}
+                            </button>
                         </div>
                     </div>
                 </mat-card-content>

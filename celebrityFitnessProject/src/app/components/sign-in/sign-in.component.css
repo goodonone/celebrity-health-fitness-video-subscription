@@ -211,6 +211,12 @@ input:valid {
   cursor: pointer;
 }
 
+.resetPassword:hover{
+  /* text-decoration: underline;
+  transition: visibility 0.2s ease; */
+  text-shadow: 0 0 7px #71bbf5;
+}
+
 ::placeholder {
   font-size: 1rem;
 }
@@ -424,7 +430,7 @@ input[matInput]:focus {
 }
 
 input[matInput]:focus::placeholder {
-  color: #000000 !important; /* Change the placeholder color when focused */
+  color: #000000 !important; 
 }
 
 

@@ -125,6 +125,7 @@ ngAfterViewInit(): void {
 
   constructor(private router: Router, private userService: UserService){}
 
+  // Navbar color effect on scroll when navbar is above specific divs (which share navbar color)
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     const bannerThreePosition = this.bannerThree?.getBoundingClientRect().top;
@@ -163,10 +164,14 @@ ngAfterViewInit(): void {
   }
 
   UpdateStatus() {
-    this.userIsLoggedIn = this.userService.isloggedIn();
-    if (this.userIsLoggedIn) {
-      localStorage.setItem("isUserLoggedIn", "true");
-    }
+    this.userService.isloggedIn().subscribe(isLoggedIn => {
+      this.userIsLoggedIn = isLoggedIn;
+      if (this.userIsLoggedIn) {
+        localStorage.setItem("isUserLoggedIn", "true");
+      }
+    })
+    // this.userIsLoggedIn = this.userService.isloggedIn();
+    
   }
 
   onLogout() {
