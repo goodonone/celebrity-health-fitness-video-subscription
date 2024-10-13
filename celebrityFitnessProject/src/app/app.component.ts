@@ -202,7 +202,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationEnd) {
         if (
           !this.router.url.includes('home') ||
-          !this.router.url.includes('sign-in') ||
+          !this.router.url.includes('login') ||
           !this.router.url.includes('reset-password')
         ) {
           this.isVisibleNavbar = false; // Reset when navigating away from home

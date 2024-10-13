@@ -1,321 +1,8 @@
-// import { HttpClient } from '@angular/common/http';
-// import { Injectable, NgZone } from '@angular/core';
-// import { Router } from '@angular/router';
-// import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
-// import { BehaviorSubject, catchError, from, Observable, of, Subject, switchMap, tap, throwError } from 'rxjs';
-// import { StateManagementService } from './statemanagement.service';
-// import { FormService } from '../shared/Multi-Step-Form/form/form.service';
-// import { UserService } from './user.service';
-// // import { FormService } from '../shared/Multi-Step-Form/form/form.service';
-// // import { AuthFormService } from './authform.service';
-
-// // export const authConfig: AuthConfig = {
-// //   issuer: 'https://accounts.google.com',
-// //   strictDiscoveryDocumentValidation: false,
-// //   redirectUri: 'http://localhost:3000/api/auth/google/callback',
-// //   clientId: '1074496997874-99luq5p3fbtuk4g1m0jtbf70nh71n6u8.apps.googleusercontent.com',
-// //   scope: 'openid profile email',
-// //   responseType: 'token id_token',
-// //   showDebugInformation: true,
-// //   oidc: true,
-// // };
-  
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class CustomOAuthService {
-//   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-//   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-//   // private popupClosedSubject = new Subject<void>();
-//   // popupClosed$ = this.popupClosedSubject.asObservable();
-//   private authResultSubject = new Subject<any>();
-//   // authResult$ = this.authResultSubject.asObservable();
-//   private popupRef: Window | null = null;
-//   authResult$ = new Subject<any>();
-
-//   private authErrorSubject = new Subject<string>();
-//   authError$ = this.authErrorSubject.asObservable();
-
-//   private popupClosedSubject = new Subject<void>();
-//   popupClosed$ = this.popupClosedSubject.asObservable();
-  
-//   constructor( private http: HttpClient, private router: Router, private stateManagementService: StateManagementService, private formService: FormService, private zone: NgZone, private userService: UserService) {
-//     window.addEventListener('message', this.handleAuthMessage.bind(this), false);
-//   }
-
-//   ngOnInit() {
-//     this.checkForStoredAuthResult();
-//   }
-
-//   ngOnDestroy() {
-//     window.removeEventListener('message', this.handleAuthMessage.bind(this), false);
-//   }
-
-// initiateLogin(isSignUp: boolean = false) {
-//   const state = isSignUp ? 'signup' : 'login';
-//   const authUrl = `http://localhost:3000/api/auth/google?state=${state}`;
-
-//   const width = 500;
-//   const height = 550;
-//   const left = (window.screen.width / 2) - (width / 2);
-//   const top = (window.screen.height / 2) - (height / 2);
-
-//   const popup = window.open(
-//     authUrl,
-//     'google_oauth_popup',
-//     `width=${width},height=${height},left=${left},top=${top}`
-//   );
-
-//   if (popup) {
-//     let authFinished = false;
-//     const timeoutDuration = 60000; // 1 minute timeout
-
-//     const authTimeout = setTimeout(() => {
-//       if (!authFinished) {
-//         this.zone.run(() => {
-//           this.popupClosedSubject.next();
-//         });
-//       }
-//     }, timeoutDuration);
-
-//     window.addEventListener('focus', () => {
-//       if (!authFinished) {
-//         // Check if the popup is closed when the main window regains focus
-//         setTimeout(() => {
-//           try {
-//             if (!popup || popup.closed) {
-//               authFinished = true;
-//               clearTimeout(authTimeout);
-//               this.zone.run(() => {
-//                 this.popupClosedSubject.next();
-//               });
-//             }
-//           } catch (e) {
-//             // If we can't access popup.closed, assume it's closed
-//             authFinished = true;
-//             clearTimeout(authTimeout);
-//             this.zone.run(() => {
-//               this.popupClosedSubject.next();
-//             });
-//           }
-//         }, 300);
-//       }
-//     });
-
-//     window.addEventListener('message', (event) => {
-//       if (event.origin !== 'http://localhost:3000') return;
-
-//       const data = event.data;
-//       this.zone.run(() => {
-//         authFinished = true;
-//         clearTimeout(authTimeout);
-
-//         if (data.type === 'GOOGLE_AUTH_SUCCESS') {
-//           const email = data.payload.user.email;
-          
-//           this.userService.checkUserExists(email).pipe(
-//             switchMap(exists => {
-//               if (isSignUp && exists) {
-//                 return throwError('User already exists. Please log in instead.');
-//               } else if (!isSignUp && !exists) {
-//                 return throwError('User does not exist. Please sign up first.');
-//               }
-//               return of(data.payload);
-//             })
-//           ).subscribe(
-//             payload => {
-//               localStorage.setItem('authToken', payload.token);
-//               localStorage.setItem('user', JSON.stringify(payload.user));
-//               this.authResult$.next(payload.user);
-//             },
-//             error => {
-//               console.error('Authentication error:', error);
-//               this.authErrorSubject.next(error);
-//             }
-//           );
-//         } else if (data.type === 'GOOGLE_AUTH_ERROR') {
-//           this.authErrorSubject.next(data.error);
-//         }
-//       });
-//     });
-//   } else {
-//     console.error('Failed to open popup window');
-//     this.authErrorSubject.next('Failed to open authentication window');
-//   }
-// }
-
-//   private handleMessage(event: MessageEvent): void {
-//     if (event.origin !== 'http://localhost:3000') return;
-
-//     const data = event.data;
-//     this.zone.run(() => {
-//       if (data.type === 'GOOGLE_AUTH_SUCCESS') {
-//         const token = data.payload.token;
-//         const user = data.payload.user;
-//         localStorage.setItem('authToken', token);
-//         localStorage.setItem('user', JSON.stringify(user));
-//         this.authResultSubject.next(user);
-//       } else if (data.type === 'GOOGLE_AUTH_ERROR') {
-//         console.error('Authentication failed:', data.error);
-//         this.authErrorSubject.next(data.error);
-//       }
-//     });
-//   }
-
-
-//   public checkForStoredAuthResult(): void {
-//     const storedResult = localStorage.getItem('oauthResult');
-//     if (storedResult) {
-//       // console.log('CustomOAuthService: Found stored auth result');
-//       const authResult = JSON.parse(storedResult);
-//       this.handleAuthResult(authResult);
-//       localStorage.removeItem('oauthResult');
-//     }
-//   }
-
-
-//   private handleAuthResult(result: any): void {
-//     if (result.type === 'GOOGLE_AUTH_SUCCESS') {
-//       // console.log('CustomOAuthService: Handling successful auth');
-//       this.handleSuccessfulAuth(result.payload);
-//     } else if (result.type === 'GOOGLE_AUTH_ERROR') {
-//       // console.log('CustomOAuthService: Handling auth error');
-//       this.handleLoginError(result.error);
-//     }
-//   }
-
-//   private handleAuthMessage(event: MessageEvent): void {
-//     // Ignore Angular DevTools messages
-//     // if (event.data.source && event.data.source.startsWith('angular-devtools')) {
-//     //   return;
-//     // }
-  
-//     console.log('Received message:', event.data, 'from origin:', event.origin);
-    
-//     if (event.origin === 'http://localhost:3000' && event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-//       this.zone.run(() => {
-//         this.handleSuccessfulAuth(event.data.payload);
-//       });
-//     } else if (event.data.type === 'GOOGLE_AUTH_SUCCESS') {
-//       console.warn('Received GOOGLE_AUTH_SUCCESS from untrusted origin:', event.origin);
-//     }
-//   }
-
-
-//   private handleAuthError(error: string): void {
-//     console.error('Authentication error:', error);
-//     this.isAuthenticatedSubject.next(false);
-//     // Handle error (e.g., show error message to user)
-//   }
-
-//   private handleAuthSuccess(payload: any): void {
-//     localStorage.setItem('token', payload.token);
-//     this.isAuthenticatedSubject.next(true);
-//     // Emit an event or call a method to update the form
-//   }
-
-
-//   checkForRedirectResult(): void {
-//     const result = localStorage.getItem('oauthResult');
-//     if (result) {
-//       localStorage.removeItem('oauthResult');
-//       const parsedResult = JSON.parse(result);
-//       if (parsedResult.type === 'GOOGLE_AUTH_SUCCESS') {
-//         this.handleAuthSuccess(parsedResult.payload);
-//       } else if (parsedResult.type === 'GOOGLE_AUTH_ERROR') {
-//         this.handleAuthError(parsedResult.error);
-//       }
-  
-//       // Restore previous path if it was saved
-//       const preAuthPath = localStorage.getItem('preAuthPath');
-//       if (preAuthPath) {
-//         localStorage.removeItem('preAuthPath');
-//         // Use your router to navigate back to the previous path
-//         // this.router.navigate([preAuthPath]);
-//       }
-
-//     }
-//   }
-
-//   public handleSuccessfulAuth(payload: any): void {
-//     const { token, user } = payload;
-//     localStorage.setItem('token', token);
-
-//     // Check if user already exists in localStorage
-//     const existingUserString = localStorage.getItem('user');
-//     if (existingUserString) {
-//       const existingUser = JSON.parse(existingUserString);
-//       // Merge the existing user data with the new data, preserving the custom image if it exists
-//       const updatedUser = {
-//         ...existingUser,
-//         ...user,
-//         imgUrl: existingUser.imgUrl && !existingUser.imgUrl.startsWith('https://lh3.googleusercontent.com/')
-//           ? existingUser.imgUrl
-//           : user.imgUrl
-//       };
-//       localStorage.setItem('user', JSON.stringify(updatedUser));
-//       // this.authResultSubject.next(user);
-//     } else {
-//       // If no existing user, store the new user data as is
-//       localStorage.setItem('user', JSON.stringify(user));
-//     }
-
-//     this.stateManagementService.setAuthenticationStatus(true);
-//     this.isAuthenticatedSubject.next(true);
-//     this.authResultSubject.next(user);
-
-//     if (this.router.url.includes('signup')) {
-//       this.formService.updateFormWithGoogleData(user);
-//     } else {
-//       // We're in the login flow
-//       this.router.navigate(['/content', user.userId]);
-//     }
-//   }
-
-
-//   getUser(): Observable<any> {
-//     return this.http.get('http://localhost:3000/api/user').pipe(
-//       catchError(error => {
-//         console.error('Error fetching user data:', error);
-//         return from([null]);
-//       })
-//     );
-//   }
-
-//   logout(): Observable<any> {
-//     return new Observable(observer => {
-//       localStorage.removeItem('token');
-//       localStorage.removeItem('user');
-//       this.isAuthenticatedSubject.next(false);
-//       this.stateManagementService.setAuthenticationStatus(false);
-//       observer.next({ success: true });
-//       observer.complete();
-//     });
-//   }
-
-//   private handleLoginError(error: string): void {
-//     console.error('CustomOAuthService: Authentication error:', error);
-//     this.isAuthenticatedSubject.next(false);
-//     this.authResultSubject.next(null);
-//     this.router.navigateByUrl("/error");
-//   }
-
-//   get token(): string | null {
-//     return localStorage.getItem('token');
-//   }
-
-//   get isLoggedIn(): boolean {
-//     return this.stateManagementService.getAuthenticationStatus();
-//   }
-// }
-
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, of, timer } from 'rxjs';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { StateManagementService } from './statemanagement.service';
 import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 import { UserService } from './user.service';
@@ -327,6 +14,7 @@ import { AuthStateService } from './authstate.service';
 export class CustomOAuthService {
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
   private authResultSubject = new Subject<any>();
   authResult$ = this.authResultSubject.asObservable();
 
@@ -338,7 +26,18 @@ export class CustomOAuthService {
 
   private oauthSuccessSubject = new Subject<any>();
   oauthSuccess$ = this.oauthSuccessSubject.asObservable();
-  
+
+  private popup: Window | null = null;
+  private popupCloser = new Subject<void>();
+
+  private isLoadingSubjectLogin = new BehaviorSubject<boolean>(false);
+  isLoadingLogin$ = this.isLoadingSubjectLogin.asObservable();
+
+  private isLoadingSubjectSignup = new BehaviorSubject<boolean>(false);
+  isLoadingSignup$ = this.isLoadingSubjectSignup.asObservable();
+
+  closePopupTimer: any;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -346,12 +45,18 @@ export class CustomOAuthService {
     private formService: FormService,
     private zone: NgZone,
     private userService: UserService,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
   ) {
     window.addEventListener('message', this.handleAuthMessage.bind(this), false);
   }
 
   initiateLogin(isSignUp: boolean = false) {
+    if(isSignUp) {
+    this.isLoadingSubjectSignup.next(true);
+    }
+    else{
+      this.isLoadingSubjectLogin.next(true);
+    }
     const state = isSignUp ? 'signup' : 'login';
     const authUrl = `http://localhost:3000/api/auth/google?state=${state}`;
   
@@ -365,13 +70,27 @@ export class CustomOAuthService {
       'google_oauth_popup',
       `width=${width},height=${height},left=${left},top=${top}`
     );
-  
+
+    // if (popup) {
+    //   // this.isPopupOpen = true;
+    //   // this.startPopupTimer();
+    //   this.triggerLoadingSpinner();
+    // } else {
+    //   console.error('Failed to open popup window');
+    //   this.authErrorSubject.next('Failed to open authentication window');
+    //   // this.popupClosedSubject.next();
+    //   this.isLoadingSubjectLogin.next(false);
+    //   this.isLoadingSubjectSignup.next(false);
+    // }
+
     if (popup) {
       const authTimeout = setTimeout(() => {
         if (!popup.closed) {
           popup.close();
           this.zone.run(() => {
             this.authErrorSubject.next('Authentication timed out');
+            // this.isLoadingSubjectLogin.next(false);
+            // this.isLoadingSubjectSignup.next(false);
           });
         }
       }, 60000); // 1 minute timeout
@@ -389,11 +108,210 @@ export class CustomOAuthService {
     } else {
       console.error('Failed to open popup window');
       this.authErrorSubject.next('Failed to open authentication window');
+      // this.isLoadingSubjectLogin.next(false);
+      // this.isLoadingSubjectSignup.next(false);
     }
+
+    // if(popup?.addEventListener.bind(popup) !== undefined) {
+    //   popup?.addEventListener('beforeunload', () => {
+    //     this.isLoadingSubjectLogin.next(false);
+    //   this.isLoadingSubjectSignup.next(false);
+    //   })
+    // }
+
+    // if (this.popup) {
+    //   // Attach beforeunload event listener if supported
+    //   if (this.popup?.addEventListener.bind(this.popup) !== undefined) {
+    //     this.popup?.addEventListener('beforeunload', () => {
+    //       console.log('Popup manually closed.');
+    //       this.isLoadingSubjectLogin.next(false); // Revert spinner for login
+    //       this.isLoadingSubjectSignup.next(false); // Revert spinner for signup
+    //     });
+    //   }
+
+    //   // Fallback: Automatically reset the loading spinner after 15 seconds
+    //   setTimeout(() => {
+    //     this.isLoadingSubjectLogin.next(false);
+    //     this.isLoadingSubjectSignup.next(false);
+    //     if (this.popup) {
+    //       this.popup.close();
+    //       console.log('Popup closed automatically after 15 seconds.');
+    //     }
+    //   }, 15000); // 15 seconds timeout
+    // } else {
+    //   console.error('Failed to open popup window. Possible popup blocker.');
+    //   this.isLoadingSubjectLogin.next(false);
+    //   this.isLoadingSubjectSignup.next(false);
+    // }
   }
+  
+
+
+
+    // private startPopupTimer() {
+    //   // Clear any existing timer
+    //   if (this.popupTimer) {
+    //     clearTimeout(this.popupTimer);
+    //   }
+  
+    //   // Set a new timer for 5 minutes
+    //   this.popupTimer = setTimeout(() => {
+    //     this.zone.run(() => {
+    //       this.authErrorSubject.next('Authentication timed out');
+    //       this.isPopupOpen = false;
+    //       this.popupClosedSubject.next();
+    //     });
+    //   }, 300000); // 5 minutes
+    // }
+  
+    // private checkPopupStatus() {
+    //   if (this.popupCheckInterval) {
+    //     clearInterval(this.popupCheckInterval);
+    //   }
+  
+    //   this.popupCheckInterval = setInterval(() => {
+    //     if (!this.isPopupOpen) {
+    //       clearInterval(this.popupCheckInterval);
+    //       return;
+    //     }
+  
+    //     if (this.popup && this.popup.closed) {
+    //       clearInterval(this.popupCheckInterval);
+    //       this.zone.run(() => {
+    //         this.isPopupOpen = false;
+    //         this.popupClosedSubject.next();
+    //       });
+    //     }
+    //   }, 500); // Check every 500ms
+    // }
+
+    // private checkPopupStatus() {
+    //   this.popupCloser = new Subject<void>();
+      
+    //   timer(0, 500).pipe(
+    //     takeUntil(this.popupCloser)
+    //   ).subscribe(() => {
+    //     if (!this.popup || this.popup.closed) {
+    //       this.zone.run(() => {
+    //         this.popupClosedSubject.next();
+    //         // this.isLoadingSubject.next(false);
+    //         console.log('Popup closed here!!!!');
+    //         this.popupCloser.next();
+    //         this.popupCloser.complete();
+    //       });
+    //     }
+    //   });
+  
+    //   // Fallback: ensure popupClosedSubject is triggered after 5 minutes
+    //   setTimeout(() => {
+    //     if (!this.popupCloser.closed) {
+    //       this.zone.run(() => {
+    //         this.popupClosedSubject.next();
+    //         this.isLoadingSubject.next(false);
+    //         this.popupCloser.next();
+    //         this.popupCloser.complete();
+    //       });
+    //     }
+    //   }, 300000); // 5 minutes
+    // }
+  
+    // private triggerLoadingSpinner() {
+
+    //     if(this.router.url.includes('login')) {
+    //       const closePopupTimer =setInterval(() => {
+    //         this.isLoadingSubjectLogin.next(false);
+    //       }, 10000)
+    //       this.clearTimer(closePopupTimer);
+    //     }
+    //     else if(this.router.url.includes('sign-up')) {
+    //        const closePopupTimer = setInterval(() => {
+    //         this.isLoadingSubjectSignup.next(false);
+    //       }, 15000)
+    //       this.clearTimer(closePopupTimer);
+    //     }
+    // }
+
+    // clearTimer(timer: any) {
+    //   if (this.closePopupTimer) {
+    //     clearTimeout(this.closePopupTimer);
+    //     this.closePopupTimer = null;
+    //     // console.log('Initial close timer cleared.');
+    //   }
+    // }
+
+      // this.popupCheckInterval = setInterval(() => {
+      // this.popupCloser = new Subject<void>();
+      
+      // timer(0, 500).pipe(
+      //   takeUntil(this.popupCloser)
+      // ).subscribe(() => {
+      //   if (!this.popup || this.popup.closed) {
+      //     this.zone.run(() => {
+      //       // this.popupClosedSubject.next();
+      //       console.log('Popup closed!');
+            
+      //       // Introduce a delay before setting isLoading to false
+      //       timer(15000).subscribe(() => {
+      //         if(this.isLoadingSubject.value === true) {
+      //           this.isLoadingSubject.next(false);
+      //           console.log('Loading state set to false');
+      //         }
+      //       });
+  
+      //       this.popupCloser.next();
+      //       this.popupCloser.complete();
+      //     });
+      //   }
+      // });
+
+        // Fallback: ensure popupClosedSubject is triggered after 5 minutes
+    // setTimeout(() => {
+    //   if (!this.popupCloser.closed) {
+    //     this.zone.run(() => {
+    //       // this.popupClosedSubject.next();
+    //       this.isLoadingSubject.next(false);
+    //       console.log('Fallback: Loading state set to false');
+    //       this.popupCloser.next();
+    //       this.popupCloser.complete();
+    //     });
+    //   }
+    // }, 300000); // 5 minutes
+  // }
+
+  
+    // if (popup) {
+    //   const authTimeout = setTimeout(() => {
+    //     if (!popup.closed) {
+    //       popup.close();
+    //       this.zone.run(() => {
+    //         this.authErrorSubject.next('Authentication timed out');
+    //       });
+    //     }
+    //   }, 60000); // 1 minute timeout
+
+    //   window.addEventListener('focus', () => {
+    //     setTimeout(() => {
+    //       if (popup.closed) {
+    //         clearTimeout(authTimeout);
+    //         this.zone.run(() => {
+    //           this.popupClosedSubject.next();
+    //         });
+    //       }
+    //     }, 300);
+    //   });
+    // } else {
+    //   console.error('Failed to open popup window');
+    //   this.authErrorSubject.next('Failed to open authentication window');
+    // }
+  // }
 
   private handleAuthMessage(event: MessageEvent): void {
     if (event.origin !== 'http://localhost:3000') return;
+
+    //  // Clear the popup timer as we've received a message
+    //  if (this.popupTimer) {
+    //   clearTimeout(this.popupTimer);
+    // }
 
     const data = event.data;
     this.zone.run(() => {
@@ -401,6 +319,16 @@ export class CustomOAuthService {
         this.handleSuccessfulAuth(data.payload);
       } else if (data.type === 'GOOGLE_AUTH_ERROR') {
         this.authErrorSubject.next(data.error);
+      }
+      // this.popupClosedSubject.next();
+      timer(1000).subscribe(() => {
+        this.isLoadingSubjectLogin.next(false);
+        this.isLoadingSubjectSignup.next(false);
+        console.log('Auth message received: Loading state set to false');
+      });
+      if (this.popupCloser && !this.popupCloser.closed) {
+        this.popupCloser.next();
+        this.popupCloser.complete();
       }
     });
   }
@@ -433,12 +361,14 @@ export class CustomOAuthService {
     this.formService.updateFormWithGoogleData(payload.user);
     this.oauthSuccessSubject.next(payload.user);
 
-    if (this.router.url.includes('signup')) {
+    if (this.router.url.includes('sign-up')) {
       this.formService.updateFormWithGoogleData(user);
       this.oauthSuccessSubject.next(user);
     } else {
       this.router.navigate(['/content', user.userId]);
+      // this.router.navigate(['/home']);
     }
+
   }
 
   getUser(): Observable<any> {

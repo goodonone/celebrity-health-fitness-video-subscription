@@ -1,33 +1,35 @@
-import { Injectable } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { authConfig } from './auth.config';
+// import { Injectable } from '@angular/core';
+// import { OAuthService } from 'angular-oauth2-oidc';
+// import { authConfig } from './auth.config';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  constructor(private oauthService: OAuthService) {
-    this.configureOAuth();
-  }
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class AuthService {
+//   constructor(private oauthService: OAuthService) {
+//     this.configureOAuth();
+//   }
 
-  private configureOAuth() {
-    this.oauthService.configure(authConfig);
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
-  }
+//   private configureOAuth() {
+//     this.oauthService.configure(authConfig);
+//     this.oauthService.loadDiscoveryDocumentAndTryLogin();
+//   }
 
-  login() {
-    this.oauthService.initLoginFlow();
-  }
+//   login() {
+//     this.oauthService.initLoginFlow();
+//   }
 
-  logout() {
-    this.oauthService.logOut();
-  }
+//   logout() {
+//     this.oauthService.logOut();
+//   }
 
-  get token() {
-    return this.oauthService.getAccessToken();
-  }
+//   get token() {
+//     return this.oauthService.getAccessToken();
+//   }
 
-  get isLoggedIn(): boolean {
-    return this.oauthService.hasValidAccessToken();
-  }
-}
+//   get isLoggedIn(): boolean {
+//     return this.oauthService.hasValidAccessToken();
+//   }
+// }
+
+

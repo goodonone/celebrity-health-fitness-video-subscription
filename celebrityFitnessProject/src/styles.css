@@ -27,8 +27,11 @@ body {
     width: 100%;
 }
 
-
-
+@font-face {
+    font-family: "Outfit";
+    src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('ttf');
+    font-display: swap;
+}
 
 /* ::-webkit-scrollbar
 {

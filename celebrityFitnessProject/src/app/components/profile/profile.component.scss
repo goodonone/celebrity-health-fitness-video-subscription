@@ -1,5 +1,6 @@
 * {
   font-family: "Outfit", sans-serif;
+  user-select: none;
 }
 
 .pageContainer {
@@ -109,12 +110,18 @@
   flex-direction: column;
   text-align: center;
   align-items: center;
-  width: 30rem;
+  width: 100%;
   min-width: 20rem;
+  max-width: 30rem;
   line-height: clamp(7rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5.5rem, 8.5vw, 7.5rem);
   font-weight: 1000;
+  overflow: hidden;
+  // overflow-x: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+  position: relative;
 
   /* Adding the fade-in class for the fade-in effect */
   &.firstTimeAnimation {
@@ -133,11 +140,17 @@
 
 .profileNameTier.tierTwo{
   text-align: center;
-  width: 40rem;
+  width: 100%;
+  max-width: 40rem;
   line-height: clamp(7rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(4.5rem, 7.5vw, 7.5rem);
   font-weight: 1000;
+  // overflow-x: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+  overflow: hidden;
+  position: relative;
 
   /* Adding the fade-in class for the fade-in effect */
   &.firstTimeAnimation {
@@ -165,13 +178,17 @@
   flex-direction: column;
   text-align: center;
   align-items: center;
-  width: 30rem;
+  width: 100%;
   min-width: 20rem;
+  max-width: 30rem;
   // max-width: fit-content;
   line-height: clamp(7rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5rem, 8vw, 7.5rem);
   font-weight: 1000;
+  overflow: hidden;
+  position: relative;
+  // padding-right: 2.5rem;
 
   /* Adding the fade-in class for the fade-in effect */
   &.firstTimeAnimation {
@@ -188,6 +205,162 @@
   }
 }
 
+.nameTierOne, .nameTierTwo, .nameTierThree {
+  // font-size: inherit;
+  // font-weight: inherit;
+  // font-family: inherit;
+  // max-width: 30rem;
+  // height: max-content;
+  // overflow-x: hidden;
+  // overflow-y:hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow:ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: inherit;
+  position:relative;
+  padding-right: 0.5rem
+  // padding-right: 1.5rem;
+  // background-color: #c7ff20;
+}
+
+
+// .nameTierOne::after,
+// .nameTierTwo::after,
+// .nameTierThree::after {
+//   content: '!';
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   width: 0.5em;
+//   background-color: inherit;
+//   color: inherit;
+// }
+
+// .nameTierOne::after,
+// .nameTierTwo::after,
+// .nameTierThree::after {
+//   content: '!';
+//   position: absolute;
+//   right: 0;
+//   top: 0;
+//   bottom: 0;
+//   width: 1em;
+//   background-color: inherit;
+//   color: inherit;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// /* Show exclamation mark when text is truncated */
+// .nameTierOne.text-truncated::after,
+// .nameTierTwo.text-truncated::after,
+// .nameTierThree.text-truncated::after {
+//   display: flex;
+// }
+
+// /* Hide exclamation mark when text is not truncated */
+// .nameTierOne:not(.text-truncated)::after,
+// .nameTierTwo:not(.text-truncated)::after,
+// .nameTierThree:not(.text-truncated)::after {
+//   display: none;
+// }
+
+// .nameTierOne:not(:hover)::after,
+// .nameTierTwo:not(:hover)::after,
+// .nameTierThree:not(:hover)::after {
+//   display: none;
+// }
+
+// .profileNameTier.tierOne .nameTierOne::after,
+// .profileNameTier.tierTwo .nameTierTwo::after,
+// .profileNameTier.tierThree .nameTierThree::after {
+//   content: '!';
+//   position: absolute;
+//   right: 0rem;
+//   background: inherit;
+//   padding-left: 0.1rem;
+// }
+
+// .nameTierOne:after, .nameTierTwo:after, .nameTierThree:after {
+//   content: '!';
+//   position: absolute;
+//   right: 1rem;
+//   background: inherit;
+//   padding-left: 3rem;
+//   color: black;
+// }
+
+// .nameTierOne.truncated::after,
+// .nameTierTwo.truncated::after,
+// .nameTierThree.truncated::after {
+//   content: '!';
+//   position: absolute;
+//   right: -0.5em;
+//   background: inherit;
+// }
+
+// .profileNameTier.tierOne .nameTierOne:not(.text-truncated)::after,
+// .profileNameTier.tierTwo .nameTierTwo:not(.text-truncated)::after,
+// .profileNameTier.tierThree .nameTierThree:not(.text-truncated)::after {
+//   display: none;
+// }
+
+// .nameTierOne:after, .nameTierTwo:after, .nameTierThree:after {
+//   content: none;
+// }
+
+// .nameTierOne::after,
+// .nameTierTwo::after,
+// .nameTierThree::after {
+//   content: '!';
+//   position: absolute;
+//   right: -2rem;
+//   top: 0;
+//   padding-left: 3rem;
+// }
+
+// /* Hide the exclamation mark when text isn't truncated */
+// .nameTierOne:not(:nth-last-child(2))::after,
+// .nameTierTwo:not(:nth-last-child(2))::after,
+// .nameTierThree:not(:nth-last-child(2))::after {
+//   // display: none;
+//   content: ''
+// }
+
+// .nameTierOne:not(.is-truncated):after,
+// .nameTierTwo:not(.is-truncated):after,
+// .nameTierThree:not(.is-truncated):after {
+//   display: none;
+// }
+
+// .profileNameTier.tierOne:hover,
+// .profileNameTier.tierTwo:hover,
+// .profileNameTier.tierThree:hover {
+//   overflow: hidden;
+// }
+
+// .profileNameTier.tierOne:hover .nameTierOne,
+// .profileNameTier.tierTwo:hover .nameTierTwo,
+// .profileNameTier.tierThree:hover .nameTierThree {
+//   overflow: visible;
+//   text-overflow: clip;
+// }
+
+// .profileNameTier.tierOne:hover .nameTierOne:after,
+// .profileNameTier.tierTwo:hover .nameTierTwo:after,
+// .profileNameTier.tierThree:hover .nameTierThree:after {
+//   content: '';
+// }
 
 
 // .fade-in {
@@ -504,7 +677,7 @@ h3.profileDetailsInput.email {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1.4rem;
+  margin-bottom: 1.5rem;
 }
 
 .email:disabled {
@@ -522,10 +695,13 @@ h3.profileDetailsInput.email {
 h3.profileDetails.name {
   width: 100%;
   max-width: 18rem;
+  height: max-content;
   // width: 18rem;
   min-width: 5rem;
+  height: 3.73rem;
   // max-width: 25rem;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   //   overflow: visible;
@@ -533,7 +709,10 @@ h3.profileDetails.name {
 }
 
 h3.profileDetails.email {
-  width: 18rem;
+  // width: 18rem;
+
+  width: 100%;
+  max-width: 18rem;
   // overflow: visible;
   overflow-x: hidden;
   text-overflow:ellipsis;
@@ -619,14 +798,14 @@ h3.profileDetailsInputWeight {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 h3.profileDetailsInputHeight {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 h3.profileDetailsInputObjective {
@@ -1355,8 +1534,8 @@ input#weight,
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
+  background-color: rgba(0, 0, 0, 1);
+  z-index: 9;
 }
 
 .spinner {

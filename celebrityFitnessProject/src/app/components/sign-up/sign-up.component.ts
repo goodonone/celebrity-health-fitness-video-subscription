@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service'; 
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { FormService } from 'src/app/shared/Multi-Step-Form/form/form.service';
 import { CustomOAuthService } from 'src/app/services/oauth.service';
+import { FormComponent } from 'src/app/shared/Multi-Step-Form/form/form.component';
 
 
 @Component({
@@ -14,18 +15,41 @@ import { CustomOAuthService } from 'src/app/services/oauth.service';
 })
 export class SignUpComponent implements OnInit {
 
+  // @ViewChild(FormComponent) formComponent!: FormComponent;
+  @ViewChild(FormComponent, { static: false }) formComponent!: FormComponent;
+
   newUser: User = new User();
   private routerSubscription?: Subscription;
   disableLoginButton: boolean = false;
+
+  isLoading = true;
+  // formImageLoaded = false;
   // private routerSubscription?: Subscription;
   
 
-  constructor(private userService: UserService, private router: Router, private formService: FormService, private oauthService: CustomOAuthService) { }
+  constructor(private userService: UserService, private router: Router, private formService: FormService, private oauthService: CustomOAuthService, private ngZone: NgZone) { }
 
   private subscription: Subscription = new Subscription();
 
   ngOnInit(): void {
-
+   
+    // Set the body background color to black for better UX
+    document.body.style.backgroundColor = 'black';
+   
+    // Wait for the window load event + Check if the user has visited the page before to serve animations or not
+    // window.addEventListener('load', () => {
+    //   // setTimeout(() => {
+    //     this.isLoading = false;
+    //     if (!localStorage.getItem('hasVisitedBefore')) {
+    //       this.triggerAnimations();
+    //       localStorage.setItem('hasVisitedBefore', 'true');
+    //     } else {
+    //       this.skipAnimations();
+    //     }
+    //   // }, 500);
+    // });
+  
+   
     console.log('SignUpComponent initialized');
     this.clearUserData();
     
@@ -120,6 +144,21 @@ export class SignUpComponent implements OnInit {
     );
   }
 
+
+  ngAfterViewInit(): void {
+    console.log('SignUpComponent ngAfterViewInit called');
+    if (this.formComponent) {
+      this.formComponent.loadingStateChange.subscribe((value) => {
+        console.log('Content loaded event received in SignUpComponent');
+        setInterval(() => {
+          this.isLoading = value;
+        }, 500)
+      });
+    } else {
+      console.error('FormComponent not found');
+    }
+  }
+
   ngOnDestroy(): void {
     console.log('SignUpComponent destroyed');
     if (this.routerSubscription) {
@@ -128,15 +167,66 @@ export class SignUpComponent implements OnInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
+    // Reset the body background color to its original value
+    document.body.style.backgroundColor = 'white'; // or use the default color you want
+  
   }
 
   private clearUserData(): void {
     localStorage.removeItem('user');
     this.userService.setGoogleAuthEnabled(false);
     this.formService.resetForm();
+  } 
+
+  // onParentFormImageLoaded() {
+  //   this.ngZone.run(() => {
+  //     console.log('Image loaded event received in SignUpComponent');
+  //     this.formImageLoaded = true;
+  //     this.checkLoading();
+  //   });
+  // }
+
+  // private checkLoading(): void {
+  //   if (this.formImageLoaded) {
+  //     setTimeout(() => {
+  //       this.isLoading = false;
+  //       if (!localStorage.getItem('hasVisitedBefore')) {
+  //         this.triggerAnimations();
+  //         localStorage.setItem('hasVisitedBefore', 'true');
+  //       } else {
+  //         this.skipAnimations();
+  //       }
+  //     }, 500); // Short delay to ensure smooth transition
+  //   }
+  // }
+
+  // onFormContentLoaded() {
+  //   console.log('Form content loaded event received in SignUpComponent');
+  //   this.isLoading = false;
+  //   if (!localStorage.getItem('hasVisitedBefore')) {
+  //     this.triggerAnimations();
+  //     localStorage.setItem('hasVisitedBefore', 'true');
+  //   } else {
+  //     this.skipAnimations();
+  //   }
+  // }
+
+  onLoadingStateChange(isLoading: boolean) {
+    this.isLoading = isLoading;
+    if (!isLoading) {
+      this.checkAnimations();
+    }
   }
 
-
+  private checkAnimations() {
+    if (!localStorage.getItem('hasVisitedBefore')) {
+      this.triggerAnimations();
+      localStorage.setItem('hasVisitedBefore', 'true');
+    } else {
+      this.skipAnimations();
+    }
+  }
 
    // Trigger animations when page is loaded for the first time
    triggerAnimations() {
@@ -145,6 +235,8 @@ export class SignUpComponent implements OnInit {
     welcomeAnimation?.classList.add('firstVisitAnimation');
     const otherTextAnimation = document.querySelector('.otherText') as HTMLElement;
     otherTextAnimation?.classList.add('firstVisitAnimation');
+    const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    arrows?.classList.add('firstTimeAnimation');
    }
 
   // Skips animations if page is loaded after the first time
@@ -155,6 +247,8 @@ export class SignUpComponent implements OnInit {
     const otherTextAnimation = document.querySelector('.otherText') as HTMLElement;
     otherTextAnimation?.classList.remove('firstVisitAnimation');
     otherTextAnimation?.classList.add('skipVisitAnimation');
+    const arrows = document.querySelector('.arrowContainer') as HTMLElement;
+    arrows?.classList.remove('firstTimeAnimation');
   }
 
   // populateForm(user: any) {

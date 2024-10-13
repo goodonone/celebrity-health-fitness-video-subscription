@@ -772,14 +772,14 @@ export class FormService implements OnInit {
             this.router.navigateByUrl(`/content/${authUserId}`);
           } else {
             console.error('No userId found for Google auth user');
-            this.router.navigate(['sign-in']);
+            this.router.navigate(['login']);
           }
         } else {
           console.error('No user data found in localStorage');
-          this.router.navigate(['sign-in']);
+          this.router.navigate(['login']);
         }
       } else {
-        this.router.navigate(['sign-in']);
+        this.router.navigate(['login']);
       }
       this.multiStepForm.reset();
       // this.activeStepSubject.next(1);
@@ -814,7 +814,7 @@ export class FormService implements OnInit {
     // this.activeStepSubject.next(1);
     console.log("Current URL:", this.router.url); // Log current URL
 
-  if (this.router.url.includes('signup')) {
+  if (this.router.url.includes('sign-up')) {
     console.log("Signup URL detected, initiating goToNextStep...");
     setTimeout(() => {
       this.goToNextStep(4);

@@ -30,7 +30,8 @@ input {
   padding: 0.5rem 0 0.5rem 1rem;
   color: black;
   background-color: white;
-  font-size: 1rem;
+  /* font-size: 1rem; */
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
 }
 
 mat-card-header{
@@ -293,6 +294,10 @@ font-weight: 600;
   }
 }
 
+::placeholder {
+  font-size: 1rem;
+}
+
 input[matInput]:focus {
   border-color: #000000 !important; /* Change the border color when focused */
   outline: none; /* Remove the default outline */
@@ -342,7 +347,8 @@ input.disabled-input {
     padding: 0.5rem 0 0.5rem 1rem;
     color: black;
     background-color: white;
-    font-size: 1rem;
+    /* font-size: 1rem; */
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
   } 
 
   /* #confirmPassword{
@@ -471,7 +477,7 @@ input.disabled-input {
 
 }
 
-@media screen and (min-width: 0px) and (max-width: 938px){
+@media screen and (min-width: 300px) and (max-width: 938px){
   
   mat-card{
     height: 25rem;
@@ -497,13 +503,13 @@ input.disabled-input {
 
   input {
     height: 1.2rem;
-    width: 95%;
+    width: 97%;
     padding-left: 0.5rem;
   }
 
   #password, #confirmPassword{
     display: inline-block;
-    width: 95%;
+    width: 97%;
     height: 1.2rem;
     border-radius: 0.25rem;
     border: 0.063rem solid black;

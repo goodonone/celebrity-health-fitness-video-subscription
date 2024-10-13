@@ -573,6 +573,7 @@ export class ProfileComponent implements OnInit {
   //     this.displayHeight = 'Invalid input';
   //   }
   // }
+  
 
   onHeightInput(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -730,8 +731,10 @@ export class ProfileComponent implements OnInit {
 
   checkLoadingComplete() {
     if (this.imageLoaded) {
-      this.loadingComplete = true;
-      this.cdr.detectChanges();
+      setInterval(() => {
+        this.loadingComplete = true;
+        this.cdr.detectChanges();
+      }, 500)
     }
   }
 

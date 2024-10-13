@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective } from '@angular/forms';
 import { FormService } from '../../form.service';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
@@ -32,10 +32,6 @@ export class StepOnePersonalInfoComponent implements OnInit {
   private loginTimeout: any;
   isGoogleAuthEnabled: boolean = false;
 
-  isFieldDisabled(fieldName: string): boolean {
-    const control = this.stepForm.get(fieldName);
-    return control ? control.disabled : false;
-  }
 
   // private popupClosedSubscription!: Subscription;
 
@@ -45,6 +41,10 @@ export class StepOnePersonalInfoComponent implements OnInit {
   private formResetSubscription!: Subscription;
 
   isGoogleAuthEnabled$: Observable<boolean>;
+
+  // isLoadingSignup$!: Observable<boolean>;
+
+  // popupClosedSubject: Subject<void> = new Subject<void>();
 
 
   constructor(private inputFormGroup: FormGroupDirective, 
@@ -68,7 +68,7 @@ export class StepOnePersonalInfoComponent implements OnInit {
       //   this.handlePopupClosed();
       // });
       
-
+      // this.isLoadingSignup$ = this.oauthService.isLoadingSignup$;
       this.isGoogleAuthEnabled$ = this.userService.isGoogleAuthEnabled$;
     }
 
@@ -192,6 +192,16 @@ export class StepOnePersonalInfoComponent implements OnInit {
     this.cdr.detectChanges();
   }, 0);
 
+  // Trigger loading spinner for oauth
+  // this.subscriptions.add(
+  //   this.isLoadingSignup$.subscribe(isLoading => {
+  //     this.zone.run(() => {
+  //       this.isLoadingGoogle = isLoading;
+  //       console.log('isLoadingGoogle changed:', isLoading);
+  //       this.cdr.detectChanges();
+  //     });
+  //   })
+  // );
 
     console.log('StepOnePersonalInfoComponent: Subscribed to formReset$');
   
@@ -257,13 +267,11 @@ export class StepOnePersonalInfoComponent implements OnInit {
     //   }
     // );
 
-    // handle loading spinner and error messages
+     // Handle loading spinner oauth - error
     this.subscriptions.add(
       this.oauthService.authError$.subscribe(error => {
         this.zone.run(() => {
           this.isLoadingGoogle = false;
-          // console.error('Authentication error:', error);
-          // Handle error (e.g., show error message to user)
           this.cdr.detectChanges();
         });
       })
@@ -351,11 +359,10 @@ export class StepOnePersonalInfoComponent implements OnInit {
             }
           } else {
             // If we are on the signup page and authenticated, we should log out
-            if (this.stepForm.pristine) {
-              this.userService.logoutUser();
-              // localStorage.removeItem('token');
-              this.resetGoogleAuthState();
-            }
+            // if (this.stepForm.pristine) {
+            //   this.userService.logoutUser();
+            //   this.resetGoogleAuthState();
+            // }
           }
         }
         this.cdr.detectChanges();
@@ -384,11 +391,12 @@ export class StepOnePersonalInfoComponent implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe(() => this.checkPasswords());
 
+  }
 
-    // this.oauthService.getAuthComplete().subscribe(() => {
-    //   this.isLoadingGoogle = false;
-    // });
-
+    
+  isFieldDisabled(fieldName: string): boolean {
+    const control = this.stepForm.get(fieldName);
+    return control ? control.disabled : false;
   }
 
   // private updatePasswordFieldsState(isEnabled: boolean): void {
@@ -601,28 +609,32 @@ export class StepOnePersonalInfoComponent implements OnInit {
 
 
   onClickGoogle(): void {
+    
+    console.log('onClickGoogle called');
     this.isLoadingGoogle = true;
     this.oauthService.initiateLogin(true);
-    this.subscriptions.add(
-      this.oauthService.authResult$.subscribe(
-        (user) => {
-          this.zone.run(() => {
-            this.isLoadingGoogle = false;
-            if (user) {
-              this.populateFormWithUserData(user);
-            }
-            this.cdr.detectChanges();
-          });
-        },
-        (error) => {
-          this.zone.run(() => {
-            this.isLoadingGoogle = false;
-            console.error('Google login error:', error);
-            this.cdr.detectChanges();
-          });
-        }
-      )
-    );
+
+    
+    // this.subscriptions.add(
+    //   this.oauthService.authResult$.subscribe(
+    //     (user) => {
+    //       this.zone.run(() => {
+    //         this.isLoadingGoogle = false;
+    //         if (user) {
+    //           this.populateFormWithUserData(user);
+    //         }
+    //         this.cdr.detectChanges();
+    //       });
+    //     },
+    //     (error) => {
+    //       this.zone.run(() => {
+    //         this.isLoadingGoogle = false;
+    //         console.error('Google login error:', error);
+    //         this.cdr.detectChanges();
+    //       });
+    //     }
+    //   )
+    // );
   }
 
 

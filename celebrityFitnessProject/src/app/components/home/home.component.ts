@@ -125,6 +125,7 @@ ngAfterViewInit(): void {
 
   constructor(private router: Router, private userService: UserService){}
 
+  // Navbar color effect on scroll when navbar is above specific divs (which share navbar color)
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     const bannerThreePosition = this.bannerThree?.getBoundingClientRect().top;

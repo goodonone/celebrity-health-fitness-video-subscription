@@ -91,7 +91,7 @@ stepDetails: { step: number; description: string; disabled?: boolean}[] = [
   // }
 
   updateStepDetails(activeStep: number, selectedPlan: string) {
-    this.isPaymentStepDisabled = activeStep === 2 && selectedPlan === 'Just Looking';
+    this.isPaymentStepDisabled = activeStep >= 2 && selectedPlan === 'Just Looking';
     this.stepDetails[3].disabled = this.isPaymentStepDisabled;
   }
 

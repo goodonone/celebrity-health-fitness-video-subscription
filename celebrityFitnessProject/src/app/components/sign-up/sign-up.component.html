@@ -5,7 +5,16 @@
     [autoPlay]="true";
 </video>
 
-<div class="background">
+<ng-container *ngIf="isLoading" class="spinnerContainer">
+    <div class="spinner-overlay">
+        <svg class="spinner" viewBox="0 0 50 50">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+        </svg>
+        <div class="spinner-text">Loading...</div>
+    </div>
+</ng-container>
+
+<div class="background" [class.loaded]="!isLoading">
     <div class="container">
         <div class="overlay">
             <div class="textContainer">
@@ -16,15 +25,21 @@
                     <h1 class="otherText">You're in <br> the <br> right <br> place.</h1>
                 </div>
             </div>
+            <div class="arrowContainer" [ngClass]="{'narrow': true}">
+                <div class="arrows">
+                    <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+                    <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+                </div>
+            </div>
         </div>
 
         <mat-card class="card">
             <mat-card-content class="cardContent">
                     <mat-card class="innerCardTwo">
-                        <app-form></app-form>
+                        <app-form #formComponent></app-form>
                         <app-progression-buttons></app-progression-buttons>
                         <p class="alreadyMemberText" [ngClass]="{'disabled-text': disableLoginButton}">Already a Member?
-                            <span class="highlight" routerLink="/signin" [ngClass]="{'disabled-text': disableLoginButton}">
+                            <span class="highlight" routerLink="/login" [ngClass]="{'disabled-text': disableLoginButton}">
                                 Log in</span> here.</p>
                     </mat-card>
             </mat-card-content>

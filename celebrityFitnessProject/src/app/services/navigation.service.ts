@@ -17,7 +17,7 @@ export class NavigationService {
 
   isLeavingFormPages(url: string): boolean {
     return !url.includes('change-plan') && 
-           !url.includes('signup') && 
+           !url.includes('sign-up') && 
            !url.includes('checkout') && 
            !url.includes('upgrade');
   }

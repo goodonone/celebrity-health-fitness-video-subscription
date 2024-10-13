@@ -19,7 +19,7 @@ const routes: Routes = [
     loadChildren: () => import('./components/contact/contact.module').then((m) => m.ContactModule) 
   },
   {
-    path: "signup", 
+    path: "sign-up", 
     loadChildren: () => import('./components/sign-up/signup.module').then((m) => m.SignupModule) 
   },
   { path: "checkout", 
@@ -37,7 +37,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   { 
-    path: "sign-in", 
+    path: "login", 
     loadChildren: () => import('./components/sign-in/sign-in.module').then((m) => m.SignInModule)
   },
   { 
