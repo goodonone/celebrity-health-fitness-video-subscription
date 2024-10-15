@@ -11,8 +11,13 @@ export class User {
     paymentFrequency?: string;
     price?: number;
     dateOfBirth?: Date;
-    imgUrl?: string;
+    imgUrl?: string | null;
     isGoogleAuth?: boolean;
+    profilePictureSettings?: {
+        zoom: number;
+        x: number;
+        y: number;
+    } | null;
     createdAt?: Date;
     updatedAt?: Date;
 
@@ -32,6 +37,11 @@ constructor(
         dateOfBirth?: Date,
         imgUrl?: string,
         isGoogleAuth?: boolean,
+        profilePictureSettings?: {
+            zoom: number;
+            x: number;
+            y: number;
+        } | null,
         createdAt?: Date,
         updatedAt?: Date,
         )
@@ -50,6 +60,7 @@ constructor(
         this.dateOfBirth = dateOfBirth;
         this.imgUrl = imgUrl;
         this.isGoogleAuth = isGoogleAuth;
+        this.profilePictureSettings = profilePictureSettings;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

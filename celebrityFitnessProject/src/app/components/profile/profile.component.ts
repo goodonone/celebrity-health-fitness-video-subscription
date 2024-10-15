@@ -1,13 +1,15 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, Renderer2, NgZone } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
-import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, debounceTime, distinctUntilChanged, of, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, fromEvent, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
+import { HttpClient } from '@angular/common/http';
+import { profile } from 'console';
 
 enum ProfileState {
   Viewing,
@@ -26,10 +28,13 @@ enum ProfileState {
 
 export class ProfileComponent implements OnInit {
 
-  // @ViewChild('profileForm') profileForm!: NgForm;
-  // @ViewChild('profileNameTier') profileNameTierElement!: ElementRef;
-  // @ViewChild('profilePicture') profilePictureElement!: ElementRef;
+
+  @ViewChild('container', { static: false }) container!: ElementRef<HTMLElement>;
   
+  @ViewChild('profileImg', { static: false, read: ElementRef }) profileImg!: ElementRef<HTMLElement>;
+
+  private subscriptions: Subscription = new Subscription();
+
   currentUser: User = new User();
   ProfileState = ProfileState; 
   currentState: ProfileState = ProfileState.Viewing;
@@ -53,6 +58,7 @@ export class ProfileComponent implements OnInit {
   // onlyProfilePicture = true;
   userIsLoggedIn: boolean = false;
   cartQuantity = 0;
+  isDragged: boolean = false;
 
   userId!: string;
   classAppliedDeleteProfile = false;
@@ -79,6 +85,9 @@ export class ProfileComponent implements OnInit {
   isProcessingGoodbye: boolean = false;
   emailExists: boolean = false;
   isWaitingToCheck = false;
+  isInClicked = false;
+  isOutClicked = false;
+  // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
   // firstTimeAnimationTierThree: boolean = true;
@@ -87,11 +96,28 @@ export class ProfileComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup; 
 
+  // private initialPosition = { x: 0, y: 0 };
+  position: { x: number, y: number } = { x: 0, y: 0 };
+  private isDragging = false;
+  private startX = 0;
+  private startY = 0;
+  zoomLevel: number = 1;
+  minZoom: number = 1;
+  maxZoom: number = 2;
+  zoomStep: number = 0.1;
+
+  private moveListener!: () => void;
+  private upListener!: () => void;
+  private touchMoveListener!: () => void;
+  private touchEndListener!: () => void;
+
 
   // Icons
   faEye = faEye;
   faEyeSlash = faEyeSlash;
   faAngleDown = faAngleDown;
+  faPlus = faPlus;
+  faMinus = faMinus;
 
   private subscription: Subscription = new Subscription();
 
@@ -114,7 +140,16 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private elementRef: ElementRef,
     private renderer: Renderer2,
+    private http: HttpClient,
+    private ngZone : NgZone
   ) {
+    // this.startDrag = this.startDrag.bind(this);
+    // this.drag = this.drag.bind(this);
+    // this.endDrag = this.endDrag.bind(this);
+    this.startDrag = this.startDrag.bind(this);
+    this.drag = this.drag.bind(this);
+    this.endDrag = this.endDrag.bind(this);
+
     this.keydownHandler = (event) => {
       const toggleDiv = document.getElementById('deleteProfile');
       if (event.key === 'Escape' && toggleDiv?.classList.contains('active')) {
@@ -138,6 +173,20 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    // if (!this.currentUser.profilePictureSettings) {
+    //   this.currentUser.profilePictureSettings = {
+    //     zoom: 1,
+    //     x: 0,
+    //     y: 0
+    //   };
+    // }
+
+   
+
+
+  
+    console.log("Profile picture settings" + this.currentUser.profilePictureSettings);
     
     //  this.firstTimeAnimationTierOne = localStorage.getItem('hasVisitedProfileBeforeTierOne') !== 'true';
     //  this.firstTimeAnimationTierTwo = localStorage.getItem('hasVisitedProfileBeforeTierTwo') !== 'true';
@@ -154,7 +203,10 @@ export class ProfileComponent implements OnInit {
       this.skipAnimations();
     }
 
+    console.log('ngOnInit called');
     this.loadProfile();
+
+    // console.log('this.profileImg.nativeElement:', this.profileImg.nativeElement);
 
 
     this.initializePictureForm();
@@ -179,6 +231,7 @@ export class ProfileComponent implements OnInit {
       height: ['', []],
       goals: ['', []],
       imgUrl: ['', []],
+      profilePictureSettings: ['', []],
       isGoogleAuth: [false]
     });
 
@@ -211,6 +264,15 @@ export class ProfileComponent implements OnInit {
     //   this.checkOldPassword();
     // });
 
+    // setTimeout(() => {
+    //   if (this.container && this.profileImg) {
+    //     this.setupDragListeners();
+    //     this.loadSavedPosition();
+    //   } else {
+    //     console.error('Container or profile image not found');
+    //   }
+    // });
+
     this.checkOldPassword();
 
     this.passwordGroup.get('passwordGroup')?.valueChanges.pipe(
@@ -225,6 +287,14 @@ export class ProfileComponent implements OnInit {
     ).subscribe(() => {
       this.passwordGroup.updateValueAndValidity({ emitEvent: false });
       this.cdr.detectChanges(); // Trigger change detection
+    });
+
+    // Check if the imgUrl field has changed
+    this.profileForm.get('imgUrl')?.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.cdr.detectChanges();
     });
 
     // this.logFormState();
@@ -250,6 +320,28 @@ export class ProfileComponent implements OnInit {
     //     selectElement.style.left = '0';
     //   });
     // }
+    // this.setupDragListeners();
+    // this.loadSavedPosition();
+    // this.profileForm.get('profilePictureSettings')?.value.subscribe((value: any) => {
+    //   console.log('profilePictureSettings:', value);
+    // });
+
+    console.log('Profile image element:', this.profileImg);
+    setTimeout(() => {
+      this.setupDragListeners();
+      this.initializeDragging();
+      this.updateImageTransform();
+      this.cdr.detectChanges();
+    }, 0);
+
+    if (this.profileImg && this.profileImg.nativeElement) {
+      this.renderer.setStyle(this.profileImg.nativeElement, 'background-size', 'cover');
+      this.renderer.setStyle(this.profileImg.nativeElement, 'background-repeat', 'no-repeat');
+      // Set an initial size larger than the visible area
+      this.renderer.setStyle(this.profileImg.nativeElement, 'width', '400px');
+      this.renderer.setStyle(this.profileImg.nativeElement, 'height', '400px');
+      console.log('Initial styles set for profile image');
+    }
   }
 
   ngOnDestroy(): void {
@@ -258,6 +350,16 @@ export class ProfileComponent implements OnInit {
     this.destroy$.next();
     this.destroy$.complete();
     this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
+    const profileDiv = this.profileImg?.nativeElement;
+    if (profileDiv) {
+      profileDiv.removeEventListener('mousedown', this.startDrag);
+      profileDiv.removeEventListener('touchstart', this.startDrag);
+    }
+    document.removeEventListener('mousemove', this.drag);
+    document.removeEventListener('touchmove', this.drag);
+    document.removeEventListener('mouseup', this.endDrag);
+    document.removeEventListener('touchend', this.endDrag);
   }
 
   // ngOnDestroy() {
@@ -270,6 +372,103 @@ export class ProfileComponent implements OnInit {
   //   console.log('Form values:', this.profileForm.value);
   //   console.log('Is form valid (profile):', this.isFormValid('profile'));
   // }
+  
+  // toggleIconColor(button: string) {
+  //   if (button === 'minus') {
+  //     this.isOutClicked = !this.isOutClicked;
+  //     const minusIcon = document.querySelector('.zoomOut');
+      
+  //     if (this.isOutClicked) {
+  //       minusIcon?.classList.add('clicked');
+  //     }
+  
+  //     setTimeout(() => {
+  //       minusIcon?.classList.remove('clicked');
+  //       this.isOutClicked = false;
+  //     }, 50); // Adjust the delay as needed
+  //   } else {
+  //     this.isInClicked = !this.isInClicked;
+  //     const plusIcon = document.querySelector('.zoomIn');
+      
+  //     if (this.isInClicked) {
+  //       plusIcon?.classList.add('clicked');
+  //     }
+  
+  //     setTimeout(() => {
+  //       plusIcon?.classList.remove('clicked');
+  //       this.isInClicked = false;
+  //     }, 50); // Adjust the delay as needed
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  
+  //   if (button === 'minus') {
+  //     this.isOutClicked = true;
+  //     const minusIcon = document.querySelector('.zoomOut');
+  //     minusIcon?.classList.add('clicked');
+  //   } else if (button === 'plus') {
+  //     this.isInClicked = true;
+  //     const plusIcon = document.querySelector('.zoomIn');
+  //     plusIcon?.classList.add('clicked');
+  //   }
+    
+  // }
+  
+
+  // onMouseUp(button: string) {
+    
+  //   if (button === 'minus') {
+  //     this.isOutClicked = false;
+  //     const minusIcon = document.querySelector('.zoomOut');
+  //     minusIcon?.classList.remove('clicked');
+  //   } else if (button === 'plus') {
+  //     this.isInClicked = false;
+  //     const plusIcon = document.querySelector('.zoomIn');
+  //     plusIcon?.classList.remove('clicked');
+  //   }
+
+  // }
+
+  onMouseDown(button: string) {
+    if (button === 'minus') {
+      this.isOutClicked = true;
+      const minusIcon = document.querySelector('.zoomOut');
+      minusIcon?.classList.add('clicked');
+    } else if (button === 'plus') {
+      this.isInClicked = true;
+      const plusIcon = document.querySelector('.zoomIn');
+      plusIcon?.classList.add('clicked');
+    }
+  }
+  
+  onMouseUp(button: string) {
+    this.resetButtonState(button);
+  }
+  
+  onMouseLeave(button: string) {
+    this.resetButtonState(button);
+  }
+  
+  resetButtonState(button: string) {
+    if (button === 'minus') {
+      this.isOutClicked = false;
+      const minusIcon = document.querySelector('.zoomOut');
+      minusIcon?.classList.remove('clicked');
+    } else if (button === 'plus') {
+      this.isInClicked = false;
+      const plusIcon = document.querySelector('.zoomIn');
+      plusIcon?.classList.remove('clicked');
+    }
+  }
+
+  private initializeDragging() {
+    if (this.container && this.profileImg) {
+      console.log('Container and profile image found, initializing dragging');
+      this.setupDragListeners();
+      // this.loadSavedPosition();
+    }
+  }
 
   initializeEventListeners(): void {
     document.addEventListener('keydown', this.keydownHandler);
@@ -293,6 +492,7 @@ export class ProfileComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe(
       (user: any) => {
         // const previousTier = this.currentUser?.tier;
+        console.log('User data received:', user);
         this.currentUser = {
           ...user,
           paymentFrequency: user.billing
@@ -303,6 +503,55 @@ export class ProfileComponent implements OnInit {
         //   // ... other fields if necessary
         // });
   
+        // if (this.currentUser.profilePictureSettings) {
+        //   this.position.x = this.currentUser.profilePictureSettings.x;
+        //   this.position.y = this.currentUser.profilePictureSettings.y;
+        //   this.zoomLevel = this.currentUser.profilePictureSettings.zoom;
+        //   this.updateImageTransform(); // Apply the saved settings
+        // }
+        if (typeof this.currentUser.profilePictureSettings === 'string') {
+          try {
+            this.currentUser.profilePictureSettings = JSON.parse(this.currentUser.profilePictureSettings);
+          } catch (e) {
+            console.error('Error parsing profilePictureSettings:', e);
+            this.currentUser.profilePictureSettings = null;
+          }
+        }
+
+        if (this.currentUser.profilePictureSettings) {
+          this.position = {
+            x: this.currentUser.profilePictureSettings.x || 0,
+            y: this.currentUser.profilePictureSettings.y || 0
+          };
+          this.zoomLevel = this.currentUser.profilePictureSettings.zoom || 1;
+          this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+          
+          // Apply the saved settings immediately
+          // this.updateImageTransform();
+        } else {
+          this.resetImagePositionAndZoom();
+        } 
+
+      console.log('Profile loaded:', this.currentUser);
+      console.log('Profile picture settings:', this.currentUser.profilePictureSettings);
+      
+      // Load saved position and zoom level
+      // if (!this.currentUser.profilePictureSettings) {
+      //   this.currentUser.profilePictureSettings = {
+      //     zoom: 1,
+      //     x: 0,
+      //     y: 0
+      //   };
+      // }
+
+      // this.position = {
+      //   x: this.currentUser.profilePictureSettings.x,
+      //   y: this.currentUser.profilePictureSettings.y
+      // };
+      // this.zoomLevel = this.currentUser.profilePictureSettings.zoom;
+      // this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+
+
         // Update the validation status of the controls
         this.profileForm.patchValue({
           name: this.currentUser.name,
@@ -312,9 +561,15 @@ export class ProfileComponent implements OnInit {
           weight: this.currentUser.weight,
           height: this.currentUser.height,
           goals: this.currentUser.goals,
-          imgUrl: this.currentUser.imgUrl,
+          imgUrl: this.currentUser.imgUrl || '',
+          profilePictureSettings: this.currentUser.profilePictureSettings,
           isGoogleAuth: this.currentUser.isGoogleAuth
         });
+
+        this.pictureForm.patchValue({
+          imgUrl: this.currentUser.imgUrl || '',
+          profilePictureSettings: this.currentUser.profilePictureSettings
+        }, { emitEvent: false });
 
         if (this.currentUser.isGoogleAuth) {
           this.profileForm.get('email')?.disable();
@@ -324,7 +579,7 @@ export class ProfileComponent implements OnInit {
           this.profileForm.get('email')?.enable();
         }
 
-        console.log(`goals ${this.currentUser.goals}`);
+        // console.log(`goals ${this.currentUser.goals}`);
 
         this.updateFormWithUserData();
         // console.log('User loaded:', user);
@@ -401,8 +656,8 @@ export class ProfileComponent implements OnInit {
         const displayName = this.currentUser.name;
         this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
 
-         //  // Check if the user has visited the page before to serve animations or not
-        
+        this.updateImageTransform();
+        this.cdr.detectChanges();
          
       },
       (error) => {
@@ -414,12 +669,30 @@ export class ProfileComponent implements OnInit {
     );
   }
 
+  // loadSavedPositionAndZoom() {
+  //   this.userService.getProfilePictureSettings(this.userId).subscribe(
+  //     settings => {
+  //       if (settings) {
+  //         this.position = settings.position || { x: 0, y: 0 };
+  //         this.zoomLevel = settings.zoomLevel || 1;
+  //         this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+  //       }
+  //       this.updateImageTransform();
+  //       this.cdr.detectChanges();
+  //     },
+  //     error => {
+  //       console.error('Error loading position and zoom settings:', error);
+  //       this.resetImagePositionAndZoom();
+  //     }
+  //   );
+  // }
+
   isEmailDisabled(): boolean {
     return this.profileForm.get('isGoogleAuth')?.value === true;
   }
 
   updateFormWithUserData(): void {
-    console.log('Updating form with user data' + this.currentUser.email);
+    // console.log('Updating form with user data' + this.currentUser.email);
     this.profileForm.patchValue({
       name: this.currentUser.name,
       email: this.currentUser.email,
@@ -428,7 +701,7 @@ export class ProfileComponent implements OnInit {
       weight: this.currentUser.weight,
       height: this.currentUser.height,
       goals: this.currentUser.goals,
-      imgUrl: this.currentUser.imgUrl,
+      imgUrl: this.currentUser.imgUrl || '',
       isGoogleAuth: this.currentUser.isGoogleAuth
     });
 
@@ -476,7 +749,8 @@ export class ProfileComponent implements OnInit {
       (user: any) => {
         this.currentUser = {
           ...user,
-          paymentFrequency: user.billing
+          paymentFrequency: user.billing,
+          imgUrl: user.imgUrl || undefined,
         };
         // this.stepForm.patchValue({
         //   name: this.currentUser.name,
@@ -493,8 +767,14 @@ export class ProfileComponent implements OnInit {
           weight: this.currentUser.weight,
           height: this.currentUser.height,
           goals: this.currentUser.goals,
-          imgUrl: this.currentUser.imgUrl,
-        });
+          profilePictureSettings: this.currentUser.profilePictureSettings,
+          imgUrl: this.currentUser.imgUrl || '',
+        }, { emitEvent: false });
+
+        this.pictureForm.patchValue({
+          imgUrl: this.currentUser.imgUrl || '',
+          profilePictureSettings: this.currentUser.profilePictureSettings
+        }, { emitEvent: false });
 
         this.updateFormWithUserData();
 
@@ -529,6 +809,8 @@ export class ProfileComponent implements OnInit {
         // this.loadingComplete = true;
         const displayName = this.currentUser.name;
         this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
+
+        this.cdr.detectChanges();
       },
       (error) => {
         console.error('Error loading user profile:', error);
@@ -558,21 +840,6 @@ export class ProfileComponent implements OnInit {
     // Format the result
     return `${feet}'${inches}"`;
   }
-
-  // onHeightInput(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   const value = input.value;
-  //   this.heightTouched = true;
-  
-  //   if (this.heightPattern.test(value)) {
-  //     this.currentUser.height = value;
-  //     this.displayHeight = this.formatHeightForDisplay(value);
-  //   } else {
-  //     // If invalid, don't update currentUser.height
-  //     this.currentUser.height = value;
-  //     this.displayHeight = 'Invalid input';
-  //   }
-  // }
   
 
   onHeightInput(event: Event) {
@@ -614,38 +881,6 @@ export class ProfileComponent implements OnInit {
       imgUrl: [this.currentUser.imgUrl]
     });
   }
-  // validateAge(): void {
-  //   let dob: Date | undefined;
-  
-  //   // Convert to Date object if necessary
-  //   if (typeof this.currentUser.dateOfBirth === 'string') {
-  //     dob = new Date(this.currentUser.dateOfBirth);
-  //   } else {
-  //     dob = this.currentUser.dateOfBirth;
-  //   }
-  
-  //   if (dob && !isNaN(dob.getTime())) {
-  //     const today = new Date();
-  //     if (dob > today) {
-  //       this.isValidAge = false;
-  //       this.twentyOneError = true;  // You can remove or repurpose this
-  //       return;
-  //     }
-  
-  //     const maxDate = new Date();
-  //     maxDate.setFullYear(maxDate.getFullYear() - 124);
-  
-  //     this.isValidAge = dob >= maxDate;
-  //     if (!this.isValidAge) {
-  //       // Handle the case where the person is older than 124 years
-  //       this.twentyOneError = true;  // You can rename this variable to something like "maxAgeError"
-  //     } else {
-  //       this.twentyOneError = false;
-  //     }
-  //   } else {
-  //     this.isValidAge = false;
-  //   }
-  // }
   
   validateAge(): void {
     const dobControl = this.profileForm.get('dateOfBirth');
@@ -698,21 +933,59 @@ export class ProfileComponent implements OnInit {
   }
  
   saveProfilePicture() {
-    if (this.currentState === ProfileState.ChangingPicture) {
-      const newImgUrl = this.pictureForm.get('imgUrl')?.value;
-      this.currentUser.imgUrl = newImgUrl;
-      this.userService.updateUser(this.currentUser).subscribe(
-        () => {
-          this.currentState = ProfileState.Viewing;
-          // Optionally, reload the user data or update the view
-        },
-        error => {
-          console.error('Error updating profile picture:', error);
-          // Handle error (e.g., show error message)
+    const newImgUrl = this.pictureForm.get('imgUrl')?.value;
+    this.currentUser.imgUrl = newImgUrl === '' ? null : newImgUrl;
+    // this.currentUser.profilePictureSettings = {
+    //   zoom: this.zoomLevel,
+    //   x: this.position.x,
+    //   y: this.position.y
+    // };
+
+    const updatedUser = { 
+      ...this.currentUser, 
+      imgUrl: this.currentUser.imgUrl, 
+      profilePictureSettings: {
+        zoom: this.zoomLevel,
+        x: this.position.x,
+        y: this.position.y
+      }
+    };
+    this.userService.updateUser(this.currentUser).subscribe(
+      (response) => {
+        // this.currentState = ProfileState.Viewing;
+        // this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+        // this.cdr.detectChanges();
+        // this.reloadProfile();
+        console.log('Profile picture updated successfully', response);
+        this.currentUser = { ...this.currentUser, ...response };
+
+        // Ensure profilePictureSettings are not overwritten if they come back as null
+        if (this.currentUser.profilePictureSettings === null) {
+          this.currentUser.profilePictureSettings = updatedUser.profilePictureSettings;
         }
-      );
-    }
-    // ... handle other states if needed
+
+        this.currentState = ProfileState.Viewing;
+        this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
+          profilePictureSettings: this.currentUser.profilePictureSettings
+        });
+        this.pictureForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
+          profilePictureSettings: this.currentUser.profilePictureSettings
+        });
+        
+        // Reset position and zoom after saving
+        // this.resetImagePositionAndZoom();
+        
+        this.updateImageTransform();
+        this.cdr.detectChanges();
+        // this.reloadProfile();
+
+        
+      },
+      error => {
+        console.error('Error updating profile picture:', error);
+        // Handle error (e.g., show error message)
+      }
+    );
   }
 
   preloadImage(imgUrl: string) {
@@ -738,64 +1011,26 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-// saveProfile() {
-//   // this.markFormGroupTouched(this.profileForm.form);
-//   if (this.currentState === ProfileState.EditingProfile && this.isFormValid('profile')) {
-//     // Convert height to decimal feet before saving if it's in feet and inches format
-//     if (this.currentUser.height && this.currentUser.height.includes("'")) {
-//       const [feet, inches] = this.currentUser.height.split("'");
-//       const cleanedInches = inches.replace('"', '');
-//       const totalInches = parseInt(feet) * 12 + parseInt(cleanedInches);
-//       this.currentUser.height = (totalInches / 12).toFixed(2);
-//     }
-//     if (this.stepForm.valid) {
-//     const updatedUser = { ...this.currentUser, ...this.stepForm.value };
-//     this.userService.updateUser(updatedUser).subscribe(
-//       () => {
-//         console.log('Profile updated successfully');
-//         this.currentState = ProfileState.Viewing;
-//         this.loadProfile();
-//         // this.loadProfile();
-//       },
-//       error => {
-//         console.error('Error updating profile:', error);
-//         // Handle error (e.g., show error message to user)
-//       }
-//     );
-//   } else {
-//     console.log('Form is invalid or not in editing state');
-//     // Optionally, you can show an error message to the user here
-//   }
-// }
-// }
 
 saveProfile() {
   if (this.isFormValid('profile')) {
     console.log('Saving profile...');
-    // Merge the values from both forms
-
     const formValue = this.profileForm.getRawValue();
+
+     // Explicitly handle empty image URL
+     if (formValue.imgUrl === '') {
+      formValue.imgUrl = null;  // or undefined, depending on your backend expectations
+    }
 
     const updatedUser = {
       ...this.currentUser,
       ...formValue,
-      // ...this.profileForm.form.value,
-      // name: this.stepForm.get('name')?.value,
-      // email: this.stepForm.get('email')?.value,
-      // dateOfBirth: this.stepForm.get('dateOfBirth')?.value,
-      // height: this.stepForm.get('height')?.value,
-      // weight: this.stepForm.get('weight')?.value,
-      // goals: this.stepForm.get('goals')?.value,
-      // imgUrl: this.stepForm.get('imgUrl')?.value,
+      profilePictureSettings: {
+        zoom: this.zoomLevel,
+        x: this.position.x,
+        y: this.position.y
+      }
     };
-
-    // Convert height to decimal feet before saving if it's in feet and inches format
-    // if (updatedUser.height && updatedUser.height.includes("'")) {
-    //   const [feet, inches] = updatedUser.height.split("'");
-    //   const cleanedInches = inches.replace('"', '');
-    //   const totalInches = parseInt(feet) * 12 + parseInt(cleanedInches);
-    //   updatedUser.height = (totalInches / 12).toFixed(2);
-    // }
 
     // Convert height to decimal feet before saving if it's in feet and inches forma
     if (updatedUser.height) {
@@ -821,9 +1056,19 @@ saveProfile() {
     this.userService.updateUser(updatedUser).subscribe(
       (response) => {
         console.log('Profile updated successfully', response);
-        this.currentUser = { ...this.currentUser, ...updatedUser };
+        this.currentUser = { ...this.currentUser, ...response };
+
+        // Ensure profilePictureSettings are not overwritten if they come back as null
+        if (this.currentUser.profilePictureSettings === null) {
+          this.currentUser.profilePictureSettings = updatedUser.profilePictureSettings;
+        }
+
+        // Update the form with the latest data from the server
+        this.profileForm.patchValue(this.currentUser, { emitEvent: false });
+
         this.currentState = ProfileState.Viewing;
         this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
+        this.updateImageTransform();
         this.cdr.detectChanges(); // Force change detection
         this.reloadProfile();
         // Optionally, you can still call loadProfile to ensure all data is fresh
@@ -839,300 +1084,25 @@ saveProfile() {
   }
 }
 
-
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'password') {
-//     return this.stepForm.valid && 
-//            this.isOldPasswordCorrect && 
-//            !this.passwordGroup.errors?.['passwordMismatch'] &&
-//            this.passwordGroup.valid;
-//   } else { // profile form
-//     if (!this.profileForm) return false;
-    
-//     const nameControl = this.profileForm.form.get('name');
-//     const emailControl = this.profileForm.form.get('email');
-
-//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
-
-//     const heightValid = this.isHeightValid();
-//     const weightValid = this.isWeightValid();
-
-//     const optionalFieldsValid = ['height', 'dateOfBirth', 'weight', 'imgUrl'].every(field => {
-//       const control = this.profileForm.form.get(field);
-//       return !control?.value || control?.valid;
-//     }) ?? true;
-
-//      // Validate age
-//     //  this.validateAge();
-
-//     return requiredFieldsValid && optionalFieldsValid && heightValid && weightValid && this.isValidAge;
-//   }
+// resetImage() {
+//   this.currentUser.imgUrl = '';
+//   this.profileForm.patchValue({
+//     imgUrl: ''
+//   });
+//   this.position = { x: 0, y: 0 };
+//   this.isDragged = false;
+//   this.cdr.detectChanges();
 // }
 
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'password') {
-//     const oldPasswordControl = this.stepForm.get('oldPassword');
-//     const passwordGroup = this.stepForm.get('passwordGroup');
-//     const passwordControl = passwordGroup?.get('password');
-//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
-//     // Check for specific errors
-//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
-//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
-//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
-
-//     return !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
-//   } else { // profile form
-//     if (!this.profileForm) return false;
-    
-//     const nameControl = this.profileForm.form.get('name');
-//     const emailControl = this.profileForm.form.get('email');
-
-//     // Check required fields
-//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
-
-//     // Check optional fields only if they have a value
-//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
-//     const optionalFieldsValid = optionalFields.every(field => {
-//       const control = this.profileForm.form.get(field);
-//       return !control?.value || control?.valid;
-//     });
-
-//     return requiredFieldsValid && optionalFieldsValid;
-//   }
-// }
-
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'password') {
-//     // Password logic remains unchanged
-//     const oldPasswordControl = this.stepForm.get('oldPassword');
-//     const passwordGroup = this.stepForm.get('passwordGroup');
-//     const passwordControl = passwordGroup?.get('password');
-//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
-//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
-//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
-//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
-
-//     return !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
-//   } else { // profile form
-//     if (!this.profileForm) {
-//       console.log('Profile form is not initialized');
-//       return false;
-//     }
-    
-//     const nameControl = this.profileForm.form.get('name');
-//     const emailControl = this.profileForm.form.get('email');
-
-//     console.log('Name valid:', nameControl?.valid);
-//     console.log('Email valid:', emailControl?.valid);
-
-//     // Check only required fields: name and email
-//     const requiredFieldsValid = nameControl?.valid && emailControl?.valid;
-
-//     console.log('Required fields valid:', requiredFieldsValid);
-
-//     return requiredFieldsValid ?? false;
-//   }
-// }
-
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'profile') {
-//     if (!this.profileForm || !this.stepForm) {
-//       console.log('Profile form or step form is not initialized');
-//       return false;
-//     }
-
-//     const nameControl = this.profileForm.form.get('name');
-//     const emailControl = this.stepForm.get('email');
-
-//     console.log('Name valid:', nameControl?.valid);
-//     console.log('Email valid:', emailControl?.valid);
-
-//     // Check required fields: name and email
-//     const requiredFieldsValid = nameControl?.valid && emailControl?.valid;
-
-//     console.log('Required fields valid:', requiredFieldsValid);
-
-//     // Check optional fields only if they have a value
-//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
-//     const optionalFieldsValid = optionalFields.every(field => {
-//       const control = this.profileForm.form.get(field);
-//       console.log(`${field} valid:`, !control?.value || control?.valid);
-//       return !control?.value || control?.valid;
-//     });
-
-//     console.log('Optional fields valid:', optionalFieldsValid);
-
-//     const formValid = (requiredFieldsValid && optionalFieldsValid) ?? false;
-//     console.log('Form valid:', formValid);
-
-//     return formValid;
-//   } else if (formType === 'password') {
-//     const oldPasswordControl = this.stepForm.get('oldPassword');
-//     const passwordGroup = this.stepForm.get('passwordGroup');
-//     const passwordControl = passwordGroup?.get('password');
-//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
-//     console.log('Old password valid:', oldPasswordControl?.valid);
-//     console.log('New password valid:', passwordControl?.valid);
-//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
-
-//     // Check for specific errors
-//     const hasOldPasswordError = oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect;
-//     const hasPasswordError = passwordControl?.hasError('required') || passwordControl?.hasError('pattern');
-//     const hasConfirmPasswordError = confirmPasswordControl?.hasError('required') || this.passwordMismatch;
-
-//     console.log('Has old password error:', hasOldPasswordError);
-//     console.log('Has new password error:', hasPasswordError);
-//     console.log('Has confirm password error:', hasConfirmPasswordError);
-
-//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
-//     console.log('Password form valid:', passwordFormValid);
-
-//     return passwordFormValid;
-//   }
-
-//   console.log('Invalid form type');
-//   return false;
-// }
-
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'profile') {
-//     if (!this.profileForm || !this.stepForm) {
-//       console.log('Profile form or step form is not initialized');
-//       return false;
-//     }
-
-//     const nameControl = this.stepForm.get('name');
-//     const emailControl = this.stepForm.get('email');
-
-//     console.log('Name valid:', nameControl?.valid);
-//     console.log('Email valid:', emailControl?.valid);
-
-//     // Check required fields: name and email
-//     const requiredFieldsValid = (nameControl?.valid && emailControl?.valid) ?? false;
-
-//     console.log('Required fields valid:', requiredFieldsValid);
-
-//     // Check optional fields
-//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
-//     const optionalFieldsValid = optionalFields.every(field => {
-//       const control = this.profileForm.form.get(field);
-//       const isValid = !control?.value || control?.valid;
-//       console.log(`${field} valid:`, isValid);
-//       return isValid;
-//     });
-
-//     console.log('Optional fields valid:', optionalFieldsValid);
-
-//     const formValid = requiredFieldsValid && optionalFieldsValid;
-//     console.log('Profile form valid:', formValid);
-
-//     return formValid;
-//   } else if (formType === 'password') {
-//     if (!this.stepForm) {
-//       console.log('Password form is not initialized');
-//       return false;
-//     }
-
-//     const oldPasswordControl = this.stepForm.get('oldPassword');
-//     const passwordGroup = this.stepForm.get('passwordGroup');
-//     const passwordControl = passwordGroup?.get('password');
-//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
-//     console.log('Old password valid:', oldPasswordControl?.valid);
-//     console.log('New password valid:', passwordControl?.valid);
-//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
-
-//     // Check for specific errors
-//     const hasOldPasswordError = (oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect) ?? true;
-//     const hasPasswordError = (passwordControl?.hasError('required') || passwordControl?.hasError('pattern')) ?? true;
-//     const hasConfirmPasswordError = (confirmPasswordControl?.hasError('required') || this.passwordMismatch) ?? true;
-
-//     console.log('Has old password error:', hasOldPasswordError);
-//     console.log('Has new password error:', hasPasswordError);
-//     console.log('Has confirm password error:', hasConfirmPasswordError);
-
-//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
-//     console.log('Password form valid:', passwordFormValid);
-
-//     return passwordFormValid;
-//   }
-
-//   console.log('Invalid form type');
-//   return false;
-// }
-
-// isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
-//   if (formType === 'profile') {
-//     if (!this.profileForm || !this.stepForm) {
-//       console.log('Profile form or step form is not initialized');
-//       return false;
-//     }
-
-//     const nameControl = this.stepForm.get('name');
-//     const emailControl = this.stepForm.get('email');
-
-//     console.log('Name valid:', nameControl?.valid);
-//     console.log('Email valid:', emailControl?.valid);
-
-//     // Check required fields: name and email
-//     // Allow the form to be valid if it hasn't been touched yet
-//     const requiredFieldsValid = 
-//       (nameControl?.valid || !nameControl?.touched) && 
-//       (emailControl?.valid || !emailControl?.touched);
-
-//     console.log('Required fields valid:', requiredFieldsValid);
-
-//     // Check optional fields
-//     const optionalFields = ['dateOfBirth', 'gender', 'weight', 'height', 'goals', 'imgUrl'];
-//     const optionalFieldsValid = optionalFields.every(field => {
-//       const control = this.profileForm.form.get(field);
-//       const isValid = !control?.value || control?.valid || !control?.touched;
-//       console.log(`${field} valid:`, isValid);
-//       return isValid;
-//     });
-
-//     console.log('Optional fields valid:', optionalFieldsValid);
-
-//     const formValid = requiredFieldsValid && optionalFieldsValid;
-//     console.log('Profile form valid:', formValid);
-
-//     return formValid;
-//   } else if (formType === 'password') {
-//     if (!this.stepForm) {
-//       console.log('Password form is not initialized');
-//       return false;
-//     }
-
-//     const oldPasswordControl = this.stepForm.get('oldPassword');
-//     const passwordGroup = this.stepForm.get('passwordGroup');
-//     const passwordControl = passwordGroup?.get('password');
-//     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
-//     console.log('Old password valid:', oldPasswordControl?.valid);
-//     console.log('New password valid:', passwordControl?.valid);
-//     console.log('Confirm password valid:', confirmPasswordControl?.valid);
-
-//     // Check for specific errors
-//     const hasOldPasswordError = (oldPasswordControl?.hasError('required') || !this.isOldPasswordCorrect) ?? true;
-//     const hasPasswordError = (passwordControl?.hasError('required') || passwordControl?.hasError('pattern')) ?? true;
-//     const hasConfirmPasswordError = (confirmPasswordControl?.hasError('required') || this.passwordMismatch) ?? true;
-
-//     console.log('Has old password error:', hasOldPasswordError);
-//     console.log('Has new password error:', hasPasswordError);
-//     console.log('Has confirm password error:', hasConfirmPasswordError);
-
-//     const passwordFormValid = !(hasOldPasswordError || hasPasswordError || hasConfirmPasswordError);
-//     console.log('Password form valid:', passwordFormValid);
-
-//     return passwordFormValid;
-//   }
-
-//   console.log('Invalid form type');
-//   return false;
-// }
+resetImage() {
+  // this.position = { x: 0, y: 0 };
+  this.resetImagePositionAndZoom();
+  // this.isDragged = false;
+  this.profileForm.patchValue({ imgUrl: null }); 
+  this.pictureForm.patchValue({ imgUrl: null });
+  this.currentUser.imgUrl = null;
+  this.cdr.detectChanges();
+}
 
 isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
   if (formType === 'profile') {
@@ -1202,31 +1172,6 @@ isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
   return false;
 }
 
-// isHeightValid(): boolean {
-//   const heightPattern = /^(\d+(\.\d+)?|\d+'\d+(\.\d+)?"?)$/;
-//   return heightPattern.test(this.currentUser.height || '');
-// }
-
-// isWeightValid(): boolean {
-//   console.log("Validating weight");
-//   const weightString = this.currentUser.weight || '';
-  
-//   // Check if weight contains only numbers and at most one decimal
-//   const isNumeric = /^\d+(\.\d{1,2})?$/.test(weightString);
-//   if (!isNumeric) {
-//     return false;
-//   }
-
-//   const weightValue = parseFloat(weightString);
-
-//   // Check if weight is within the valid range
-//   if (weightValue < 50 || weightValue > 600) {
-//     return false;
-//   }
-
-//   return true;
-// }
-
 isWeightValid(): boolean {
   const weightControl = this.profileForm.get('weight');
   if (!weightControl) return true; // If control doesn't exist, consider it valid
@@ -1275,272 +1220,6 @@ isWeightValid(): boolean {
     }
     this.cdr.detectChanges();
   }
-
-//   checkOldPassword() {
-//     const oldPassword = this.passwordForm.get('oldPassword')?.value;
-//     if(oldPassword === '') {
-//       this.authenticating = false;
-//       return;
-//     }
-//     if (oldPassword) {
-//       this.authenticating = true;
-//       this.userService.checkPassword(this.userId, oldPassword).subscribe(
-//         (isCorrect) => {
-//           this.isOldPasswordCorrect = isCorrect;
-//           this.authenticating = false;
-//           if (isCorrect) {
-//             this.oldPasswordError = '';
-//             // this.stepForm.get('passwordGroup.password')?.enable();
-//             // this.stepForm.get('passwordGroup.confirmPassword')?.enable();
-//             this.passwordGroup.enable();
-//           } else {
-//             this.oldPasswordError = 'Incorrect';
-//             this.passwordGroup.disable();
-//             // this.stepForm.get('passwordGroup.password')?.disable();
-//             // this.stepForm.get('passwordGroup.confirmPassword')?.disable();
-//           }
-//           // this.stepForm.updateValueAndValidity();
-//           this.cdr.detectChanges();
-//         },
-//         (error) => {
-//           console.error('Error checking password:', error);
-//           this.oldPasswordError = 'Error checking password';
-//           this.isOldPasswordCorrect = false;
-//           this.passwordGroup.disable();
-//           this.cdr.detectChanges();
-//         }
-//       );
-//     }
-//     else {
-//       this.isOldPasswordCorrect = false;
-//       this.passwordGroup.disable();
-//   }
-// }
-
-// checkOldPassword() {
-//   const oldPasswordControl = this.passwordForm.get('oldPassword');
-  
-//   if (!oldPasswordControl) return;
-
-//   oldPasswordControl.valueChanges.pipe(
-//     debounceTime(300),
-//     distinctUntilChanged()
-//   ).subscribe(oldPassword => {
-//     if (oldPassword === '') {
-//       this.authenticating = false;
-//       this.oldPasswordError = '';
-//       this.isOldPasswordCorrect = false;
-//       this.passwordGroup.disable();
-//       return;
-//     }
-
-//     this.authenticating = true;
-//     this.oldPasswordError = '';
-
-//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
-//       (isCorrect) => {
-//         this.isOldPasswordCorrect = isCorrect;
-//         this.authenticating = false;
-        
-//         if (isCorrect) {
-//           this.oldPasswordError = '';
-//           this.passwordGroup.enable();
-//         } else {
-//           this.oldPasswordError = 'Incorrect';
-//           this.passwordGroup.disable();
-//         }
-//         this.cdr.detectChanges();
-//       },
-//       (error) => {
-//         console.error('Error checking password:', error);
-//         this.authenticating = false;
-//         this.oldPasswordError = 'Error checking password';
-//         this.isOldPasswordCorrect = false;
-//         this.passwordGroup.disable();
-//         this.cdr.detectChanges();
-//       }
-//     );
-//   });
-// }
-
-// checkOldPassword() {
-//   const oldPasswordControl = this.passwordForm.get('oldPassword');
-  
-//   if (!oldPasswordControl) return;
-
-//   oldPasswordControl.valueChanges.pipe(
-//     debounceTime(1500),
-//     distinctUntilChanged(),
-//     takeUntil(this.destroy$)
-//   ).subscribe(oldPassword => {
-//     if (oldPassword === '') {
-//       this.authenticating = false;
-//       this.oldPasswordError = '';
-//       this.isOldPasswordCorrect = false;
-//       this.passwordGroup.disable();
-//       return;
-//     }
-
-//     this.authenticating = true;
-//     this.oldPasswordError = '';
-
-//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
-//       (isCorrect) => {
-//         this.isOldPasswordCorrect = isCorrect;
-//         this.authenticating = false;
-        
-//         if (isCorrect) {
-//           this.oldPasswordError = '';
-//           this.passwordGroup.enable();
-//         } else {
-//           this.oldPasswordError = 'Incorrect';
-//           this.passwordGroup.disable();
-//         }
-//         this.cdr.detectChanges();
-//       },
-//       (error) => {
-//         console.error('Error checking password:', error);
-//         this.authenticating = false;
-//         this.oldPasswordError = 'Invalid';
-//         this.isOldPasswordCorrect = false;
-//         this.passwordGroup.disable();
-//         this.cdr.detectChanges();
-//       }
-//     );
-//   });
-// }
-
-// checkOldPassword() {
-//   const oldPasswordControl = this.passwordForm.get('oldPassword');
-  
-//   if (!oldPasswordControl) return;
-
-//   // Reset states when the input changes
-//   oldPasswordControl.valueChanges.pipe(
-//     takeUntil(this.destroy$)
-//   ).subscribe(() => {
-//     this.isWaitingToCheck = true;
-//     this.authenticating = false;
-//     this.oldPasswordError = '';
-//     this.cdr.detectChanges();
-//   });
-
-//   // Main password checking logic with debounce
-//   oldPasswordControl.valueChanges.pipe(
-//     debounceTime(1200),
-//     distinctUntilChanged(),
-//     takeUntil(this.destroy$)
-//   ).subscribe(oldPassword => {
-//     this.isWaitingToCheck = false;
-
-//     if (oldPassword === '') {
-//       this.authenticating = false;
-//       this.oldPasswordError = '';
-//       this.isOldPasswordCorrect = false;
-//       this.passwordGroup.disable();
-//       this.cdr.detectChanges();
-//       return;
-//     }
-
-//     this.authenticating = true;
-//     this.oldPasswordError = '';
-//     this.cdr.detectChanges();
-
-//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
-//       (isCorrect) => {
-//         this.isOldPasswordCorrect = isCorrect;
-//         this.authenticating = false;
-        
-//         if (isCorrect) {
-//           this.oldPasswordError = '';
-//           this.passwordGroup.enable();
-//         } else {
-//           this.oldPasswordError = 'Incorrect';
-//           this.passwordGroup.disable();
-//         }
-//         this.cdr.detectChanges();
-//       },
-//       (error) => {
-//         console.error('Error checking password:', error);
-//         this.authenticating = false;
-//         this.oldPasswordError = '';
-//         this.isOldPasswordCorrect = false;
-//         this.passwordGroup.disable();
-//         this.cdr.detectChanges();
-//       }
-//     );
-//   });
-// }
-
-// checkOldPassword() {
-//   const oldPasswordControl = this.passwordForm.get('oldPassword');
-  
-//   if (!oldPasswordControl) return;
-
-//   // Reset states when the input changes
-//   oldPasswordControl.valueChanges.pipe(
-//     takeUntil(this.destroy$)
-//   ).subscribe(() => {
-//     this.isWaitingToCheck = true;
-//     this.authenticating = false;
-//     this.oldPasswordError = '';
-//     oldPasswordControl.setErrors(null);  // Clear any previous errors
-//     this.cdr.detectChanges();
-//   });
-
-//   // Main password checking logic with debounce
-//   oldPasswordControl.valueChanges.pipe(
-//     debounceTime(1500),
-//     distinctUntilChanged(),
-//     takeUntil(this.destroy$)
-//   ).subscribe(oldPassword => {
-//     this.isWaitingToCheck = false;
-
-//     if (oldPassword === '') {
-//       this.authenticating = false;
-//       this.oldPasswordError = '';
-//       this.isOldPasswordCorrect = false;
-//       this.passwordGroup.disable();
-//       oldPasswordControl.setErrors(null);  // Clear errors for empty input
-//       this.cdr.detectChanges();
-//       return;
-//     }
-
-//     this.authenticating = true;
-//     this.oldPasswordError = '';
-//     this.cdr.detectChanges();
-
-//     this.userService.checkPassword(this.userId, oldPassword).subscribe(
-//       (isCorrect) => {
-//         this.isOldPasswordCorrect = isCorrect;
-//         this.authenticating = false;
-        
-//         if (isCorrect) {
-//           this.oldPasswordError = '';
-//           oldPasswordControl.setErrors(null);  // Clear errors if password is correct
-//           this.passwordGroup.enable();
-//         } else {
-//           this.oldPasswordError = 'Incorrect';
-//           oldPasswordControl.setErrors({ 'incorrect': true });  // Set error if password is incorrect
-//           this.passwordGroup.disable();
-//         }
-//         this.cdr.detectChanges();
-//       },
-//       (error) => {
-//         console.error('Error checking password:', error);
-//         this.authenticating = false;
-//         if(this.passwordForm.get('oldPassword')?.touched){
-//           this.oldPasswordError = 'Invalid';
-//         }
-//         this.isOldPasswordCorrect = false;
-//         oldPasswordControl.setErrors({ 'serverError': true });  // Set error for server errors
-//         this.passwordGroup.disable();
-//         this.cdr.detectChanges();
-//       }
-//     );
-//   });
-// }
-
 checkOldPassword() {
   if (this.currentState !== ProfileState.ChangingPassword) {
     return; // Exit if not in password changing state
@@ -1695,14 +1374,6 @@ get passwordGroup() {
     });
   }
 
-
-  // UpdateStatus() {
-  //   this.userIsLoggedIn = this.userService.isloggedIn();
-  //   if (this.userIsLoggedIn) {
-  //     this.UserId = this.userService.getUserId() ?? '';
-  //   }
-  // }
-
   private UpdateStatus(): void {
     this.subscription.add(
       this.userService.isloggedIn().subscribe(isLoggedIn => {
@@ -1730,31 +1401,28 @@ get passwordGroup() {
 
   editProfile(): void {
     this.currentState = ProfileState.EditingProfile;
-    // if (this.currentState === ProfileState.EditingProfile) {
-    //   // Save the profile
-    //   const updatedUser = { ...this.currentUser, ...this.stepForm.value };
-    //   this.userService.updateUser(updatedUser).subscribe(() => {
-    //     this.currentState = ProfileState.Viewing;
-    //     this.loadProfile();
-    //   });
-    // } else {
-    //   this.currentState = ProfileState.EditingProfile;
-    //   // Initialize the stepForm with current user data
-    //   this.stepForm = this.fb.group({
-    //       name: [this.currentUser.name, [Validators.required, Validators.minLength(4), Validators.pattern((/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/))]],
-    //       email: [this.currentUser.email, [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-    //       dateOfBirth: [this.currentUser.dateOfBirth, []],
-    //       gender: [this.currentUser.gender],
-    //       weight: [this.currentUser.weight, []],
-    //       height: [this.currentUser.height, []],
-    //       goals: [this.currentUser.goals],
-    //       imgUrl: [this.currentUser.imgUrl, []],
-    //   });
-    //   this.stepForm.get('name')?.updateValueAndValidity();
-    //   this.stepForm.get('email')?.updateValueAndValidity();
+    console.log('Entered edit mode, currentState:', this.currentState);
+  }
 
-    //   this.syncFormWithCurrentUser();
-    // }
+
+  onImageUrlInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const newValue = input.value.trim();
+    this.profileForm.patchValue({ imgUrl: newValue });
+    this.pictureForm.patchValue({ imgUrl: newValue });
+    this.currentUser.imgUrl = newValue === '' ? null : newValue; // Use null for empty string
+    this.cdr.detectChanges();
+
+    this.resetImagePositionAndZoom();
+
+    this.cdr.detectChanges();
+  
+    // Update the UI to reflect the change immediately
+    if (newValue === '') {
+      this.resetImage();
+    } else {
+      this.preloadImage(newValue);
+    }
   }
 
   syncFormWithCurrentUser(): void {
@@ -1764,10 +1432,27 @@ get passwordGroup() {
     this.formSubscription = this.profileForm.valueChanges.subscribe(formValue => {
       this.currentUser = { ...this.currentUser, ...formValue };
     });
+
+    this.profileForm.patchValue({
+      imgUrl: this.currentUser.imgUrl || ''
+    });
+    this.cdr.detectChanges();
   }
+
+  // changePicture() {
+  //   this.currentState = ProfileState.ChangingPicture;
+  //   console.log('Entered change picture mode, currentState:', this.currentState);
+  //   // this.syncFormWithCurrentUser();
+  // }
 
   changePicture() {
     this.currentState = ProfileState.ChangingPicture;
+    console.log('Entered change picture mode:', {
+      currentState: this.currentState,
+      stateName: ProfileState[this.currentState],
+      canDrag: this.canDrag()
+    });
+    // this.syncFormWithCurrentUser();
   }
 
   changePassword() {
@@ -1780,63 +1465,6 @@ get passwordGroup() {
     this.classAppliedDeleteProfile = true;
   }
 
-  // cancelAction() {
-  //   this.currentState = ProfileState.Viewing;
-  //   this.stepForm.reset();
-  //   this.passwordGroup.disable();
-  //   this.authenticating = false;
-  //   this.oldPasswordError = '';
-  //   this.reloadProfile();
-  //   // this.loadProfile();
-  //   this.stepForm.clearValidators();
-  // }
-
-  // cancelAction(event?: Event): void {
-  //   if (event) {
-  //     event.stopPropagation();  // Prevent the click from propagating to the parent div
-  //   }
-  //   this.stepForm.reset();
-  //   this.passwordGroup.disable();
-  //   this.authenticating = false;
-  //   this.oldPasswordError = '';
-  //   this.reloadProfile();
-  //   // this.loadProfile();
-  //   this.stepForm.clearValidators();
-  //   this.currentState = ProfileState.Viewing;
-  // }
-
-  // cancelAction(event?: MouseEvent): void {
-  //   if (event) {
-  //     event.stopPropagation();  // This prevents the "Keep Subscription" button from triggering the parent div's click
-  //   }
-    
-  //   this.currentState = ProfileState.Viewing;
-  //   this.stepForm.reset();
-  //   this.passwordGroup.disable();
-  //   this.authenticating = false;
-  //   this.oldPasswordError = '';
-  //   this.reloadProfile();
-  //   this.stepForm.clearValidators();
-  // }
-
-  // cancelAction(event?: MouseEvent): void {
-  //   if (event) {
-  //     event.stopPropagation();
-  //   }
-    
-  //   if (this.isProcessingGoodbye) return;
-    
-  //   this.currentState = ProfileState.Viewing;
-  //   this.profileForm.reset();
-  //   this.passwordForm.markAsPristine();
-  //   this.passwordForm.reset();
-  //   this.passwordGroup.disable();
-  //   this.authenticating = false;
-  //   this.oldPasswordError = '';
-  //   this.reloadProfile();
-  //   this.passwordForm.clearValidators();
-  // }
-
   cancelAction(): void {
     // if (event) {
     //   event.stopPropagation();
@@ -1845,9 +1473,6 @@ get passwordGroup() {
     if (this.isProcessingGoodbye) return;
     
     this.currentState = ProfileState.Viewing;
-  
-    // Reset profile form
-    this.profileForm.reset();
   
     // Reset password form and clear all errors
     this.passwordForm.reset();
@@ -1864,6 +1489,8 @@ get passwordGroup() {
       oldPasswordControl.updateValueAndValidity();
     }
 
+    // Reset profile form
+    this.profileForm.reset();
   
     // Reset password group
     this.passwordGroup.reset();
@@ -1928,73 +1555,6 @@ get passwordGroup() {
     return 'Invalid confirm password';
   }
 
-  // checkEmail() {
-  //   console.log('checking email');
-  //   const emailControl = this.stepForm.get('email');
-  //   const email = emailControl?.value;
-  //   if (email && emailControl?.valid) {
-  //     console.log('checking email 2');
-  //     this.userService.checkEmail(email).subscribe(
-  //       (response: {exists: boolean, message: string}) => {
-  //         if (response.exists) {
-  //           emailControl.setErrors({'emailExists': true});
-  //         } else {
-  //           // Only clear the 'emailExists' error, preserve other validation errors if any
-  //           const currentErrors = emailControl.errors;
-  //           if (currentErrors) {
-  //             delete currentErrors['emailExists'];
-  //             emailControl.setErrors(Object.keys(currentErrors).length === 0 ? null : currentErrors);
-  //           }
-  //         }
-  //       },
-  //       (error) => console.error('Error checking email:', error)
-  //     );
-  //   }
-  // }
-
-  // checkEmail(event: Event) {
-  //   // console.log('Checking email method called');
-  //   const input = event.target as HTMLInputElement;
-  //   const email = input.value;
-  //   // console.log('Email value:', email);
-  
-  //   let emailControl: AbstractControl | null;
-  //   if (this.currentState === ProfileState.EditingProfile) {
-  //     emailControl = this.stepForm.get('email');
-  //   } else {
-  //     emailControl = this.profileForm?.form.get('email');
-  //   }
-  //   // console.log('Email control:', emailControl);
-  //   // console.log('Email control valid:', emailControl?.valid);
-  
-  //   if (email && emailControl?.valid) {
-  //     // console.log('Email is valid, proceeding with check');
-  //     this.userService.checkEmail(email).subscribe(
-  //       (response: {exists: boolean, message: string}) => {
-  //         // console.log('Email check response:', response);
-  //         if (response.exists) {
-  //           if (email !== this.currentUser.email) {
-  //             // console.log('Email exists and is different from current, setting error');
-  //             emailControl?.setErrors({'emailExists': true});
-  //           } else {
-  //             // console.log('Email exists but is current user email, no error');
-  //             emailControl?.setErrors(null);
-  //           }
-  //         } else {
-  //           // console.log('Email does not exist, clearing errors');
-  //           emailControl?.setErrors(null);
-  //         }
-  //         this.cdr.detectChanges(); // Force change detection
-  //       },
-  //       (error) => {
-  //         console.error('Error checking email:', error);
-  //       }
-  //     );
-  //   } else {
-  //     console.log('Email is either empty or invalid, skipping check');
-  //   }
-  // }
-
   checkEmail(event: Event) {
     const input = event.target as HTMLInputElement;
     const email = input.value;
@@ -2027,6 +1587,358 @@ get passwordGroup() {
       );
     }
   }
+
+  isImageUrlFilled(): boolean {
+    const imgUrlControl = this.profileForm.get('imgUrl');
+    const formValue = imgUrlControl?.value?.trim();
+    const isFilled = !!formValue;
+    // console.log('Image URL filled:', isFilled, 'Form value:', formValue);
+    return isFilled;
+  }
+
+  setupDragListeners() {
+    console.log('setupDragListeners called');
+    if (!this.isImageUrlFilled()) {
+      console.log('No image URL, not setting up drag listeners');
+      return;
+    }
+  
+    const profileDiv = this.profileImg!.nativeElement;
+  
+    console.log('Set up drag listeners');
+  
+    profileDiv.addEventListener('mousedown', (event) => this.startDrag(event));
+    profileDiv.addEventListener('touchstart', (event) => this.startDrag(event));
+  
+    console.log('Drag listeners set up');
+  }
+
+  canDrag(): boolean {
+    const isEditing = this.currentState === ProfileState.EditingProfile ||
+    this.currentState === ProfileState.ChangingPicture;
+    const isImageFilled = this.isImageUrlFilled();
+    const isProfileImgReady = !!this.profileImg?.nativeElement;
+    return isEditing && isImageFilled && isProfileImgReady;
+  }
+
+
+  startDrag(event: MouseEvent | TouchEvent) {
+    console.log('startDrag called');
+    if (!this.canDrag()) {
+      console.log('Cannot drag');
+      return;
+    }
+    
+    this.isDragging = true;
+    this.isDragged = true;
+  
+    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+    
+    // Adjust here to account for the current position
+    this.startX = clientX - this.position.x;
+    this.startY = clientY - this.position.y;
+
+    console.log('Start drag', {
+      clientX,
+      clientY,
+      startX: this.startX,
+      startY: this.startY,
+      isDragging: this.isDragging
+    });
+
+    // Store the initial mouse coordinates
+    // this.startX = clientX;
+    // this.startY = clientY;
+    
+    // // Store the initial position of the image
+    // this.initialPosition = { ...this.position };
+  
+    console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
+  
+    // Atttach event listeners
+    this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
+    this.upListener = this.renderer.listen('document', 'mouseup', (e) => this.endDrag(e));
+    this.touchMoveListener = this.renderer.listen('document', 'touchmove', (e) => this.drag(e));
+    this.touchEndListener = this.renderer.listen('document', 'touchend', (e) => this.endDrag(e));
+
+  
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+
+  drag(event: MouseEvent | TouchEvent) {
+    if (!this.isDragging || !this.canDrag()) {
+      return;
+    }
+  
+    console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
+    console.log('this.profileImg:', this.profileImg);
+  
+    this.ngZone.run(() => {
+      const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+      const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+      // Calculate new position based on the initial offset
+      const newX = clientX - this.startX;
+      const newY = clientY - this.startY;
+  
+      // Get dimensions
+      const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
+      const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
+  
+      // Calculate maximum allowed movement
+      const maxX = imgRect.width - containerRect.width;
+      const maxY = imgRect.height - containerRect.height;
+  
+      // Adjust constraints to allow negative movement
+      const constrainedX = Math.min(Math.max(newX, -maxX), 0);
+      const constrainedY = Math.min(Math.max(newY, -maxY), 0);
+  
+      console.log('imgRect:', imgRect);
+      console.log('containerRect:', containerRect);
+      console.log('maxX:', maxX, 'maxY:', maxY);
+      console.log('newX:', newX, 'newY:', newY);
+      console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
+  
+      this.position = { x: newX, y: newY };
+      console.log('About to call updateImagePosition', this.position);
+  
+      // Update image position
+      this.updateImageTransform();
+  
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
+
+  // drag(event: MouseEvent | TouchEvent) {
+  //   if (!this.isDragging || !this.canDrag()) {
+  //     return;
+  //   }
+  
+  //   console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
+  //   console.log('this.profileImg:', this.profileImg);
+  
+  //   this.ngZone.run(() => {
+  //     const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+  //     const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+  //     // Calculate the movement delta
+  //     const deltaX = clientX - this.startX;
+  //     const deltaY = clientY - this.startY;
+  
+  //     // Calculate new position
+  //     let newX = this.initialPosition.x + deltaX;
+  //     let newY = this.initialPosition.y + deltaY;
+  
+  //     // Get dimensions
+  //     const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
+  //     const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
+  
+  //     // Calculate maximum allowed movement
+  //     const maxOffsetX = Math.max(0, imgRect.width - containerRect.width);
+  //     const maxOffsetY = Math.max(0, imgRect.height - containerRect.height);
+  
+  //     // Adjust constraints to allow movement within the container
+  //     const constrainedX = Math.min(0, Math.max(newX, -maxOffsetX));
+  //     const constrainedY = Math.min(0, Math.max(newY, -maxOffsetY));
+  
+  //     console.log('imgRect:', imgRect);
+  //     console.log('containerRect:', containerRect);
+  //     console.log('maxOffsetX:', maxOffsetX, 'maxOffsetY:', maxOffsetY);
+  //     console.log('newX:', newX, 'newY:', newY);
+  //     console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
+  
+  //     this.position = { x: constrainedX, y: constrainedY };
+  //     console.log('About to call updateImagePosition', this.position);
+  
+  //     // Update image position
+  //     this.updateImagePosition();
+  
+  //     event.preventDefault();
+  //     event.stopPropagation();
+  //   });
+  // }
+
+  endDrag(event: MouseEvent | TouchEvent) {
+    console.log('endDrag called');
+    if (this.isDragging && this.canDrag()) {
+      this.updateImageTransform();
+      // this.savePositionAndZoom();
+    }
+    
+    this.isDragging = false;
+  
+    // Remove event listeners
+    // document.removeEventListener('mousemove', this.drag);
+    // document.removeEventListener('mouseup', this.endDrag);
+    // document.removeEventListener('touchmove', this.drag);
+    // document.removeEventListener('touchend', this.endDrag);
+    if (this.moveListener) this.moveListener();
+    if (this.upListener) this.upListener();
+    if (this.touchMoveListener) this.touchMoveListener();
+    if (this.touchEndListener) this.touchEndListener();
+  
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  resetImagePositionAndZoom() {
+    this.position = { x: 0, y: 0 };
+    this.zoomLevel = 1;
+    this.isDragged = false;
+    this.updateImageTransform();
+    this.cdr.detectChanges();
+  }
+
+  // savePosition() {
+  //   this.userService.saveProfilePicturePosition(this.userId, this.position).subscribe(
+  //     response => console.log('Position saved successfully'),
+  //     error => console.error('Error saving position', error)
+  //   );
+  // }
+
+  savePositionAndZoom() {
+    const updatedUser = {
+      ...this.currentUser,
+      profilePictureSettings: {
+        zoom: this.zoomLevel,
+        x: this.position.x,
+        y: this.position.y
+      }
+    };
+  
+    this.userService.updateUser(updatedUser).subscribe(
+      response => {
+        console.log('Position and zoom saved successfully');
+        this.currentUser = { ...this.currentUser, ...response };
+      },
+      error => console.error('Error saving position and zoom', error)
+    );
+  }
+
+updateImageTransform() {
+  // if (this.profileImg && this.profileImg.nativeElement) {
+  //   const imgElement = this.profileImg.nativeElement;
+  //   const backgroundPosition = `${this.position.x}px ${this.position.y}px`;
+  //   const backgroundSize = `${this.zoomLevel * 100}%`;
+  //   this.renderer.setStyle(imgElement, 'background-position', backgroundPosition);
+  //   this.renderer.setStyle(imgElement, 'background-size', backgroundSize);
+  if (this.profileImg && this.profileImg.nativeElement) {
+    const imgElement = this.profileImg.nativeElement;
+    const styles = this.getProfileImageStyles();
+    Object.keys(styles).forEach(key => {
+      this.renderer.setStyle(imgElement, key, styles[key]);
+    });
+  
+    // Update the current user's profilePictureSettings
+    if (this.currentUser) {
+      this.currentUser.profilePictureSettings = {
+        zoom: this.zoomLevel,
+        x: this.position.x,
+        y: this.position.y
+      };
+    }
+    console.log('Image transform updated:', { position: this.position, zoom: this.zoomLevel });
+    this.cdr.detectChanges();
+  }
+}
+
+// getProfileImageStyles(): any{
+
+//   console.log('getProfileImageStyles called' + this.currentUser.profilePictureSettings?.x + this.currentUser.profilePictureSettings?.y + this.currentUser.profilePictureSettings?.zoom);
+
+//   return {
+//     'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
+//     'background-position': `${this.position.x || this.currentUser.profilePictureSettings?.x}px ${this.position.y || this.currentUser.profilePictureSettings?.y}px`,
+//     'background-repeat': 'no-repeat',
+//     'background-size': `${this.zoomLevel * 100}%`
+//   }
+// }
+
+getProfileImageStyles(): any {
+  let settings = this.currentUser.profilePictureSettings;
+  if (typeof settings === 'string') {
+    try {
+      settings = JSON.parse(settings);
+    } catch (e) {
+      console.error('Error parsing profilePictureSettings:', e);
+      settings = null;
+    }
+  }
+
+  console.log('getProfileImageStyles called', {
+    x: this.position.x,
+    y: this.position.y,
+    zoom: this.zoomLevel,
+    settings: this.currentUser.profilePictureSettings
+  });
+
+
+  // const x = this.position.x ?? this.currentUser.profilePictureSettings?.x ?? 0;
+  // const y = this.position.y ?? this.currentUser.profilePictureSettings?.y ?? 0;
+  // const zoom = this.zoomLevel ?? this.currentUser.profilePictureSettings?.zoom ?? 1;
+
+  const x = this.position.x ?? settings?.x ?? 0;
+  const y = this.position.y ?? settings?.y ?? 0;
+  const zoom = this.zoomLevel ?? settings?.zoom ?? 1;
+
+  console.log("X is " + x);
+
+  return {
+    'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
+    'background-position': `${x}px ${y}px`,
+    'background-repeat': 'no-repeat',
+    'background-size': `${zoom * 100}%`
+  }
+}
+
+zoomIn() {
+  if (this.zoomLevel < this.maxZoom) {
+    this.zoomLevel += this.zoomStep;
+    this.updateImageTransform();
+  }
+}
+
+// Method to handle zoom out
+zoomOut() {
+  if (this.zoomLevel > this.minZoom) {
+    this.zoomLevel -= this.zoomStep;
+    this.updateImageTransform();
+  }
+}
+
+  // loadSavedPosition() {
+  //   if (this.isImageUrlFilled()) {
+  //   this.userService.getProfilePicturePosition(this.userId).subscribe(
+  //     position => {
+  //       this.position = position;
+  //       this.isDragged = position.x !== 0 || position.y !== 0;
+  //       // this.updateImagePosition();
+  //       if (this.isDragged) {
+  //         const img = this.profileImg.nativeElement;
+  //         this.renderer.removeClass(img, 'default-position');
+  //       }
+  //       this.cdr.detectChanges();
+  //     },
+  //     error => {
+  //       console.error('Error loading position', error);
+  //       this.centerImage();
+  //       }
+  //     );
+  //   }
+  // }
+
+  // centerImage() {
+  //   this.position = { x: 0, y: 0 };
+  //   this.isDragged = false;
+  //   const img = this.profileImg.nativeElement;
+  //   this.renderer.addClass(img, 'default-position');
+  //   this.renderer.removeStyle(img, 'transform');
+  //   this.cdr.detectChanges();
+  // }
 
 
 }

@@ -15,10 +15,11 @@ import { StepTrackerIconsUpgradeComponent } from './Multi-Step-Form/step-nav-upg
 import { ProgressionButtonsComponent } from './Multi-Step-Form/progression-buttons/progression-buttons.component';
 import { StepTrackerIconsUpgradeComponentWithPayment } from './Multi-Step-Form/step-nav-upgrade-with-payment/step-tracker-icons-upgrade-with-payment.component';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faEye, faEyeSlash, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { ScrollToTopDirective } from './scroll-to-top.directive';
 import { PriceFormatPipe } from './price-format.pipe';
 import { FormService } from './Multi-Step-Form/form/form.service';
+import { TrimOnBlurDirective } from './trim-on-blur.directive';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { FormService } from './Multi-Step-Form/form/form.service';
     StepTrackerIconsUpgradeComponentWithPayment,
     AppPasswordDirective,
     ScrollToTopDirective,
-    PriceFormatPipe
+    PriceFormatPipe,
+    TrimOnBlurDirective
   ],
   imports: [
     CommonModule,
@@ -63,14 +65,15 @@ import { FormService } from './Multi-Step-Form/form/form.service';
     StepTrackerIconsUpgradeComponentWithPayment,
     FontAwesomeModule,
     ScrollToTopDirective,
-    PriceFormatPipe
+    PriceFormatPipe,
+    TrimOnBlurDirective
   ],
   providers: [FormService]
 })
 export class SharedModule { 
 
   constructor(library: FaIconLibrary) {
-    library.addIcons(faEye, faEyeSlash, faAngleDown);
+    library.addIcons(faEye, faEyeSlash, faAngleDown, faPlus, faMinus);
   }
 
   faEye = faEye;
