@@ -655,12 +655,13 @@ fieldset {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  max-width: 100px;
+  min-width: 100px;
+  max-width: 120px;
   position: absolute;
   // display: flex;
   // flex-direction: column;
   // text-align: center;
-  top: 75%;
+  top: 65%;
   left: 50%;
   transform: translate(-50%, -50%); 
   // text-shadow: 0 0 7px #000000;
@@ -720,7 +721,7 @@ fieldset {
   // justify-content: center;
   // align-items: center;
   // margin: auto;
-  top: 45%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%); 
   z-index: 5;
@@ -734,6 +735,41 @@ fieldset {
   // cursor: pointer
   // transition: opacity 5s ease-in-out;
 }
+
+.reset{
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  z-index: 5;
+  font-size: clamp(0.4rem, 1.8vw, 1.5rem);
+  color: white;
+  text-shadow: 0 0 7px #000000;
+  opacity: 0.7;
+  // line-height: clamp(2rem, 3vw, 3rem);
+  padding-bottom: 1rem;
+  cursor: pointer;
+  font-weight: 530;
+  // border: white 1.5px solid;
+  // box-shadow: 0 0 4px #424141;;
+  // border-radius: 0.3rem;
+  // padding: clamp(0.2rem, 0.45vw, 0.4rem);
+  // padding-top: clamp(0.2rem, 0.5vw, 0.3rem);
+  // padding-bottom: clamp(0.2rem, 0.5vw, 0.3rem);
+  // cursor: pointer
+
+  &.clicked{
+    opacity: 1;
+    color: rgb(0, 0, 0);
+    // border-color: rgb(0, 0, 0);
+  }
+}
+
+// .reset:hover{
+//   opacity: 1;
+//   color: black;
+//   border-color: black;
+// }
 
 .flexAllProfileData {
   display: flex;
@@ -2890,14 +2926,27 @@ input[matInput]:focus {
 
   .dragToCenter.narrow{
     padding-bottom: 0;
+    top: 30%;
     font-size: clamp(2.5rem, 2.5vw, 3rem);
   }
 
   .zoomButtons{
-    top: 65%;
+    top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  .reset{
+    top: 75%;
+    opacity: 0.9;
+    font-size: clamp(1rem, 1.9vw, 2rem);
+    border-radius: 0.3rem;
+    padding: clamp(0.5rem, 0.5vw, 0.8rem);
+    padding-top: clamp(0.1rem, 0.5vw, 0.2rem);
+    padding-bottom: clamp(0.1rem, 0.5vw, 0.2rem);
+  }
+
+
 
   // .dragToCenter{
   //   padding-bottom: 1rem;
