@@ -67,7 +67,7 @@ export class ContentComponent implements OnInit{
  
 
   startCountDownTierOneTwo() {
-    var countDownDate = new Date("September 17, 2024 16:45:25").getTime();
+    var countDownDate = new Date("October 31, 2024 16:45:25").getTime();
 
     // Update the count down every 1 second
     var x = setInterval( () => {
@@ -98,7 +98,7 @@ export class ContentComponent implements OnInit{
   }
 
   startCountDownTierThree() {
-    var countDownDate = new Date("September 17, 2024 13:39:25").getTime();
+    var countDownDate = new Date("October 31, 2024 13:39:25").getTime();
     // var countDownDate = new Date("Jan 8, 2024 11:16:25").getTime();
 
     // Update the count down every 1 second

@@ -12,8 +12,8 @@
 
     <div class="flexContainer" *ngIf="loadingComplete">
         <div class="nameTier">
-            <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> <br>You're {{currentUser.tier | uppercase}}</h1>
-            <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> <br> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
+            <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> You're {{currentUser.tier | uppercase}}</h1>
+            <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
             <h1 class="profileNameTier tierThree" id="tierThree" *ngIf="tierThree" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierThree">Hi {{firstName}}!</span> You are {{currentUser.tier | uppercase}}</h1>
             <div class="arrowContainer" [ngClass]="{'firstTimeAnimation': firstTimeAnimation, 'narrow': true}">
                 <div class="arrows">

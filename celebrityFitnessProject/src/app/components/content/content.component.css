@@ -176,7 +176,7 @@ mat-card.cardVideosFirst {
 .btn-upgrade {
   position: fixed;
   right: 12%;
-  top: 11%;
+  top: 11.5%;
   padding: 0.5rem;
   border-radius: 6px;
   z-index: 3;
@@ -400,7 +400,7 @@ div.upgradeContainer {
   justify-content: center;
   border-radius: 6px;
   background-color: rgb(18, 17, 17);
-  width: 24rem;
+  width: 27rem;
   margin: auto;
   margin-top: 3rem;
   padding: 1rem;
