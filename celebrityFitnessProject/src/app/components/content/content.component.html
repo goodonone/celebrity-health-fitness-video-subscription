@@ -3,17 +3,18 @@
 <div class="pageContainer">
   <!-- Upgrade button for Tier Two and Three -->
   <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
+      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]" [class.hidden]="upgradeTimer">Upgrade</button>
   </div>
 
   <!-- Countdown timer for First and Second Tiers -->
-  <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-    {{timerVal}}
+  <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'" [class.hidden]="upgradeTimer">
+    <span class="timer-base">{{timerBase}}</span>
+    <span class="timer-upgrade" [class.fade-out]="upgradeTimer"> Upgrade For Live Access!</span>
   </div>
 
   <!-- Countdown timer for Third Tier -->
   <div class="bannerThirdTier" id="timerTierThree" *ngIf="currentUser.tier === 'All In'">
-    {{timerValThree}}
+    {{timerBase}}
   </div>
 
   <!-- Live Video Div Pops Up When Timer Expires For Highest Tier-->
@@ -59,21 +60,84 @@
       </mat-card>
   </div>
 
+  <!--  -->
 
 <!-- Tier two and three videos -->
-<div class="cardSecondAndThirdTiers">
-  <div class="upgradeContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <div id="fixed">
+<div class="cardSecondAndThirdTiers" #cardSecondAndThirdTiers>
+  <div class="upgradeContainer" [style.display]="upgradeContainerVisible ? 'block' : 'none'" *ngIf="currentUser?.tier === 'Just Looking'">
+      <div id="fixedUpgradeCard">
+        <div class="upgradeVideo">
+          <video class="videoBackground" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
+          loop playsinline muted preload="auto">
+          <source src="assets/Videos/Landing Page Video Colorized.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+          [autoPlay]="true";
+          </video>
+        </div>
+        <div class="upgradeText">
+          <h1 class="upgradeTextHeading">Upgrade For Full Access</h1>
+          <ul class="upgradeTextList">
+            <li>Full Access to ALL of Hugh's Workouts</li>
+            <li>All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh. <br> <span class="spacing"> {{timerBase}} </span></li>
+            <li>Fresh Recipes, added daily!</li>
+            <li>Early Access to New Product Releases</li>
+          </ul>
+        </div>
+        <button class="btn btn-upgradeOnCard" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
       </div>
   </div>
-  
+
   <fieldset [disabled]="currentUser.tier === 'Just Looking'" class="fieldset">
   <div [ngClass]="{'payWall' : currentUser.tier === 'Just Looking' , 'disable' : currentUser.tier === 'Just Looking'}">
   <mat-card class="cardContainerTwo">
       <mat-card-header class="tierTwoThreeHeader">
-          <h1 class="tierName" *ngIf="heading">{{currentUser.tier}}</h1>
-          <h1 class="tierName" *ngIf="!heading">Motivated & All In</h1>
+          <h1 class="tierName" *ngIf="heading && !foundVideos">{{currentUser.tier}}</h1>
+          <h1 class="tierName" *ngIf="!heading && !foundVideos">Motivated & All In</h1>
+          <div class="searchResultsContainer" *ngIf="foundVideos">
+            <h1 class="searchResults">Search</h1>
+            <button mat-button class="btn-back" (click)="goBack()">Go Back</button>
+          </div>
+          
       </mat-card-header>
+      
+      <!-- <div class="searchFormAndButton">
+            <form class="form" *ngIf="viewSearchBar" #form="ngForm" (ngSubmit)="search()">
+                  <input matInput class="formSearch" id="mySearch" name="search" type="input" placeholder="Enter to Search"
+                    aria-label="Search" [(ngModel)]="searchString" (blur)="onSearchBlur()" #searchInput>
+            </form>
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: clamp(20px, 5vw, 30px); height: clamp(20px, 5vw, 30px);" viewBox="0 0 24 24" class="searchIcon" (click)="search()" *ngIf="viewSearchBar" (mousedown)="onMouseDown('search')"
+            (mouseup)="onMouseUp('search')"
+            (mouseleave)="onMouseLeave('search')">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/>
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: clamp(20px, 5vw, 30px); height: clamp(20px, 5vw, 30px);" viewBox="0 0 24 24" class="searchIcon" (click)="search()" *ngIf="!viewSearchBar" (mousedown)="onMouseDown('search')"
+            (mouseup)="onMouseUp('search')"
+            (mouseleave)="onMouseLeave('search')">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/>
+            </svg>
+        <mat-icon *ngIf="viewSearchBar" (click)="search(searchString)" mat-icon>search</mat-icon>
+        <mat-icon (click)="toggleSearch()">search</mat-icon> -->
+      <!-- </div> --> 
+
+      <div class="searchFormAndButton">
+        <form class="form" *ngIf="viewSearchBar" #form="ngForm" (ngSubmit)="search()">
+          <input matInput #searchInput class="formSearch" id="mySearch" name="search" type="input" 
+                 placeholder="Enter to Search" aria-label="Search" 
+                 [(ngModel)]="searchString" (blur)="onSearchBlur()">
+        </form>
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: clamp(20px, 5vw, 30px); height: clamp(20px, 5vw, 30px);" 
+             viewBox="0 0 24 24" class="searchIcon" (click)="handleSearchIconClick()" 
+             (mousedown)="onMouseDown('search')"
+             (mouseup)="onMouseUp('search')"
+             (mouseleave)="onMouseLeave('search')">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="white"/>
+        </svg>
+      </div>
+
+      <div class="tierPage" *ngIf="!foundVideos">
       <div class="toggle-area">
           <div class="toggle">
             <label [ngClass]="{'checked':!checked}" (click)="setChecked(true)">Workouts By Year</label>
@@ -87,27 +151,19 @@
           <mat-card class="contentCardOne flexCards">
               <div class="yearAndRecipes">
                   <h1 class="cardHeaderYear">2023</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                  <button mat-button class="btn-recipes" matTooltip="Demo Only">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <p class="loadingText">Loading...</p>
-                <!-- <div> -->
-                  <!-- <div class="iframe"> -->
                     <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
-                  <!-- </div> -->
-                  <!-- <div > -->
-                    <!-- <h5 class="card-title mb-0"> -->
-                    <!-- </h5> -->
-                  <!-- </div> -->
-                <!-- </div> -->
               </mat-card>
-              <button mat-button class="btn-showMore">Show More Videos</button>
+              <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardTwo flexCards">
               <div class="yearAndRecipes">
                 <h1 class="cardHeaderYear">2022</h1>
-                <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                <button mat-button class="btn-recipes" matTooltip="Demo Only">Fresh Recipes Here</button>
             </div>
             <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
               <div>
@@ -121,13 +177,13 @@
                 </div>
               </div>
             </mat-card>
-              <button mat-button class="btn-showMore">Show More Videos</button>
+              <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardThree flexCards">
               <div class="yearAndRecipes">
                   <h1 class="cardHeaderYear">2021</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                  <button mat-button class="btn-recipes" matTooltip="Demo Only">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel21Videos" class="cardVideosSecondThird">
                 <div>
@@ -141,13 +197,13 @@
                   </div>
                 </div>
               </mat-card>
-              <button mat-button class="btn-showMore">Show More Videos</button>
+              <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardFour flexCards">
               <div class="yearAndRecipes">
                   <h1 class="cardHeaderYear">2020</h1>
-                  <button mat-button class="btn-recipes">Fresh Recipes Here</button>
+                  <button mat-button class="btn-recipes" matTooltip="Demo Only">Fresh Recipes Here</button>
               </div>
               <mat-card *ngFor="let video of channel20Videos" class="cardVideosSecondThird">
                 <div>
@@ -161,7 +217,7 @@
                   </div>
                 </div>
               </mat-card>
-              <button mat-button class="btn-showMore">Show More Videos</button>
+              <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
       </div>
 
@@ -174,7 +230,7 @@
                 <p class="loadingText">Loading...</p>
                     <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
               </mat-card>
-              <button mat-button class="btn-showMore">Show More Videos</button>
+              <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
@@ -185,7 +241,7 @@
                 <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
-          <button mat-button class="btn-showMore">Show More Videos</button>
+          <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
@@ -196,7 +252,7 @@
                 <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
-          <button mat-button class="btn-showMore">Show More Videos</button>
+          <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
 
           <mat-card class="contentCardOne flexCards">
@@ -207,16 +263,32 @@
                 <p class="loadingText">Loading...</p>
                 <iframe  [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
           </mat-card>
-          <button mat-button class="btn-showMore">Show More Videos</button>
+          <button mat-button class="btn-showMore" matTooltip="Demo Only">Show More Videos</button>
           </mat-card>
           
       </div>
 
       </mat-card-content>
+    </div>
+    <div class="searchResults" *ngIf="foundVideos">
+      <router-outlet></router-outlet>
+
+      <div *ngIf="searchResults.length > 0">
+        <h2>Search Results</h2>
+        <div *ngFor="let video of searchResults">
+          <h3>{{ video.snippet.title }}</h3>
+          <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+
   </mat-card>
 </div>
 </fieldset>
 </div>
+
+<!-- Router outlet for the search component -->
+
 
 <div class="actionButtonsContainer">
   <button mat-button class="btn-backToTop" appScrollToTop>&#8682; Back to Top</button>

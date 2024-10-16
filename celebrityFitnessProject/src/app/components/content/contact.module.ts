@@ -5,6 +5,8 @@ import { ContactRoutingModule } from '../contact/contact-routing.module';
 import { ContactComponent } from '../contact/contact.component';
 import { MatCardModule } from '@angular/material/card'
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MaterialModule } from 'src/app/material.module';
 
 
 @NgModule({
@@ -14,8 +16,9 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     ContactRoutingModule,
-    MatCardModule,
-    FormsModule
+    MaterialModule,
+    FormsModule,
+    SharedModule
   ]
 })
 export class ContactModule { }

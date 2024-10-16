@@ -29,7 +29,7 @@ const routes: Routes = [
   { 
     path: "content/:id", 
     loadChildren: () => import('./components/content/content.module').then((m) => m.ContentModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   { 
     path: "profile/:id", 

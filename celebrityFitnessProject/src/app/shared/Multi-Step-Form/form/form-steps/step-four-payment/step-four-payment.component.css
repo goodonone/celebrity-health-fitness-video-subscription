@@ -22,7 +22,7 @@ input {
   color: black;
   background-color: white;
   /* font-size: 0.9rem; */
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
 }
 
 input:focus,

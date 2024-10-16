@@ -21,8 +21,222 @@ a {
   text-align: center;
 }
 
+.timer-upgrade{
+  transition: opacity 0.3s ease-out;
+}
+
+.timer-upgrade.fade-out {
+  opacity: 0;
+}
+
+#fixedUpgradeCard{
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 30rem;
+  max-width: 60rem;
+  height: 100%;
+  min-height: 20rem;
+  max-height: 25rem;
+  margin: auto;
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+// .upgradeVideo{
+  
+// }
+
+.upgradeText {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top:40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  color: white;
+  text-shadow: 0 0 4px #000000;
+  z-index: 2;
+  width: 100%;
+  // margin: auto;
+}
+
+.upgradeTextHeading{
+  font-weight: bold;
+  font-size:3rem;
+  font-weight: 500;;
+  background-color: rgb(0, 0, 0);
+  text-shadow: none;
+  width: fit-content;
+  // padding-bottom: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 0.4rem;
+  // padding-left: 2rem;
+}
+
+.upgradeTextList{
+  font-size: 1.5rem;
+  text-align: left;
+  line-height: 2.5rem;
+  padding-top: 0rem;
+  margin: 0 auto;
+  list-style:inside ;
+  // padding-left: 2rem;
+}
+
+.spacing{
+  padding-left: 2rem;
+}
+
+.upgradeTextList li {
+  color: white; /* Default color is white */
+  animation: colorSwitch 12s infinite; /* Each item follows a repeating animation */
+}
+
+// .upgradeTextList li:nth-child(1) {
+//   animation-delay: 0s;
+// }
+
+// .upgradeTextList li:nth-child(2) {
+//   animation-delay: 2s;
+// }
+
+// .upgradeTextList li:nth-child(3) {
+//   animation-delay: 4s;
+// }
+
+// .upgradeTextList li:nth-child(4) {
+//   animation-delay: 6s;
+// }
+
+.upgradeTextList li:nth-child(1) { animation-delay: 0s; }
+.upgradeTextList li:nth-child(2) { 
+  animation-delay: 2s;
+  animation-name: colorSwitchExtended;
+}
+.upgradeTextList li:nth-child(3) { animation-delay: 6s; }
+.upgradeTextList li:nth-child(4) { animation-delay: 8s; }
+
+@keyframes colorSwitch {
+  0%, 16.67%, 100% { color: white; }
+  8.33%, 16.66% { color: #c7ff20; }
+}
+
+@keyframes colorSwitchExtended {
+  0%, 33.33%, 100% { color: white; }
+  16.67%, 33.32% { color: #c7ff20; }
+}
+
+// @keyframes colorSwitch {
+//   0%, 24% { 
+//     color: white; /* Stay white for the first 24% of the animation */
+//   }
+//   25%, 50% {
+//     color: #c7ff20; /* Change to black instantly at 25% and stay for 25% of the duration */
+//   }
+//   51%, 100% { 
+//     color: white; /* Back to white after the black duration */
+//   }
+// }
+
+// @keyframes colorSwitch {
+//   0%, 20%, 100% { color: white; }
+//   10%, 19.99% { color: #c7ff20; }
+// }
+
+.btn-upgradeOnCard{
+  position: absolute;
+  // right: 12%;
+  // top: 60%;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  border-radius: 6px;
+  z-index: 3;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: white;
+  // border: 1.5px solid rgb(0, 0, 0) !important;
+  width: 20rem;
+
+  animation: buttonColorChange 12s infinite;
+  animation-delay: 10s;
+}
+  // animation-fill-mode: both;
+  // animation-fill-mode: forwards;
+  // animation-iteration-count: 1;
+
+  // @keyframes colorChange {
+  //   0%{
+  //     color: black;
+  //     background-color: white;
+  //   }
+  //   50%{
+  //     color: black;
+  //     background-color: #c7ff20;
+  //   }
+  //   100%{
+  //     color: black;
+  //     background-color: white;
+  //   }
+  // }
+
+//   @keyframes buttonColorChange {
+//     0%, 20%, 100% { 
+//       color: black;
+//       background-color: white;
+//     }
+//     10%, 19.99% {
+//       color: black;
+//       background-color: #c7ff20;
+//     }
+//   }
+// }
+
+@keyframes buttonColorChange {
+  0%, 16.67%, 100% { 
+    color: black;
+    background-color: white;
+  }
+  8.33%, 16.66% {
+    color: black;
+    background-color: #c7ff20;
+  }
+}
+
+.btn-upgradeOnCard:hover{
+  color: black;
+  background-color: #c7ff20;
+}
+
+.searchIcon{
+  color: white;
+  transition: fill 0.3s ease;
+  cursor: pointer
+}
+
+.searchIcon.clicked path:last-child {
+  fill: grey;
+}
+
 .fieldset {
   border: none;
+  z-index: 0;
 }
 
 .pageContainer {
@@ -44,7 +258,14 @@ a {
   width: 100%;
   max-width: 3000px;
   padding-bottom: 1rem;
-  z-index: 2;
+  z-index: 3;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.bannerFirstAndSecondTiers.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .bannerThirdTier {
@@ -55,7 +276,7 @@ a {
   height: 2rem;
   width: 100%;
   padding-bottom: 1rem;
-  z-index: 1;
+  z-index: 2;
 }
 
 div#timer.bannerFirstAndSecondTiers,
@@ -179,11 +400,18 @@ mat-card.cardVideosFirst {
   top: 11.5%;
   padding: 0.5rem;
   border-radius: 6px;
-  z-index: 3;
+  z-index: 5;
   cursor: pointer;
   font-weight: 600;
   background-color: white;
   border: 1.5px solid rgb(0, 0, 0) !important;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.btn-upgrade.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .btn:hover {
@@ -200,10 +428,12 @@ mat-card.cardVideosFirst {
 div.cardSecondAndThirdTiers {
   /* margin-top: 3rem; */
   margin-top: 15rem;
+  // position: relative;
 }
 
 .cardContainerTwo {
   position: relative;
+  min-height: 60vh;
   max-height: fit-content;
   width: 90%;
   max-width: 2000px;
@@ -212,6 +442,11 @@ div.cardSecondAndThirdTiers {
   padding-top: 1rem;
   margin: auto;
   margin-bottom: 10rem;
+
+  &.upgradeBackground{
+    background-color: rgb(215, 214, 214);
+    // background-color: rgb(0, 0, 0);
+  }
 }
 
 .payWall {
@@ -326,6 +561,57 @@ iframe {
   color: white;
 }
 
+// .searchFormAndButton{
+//   // position: absolute;
+//   // top: 4rem;
+//   // right: 1rem;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: flex-end;
+//   width: 100%;
+//   min-width: 20rem;
+//   padding-right: 5rem;
+//   // max-width: 20rem;
+//   // z-index: 1;
+// }
+
+.searchFormAndButton {
+  position: absolute;
+  top: 6rem;
+  right: 4%; /* Adjust this value to move it more to the left */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 20rem; /* Set a fixed width */
+  min-width: 20rem;
+}
+
+.formSearch{
+  margin-right: 0.3rem;
+  margin-top: -0.3rem;
+}
+
+input{
+  // width: 20rem;
+  // display: block;
+  width: 15rem;
+  height: 2rem;
+  font-size: large;
+  font-weight: 400;
+  /* Comment out following text if you want to revert to white background input and select */
+  background-color: rgb(25, 25, 25);
+  border-radius: 6px;
+  border-color: white;
+  border-width: 1px;
+  color: white;
+  padding-left: 0.2rem;
+  // padding-bottom: 0.5rem;
+}
+
+::placeholder{
+  text-align: center;
+}
+
 .tierName {
   color: white;
   font-weight: 500;
@@ -335,6 +621,22 @@ iframe {
   padding-right: 1rem;
   padding-top: 2rem;
   padding-bottom: 0rem;
+
+  &.upgradeTierName{
+    color: rgb(0, 0, 0);
+  }
+}
+
+.searchResults{
+  color: white;
+  font-weight: 500;
+  text-align: left;
+  font-size: 8rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 0rem;
+  // height: fit-content;
 }
 
 .cardHeaderYear,
@@ -371,6 +673,13 @@ div.upgradeContainer {
   flex-direction: row;
   justify-content: space-between;
   z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.upgradeContainer.visible {
+  opacity: 1;
+  display: block;
 }
 
 .smallerFont {
@@ -446,6 +755,17 @@ button.btn-recipes {
   cursor: pointer;
 }
 
+button.btn-back{
+  width: 15rem;
+  background-color: rgb(29, 28, 28);
+  color: white;
+  font-size: larger;
+  margin-left: 3rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  margin-left: 5rem;
+}
+
 button.btn-showMore {
   position: absolute;
   width: 15rem;
@@ -464,7 +784,8 @@ button.btn-showMore {
 }
 
 button.btn-recipes:hover,
-button.btn-showMore:hover {
+button.btn-showMore:hover,
+.btn-back:hover {
   background-color: white;
   color: black;
 }
@@ -660,6 +981,13 @@ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 
 ::ng-deep .mdc-switch.mdc-switch--unselected:disabled .mdc-switch__icon {
   display: none !important;
+}
+
+input[matInput]:focus {
+  border-color: #ffffff !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #ffffff !important; /* Change the text color when focused */
 }
 
 @media screen and (min-width: 500px) and (max-width: 500px) {
