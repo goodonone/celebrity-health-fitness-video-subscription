@@ -1,10 +1,10 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user';
 import { YoutubeService } from '../../services/youtube.service';
-import { BehaviorSubject, debounceTime, Subject } from 'rxjs';
+import { BehaviorSubject, debounceTime, fromEvent, Subject, Subscription, throttleTime } from 'rxjs';
 // import { User } from 'src/app/models/user';
 // import { UserService } from 'src/app/services/user.service';
 
@@ -21,7 +21,11 @@ export class ContentComponent implements OnInit{
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   private scrollSubject = new Subject<void>();
-  private bufferZone = 50;
+  private bufferZone = 100;
+  private scrollSubscription!: Subscription;
+  private ticking = false;
+  private lastKnownScrollPosition = 0;
+
 
   iaVideos: any[] = [];
   ifbVideos: any[] = [];
@@ -66,7 +70,7 @@ export class ContentComponent implements OnInit{
   upgradeTimer$ = this.upgradeTimerSubject.asObservable();
 
   constructor(private youTubeService: YoutubeService, private router: Router, private userService: UserService, private _sanitizer: DomSanitizer, private actRoute: ActivatedRoute, private ngZone: NgZone, private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer) 
+    private sanitizer: DomSanitizer, private renderer: Renderer2) 
     { this.scrollSubject.pipe(
     debounceTime(50) 
   ).subscribe(() => {
@@ -79,22 +83,38 @@ export class ContentComponent implements OnInit{
     this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
-      if(this.currentUser.tier === "Just Looking"){
-        this.toggleHeading();
-        const background = document.querySelector('.cardContainerTwo');
-        background?.classList.add('upgradeBackground');
-        setTimeout(() => {
-          const textColor = document.querySelector('.tierName');
-          textColor?.classList.add('upgradeTierName');
-        }, 0);
-        // const textColor = document.querySelector('.tierName');
-        // textColor?.classList.add('upgradeTierName');
-      }
-      else{
-        const background = document.querySelector('.cardContainerTwo');
-        background?.classList.remove('upgradeBackground');
-        const textColor = document.querySelector('.tierName');
-        textColor?.classList.remove('upgradeTierName');
+      // if(this.currentUser.tier === "Just Looking"){
+      //   this.toggleHeading();
+      //   const background = document.querySelector('.cardContainerTwo');
+      //   background?.classList.add('upgradeBackground');
+      //   const toggleArea = document.querySelector('.toggle-area');
+      //   toggleArea?.classList.add('upgradeToggleArea');
+      //   const buttonRecipes = document.querySelector('.btn-recipes');
+      //   buttonRecipes?.classList.add('upgradeButtonRecipes');
+      //   const showMore = document.querySelector('.btn-showMore');
+      //   showMore?.classList.add('upgradeButtonShowMore');
+      //   setTimeout(() => {
+      //     const textColor = document.querySelector('.tierName');
+      //     textColor?.classList.add('upgradeTierName');
+      //   }, 0);
+      // }
+      // else{
+      //   const background = document.querySelector('.cardContainerTwo');
+      //   background?.classList.remove('upgradeBackground');
+      //   const textColor = document.querySelector('.tierName');
+      //   textColor?.classList.remove('upgradeTierName');
+      //   const toggleArea = document.querySelector('.toggle-area');
+      //   toggleArea?.classList.remove('upgradeToggleArea');
+      //   const buttonRecipes = document.querySelector('.btn-recipes');
+      //   buttonRecipes?.classList.remove('upgradeButtonRecipes');
+      //   const showMore = document.querySelector('.btn-showMore');
+      //   showMore?.classList.remove('upgradeButtonShowMore'); 
+
+      // }
+      if (this.currentUser.tier === "Just Looking") {
+        this.applyJustLookingStyles();
+      } else {
+        this.removeJustLookingStyles();
       }
     });
     this.startCountDown();
@@ -104,15 +124,38 @@ export class ContentComponent implements OnInit{
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
+
+    this.initScrollHandler();
   }
   
   ngAfterViewInit() {
     this.checkScrollPosition();
   }
 
+  ngOnDestroy(): void {
+    if (this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
+  }
+
   @HostListener('window:scroll', ['$event'])
   onWindowScroll() {
     this.scrollSubject.next();
+  }
+
+  private initScrollHandler(): void {
+    this.scrollSubscription = fromEvent(window, 'scroll')
+      .pipe(throttleTime(16)) // ~60fps
+      .subscribe(() => {
+        this.lastKnownScrollPosition = window.scrollY;
+        if (!this.ticking) {
+          window.requestAnimationFrame(() => {
+            this.checkScrollPosition();
+            this.ticking = false;
+          });
+          this.ticking = true;
+        }
+      });
   }
 
   get upgradeTimer(): boolean {
@@ -139,25 +182,48 @@ export class ContentComponent implements OnInit{
   //   }
   // }
 
-  checkScrollPosition() {
-    if(this.currentUser.tier === "Just Looking") {
-    const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-    if (!banner) return;
+  // checkScrollPosition() {
+  //   if(this.currentUser.tier === "Just Looking") {
+  //   const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
+  //   if (!banner) return;
 
-    const bannerRect = banner.getBoundingClientRect();
-    const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
+  //   const bannerRect = banner.getBoundingClientRect();
+  //   const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
 
-    if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
-      if (!this.upgradeTimer) {
-        this.upgradeTimer = true;
-        this.showUpgradeContainer();
+  //   if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
+  //     if (!this.upgradeTimer) {
+  //       this.upgradeTimer = true;
+  //       this.showUpgradeContainer();
+  //     }
+  //   } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
+  //     if (this.upgradeTimer) {
+  //       this.upgradeTimer = false;
+  //       this.hideUpgradeContainer();
+  //     }
+  //   }
+  //   }
+  // }
+
+  private checkScrollPosition(): void {
+    if (this.currentUser.tier === "Just Looking") {
+      const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
+      const card = this.cardSecondAndThirdTiers.nativeElement;
+      if (!banner || !card) return;
+
+      const bannerRect = banner.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+
+      if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
+        if (!this.upgradeTimer) {
+          this.upgradeTimer = true;
+          this.showUpgradeContainer();
+        }
+      } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
+        if (this.upgradeTimer) {
+          this.upgradeTimer = false;
+          this.hideUpgradeContainer();
+        }
       }
-    } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
-      if (this.upgradeTimer) {
-        this.upgradeTimer = false;
-        this.hideUpgradeContainer();
-      }
-    }
     }
   }
 
@@ -204,6 +270,36 @@ export class ContentComponent implements OnInit{
         this.cdr.detectChanges();
       }, 300);
     }
+  }
+
+  private applyJustLookingStyles(): void {
+    this.toggleHeading();
+    this.addClassToElements('.cardContainerTwo', 'upgradeBackground');
+    this.addClassToElements('.toggle-area', 'upgradeToggleArea');
+    this.addClassToElements('.btn-recipes', 'upgradeButtonRecipes');
+    this.addClassToElements('.btn-showMore', 'upgradeButtonShowMore');
+    
+    setTimeout(() => {
+      this.addClassToElements('.tierName', 'upgradeTierName');
+    }, 0);
+  }
+
+  private removeJustLookingStyles(): void {
+    this.removeClassFromElements('.cardContainerTwo', 'upgradeBackground');
+    this.removeClassFromElements('.toggle-area', 'upgradeToggleArea');
+    this.removeClassFromElements('.btn-recipes', 'upgradeButtonRecipes');
+    this.removeClassFromElements('.btn-showMore', 'upgradeButtonShowMore');
+    this.removeClassFromElements('.tierName', 'upgradeTierName');
+  }
+
+  private addClassToElements(selector: string, className: string): void {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => this.renderer.addClass(el, className));
+  }
+
+  private removeClassFromElements(selector: string, className: string): void {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => this.renderer.removeClass(el, className));
   }
 
   // startCountDownTierOneTwo() {
@@ -659,7 +755,10 @@ export class ContentComponent implements OnInit{
               return item;
             });
           },
-          (error: any) => console.error('Error searching videos:', error)
+          error => {
+          console.error('Error searching videos:', error)
+          this.searchResults = [];
+          }
         );
         this.resetSearchTimeout();
       }

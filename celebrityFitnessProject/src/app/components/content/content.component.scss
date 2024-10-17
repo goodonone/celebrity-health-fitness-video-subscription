@@ -51,6 +51,7 @@ a {
   background-color: white;
   border-radius: 1rem;
   overflow: hidden;
+  opacity: 0.9;
 }
 
 // .upgradeVideo{
@@ -176,6 +177,12 @@ a {
 
   animation: buttonColorChange 12s infinite;
   animation-delay: 10s;
+
+  &:hover {
+    color: black !important;
+    background-color: #c7ff20 !important;
+    // Add !important to override animation styles
+  }
 }
   // animation-fill-mode: both;
   // animation-fill-mode: forwards;
@@ -219,10 +226,10 @@ a {
   }
 }
 
-.btn-upgradeOnCard:hover{
-  color: black;
-  background-color: #c7ff20;
-}
+// .btn-upgradeOnCard:hover{
+//   color: black;
+//   background-color: #c7ff20;
+// }
 
 .searchIcon{
   color: white;
@@ -396,7 +403,7 @@ mat-card.cardVideosFirst {
 
 .btn-upgrade {
   position: fixed;
-  right: 12%;
+  right: 11.5%;
   top: 11.5%;
   padding: 0.5rem;
   border-radius: 6px;
@@ -713,6 +720,10 @@ div.upgradeContainer {
   margin: auto;
   margin-top: 3rem;
   padding: 1rem;
+
+  &.upgradeToggleArea{
+    background-color: rgb(215, 214, 214);
+  }
 }
 
 .toggle {
@@ -753,6 +764,11 @@ button.btn-recipes {
   margin-left: 3rem;
   margin-top: 2rem;
   cursor: pointer;
+
+  &.upgradeButtonRecipes{
+    background-color: rgb(215, 214, 214);
+    color: black;
+  }
 }
 
 button.btn-back{
@@ -777,6 +793,11 @@ button.btn-showMore {
   bottom: 2rem;
   left: 50%;
   transform: translate(-50%, 50%);
+
+  &.upgradeButtonShowMore{
+    background-color: rgb(215, 214, 214);
+    color: black;
+  }
 }
 
 .disable {

@@ -280,6 +280,14 @@
           <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
+
+      <div *ngIf="searchResults.length === 0">
+        <p>No videos found for your search. Please try different keywords.</p>
+      </div>
+
+      <!-- <ng-template #noResults>
+        <p>No videos found for your search. Please try different keywords.</p>
+      </ng-template> -->
     </div>
 
   </mat-card>
