@@ -65,7 +65,8 @@
 <!-- Tier two and three videos -->
 <div class="cardSecondAndThirdTiers" #cardSecondAndThirdTiers>
   <div class="upgradeContainer" [style.display]="upgradeContainerVisible ? 'block' : 'none'" *ngIf="currentUser?.tier === 'Just Looking'">
-      <div id="fixedUpgradeCard">
+    <div class="backgroundCard"></div>  
+    <div id="fixedUpgradeCard">
         <div class="upgradeVideo">
           <video class="videoBackground" id="videoBanner" width="100%" oncanplay="this.play()" onloadedmetadata="this.muted = true" autoplay
           loop playsinline muted preload="auto">
@@ -77,10 +78,10 @@
         <div class="upgradeText">
           <h1 class="upgradeTextHeading">Upgrade For Full Access</h1>
           <ul class="upgradeTextList">
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Full Access to ALL of Hugh's Workouts</li>
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh <br> <span class="spacing"> {{timerBase}} </span></li>
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Fresh Recipes, added daily!</li>
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Early Access to New Product Releases</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Full Access to ALL of Hugh's Workouts</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh <br> <span class="spacing"> {{timerBase}} </span></li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Fresh Recipes, added daily!</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Early Access to New Product Releases</li>
           </ul>
         </div>
         <button class="btn btn-upgradeOnCard" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
