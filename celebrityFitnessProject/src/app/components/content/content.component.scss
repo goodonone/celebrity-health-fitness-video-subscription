@@ -85,6 +85,8 @@ a {
   // padding-bottom: 1rem;
   margin-top: 2rem;
   padding: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   border-radius: 0.4rem;
   // padding-left: 2rem;
 }
@@ -95,17 +97,62 @@ a {
   line-height: 2.5rem;
   padding-top: 0rem;
   margin: 0 auto;
-  list-style:inside ;
+  list-style:none ;
+  // padding-left: 1rem;
   // padding-left: 2rem;
 }
 
-.spacing{
-  padding-left: 2rem;
+// .spacing{
+//   padding-left: 5rem;
+// }
+
+// .spacing:before{
+//   border: #000000 1px solid;
+//   width: 100%;
+// }
+
+// .spacing:after{
+//   border: #000000 1px solid;
+//   width: 100%;
+// }
+
+// .spacing {
+//   // padding-left: 5rem;
+//   margin-right: auto;
+//   margin-left: auto;
+//   position: relative;
+//   display: inline-block;
+// }
+
+.spacing {
+  // padding-left: 5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
+  background-color: rgb(255, 255, 255);
+  text-shadow: none;
+  color: black;
+  font-weight: 600;
+  margin: 0 auto;
+  // color: black
 }
+
+// .spacing:before,
+// .spacing:after {
+//   content: "";
+//   display: inline-block;
+//   width: 50px;
+//   height: 2px;
+//   background-color: #ffffff;
+//   margin: 0 20px;
+// }
 
 .upgradeTextList li {
   color: white; /* Default color is white */
-  animation: colorSwitch 12s infinite; /* Each item follows a repeating animation */
+  animation: colorSwitch 10s infinite; /* Each item follows a repeating animation */
 }
 
 // .upgradeTextList li:nth-child(1) {
@@ -125,22 +172,30 @@ a {
 // }
 
 .upgradeTextList li:nth-child(1) { animation-delay: 0s; }
-.upgradeTextList li:nth-child(2) { 
-  animation-delay: 2s;
-  animation-name: colorSwitchExtended;
-}
-.upgradeTextList li:nth-child(3) { animation-delay: 6s; }
-.upgradeTextList li:nth-child(4) { animation-delay: 8s; }
+.upgradeTextList li:nth-child(2) { animation-delay: 2s; }
+.upgradeTextList li:nth-child(3) { animation-delay: 4s; }
+.upgradeTextList li:nth-child(4) { animation-delay: 6s; }
 
 @keyframes colorSwitch {
-  0%, 16.67%, 100% { color: white; }
-  8.33%, 16.66% { color: #c7ff20; }
+  0%, 20%, 100% { color: white; }
+  10%, 19.99% { color: #c7ff20; }
 }
 
-@keyframes colorSwitchExtended {
-  0%, 33.33%, 100% { color: white; }
-  16.67%, 33.32% { color: #c7ff20; }
-}
+
+// @keyframes colorSwitch {
+//   0%, 16.67%, 100% { color: white; }
+//   8.33%, 16.66% { color: #c7ff20; }
+// }
+
+// @keyframes colorSwitchExtended {
+//   0%, 33.33%, 100% { color: white; }
+//   16.67%, 33.32% { color: #c7ff20; }
+// }
+
+// @keyframes lineColorSwitch {
+//   0%, 33.33%, 100% { background-color: white; }
+//   16.67%, 33.32% { background-color: #c7ff20; }
+// }
 
 // @keyframes colorSwitch {
 //   0%, 24% { 
@@ -159,6 +214,11 @@ a {
 //   10%, 19.99% { color: #c7ff20; }
 // }
 
+.plusIcon{
+  filter: drop-shadow(0 0 1.2px #000000);
+  font-size: 1.2rem;
+}
+
 .btn-upgradeOnCard{
   position: absolute;
   // right: 12%;
@@ -173,10 +233,12 @@ a {
   font-weight: 600;
   background-color: white;
   // border: 1.5px solid rgb(0, 0, 0) !important;
-  width: 20rem;
+  width: 15rem;
+  // height: 2.5rem;
+  font-size: 1rem;
 
-  animation: buttonColorChange 12s infinite;
-  animation-delay: 10s;
+  animation: buttonColorChange 10s infinite;
+  animation-delay: 8s;
 
   &:hover {
     color: black !important;
@@ -216,11 +278,11 @@ a {
 // }
 
 @keyframes buttonColorChange {
-  0%, 16.67%, 100% { 
+  0%, 20%, 100% { 
     color: black;
     background-color: white;
   }
-  8.33%, 16.66% {
+  10%, 19.99% {
     color: black;
     background-color: #c7ff20;
   }
@@ -451,7 +513,7 @@ div.cardSecondAndThirdTiers {
   margin-bottom: 10rem;
 
   &.upgradeBackground{
-    background-color: rgb(215, 214, 214);
+    background-color: white
     // background-color: rgb(0, 0, 0);
   }
 }
@@ -722,7 +784,7 @@ div.upgradeContainer {
   padding: 1rem;
 
   &.upgradeToggleArea{
-    background-color: rgb(215, 214, 214);
+    background-color: white
   }
 }
 

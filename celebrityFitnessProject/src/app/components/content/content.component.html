@@ -60,7 +60,7 @@
       </mat-card>
   </div>
 
-  <!--  -->
+  <!--  --><fa-icon [icon]="['fas', 'plus']"></fa-icon>
 
 <!-- Tier two and three videos -->
 <div class="cardSecondAndThirdTiers" #cardSecondAndThirdTiers>
@@ -77,10 +77,10 @@
         <div class="upgradeText">
           <h1 class="upgradeTextHeading">Upgrade For Full Access</h1>
           <ul class="upgradeTextList">
-            <li>Full Access to ALL of Hugh's Workouts</li>
-            <li>All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh. <br> <span class="spacing"> {{timerBase}} </span></li>
-            <li>Fresh Recipes, added daily!</li>
-            <li>Early Access to New Product Releases</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Full Access to ALL of Hugh's Workouts</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh <br> <span class="spacing"> {{timerBase}} </span></li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Fresh Recipes, added daily!</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> Early Access to New Product Releases</li>
           </ul>
         </div>
         <button class="btn btn-upgradeOnCard" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
@@ -95,7 +95,7 @@
           <h1 class="tierName" *ngIf="!heading && !foundVideos">Motivated & All In</h1>
           <div class="searchResultsContainer" *ngIf="foundVideos">
             <h1 class="searchResults">Search</h1>
-            <button mat-button class="btn-back" (click)="goBack()">Go Back</button>
+            <button mat-button class="btn-back" (click)="goBack()">All Workouts</button>
           </div>
           
       </mat-card-header>
