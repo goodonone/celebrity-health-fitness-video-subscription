@@ -6,7 +6,6 @@ import { ContentComponent } from './content.component';
 import { MaterialModule } from 'src/app/material.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-
 @NgModule({
   declarations: [
     ContentComponent,
@@ -15,7 +14,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     CommonModule,
     ContentRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule,
   ]
 })
 export class ContentModule { }

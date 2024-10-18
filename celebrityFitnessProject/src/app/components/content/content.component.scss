@@ -21,8 +21,319 @@ a {
   text-align: center;
 }
 
+.timer-upgrade{
+  transition: opacity 0.3s ease-out;
+}
+
+.timer-upgrade.fade-out {
+  opacity: 0;
+}
+
+#fixedUpgradeCard{
+  position: fixed;
+  // display: flex;
+  // flex-direction: row;
+  // flex-direction: column;
+  // width: 100%;
+  // height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 30rem;
+  max-width: 60rem;
+  height: 100%;
+  min-height: 20rem;
+  max-height: 25rem;
+  margin: auto;
+  background-color: transparent;
+  border-radius: 1rem;
+  overflow: hidden;
+  opacity: 0.9;
+}
+
+// .upgradeVideo{
+  
+// }
+
+// .backgroundCard{
+//   background-color: black;
+//   opacity: 1;
+//   position: fixed;
+//   display: flex;
+//   flex-direction: column;
+//   width: 100%;
+//   max-width: 36.5rem;
+//   height: 100%;
+//   max-height: 14rem;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   z-index: 2;
+//   border-radius: 0.6rem;
+// }
+
+.upgradeText {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top:40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  color: white;
+  text-shadow: 0 0 4px #000000;
+  z-index: 3;
+  width: 100%;
+  // opacity: 0.6;
+  // margin: auto;
+}
+
+.upgradeTextHeading{
+  font-weight: bold;
+  font-size:2.5rem;
+  font-weight: 600;;
+  background-color: rgb(255, 255, 255);
+  color: black;
+  text-shadow: none;
+  width: fit-content;
+  // padding-bottom: 1rem;
+  margin-top: 2rem;
+  // padding: 1rem;
+  padding-top: 1.2rem;
+  padding-bottom: 0.9rem;
+  padding-left: 4.6rem;
+  padding-right: 4.6rem;
+  border-radius: 0.4rem;
+  // padding-left: 2rem;
+}
+
+.upgradeTextList{
+  font-size: 1.5rem;
+  text-align: left;
+  line-height: 2.5rem;
+  padding-top: 0rem;
+  padding-bottom: 1rem;
+  margin: 0 auto;
+  list-style:none;
+  z-index: 100;
+  // background-color: black;
+  // padding: 0.5rem;
+  // border-radius: 0.5rem;
+  // opacity: 0.6
+  // padding-left: 1rem;
+  // padding-left: 2rem;
+}
+
+// .spacing{
+//   padding-left: 5rem;
+// }
+
+// .spacing:before{
+//   border: #000000 1px solid;
+//   width: 100%;
+// }
+
+// .spacing:after{
+//   border: #000000 1px solid;
+//   width: 100%;
+// }
+
+// .spacing {
+//   // padding-left: 5rem;
+//   margin-right: auto;
+//   margin-left: auto;
+//   position: relative;
+//   display: inline-block;
+// }
+
+.spacing {
+  // padding-left: 5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
+  background-color: rgb(255, 255, 255);
+  text-shadow: none;
+  color: black;
+  font-weight: 600;
+  margin: 0 auto;
+  // color: black
+}
+
+// .spacing:before,
+// .spacing:after {
+//   content: "";
+//   display: inline-block;
+//   width: 50px;
+//   height: 2px;
+//   background-color: #ffffff;
+//   margin: 0 20px;
+// }
+
+.upgradeTextList li {
+  color: white; /* Default color is white */
+  animation: colorSwitch 10s infinite; /* Each item follows a repeating animation */
+}
+
+// .upgradeTextList li:nth-child(1) {
+//   animation-delay: 0s;
+// }
+
+// .upgradeTextList li:nth-child(2) {
+//   animation-delay: 2s;
+// }
+
+// .upgradeTextList li:nth-child(3) {
+//   animation-delay: 4s;
+// }
+
+// .upgradeTextList li:nth-child(4) {
+//   animation-delay: 6s;
+// }
+
+.upgradeTextList li:nth-child(1) { animation-delay: 0s; }
+.upgradeTextList li:nth-child(2) { animation-delay: 2s; }
+.upgradeTextList li:nth-child(3) { animation-delay: 4s; }
+.upgradeTextList li:nth-child(4) { animation-delay: 6s; }
+
+@keyframes colorSwitch {
+  0%, 20%, 100% { color: white; }
+  10%, 19.99% { color: #c7ff20; }
+}
+
+
+// @keyframes colorSwitch {
+//   0%, 16.67%, 100% { color: white; }
+//   8.33%, 16.66% { color: #c7ff20; }
+// }
+
+// @keyframes colorSwitchExtended {
+//   0%, 33.33%, 100% { color: white; }
+//   16.67%, 33.32% { color: #c7ff20; }
+// }
+
+// @keyframes lineColorSwitch {
+//   0%, 33.33%, 100% { background-color: white; }
+//   16.67%, 33.32% { background-color: #c7ff20; }
+// }
+
+// @keyframes colorSwitch {
+//   0%, 24% { 
+//     color: white; /* Stay white for the first 24% of the animation */
+//   }
+//   25%, 50% {
+//     color: #c7ff20; /* Change to black instantly at 25% and stay for 25% of the duration */
+//   }
+//   51%, 100% { 
+//     color: white; /* Back to white after the black duration */
+//   }
+// }
+
+// @keyframes colorSwitch {
+//   0%, 20%, 100% { color: white; }
+//   10%, 19.99% { color: #c7ff20; }
+// }
+
+.plusIcon{
+  filter: drop-shadow(0 0 1.2px #000000);
+  font-size: 1.2rem;
+}
+
+.btn-upgradeOnCard{
+  position: absolute;
+  // right: 12%;
+  // top: 60%;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  border-radius: 6px;
+  z-index: 3;
+  cursor: pointer;
+  font-weight: 600;
+  background-color: white;
+  // border: 1.5px solid rgb(0, 0, 0) !important;
+  width: 15rem;
+  height: 2.5rem;
+  font-size: 1.1rem;
+
+  animation: buttonColorChange 10s infinite;
+  animation-delay: 8s;
+
+  &:hover {
+    color: black !important;
+    background-color: #c7ff20 !important;
+    // Add !important to override animation styles
+  }
+}
+  // animation-fill-mode: both;
+  // animation-fill-mode: forwards;
+  // animation-iteration-count: 1;
+
+  // @keyframes colorChange {
+  //   0%{
+  //     color: black;
+  //     background-color: white;
+  //   }
+  //   50%{
+  //     color: black;
+  //     background-color: #c7ff20;
+  //   }
+  //   100%{
+  //     color: black;
+  //     background-color: white;
+  //   }
+  // }
+
+//   @keyframes buttonColorChange {
+//     0%, 20%, 100% { 
+//       color: black;
+//       background-color: white;
+//     }
+//     10%, 19.99% {
+//       color: black;
+//       background-color: #c7ff20;
+//     }
+//   }
+// }
+
+@keyframes buttonColorChange {
+  0%, 20%, 100% { 
+    color: black;
+    background-color: white;
+  }
+  10%, 19.99% {
+    color: black;
+    background-color: #c7ff20;
+  }
+}
+
+// .btn-upgradeOnCard:hover{
+//   color: black;
+//   background-color: #c7ff20;
+// }
+
+.searchIcon{
+  color: white;
+  transition: fill 0.3s ease;
+  cursor: pointer
+}
+
+.searchIcon.clicked path:last-child {
+  fill: grey;
+}
+
 .fieldset {
   border: none;
+  z-index: 0;
 }
 
 .pageContainer {
@@ -44,7 +355,14 @@ a {
   width: 100%;
   max-width: 3000px;
   padding-bottom: 1rem;
-  z-index: 2;
+  z-index: 3;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.bannerFirstAndSecondTiers.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .bannerThirdTier {
@@ -55,7 +373,7 @@ a {
   height: 2rem;
   width: 100%;
   padding-bottom: 1rem;
-  z-index: 1;
+  z-index: 2;
 }
 
 div#timer.bannerFirstAndSecondTiers,
@@ -175,15 +493,22 @@ mat-card.cardVideosFirst {
 
 .btn-upgrade {
   position: fixed;
-  right: 12%;
-  top: 11%;
+  right: 11.5%;
+  top: 11.5%;
   padding: 0.5rem;
   border-radius: 6px;
-  z-index: 3;
+  z-index: 5;
   cursor: pointer;
   font-weight: 600;
   background-color: white;
   border: 1.5px solid rgb(0, 0, 0) !important;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.btn-upgrade.hidden {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
 }
 
 .btn:hover {
@@ -200,10 +525,12 @@ mat-card.cardVideosFirst {
 div.cardSecondAndThirdTiers {
   /* margin-top: 3rem; */
   margin-top: 15rem;
+  // position: relative;
 }
 
 .cardContainerTwo {
   position: relative;
+  min-height: 60vh;
   max-height: fit-content;
   width: 90%;
   max-width: 2000px;
@@ -212,6 +539,11 @@ div.cardSecondAndThirdTiers {
   padding-top: 1rem;
   margin: auto;
   margin-bottom: 10rem;
+
+  &.upgradeBackground{
+    background-color: white
+    // background-color: rgb(0, 0, 0);
+  }
 }
 
 .payWall {
@@ -326,6 +658,58 @@ iframe {
   color: white;
 }
 
+// .searchFormAndButton{
+//   // position: absolute;
+//   // top: 4rem;
+//   // right: 1rem;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: flex-end;
+//   width: 100%;
+//   min-width: 20rem;
+//   padding-right: 5rem;
+//   // max-width: 20rem;
+//   // z-index: 1;
+// }
+
+.searchFormAndButton {
+  position: absolute;
+  top: 6rem;
+  right: 4%; /* Adjust this value to move it more to the left */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 20rem; /* Set a fixed width */
+  min-width: 20rem;
+}
+
+.formSearch{
+  margin-right: 0.3rem;
+  margin-top: -0.3rem;
+}
+
+input{
+  // width: 20rem;
+  // display: block;
+  width: 15rem;
+  height: 2rem;
+  font-size: large;
+  font-weight: 400;
+  /* Comment out following text if you want to revert to white background input and select */
+  background-color: rgb(25, 25, 25);
+  border-radius: 6px;
+  border-color: white;
+  border-width: 1px;
+  color: white;
+  padding-left: 0.5rem;
+  text-overflow: ellipsis;
+  // padding-bottom: 0.5rem;
+}
+
+::placeholder{
+  text-align: center;
+}
+
 .tierName {
   color: white;
   font-weight: 500;
@@ -335,6 +719,22 @@ iframe {
   padding-right: 1rem;
   padding-top: 2rem;
   padding-bottom: 0rem;
+
+  &.upgradeTierName{
+    color: rgb(0, 0, 0);
+  }
+}
+
+.searchResults{
+  color: white;
+  font-weight: 500;
+  text-align: left;
+  font-size: 8rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 0rem;
+  // height: fit-content;
 }
 
 .cardHeaderYear,
@@ -362,15 +762,24 @@ div.upgradeContainer {
 
 .upgradeContainer {
   display: flex;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   position: absolute;
-  padding-top: 0.2%;
+  // padding-top: 0.2%;
   top: 250;
   right: 4%;
-  width: 25rem;
+  width: 100%;
+  height: 100%;
+  // width: 25rem;
   flex-direction: row;
-  justify-content: space-between;
+  // justify-content: space-between;
   z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.upgradeContainer.visible {
+  opacity: 1;
+  display: block;
 }
 
 .smallerFont {
@@ -400,10 +809,14 @@ div.upgradeContainer {
   justify-content: center;
   border-radius: 6px;
   background-color: rgb(18, 17, 17);
-  width: 24rem;
+  width: 27rem;
   margin: auto;
   margin-top: 3rem;
   padding: 1rem;
+
+  &.upgradeToggleArea{
+    background-color: white
+  }
 }
 
 .toggle {
@@ -444,6 +857,22 @@ button.btn-recipes {
   margin-left: 3rem;
   margin-top: 2rem;
   cursor: pointer;
+
+  &.upgradeButtonRecipes{
+    background-color: rgb(215, 214, 214);
+    color: black;
+  }
+}
+
+button.btn-back{
+  width: 15rem;
+  background-color: rgb(29, 28, 28);
+  color: white;
+  font-size: larger;
+  margin-left: 3rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  margin-left: 5rem;
 }
 
 button.btn-showMore {
@@ -457,6 +886,11 @@ button.btn-showMore {
   bottom: 2rem;
   left: 50%;
   transform: translate(-50%, 50%);
+
+  &.upgradeButtonShowMore{
+    background-color: rgb(215, 214, 214);
+    color: black;
+  }
 }
 
 .disable {
@@ -464,7 +898,8 @@ button.btn-showMore {
 }
 
 button.btn-recipes:hover,
-button.btn-showMore:hover {
+button.btn-showMore:hover,
+.btn-back:hover {
   background-color: white;
   color: black;
 }
@@ -646,6 +1081,45 @@ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 } */
 
+.spinner {
+  width: 100px;
+  height: 100px;
+  animation: rotate 2s linear infinite;
+}
+
+.spinner .path {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+.spinner-text {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
 ::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-unchecked .mdc-switch__track::after {
     background-color: rgb(46, 46, 46) !important;
   }
@@ -660,6 +1134,13 @@ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 
 ::ng-deep .mdc-switch.mdc-switch--unselected:disabled .mdc-switch__icon {
   display: none !important;
+}
+
+input[matInput]:focus {
+  border-color: #ffffff !important; /* Change the border color when focused */
+  outline: none; /* Remove the default outline */
+  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+  color: #ffffff !important; /* Change the text color when focused */
 }
 
 @media screen and (min-width: 500px) and (max-width: 500px) {

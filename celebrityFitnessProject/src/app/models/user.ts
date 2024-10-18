@@ -18,6 +18,8 @@ export class User {
         x: number;
         y: number;
     } | null;
+    resetPasswordToken?: string | null;
+    resetPasswordExpires?: Date | null;
     createdAt?: Date;
     updatedAt?: Date;
 
@@ -42,6 +44,8 @@ constructor(
             x: number;
             y: number;
         } | null,
+        resetPasswordToken?: string | null,
+        resetPasswordExpires?: Date | null,
         createdAt?: Date,
         updatedAt?: Date,
         )
@@ -61,9 +65,12 @@ constructor(
         this.imgUrl = imgUrl;
         this.isGoogleAuth = isGoogleAuth;
         this.profilePictureSettings = profilePictureSettings;
+        this.resetPasswordToken = resetPasswordToken;
+        this.resetPasswordExpires = resetPasswordExpires;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
     
 }
 

@@ -74,7 +74,7 @@ mat-card {
   border-radius: 1rem;
   padding: 1rem;
   box-sizing: border-box;
-  aspect-ratio: 1/1;
+  /* aspect-ratio: 1/1; */
 }
 
 form{
@@ -114,6 +114,7 @@ input:valid {
   display: flex;
   justify-content: space-between;
   width: 15.437rem;
+  height: 1.1rem;
 }
 
 .btn {

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { carouselImage } from 'src/app/components/home/carousel/carousel.component';
 import { UserService } from 'src/app/services/user.service';
@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   userIsLoggedIn: boolean = false;
   // UserId: string = '';
 
+  constructor(private router: Router, private userService: UserService, private cdr: ChangeDetectorRef){}
 
   videos = [
     { videoSrc: "/assets/Videos/Man Video One.mp4" }, { videoSrc: "/assets/Videos/Man Video Two.mp4" },
@@ -104,6 +105,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.cdr.detectChanges();
+
     this.UpdateStatus();
     
     this.userService.isLoggedIn$.subscribe(status => {
@@ -121,9 +124,6 @@ ngAfterViewInit(): void {
       });
     }
   }
-
-
-  constructor(private router: Router, private userService: UserService){}
 
   // Navbar color effect on scroll when navbar is above specific divs (which share navbar color)
   @HostListener('window:scroll', [])

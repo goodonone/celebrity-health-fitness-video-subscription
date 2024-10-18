@@ -8,8 +8,8 @@ import { AuthGuard } from './auth.guard';
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "home", component: HomeComponent },
-  { path: "search/?:query", component: NotFoundComponent },
-  { path: "search", component: SearchComponent },
+  { path: "search/?:query", component: NotFoundComponent, canActivate: [AuthGuard] },
+  { path: "search", component: SearchComponent, canActivate: [AuthGuard] },
   {
     path: "about",
     loadChildren: () => import('./components/about/about.module').then((m) => m.AboutModule),
@@ -29,7 +29,7 @@ const routes: Routes = [
   { 
     path: "content/:id", 
     loadChildren: () => import('./components/content/content.module').then((m) => m.ContentModule),
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   { 
     path: "profile/:id", 
@@ -67,6 +67,10 @@ const routes: Routes = [
   },
   {
     path: "reset-password", 
+    loadChildren: () => import('./components/reset-password/reset-password.module').then(m => m.ResetPasswordModule)
+  },
+  {
+    path: "reset-password/:token", 
     loadChildren: () => import('./components/reset-password/reset-password.module').then(m => m.ResetPasswordModule) },
   { 
     path: "**", component: NotFoundComponent 

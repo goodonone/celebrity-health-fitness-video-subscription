@@ -342,4 +342,12 @@ setGoogleAuthEnabled(value: boolean) {
 //   return this.http.get<{ x: number, y: number }>(`/api/user/${userId}/profile-picture-position`);
 // }
 
+requestPasswordReset(email: string): Observable<any> {
+  return this.http.post(`${this.baseURL}/request-reset`, { email });
+}
+
+resetPassword(token: string, newPassword: string): Observable<any> {
+  return this.http.post(`${this.baseURL}/reset-password/${token}`, { password: newPassword });
+}
+
 }

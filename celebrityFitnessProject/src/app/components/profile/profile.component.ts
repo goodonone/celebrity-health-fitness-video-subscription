@@ -87,6 +87,7 @@ export class ProfileComponent implements OnInit {
   isWaitingToCheck = false;
   isInClicked = false;
   isOutClicked = false;
+  isResetClicked = false;
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
@@ -439,6 +440,10 @@ export class ProfileComponent implements OnInit {
       this.isInClicked = true;
       const plusIcon = document.querySelector('.zoomIn');
       plusIcon?.classList.add('clicked');
+    } else if (button === 'reset') {
+      this.isResetClicked = true;
+    const reset = document.querySelector('.reset');
+    reset?.classList.add('clicked');
     }
   }
   
@@ -459,6 +464,10 @@ export class ProfileComponent implements OnInit {
       this.isInClicked = false;
       const plusIcon = document.querySelector('.zoomIn');
       plusIcon?.classList.remove('clicked');
+    } else if (button === 'reset') {
+      this.isResetClicked = false;
+      const reset = document.querySelector('.reset');
+      reset?.classList.remove('clicked');
     }
   }
 
@@ -778,6 +787,33 @@ export class ProfileComponent implements OnInit {
 
         this.updateFormWithUserData();
 
+        // Reset position and zoom to saved settings
+        if (typeof this.currentUser.profilePictureSettings === 'string') {
+          try {
+            this.currentUser.profilePictureSettings = JSON.parse(this.currentUser.profilePictureSettings);
+          } catch (e) {
+            console.error('Error parsing profilePictureSettings:', e);
+            this.currentUser.profilePictureSettings = null;
+          }
+        }
+
+        if (this.currentUser.profilePictureSettings) {
+          this.position = {
+            x: this.currentUser.profilePictureSettings.x || 0,
+            y: this.currentUser.profilePictureSettings.y || 0
+          };
+          this.zoomLevel = this.currentUser.profilePictureSettings.zoom || 1;
+          this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+        } else {
+          this.position = { x: 0, y: 0 };
+          this.zoomLevel = 1;
+          this.isDragged = false;
+        }
+
+        // Update the image transform
+        this.updateImageTransform();
+        this.cdr.detectChanges();
+
         if (this.currentUser.height) {
           this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
         }
@@ -809,8 +845,6 @@ export class ProfileComponent implements OnInit {
         // this.loadingComplete = true;
         const displayName = this.currentUser.name;
         this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
-
-        this.cdr.detectChanges();
       },
       (error) => {
         console.error('Error loading user profile:', error);
@@ -1505,6 +1539,9 @@ get passwordGroup() {
     // Reset any other custom states
     this.passwordMismatch = false;
     this.isPopupVisible = false;
+
+    // Reset image position and zoom to saved settings
+    this.resetImagePositionAndZoomToSaved();
   
     // Reload profile data
     this.reloadProfile();
@@ -1718,48 +1755,33 @@ get passwordGroup() {
   //     return;
   //   }
   
-  //   console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
-  //   console.log('this.profileImg:', this.profileImg);
+  //   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+  //   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
   
-  //   this.ngZone.run(() => {
-  //     const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-  //     const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  //   // Calculate new position based on the initial offset
+  //   const deltaX = clientX - this.startX;
+  //   const deltaY = clientY - this.startY;
   
-  //     // Calculate the movement delta
-  //     const deltaX = clientX - this.startX;
-  //     const deltaY = clientY - this.startY;
+  //   // Get dimensions
+  //   const containerRect = this.container.nativeElement.getBoundingClientRect();
+  //   const imgWidth = containerRect.width * this.zoomLevel;
+  //   const imgHeight = containerRect.height * this.zoomLevel;
   
-  //     // Calculate new position
-  //     let newX = this.initialPosition.x + deltaX;
-  //     let newY = this.initialPosition.y + deltaY;
+  //   // Calculate percentages
+  //   const percentX = (deltaX / (imgWidth - containerRect.width)) * 100;
+  //   const percentY = (deltaY / (imgHeight - containerRect.height)) * 100;
   
-  //     // Get dimensions
-  //     const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
-  //     const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
+  //   // Clamp the values to prevent overflow
+  //   this.position = {
+  //     x: Math.max(Math.min(percentX, 0), -100),
+  //     y: Math.max(Math.min(percentY, 0), -100)
+  //   };
   
-  //     // Calculate maximum allowed movement
-  //     const maxOffsetX = Math.max(0, imgRect.width - containerRect.width);
-  //     const maxOffsetY = Math.max(0, imgRect.height - containerRect.height);
+  //   // Update image position
+  //   this.updateImageTransform();
   
-  //     // Adjust constraints to allow movement within the container
-  //     const constrainedX = Math.min(0, Math.max(newX, -maxOffsetX));
-  //     const constrainedY = Math.min(0, Math.max(newY, -maxOffsetY));
-  
-  //     console.log('imgRect:', imgRect);
-  //     console.log('containerRect:', containerRect);
-  //     console.log('maxOffsetX:', maxOffsetX, 'maxOffsetY:', maxOffsetY);
-  //     console.log('newX:', newX, 'newY:', newY);
-  //     console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
-  
-  //     this.position = { x: constrainedX, y: constrainedY };
-  //     console.log('About to call updateImagePosition', this.position);
-  
-  //     // Update image position
-  //     this.updateImagePosition();
-  
-  //     event.preventDefault();
-  //     event.stopPropagation();
-  //   });
+  //   event.preventDefault();
+  //   event.stopPropagation();
   // }
 
   endDrag(event: MouseEvent | TouchEvent) {
@@ -1792,6 +1814,23 @@ get passwordGroup() {
     this.updateImageTransform();
     this.cdr.detectChanges();
   }
+
+  resetImagePositionAndZoomToSaved() {
+    if (this.currentUser.profilePictureSettings) {
+      this.position = {
+        x: this.currentUser.profilePictureSettings.x || 0,
+        y: this.currentUser.profilePictureSettings.y || 0
+      };
+      this.zoomLevel = this.currentUser.profilePictureSettings.zoom || 1;
+    } else {
+      this.position = { x: 0, y: 0 };
+      this.zoomLevel = 1;
+    }
+    this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+    this.updateImageTransform();
+    this.cdr.detectChanges();
+  }
+  
 
   // savePosition() {
   //   this.userService.saveProfilePicturePosition(this.userId, this.position).subscribe(
@@ -1876,23 +1915,25 @@ getProfileImageStyles(): any {
     settings: this.currentUser.profilePictureSettings
   });
 
-
-  // const x = this.position.x ?? this.currentUser.profilePictureSettings?.x ?? 0;
-  // const y = this.position.y ?? this.currentUser.profilePictureSettings?.y ?? 0;
-  // const zoom = this.zoomLevel ?? this.currentUser.profilePictureSettings?.zoom ?? 1;
-
   const x = this.position.x ?? settings?.x ?? 0;
   const y = this.position.y ?? settings?.y ?? 0;
   const zoom = this.zoomLevel ?? settings?.zoom ?? 1;
 
-  console.log("X is " + x);
+  // console.log("X is " + x);
+
+  // return {
+  //   'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
+  //   'background-position': `${x}px ${y}px`,
+  //   'background-repeat': 'no-repeat',
+  //   'background-size': `${zoom * 100}%`
+  // }
 
   return {
     'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
-    'background-position': `${x}px ${y}px`,
+    'background-position': `${x}% ${y}%`,
     'background-repeat': 'no-repeat',
     'background-size': `${zoom * 100}%`
-  }
+  };
 }
 
 zoomIn() {
