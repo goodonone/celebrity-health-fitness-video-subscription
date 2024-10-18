@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -63,7 +64,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private cartService: CartService,
     private authService: AuthService,
     private oauthService: CustomOAuthService,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private cdr: ChangeDetectorRef
   ) {
     // this.router.events.subscribe((event) => {
     //   if (event instanceof NavigationEnd) {
@@ -217,6 +219,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     hamburger!.addEventListener('click', () => {
       hamburger!.classList.toggle('active');
     });
+
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy() {

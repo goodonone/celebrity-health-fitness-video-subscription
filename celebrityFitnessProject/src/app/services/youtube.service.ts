@@ -8,10 +8,12 @@ import { Observable, map } from 'rxjs';
 })
 export class YoutubeService {
 
-  // For demo purposes only: removed for production
   // apiKey : string = "AIzaSyBp8YWYpjuQCBHe4oT0G7tky8giCQXNMEQ";
   apiKey : string = "AIzaSyC5ec7xPUuyfS4_wuo9IupwKwMhQ0vJ3Oc";
+  
   // apiKey : string = "AIzaSyDh2pnp4I6Ox33w7uxISsDrDTP4ZqnBvBg";
+
+  private channelId: string = "UCXtE168z7GAxYKAIHFOgm8w";
 
   constructor(public http: HttpClient) { }
 
@@ -42,6 +44,17 @@ export class YoutubeService {
   }
 
 
+  // searchVideos(query: string): Observable<any> {
+  //   const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=${this.apiKey}`;
+  //   return this.http.get(url);
+  // }
+
+  searchVideosInChannel(query: string): Observable<any> {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&channelId=${this.channelId}&key=${this.apiKey}`;
+    return this.http.get(url);
+  }
+
+  // Keep the general search method if needed
   searchVideos(query: string): Observable<any> {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=${this.apiKey}`;
     return this.http.get(url);

@@ -78,10 +78,10 @@
         <div class="upgradeText">
           <h1 class="upgradeTextHeading">Upgrade For Full Access</h1>
           <ul class="upgradeTextList">
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Full Access to ALL of Hugh's Workouts</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Full Access to <strong>ALL</strong> of Hugh's Workouts</li>
             <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; All in? Get <strong>LIVE</strong> One-on-Ones Monthly with Hugh <br> <span class="spacing"> {{timerBase}} </span></li>
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Fresh Recipes, added daily!</li>
-            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Early Access to New Product Releases</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; <strong>Fresh Recipes</strong>, added daily!</li>
+            <li><fa-icon [icon]="['fas', 'plus']" class="plusIcon"></fa-icon> &nbsp; Early Access to <strong>New Product Releases</strong></li>
           </ul>
         </div>
         <button class="btn btn-upgradeOnCard" mat-button [routerLink]="['/upgrade/', currentUser.userId]">Upgrade</button>
@@ -274,21 +274,37 @@
     <div class="searchResults" *ngIf="foundVideos">
       <router-outlet></router-outlet>
 
-      <div *ngIf="searchResults.length > 0">
-        <h2>Search Results</h2>
-        <div *ngFor="let video of searchResults">
+      <div *ngIf="isSearching">
+        <svg class="spinner" viewBox="0 0 50 50">
+          <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+        </svg>
+        <p>Searching for videos...</p>
+        <!-- You can add a loading spinner here if desired -->
+      </div>
+
+      <!-- <div *ngIf="searchResults.length > 0">
+         <h2>Search Results</h2> -->
+        <!-- <div *ngFor="let video of searchResults">
           <h3>{{ video.snippet.title }}</h3>
           <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
         </div>
       </div>
 
       <div *ngIf="searchResults.length === 0">
-        <p>No videos found for your search. Please try different keywords.</p>
+        <p>No videos found. Please try again.</p> -->
+      <!-- </div> --> 
+
+      <div *ngIf="!isSearching && searchResults.length > 0">
+        <div *ngFor="let video of searchResults">
+          <h3>{{ video.snippet.title }}</h3>
+          <iframe [src]="video.sanitizedURL" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </div>
+    
+      <div *ngIf="!isSearching && searchResults.length === 0">
+        <p>No videos found. Please try again.</p>
       </div>
 
-      <!-- <ng-template #noResults>
-        <p>No videos found for your search. Please try different keywords.</p>
-      </ng-template> -->
     </div>
 
   </mat-card>

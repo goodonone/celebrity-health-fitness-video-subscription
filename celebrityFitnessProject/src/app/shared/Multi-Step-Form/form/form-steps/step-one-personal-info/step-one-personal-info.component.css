@@ -32,6 +32,7 @@ input {
   background-color: white;
   /* font-size: 1rem; */
   font-size: clamp(1rem, 1.5vw, 1.1rem);
+  text-overflow: ellipsis;
 }
 
 mat-card-header{

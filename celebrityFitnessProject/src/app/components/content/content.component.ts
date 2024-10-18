@@ -64,6 +64,7 @@ export class ContentComponent implements OnInit{
   viewSearchBar: boolean = false;
   isSearchClicked: boolean = false;
   private searchTimeout: any;
+  isSearching: boolean = false;
   // timerValThree: string = '';
 
   private upgradeTimerSubject = new BehaviorSubject<boolean>(false);
@@ -591,8 +592,6 @@ export class ContentComponent implements OnInit{
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel22Videos)
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel21Videos)
         this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "8", this.channel20Videos)
-  
-        
       }
 
     
@@ -740,24 +739,52 @@ export class ContentComponent implements OnInit{
       //   this.resetSearchTimeout();
       // }
 
+      // search() {
+      //   if (this.searchString.trim() === '') {
+      //     this.toggleSearch();
+      //     return;
+      //   }
+    
+      //   this.foundVideos = true;
+      //   this.youTubeService.searchVideos(this.searchString).subscribe(
+      //     (results: any) => {
+      //       this.searchResults = results.items.map((item: any) => {
+      //         const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
+      //         item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+      //         return item;
+      //       });
+      //     },
+      //     error => {
+      //     console.error('Error searching videos:', error)
+      //     this.searchResults = [];
+      //     }
+      //   );
+      //   this.resetSearchTimeout();
+      // }
+
       search() {
         if (this.searchString.trim() === '') {
           this.toggleSearch();
           return;
         }
-    
+      
         this.foundVideos = true;
-        this.youTubeService.searchVideos(this.searchString).subscribe(
+        this.isSearching = true;
+        this.searchResults = [];
+    
+        this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
           (results: any) => {
             this.searchResults = results.items.map((item: any) => {
               const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
               item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
               return item;
             });
+            this.isSearching = false;
           },
           error => {
-          console.error('Error searching videos:', error)
-          this.searchResults = [];
+            console.error('Error searching videos:', error);
+            this.searchResults = [];
+            this.isSearching = false;
           }
         );
         this.resetSearchTimeout();

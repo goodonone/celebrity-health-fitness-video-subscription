@@ -1519,20 +1519,11 @@ select {
   border-color: white;
   border-width: 1px;
   color: white;
-  padding-left: 0.2rem;
+  padding-left: 0.5rem;
+  text-overflow: ellipsis;
 }
 
 select {
-    // width: 17rem;
-    // height: 2.5rem;
-    // font-size: large;
-    // font-weight: 400;
-    // background-color: rgb(25, 25, 25);
-    // border-radius: 6px;
-    // border: 1px solid white;
-    // color: white;
-    // padding: 0 0.2rem;
-
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;

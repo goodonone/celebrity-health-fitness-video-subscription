@@ -388,7 +388,7 @@ label {
 }
 
 .btn-signUp{
-  color: #9bc422 !important;
+  color: #676767 !important;
 }
 
 .btn-backToTop:hover {
@@ -397,8 +397,8 @@ label {
 }
 
 .btn-signUp:hover {
-  background-color: white !important;
-  color: #000000 !important;
+  /* background-color: white !important; */
+  color: #c7ff20!important;
 }
 
 /* Media Queries */
