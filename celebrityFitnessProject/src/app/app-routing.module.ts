@@ -8,8 +8,8 @@ import { AuthGuard } from './auth.guard';
 const routes: Routes = [
   { path: "", redirectTo: "home", pathMatch: "full" },
   { path: "home", component: HomeComponent },
-  { path: "search/?:query", component: NotFoundComponent },
-  { path: "search", component: SearchComponent },
+  { path: "search/?:query", component: NotFoundComponent, canActivate: [AuthGuard] },
+  { path: "search", component: SearchComponent, canActivate: [AuthGuard] },
   {
     path: "about",
     loadChildren: () => import('./components/about/about.module').then((m) => m.AboutModule),
