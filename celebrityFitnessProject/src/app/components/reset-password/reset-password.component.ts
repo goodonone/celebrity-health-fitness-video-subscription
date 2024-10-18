@@ -32,6 +32,8 @@ export class ResetPasswordComponent implements OnInit {
   userId!: string;
   passwordVisible = false;
   resetToken: string | null = null;
+  formSubmitted = false;
+  emailSendingError = false;
 
   constructor(
     private router: Router,
@@ -42,14 +44,13 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
-    console.log("Reset password initialized");
+    console.log('Reset password initialized');
     // this.form = this.fb.group({
     //     email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]]
     //   });
 
     // Check for reset token in the URL
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const token = params['token'];
       if (token) {
         this.resetToken = token;
@@ -65,12 +66,20 @@ export class ResetPasswordComponent implements OnInit {
         [
           Validators.required,
           Validators.email,
-          Validators.pattern(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-          ),
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
         ],
       ],
     });
+
+    this.emailForm.get('email')?.valueChanges.pipe(
+      debounceTime(300),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      if (this.formSubmitted || this.emailForm.get('email')!.touched) {
+        this.showEmailError = this.emailForm.get('email')!.invalid;
+      }
+    });
+
 
     this.passwordForm = this.fb.group({
       passwordGroup: this.fb.group(
@@ -139,9 +148,16 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
-  onEmailBlur() {
-    this.showEmailError = true;
-  }
+  // onEmailBlur() {
+  //   // this.showEmailError = true;
+  //   this.showEmailError = this.emailForm.get('email')!.invalid;
+  // }
+
+  // onEmailBlur() {
+  //   if (this.formSubmitted) {
+  //     this.showEmailError = this.emailForm.get('email')!.invalid;
+  //   }
+  // }
 
   // updateUserPassword() {
   //   console.log('Update button clicked');
@@ -243,7 +259,9 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   getConfirmPasswordErrorMessage(): string {
-    const confirmPasswordControl = this.passwordForm.get('passwordGroup.confirmPassword');
+    const confirmPasswordControl = this.passwordForm.get(
+      'passwordGroup.confirmPassword'
+    );
     if (confirmPasswordControl?.hasError('required')) {
       return 'Required';
     }
@@ -258,39 +276,149 @@ export class ResetPasswordComponent implements OnInit {
     this.currentState = ResetPageState.SendResetEmail;
   }
 
+  // getInputStyle(controlName: string): { [key: string]: string } {
+  //   const control = this.passwordForm.get(`passwordGroup.${controlName}`);
+  //   const isInvalid = control?.invalid && (control?.dirty || control?.touched);
+  //   return {
+  //     'border-color': isInvalid ? 'red' : 'black',
+  //     '--placeholder-color': isInvalid ? 'red' : 'black',
+  //     color: isInvalid ? 'red' : 'black',
+  //   };
+  // }
+
   getInputStyle(controlName: string): { [key: string]: string } {
-    const control = this.passwordForm.get(`passwordGroup.${controlName}`);
+    // const control = this.passwordForm.get(`passwordGroup.${controlName}`);
+    let control;
+    if (controlName === 'email') {
+      control = this.emailForm.get('email');
+    } else {
+      control = this.passwordForm.get(`passwordGroup.${controlName}`);
+    }
     const isInvalid = control?.invalid && (control?.dirty || control?.touched);
+    
     return {
-      'border-color': isInvalid ? 'red' : 'black',
-      '--placeholder-color': isInvalid ? 'red' : 'black',
-      'color': isInvalid ? 'red' : 'black'
+        'border-color': isInvalid ? 'red' : 'black',
+        '--placeholder-color': isInvalid ? 'red' : 'black',
+        'color': isInvalid ? 'red' : 'black',
     };
   }
 
+  getEmailLabelStyle(): { [key: string]: string } {
+    const control = this.emailForm.get('email');
+    const isInvalid = control?.invalid && (control?.dirty || control?.touched);
+    
+    return {
+      'color': isInvalid ? 'red' : 'black',
+    };
+  }
+
+
+  // sendResetEmail() {
+  //   if (this.emailForm.valid) {
+  //     const email = this.emailForm.get('email')?.value;
+  //     this.userService.requestPasswordReset(email).subscribe(
+  //       (response) => {
+  //         console.log('Reset email sent successfully');
+  //         this.resetEmailSent = true;
+  //         this.emailForm.reset();
+  //         this.emailForm.markAsUntouched();
+  //         this.emailForm.markAsPristine();
+  //         // You can add a success message here
+  //       },
+  //       (error) => {
+  //         console.error('Error sending reset email:', error);
+  //         // You can add an error message here
+  //       }
+  //     );
+  //   } else {
+  //     this.showEmailError = true;
+  //   }
+  // }
+
+  // sendResetEmail() {
+  //   this.formSubmitted = true;
+  //   this.showEmailError = this.emailForm.get('email')!.invalid;
+
+  //   if (this.emailForm.valid) {
+  //     const email = this.emailForm.get('email')?.value;
+  //     this.userService.requestPasswordReset(email).subscribe(
+  //       (response) => {
+  //         console.log('Reset email sent successfully');
+  //         this.resetEmailSent = true;
+  //         this.showEmailError = false;
+  //         this.formSubmitted = false;
+  //         this.emailForm.reset();
+  //         this.emailForm.get('email')?.setErrors(null);
+  //         this.emailForm.markAsUntouched();
+  //         this.emailForm.markAsPristine();
+  //       },
+  //       (error) => {
+  //         console.error('Error sending reset email:', error);
+  //       }
+  //     );
+  //   }
+   
+  // }
+
   sendResetEmail() {
+    this.formSubmitted = true;
+    this.emailSendingError = false; // Reset the error flag
+    this.cdr.detectChanges(); // Force change detection
+
     if (this.emailForm.valid) {
       const email = this.emailForm.get('email')?.value;
       this.userService.requestPasswordReset(email).subscribe(
         (response) => {
           console.log('Reset email sent successfully');
           this.resetEmailSent = true;
-          // You can add a success message here
+          this.formSubmitted = false;
+          this.emailForm.reset();
+          this.cdr.detectChanges();
+          setTimeout(() => {
+            this.resetEmailSent = false;
+            this.cdr.detectChanges();
+          }, 5000);
         },
         (error) => {
           console.error('Error sending reset email:', error);
-          // You can add an error message here
+          this.emailSendingError = true;
+          this.cdr.detectChanges(); // Force change detection
         }
       );
     }
-    this.emailForm.reset();
-    this.emailForm.markAsUntouched();
-    this.emailForm.markAsPristine();
+  }
+
+  shouldShowEmailError(): boolean {
+    const emailControl = this.emailForm.get('email');
+    return (this.formSubmitted || emailControl!.touched) && (emailControl!.invalid || this.emailSendingError);
+  }
+
+  getEmailErrorMessage(): string {
+    const emailControl = this.emailForm.get('email');
+    if (this.emailSendingError) {
+      return "Error Sending Email";
+    }
+    if (emailControl?.hasError('required')) {
+      return 'Email is required';
+    }
+    if (emailControl?.hasError('email') || emailControl?.hasError('pattern')) {
+      return 'Invalid email format';
+    }
+    return '';
+  }
+
+  onEmailBlur() {
+    const emailControl = this.emailForm.get('email');
+    emailControl?.markAsTouched();
+    this.emailSendingError = false; // Reset the error when the user interacts with the field
+    this.cdr.detectChanges();
   }
 
   updateUserPassword() {
     if (this.isFormValid() && this.resetToken) {
-      const newPassword = this.passwordForm.get('passwordGroup.password')?.value;
+      const newPassword = this.passwordForm.get(
+        'passwordGroup.password'
+      )?.value;
       this.userService.resetPassword(this.resetToken, newPassword).subscribe(
         () => {
           console.log('Password reset successfully');

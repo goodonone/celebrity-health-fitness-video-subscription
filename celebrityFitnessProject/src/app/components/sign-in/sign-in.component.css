@@ -74,7 +74,11 @@ mat-card {
   border-radius: 1rem;
   padding: 1rem;
   box-sizing: border-box;
-  /* aspect-ratio: 1/1; */
+  aspect-ratio: 1/1;
+}
+
+mat-card-header{
+  padding-top: 0;
 }
 
 form{
@@ -228,7 +232,7 @@ p {
 
 .absoluteContainer{
   position: absolute;
-  bottom:clamp(14%, 2vw, 15%); 
+  bottom:clamp(14%, 5vw, 10%); 
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -245,6 +249,7 @@ p {
   text-align: center;
   width: 100%;
   margin: 10px 0 5px 0;
+  padding-bottom: 0.7rem;
 }
 
 .divider::before,
@@ -434,6 +439,16 @@ input[matInput]:focus::placeholder {
   color: #000000 !important; 
 }
 
+input[type="password"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
+}
+
+input[type="text"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
+}
+
 
 @media screen and (min-width: 300px) and (max-width: 872px) {
   mat-card {
@@ -480,6 +495,11 @@ input[matInput]:focus::placeholder {
 
   .absoluteContainer{
     bottom: 11.5%;
+  }
+
+  .divider{
+    /* padding-top: 0; */
+    padding-bottom: 0.2rem;
   }
 
   /* .socialContainer{
