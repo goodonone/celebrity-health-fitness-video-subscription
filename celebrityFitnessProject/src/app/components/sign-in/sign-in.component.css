@@ -399,15 +399,16 @@ p {
   }
 }
 
-.buttonSpan {
-  display: flex;
-  justify-content: flex-end; /* Right justify the button */
-  padding-right: 1rem; /* Add some padding to the right to ensure it's not too close to the edge */
-}
+/* .buttonSpan {
+
+} */
 
 span.buttonSpan {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 1rem;
   position: absolute;
-  top: 107%; 
+  top: 110%; 
   left: 50%;
   transform: translate(-50%);
   /* width: 100%; 
@@ -486,11 +487,13 @@ input[type="text"]::placeholder {
     padding: 0 0px; 
     width: 100%;
     margin-left: 0.1rem;
+    top: 108%
   }
 
   button.btn-submit {
     width: 100%;
     max-width: 500px;
+    height: 2.4rem
   }
 
   .absoluteContainer{

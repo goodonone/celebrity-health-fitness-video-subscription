@@ -94,7 +94,7 @@
                         <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
-                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}" matTooltip="For Stripe">Billing Details</button>
+                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}" matTooltip="Stripe Integration Page">Billing Details</button>
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Cancel Subscription</button>
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Sign Out</button>
                         </div>

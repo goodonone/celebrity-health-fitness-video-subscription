@@ -176,7 +176,9 @@ a.disabled {
     position: absolute;
     top: 70%;
     /* bottom: -20rem; */
-    left: 0;
+    /* left: 1rem;
+     */
+    right: 0;
     padding: 0.2rem;
     width: 100%;
   }

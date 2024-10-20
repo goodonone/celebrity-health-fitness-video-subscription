@@ -3,11 +3,11 @@ export class Payment {
     userId?: string;
     tier?: string;
     price?: number;
-    paymentType?: string;
     paymentFrequency?: string;
-    paymentStatus?: string;
-    membershipStatus?: string;
-    membershipDate?: Date;
+    billingAddress?: string;
+    billingZip?: string;
+    shippingAddress?: string;
+    shippingZip?: string;
     createdAt?: Date;
     purchaseType?: string;
     updatedAt?: Date;
@@ -18,11 +18,11 @@ constructor(
         userId?: string,
         tier?: string,
         price?: number,
-        paymentType?: string,
         paymentFrequency?: string,
-        paymentStatus?: string,
-        membershipStatus?: string,
-        membershipDate?: Date,
+        billingAddress?: string,
+        billingZip?: string,
+        shippingAddress?: string,
+        shippingZip?: string,
         createdAt?: Date,
         purchaseType?: string,
         updatedAt?: Date,
@@ -32,13 +32,13 @@ constructor(
         this.userId = userId;
         this.tier = tier;
         this.price = price;
-        this.paymentType = paymentType;
         this.paymentFrequency = paymentFrequency;
-        this.paymentStatus = paymentStatus;
-        this.membershipStatus = membershipStatus;
-        this.membershipDate = membershipDate;
         this.createdAt = createdAt;
         this.purchaseType =  purchaseType,
+        this.billingAddress = billingAddress,
+        this.billingZip = billingZip,
+        this.shippingAddress = shippingAddress,
+        this.shippingZip = shippingZip
         this.updatedAt = updatedAt;
     }
 }

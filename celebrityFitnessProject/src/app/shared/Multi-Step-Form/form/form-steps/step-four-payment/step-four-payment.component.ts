@@ -14,10 +14,8 @@ import { expirationDateValidator } from 'src/app/shared/expiry-date-validator';
 })
 export class StepFourPaymentComponent implements OnInit {
   stepForm!: FormGroup;
-
   @Input() formGroupName!: string;
   @Input() shipping!: boolean;
-
   sameAsBilling = true;
   isChecked = true;
   showShipping = false;
@@ -79,18 +77,14 @@ export class StepFourPaymentComponent implements OnInit {
       }, '');
 
     // Subscribe to billing address and zip changes to update shipping fields automatically
-    this.billingAddressSubscription = this.stepForm
-      .get('billingAddress')
-      ?.valueChanges.subscribe(() => {
+    this.billingAddressSubscription = this.stepForm.get('billingAddress')?.valueChanges.subscribe(() => {
         if (this.isChecked) {
           this.updateShippingFields(true);
         }
       });
 
     // For shipping address
-    this.billingZipSubscription = this.stepForm
-      .get('billingZip')
-      ?.valueChanges.subscribe(() => {
+    this.billingZipSubscription = this.stepForm.get('billingZip')?.valueChanges.subscribe(() => {
         if (this.isChecked) {
           this.updateShippingFields(true);
         }

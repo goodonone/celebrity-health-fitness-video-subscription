@@ -418,6 +418,7 @@ input.disabled-input {
   input {
     height: 1.8rem;
     width: 95%;
+    font-size: 1rem;
   }
 
   #password, #confirmPassword{
