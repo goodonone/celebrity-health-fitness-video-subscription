@@ -22,17 +22,16 @@ input {
   width: 100%;
   max-width: 1000px;
   height: 1.5rem;
-  height: 80%;
-  max-height: 700px;
+  /* height: 80%;
+  max-height: 700px; */
   border-radius: 0.25rem;
   border: 0.063rem solid black;
   margin-bottom: 0.3rem;
-  padding: 0.5rem 0 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   color: black;
   background-color: white;
   /* font-size: 1rem; */
   font-size: clamp(1rem, 1.5vw, 1.1rem);
-  text-overflow: ellipsis;
 }
 
 mat-card-header{
@@ -84,7 +83,7 @@ input:valid {
 
 .eye-icon {
   position: absolute;
-  right: 15px;
+  right: 20px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
@@ -335,17 +334,17 @@ input.disabled-input {
   input {
     height: 1.5rem;
     /* width: 29.6rem; */
-    width: 95%;
+    width: 96%;
   }
 
   #password, #confirmPassword {
     display: inline-block;
-    width: 95%;
+    width: 96%;
     height: 1.5rem;
     border-radius: 0.25rem;
     border: 0.063rem solid black;
     margin-bottom: 0rem;
-    padding: 0.5rem 0 0.5rem 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
     color: black;
     background-color: white;
     /* font-size: 1rem; */
@@ -366,11 +365,11 @@ input.disabled-input {
   } */
 
   .input-details {
-    width: 30.125rem;
+    width: 30.6rem;
   }
 
   .input-details-confirm{
-    width: 30.125rem;
+    width: 30.6rem;
   }
 
   .error-alert {
@@ -418,12 +417,11 @@ input.disabled-input {
   input {
     height: 1.8rem;
     width: 95%;
-    font-size: 1rem;
   }
 
-  #password, #confirmPassword{
-    padding: 0.5rem 0 0.5rem 1rem;
-  }
+  /* #password, #confirmPassword{
+    padding: 0.5rem;
+  } */
 
   #password, #confirmPassword {
     display: inline-block;
@@ -432,7 +430,7 @@ input.disabled-input {
     border-radius: 0.25rem;
     border: 0.063rem solid black;
     margin-bottom: 0rem;
-    padding: 0.5rem 0 0.5rem 1rem;
+    padding: 0.5rem;
     color: black;
     background-color: white;
     font-size: 1rem;

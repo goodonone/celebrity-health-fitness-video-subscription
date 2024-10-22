@@ -349,6 +349,8 @@ a {
 .bannerFirstAndSecondTiers {
   position: fixed;
   top: 9%;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: rgb(255, 255, 255);
   color: black;
   height: 2rem;
@@ -379,8 +381,12 @@ a {
 div#timer.bannerFirstAndSecondTiers,
 div#timerTierThree.bannerThirdTier {
   width: 100vw;
-  max-width: 100%;
+  // max-width: 100%;
+  max-width: 3000px;
+  // margin-left: auto;
+  // margin-right: auto;
   overflow-x: hidden;
+
 }
 
 h1,
@@ -390,6 +396,7 @@ h1,
   text-align: center;
   font-size: clamp(2rem, 1.5vw, 3rem);
   padding-top: 1.7rem;
+  // max-width: 3000px;
 }
 
 mat-card-header {
@@ -493,8 +500,11 @@ mat-card.cardVideosFirst {
 
 .btn-upgrade {
   position: fixed;
-  right: 11.5%;
-  top: 11.5%;
+  // right: 11.5%;
+  // right: clamp(8%, 1.5vw, 11.5%);
+  margin-left: 1rem;
+  top: 25%;
+  // top: 15%;
   padding: 0.5rem;
   border-radius: 6px;
   z-index: 5;
@@ -1143,7 +1153,7 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
-@media screen and (min-width: 500px) and (max-width: 500px) {
+@media screen and (min-width: 300px) and (max-width: 500px) {
   h1.tierOneHeader {
     font-size: 3rem;
     line-height: 3rem;

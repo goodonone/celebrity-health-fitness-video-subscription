@@ -1,15 +1,14 @@
 <div class="background"></div>
 
 <div class="pageContainer">
-  <!-- Upgrade button for Tier Two and Three -->
-  <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]" [class.hidden]="upgradeTimer">Upgrade</button>
-  </div>
+
 
   <!-- Countdown timer for First and Second Tiers -->
   <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'" [class.hidden]="upgradeTimer">
     <span class="timer-base">{{timerBase}}</span>
     <span class="timer-upgrade" [class.fade-out]="upgradeTimer"> Upgrade For Live Access!</span>
+     <!-- Upgrade button for Tier Two and Three -->
+        <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]" [class.hidden]="upgradeTimer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">Upgrade</button>
   </div>
 
   <!-- Countdown timer for Third Tier -->

@@ -100,7 +100,7 @@ export class FormService implements OnInit {
   return this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9](?:[a-zA-Z0-9._%+-]*[a-zA-Z0-9])?@[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/)]],
       password: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       confirmPassword: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       isGoogleAuth: [false]
@@ -680,7 +680,7 @@ export class FormService implements OnInit {
       }
       this.user.updateUser(this.currentUser).subscribe(() => {
       });
-      const planData = {
+      const paymentData = {
         userId: this.userId,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
@@ -699,7 +699,7 @@ export class FormService implements OnInit {
     // }
     // console.log('SENDING PLANDATA |||||||||||||||||||||', planData);
 
-      this.payment.newPayment(planData).subscribe(
+      this.payment.newPayment(paymentData).subscribe(
         (response) => {
           // console.log('||||||||||||||||||||| Payment created successfully', response);
           this.handleExistingUserUpdate(planInfo);

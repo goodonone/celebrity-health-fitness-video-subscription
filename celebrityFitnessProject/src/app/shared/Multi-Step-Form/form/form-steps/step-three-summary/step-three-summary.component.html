@@ -25,9 +25,12 @@
         <div>Total (per {{planDetails.billing === 'yearly' ? 'year' : 'month'}})</div>
         <div class="cost summary">${{planDetails.totalCost }}/{{planDetails.billing === 'yearly' ? 'yr' :
           'mo'}} 
-          <!-- <p class="cardOnFile" *ngIf="tierTwoThree">*Charged to the Card on file</p> -->
-          <p class="cardOnFile" *ngIf="tierTwoThree !== undefined && tierTwoThree && planDetails.plan !== 'Just Looking'">*Charged to the Card on file</p>
         </div>
+      </div>
+      <div class="paymentContainer" *ngIf="tierTwoThree !== undefined && tierTwoThree && planDetails.plan !== 'Just Looking'">
+        <p class="cardOnFile">*Charged to the Card on file</p>
+        <button mat-button class="btn-change paymentBtn"
+                  (click)="changePlan()">Change Payment Method</button>
       </div>
   
     </mat-card-content>

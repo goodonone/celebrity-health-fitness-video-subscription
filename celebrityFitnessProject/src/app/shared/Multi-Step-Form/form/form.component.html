@@ -27,7 +27,7 @@
     <!-- Form steps for New Users signing up for a membership all steps are available to them, for potential customers
      who have chosen the free tier the payment step is not shown to them -->
       <div class="column">
-        <form>
+        <form (ngSubmit)="$event.preventDefault()">
           <ng-container [formGroup]="stepForm"
                         name="stepForm"
                         (submit)="confirmAndSubmitForm()" *ngIf="!checkout">

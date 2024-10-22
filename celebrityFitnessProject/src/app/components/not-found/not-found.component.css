@@ -105,7 +105,11 @@ p.getBack:hover {
 
 @media screen and (min-width: 2000px) and (max-width: 6000px) {
    .overlayTwo{
-    top: calc(50% + clamp(2rem, 6vw, 7vw));
+    top: calc(50% + clamp(2rem, 5vw, 7vw));
+   }
+
+   .heading{
+    font-size: calc(50% + clamp(2rem, 7vw, 8vw));
    }
   }
 
@@ -114,7 +118,8 @@ p.getBack:hover {
     color: white;
     font-size: clamp(1rem, 1.2vw, 1.2vw);
     border: solid;
-    border-radius: 0.4vw;
+    /* border-radius: 1vw; */
+    border-radius: 0.3rem;
     padding: 0.3rem 0.7rem 0.3rem 0.7rem;
   }
 

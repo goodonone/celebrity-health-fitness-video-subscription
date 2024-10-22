@@ -77,19 +77,43 @@ export class ProgressionButtonsComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
+  // @HostListener('document:keydown', ['$event'])
+  // handleKeyboardEvent(event: KeyboardEvent) {
+  //   // console.log('Key pressed:', event.key);
+  //   if (event.key === 'Enter') {
+  //     // console.log('Enter key pressed');
+  //     const maxStep = this.getMaxStep();
+      
+  //     if (this.activeStep$ === maxStep) {
+  //       // console.log('Calling confirmAndSubmitForm');
+  //       this.confirmAndSubmitForm();
+  //     } else if (this.checkout) {
+  //       // console.log('Calling purchase');
+  //       this.purchase();
+  //     }
+  //   }
+  // }
+
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // console.log('Key pressed:', event.key);
     if (event.key === 'Enter') {
-      // console.log('Enter key pressed');
-      const maxStep = this.getMaxStep();
-      
-      if (this.activeStep$ === maxStep) {
-        // console.log('Calling confirmAndSubmitForm');
-        this.confirmAndSubmitForm();
-      } else if (this.checkout) {
-        // console.log('Calling purchase');
-        this.purchase();
+      event.preventDefault(); // Prevent default form submission
+      this.handleEnterKey();
+    }
+  }
+
+  handleEnterKey() {
+    const maxStep = this.getMaxStep();
+    
+    if (this.canProceed()) {
+      if (this.activeStep$ < maxStep) {
+        this.nextStep();
+      } else if (this.activeStep$ === maxStep) {
+        if (this.checkout) {
+          this.purchase();
+        } else {
+          this.confirmAndSubmitForm();
+        }
       }
     }
   }
@@ -142,23 +166,39 @@ export class ProgressionButtonsComponent implements OnInit {
     return true;
   }
 
+  // nextStep() {
+  //   if (this.canProceed()) {
+  //     const maxStep = this.getMaxStep();
+  //     if (this.activeStep$ < maxStep) {
+  //       this.formService.goToNextStep(this.activeStep$);
+  //     } else if (this.activeStep$ === maxStep) {
+  //       this.confirmAndSubmitForm();
+  //     }
+  //   }
+  // }
+
   nextStep() {
     if (this.canProceed()) {
       const maxStep = this.getMaxStep();
       if (this.activeStep$ < maxStep) {
         this.formService.goToNextStep(this.activeStep$);
       } else if (this.activeStep$ === maxStep) {
-        this.confirmAndSubmitForm();
+        if (this.checkout) {
+          this.purchase();
+        } else {
+          this.confirmAndSubmitForm();
+        }
       }
     }
   }
+  
   
   private getMaxStep(): number {
     if (this.loggedIn) {
       return this.payment ? 3 : 2;
     }
     else if (this.checkout) {
-      return 2;
+      return 3;
     }
     return this.planCost > 0 ? 5 : 4;
   }

@@ -31,7 +31,7 @@
           <label class="label" for="email">Email Address</label>
           <label for="error"
                  *ngIf="this.stepForm.controls['email']?.invalid && this.stepForm.controls['email'].touched && !this.stepForm.get('email')?.hasError('emailExists')"
-                 class="error-alert">Email is required</label>
+                 class="error-alert">{{getEmailErrorMessage()}}</label>
            <label for="error"
                  *ngIf="this.stepForm.get('email')?.hasError('emailExists')"
                  class="error-alert">Email already exists</label>      
@@ -108,7 +108,7 @@
              placeholder="Confirm Password"
              formControlName="confirmPassword"
              (copy)="preventCopyPaste($event)"
-             (cut)="preventCopyPaste($event)" 
+             (cut)="preventCopyPaste($event)"
              (paste)="preventCopyPaste($event)"
              [attr.disabled]="isFieldDisabled('password') ? '' : null"
              [class.disabled-input]="isFieldDisabled('password')"

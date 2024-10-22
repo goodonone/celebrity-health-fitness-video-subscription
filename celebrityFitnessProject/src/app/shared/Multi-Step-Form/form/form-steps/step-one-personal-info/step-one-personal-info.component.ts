@@ -501,18 +501,69 @@ export class StepOnePersonalInfoComponent implements OnInit {
   //   }
   // }
 
-  checkEmail() {
-    const email = this.stepForm.get('email')?.value;
-    if (email) {
-      this.userService.checkEmail(email).subscribe(
-        (response: {exists: boolean, message: string}) => {
-          this.emailExists = response.exists;
-          this.stepForm.get('email')?.setErrors(this.emailExists ? {'emailExists': true} : null);
-        },
-        (error) => console.error('Error checking email:', error)
-      );
-    }
+  // checkEmail() {
+  //   const email = this.stepForm.get('email')?.value;
+  //   if (email) {
+  //     this.userService.checkEmail(email).subscribe(
+  //       (response: {exists: boolean, message: string}) => {
+  //         this.emailExists = response.exists;
+  //         this.stepForm.get('email')?.setErrors(this.emailExists ? {'emailExists': true} : null);
+  //       },
+  //       (error) => console.error('Error checking email:', error)
+  //     );
+  //   }
+  // }
+
+  // In your StepOnePersonalInfoComponent
+
+getEmailErrorMessage(): string {
+  const emailControl = this.stepForm.get('email');
+  
+  if (!emailControl || !emailControl.errors) return '';
+  
+  if (emailControl.hasError('required')) {
+    return 'Email is required';
   }
+  
+  if (emailControl.hasError('email') || emailControl.hasError('pattern')) {
+    return 'Invalid Email';
+  }
+  
+  if (emailControl.hasError('emailExists')) {
+    return 'Email already exists';
+  }
+
+  return '';
+}
+
+// Update the checkEmail method to properly set form validity
+checkEmail() {
+  const emailControl = this.stepForm.get('email');
+  if (!emailControl || !emailControl.value) return;
+
+  if (emailControl.errors && (emailControl.errors['email'] || emailControl.errors['pattern'])) {
+    return; // Don't check server if format is invalid
+  }
+
+  this.userService.checkEmail(emailControl.value).subscribe(
+    (response: {exists: boolean, message: string}) => {
+      if (response.exists) {
+        emailControl.setErrors({ emailExists: true });
+      } else {
+        // Only clear the emailExists error, preserve other validation errors if any
+        const currentErrors = emailControl.errors;
+        if (currentErrors) {
+          delete currentErrors['emailExists'];
+          emailControl.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+        }
+      }
+      this.cdr.detectChanges();
+    },
+    (error) => console.error('Error checking email:', error)
+  );
+}
+
+
 
   // validatePasswords(): void {
   //   const password = this.formService.multiStepForm.get('personalDetails.password')?.value;

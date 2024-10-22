@@ -127,6 +127,8 @@ export class ContentComponent implements OnInit{
     this.addTolivestreamVideo();
 
     this.initScrollHandler();
+
+    // document.body.style.backgroundColor = 'black';
   }
   
   ngAfterViewInit() {
@@ -137,6 +139,7 @@ export class ContentComponent implements OnInit{
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
+    // document.body.style.backgroundColor = 'white';
   }
 
   @HostListener('window:scroll', ['$event'])
