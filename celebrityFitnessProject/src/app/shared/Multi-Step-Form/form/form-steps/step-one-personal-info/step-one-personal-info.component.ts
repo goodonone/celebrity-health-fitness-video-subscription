@@ -143,6 +143,33 @@ export class StepOnePersonalInfoComponent implements OnInit {
       })
     );
 
+    // Subscribe to name input changes
+    this.stepForm.get('name')?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(value => {
+      if (typeof value === 'string') {
+        const nameControl = this.stepForm.get('name');
+        if (nameControl && nameControl.errors?.['pattern'] && !value.trim()) {
+          // If the value is only spaces, set required error instead of pattern
+          nameControl.setErrors({ 'required': true });
+        }
+      }
+    });
+
+    // Subscribe to email input changes
+    this.stepForm.get('email')?.valueChanges.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(value => {
+      if (typeof value === 'string') {
+        const emailControl = this.stepForm.get('email');
+        if (emailControl && emailControl.errors?.['pattern'] && !value.trim()) {
+          // If the value is only spaces, set required error instead of pattern
+          emailControl.setErrors({ 'required': true });
+        }
+      }
+    });
+  
+
     // Subscribe to form reset events: enable password inputs on form reset
     // this.formResetSubscription = this.formService.formReset$.subscribe(() => {
     //   this.isGoogleAuthEnabled = false;
@@ -520,6 +547,10 @@ getEmailErrorMessage(): string {
   const emailControl = this.stepForm.get('email');
   
   if (!emailControl || !emailControl.errors) return '';
+
+  if (!emailControl.value || !emailControl.value.trim()) {
+    return 'Email is required';
+  }
   
   if (emailControl.hasError('required')) {
     return 'Email is required';
@@ -540,6 +571,15 @@ getEmailErrorMessage(): string {
 checkEmail() {
   const emailControl = this.stepForm.get('email');
   if (!emailControl || !emailControl.value) return;
+
+  // Trim the email value
+  const trimmedEmail = emailControl.value.trim();
+
+  // If the email is empty after trimming, set required error
+  if (!trimmedEmail) {
+    emailControl.setErrors({ 'required': true });
+    return;
+  }
 
   if (emailControl.errors && (emailControl.errors['email'] || emailControl.errors['pattern'])) {
     return; // Don't check server if format is invalid
@@ -563,7 +603,337 @@ checkEmail() {
   );
 }
 
+private normalizeEmailInput(value: string): string {
+  return value.trim().toLowerCase();
+}
 
+onEmailBlur() {
+  const emailControl = this.stepForm.get('email');
+  if (emailControl && typeof emailControl.value === 'string') {
+    const normalized = this.normalizeEmailInput(emailControl.value);
+    if (normalized !== emailControl.value) {
+      emailControl.setValue(normalized);
+    }
+    this.checkEmail();
+  }
+}
+
+// getInputStyle(controlName: string): { [key: string]: string } {
+//   const control = this.stepForm.get(controlName);
+//   let isInvalid = false;
+
+//   if (control) {
+//     if (controlName === 'email') {
+//       isInvalid = (control.invalid && control.touched) || control.hasError('emailExists');
+//     } else if (controlName === 'password' || controlName === 'confirmPassword') {
+//       isInvalid = (control.invalid && control.touched) || 
+//                   (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//     } else {
+//       isInvalid = control.invalid && control.touched;
+//     }
+//   }
+
+//   return {
+//     'border-color': isInvalid ? 'red' : 'black',
+//     '--placeholder-color': isInvalid ? 'red' : 'black',
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+// getLabelStyle(controlName: string): { [key: string]: string } {
+//   const control = this.stepForm.get(controlName);
+//   let isInvalid = false;
+
+//   if (control) {
+//     if (controlName === 'email') {
+//       isInvalid = (control.invalid && control.touched) || control.hasError('emailExists');
+//     } else if (controlName === 'password' || controlName === 'confirmPassword') {
+//       isInvalid = (control.invalid && control.touched) || 
+//                   (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//     } else {
+//       isInvalid = control.invalid && control.touched;
+//     }
+//   }
+
+//   return {
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+// getInputStyle(controlName: string): { [key: string]: string } {
+//   const control = this.stepForm.get(controlName);
+//   let isInvalid = false;
+
+//   if (control) {
+//     switch (controlName) {
+//       case 'email':
+//         const trimmedValue = control.value?.trim() || '';
+//           isInvalid = (control.invalid && control.touched) || 
+//                       control.hasError('emailExists') || 
+//                       (!trimmedValue && control.touched);
+//           break;
+//       case 'password':
+//       case 'confirmPassword':
+//         isInvalid = (control.invalid && control.touched) || 
+//                     (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//         break;
+//       default:
+//         isInvalid = control.invalid && control.touched;
+//     }
+//   }
+
+//   return {
+//     'border-color': isInvalid ? 'red' : 'black',
+//     '--placeholder-color': isInvalid ? 'red' : 'black',
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+// getInputStyle(controlName: string): { [key: string]: string } {
+//   const control = this.stepForm.get(controlName);
+//   let isInvalid = false;
+
+//   if (control) {
+//     switch (controlName) {
+//       case 'email':
+//         const trimmedValue = control.value?.trim() || '';
+//         isInvalid = (control.invalid && control.touched) || 
+//                     control.hasError('emailExists') || 
+//                     (!trimmedValue && control.touched);
+//         break;
+//       case 'password':
+//         // Show red border on password when there's a mismatch and confirmPassword is touched
+//         const confirmPasswordControl = this.stepForm.get('confirmPassword');
+//         isInvalid = (control.invalid && control.touched) || 
+//                     (this.passwordMismatch && confirmPasswordControl!.touched);
+//         break;
+//       case 'confirmPassword':
+//         isInvalid = (control.invalid && control.touched) || 
+//                     (this.passwordMismatch && control.touched);
+//         break;
+//       default:
+//         isInvalid = control.invalid && control.touched;
+//     }
+//   }
+
+//   return {
+//     'border-color': isInvalid ? 'red' : 'black',
+//     '--placeholder-color': isInvalid ? 'red' : 'black',
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+getInputStyle(controlName: string): { [key: string]: string } {
+  const control = this.stepForm.get(controlName);
+  let isInvalid = false;
+
+  if (control) {
+    switch (controlName) {
+      case 'email':
+        const trimmedValue = control.value?.trim() || '';
+        isInvalid = (control.invalid && control.touched) || 
+                    control.hasError('emailExists') || 
+                    (!trimmedValue && control.touched);
+        break;
+      case 'password':
+        const confirmPasswordControl = this.stepForm.get('confirmPassword');
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && confirmPasswordControl!.touched);
+        break;
+      case 'confirmPassword':
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && control.touched);
+        break;
+      default:
+        isInvalid = control.invalid && control.touched;
+    }
+  }
+
+  const styles: { [key: string]: string } = {
+    'border-color': isInvalid ? 'red' : 'black',
+    '--placeholder-color': isInvalid ? 'red' : 'black',
+    'color': isInvalid ? 'red' : 'black',
+    '--eye-icon-color': isInvalid ? 'red' : '#646464',
+    '--eye-icon-hover-color': isInvalid ? '#d01515' : '#333333' 
+  };
+
+  return styles;
+}
+
+// getLabelStyle(controlName: string): { [key: string]: string } {
+//   const control = this.stepForm.get(controlName);
+//   let isInvalid = false;
+
+//   if (control) {
+//     switch (controlName) {
+//       case 'email':
+//         isInvalid = (control.invalid && control.touched) || control.hasError('emailExists');
+//         break;
+//       case 'password':
+//       case 'confirmPassword':
+//         isInvalid = (control.invalid && control.touched) || 
+//                     (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//         break;
+//       default:
+//         isInvalid = control.invalid && control.touched;
+//     }
+//   }
+
+//   return {
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+getLabelStyle(controlName: string): { [key: string]: string } {
+  const control = this.stepForm.get(controlName);
+  let isInvalid = false;
+
+  if (control) {
+    switch (controlName) {
+      case 'email':
+        isInvalid = (control.invalid && control.touched) || 
+                    control.hasError('emailExists');
+        break;
+      case 'password':
+        // Show red label on password when there's a mismatch and confirmPassword is touched
+        const confirmPasswordControl = this.stepForm.get('confirmPassword');
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && confirmPasswordControl!.touched);
+        break;
+      case 'confirmPassword':
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && control.touched);
+        break;
+      default:
+        isInvalid = control.invalid && control.touched;
+    }
+  }
+
+  return {
+    'color': isInvalid ? 'red' : 'black'
+  };
+}
+
+// shouldShowError(controlName: string): boolean {
+//   const control = this.stepForm.get(controlName);
+//   if (!control) return false;
+
+//   if (controlName === 'email') {
+//     return (control.invalid && control.touched) || control.hasError('emailExists');
+//   } else if (controlName === 'confirmPassword') {
+//     return (control.invalid && control.touched) || 
+//            (this.passwordMismatch && control.touched);
+//   }
+//   return control.invalid && control.touched;
+// }
+
+// shouldShowError(controlName: string): boolean {
+//   const control = this.stepForm.get(controlName);
+//   if (!control) return false;
+
+//   switch (controlName) {
+//     case 'email':
+//         const trimmedValue = control.value?.trim() || '';
+//         return (control.invalid && control.touched) || 
+//                control.hasError('emailExists') || 
+//                (!trimmedValue && control.touched);
+//     case 'password':
+//     case 'confirmPassword':
+//       return (control.invalid && control.touched) || 
+//              (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//     default:
+//       return control.invalid && control.touched;
+//   }
+// }
+
+shouldShowError(controlName: string): boolean | undefined {
+  const control = this.stepForm.get(controlName);
+  if (!control) return false;
+
+  switch (controlName) {
+    case 'email':
+      const trimmedValue = control.value?.trim() || '';
+      return (control.invalid && control.touched) || 
+             control.hasError('emailExists') || 
+             (!trimmedValue && control.touched);
+    case 'password':
+      // Show error on password field when there's a mismatch and confirmPassword is touched
+      const confirmPasswordControl = this.stepForm.get('confirmPassword');
+      return (control.invalid && control.touched) || 
+             (this.passwordMismatch && confirmPasswordControl?.touched);
+    case 'confirmPassword':
+      return (control.invalid && control.touched) || 
+             (this.passwordMismatch && control.touched);
+    default:
+      return control.invalid && control.touched;
+  }
+}
+
+getErrorMessage(controlName: string): string {
+  const control = this.stepForm.get(controlName);
+  if (!control) return '';
+
+  if (controlName === 'name') {
+    if (control.hasError('required')) {
+      return 'Name is required';
+    }
+    if (control.hasError('minlength')) {
+      return 'Must be at least 4 characters';
+    }
+    if (control.hasError('pattern')) {
+      return 'Invalid';
+    }
+  }
+
+  if (controlName === 'email') {
+    if (control.hasError('required')) {
+      return 'Email is required';
+    }
+    if (control.hasError('email') || control.hasError('pattern')) {
+      return 'Invalid';
+    }
+    if (control.hasError('emailExists')) {
+      return 'Email already exists';
+    }
+  }
+
+  if (controlName === 'password') {
+    if (control.hasError('required')) {
+      return 'Password is required';
+    }
+    if (control.hasError('pattern')) {
+      return 'Requirements not met';
+    }
+  }
+
+  if (controlName === 'confirmPassword') {
+    if (control.hasError('required')) {
+      return 'Password is required';
+    }
+    if (control.hasError('pattern')) {
+      return 'Requirements not met';
+    }
+    if (this.passwordMismatch) {
+      return 'Passwords do not match';
+    }
+  }
+
+  return '';
+}
+
+private normalizeNameInput(value: string): string {
+  return value.replace(/\s+/g, ' ').trim();
+}
+
+onNameBlur() {
+  const nameControl = this.stepForm.get('name');
+  if (nameControl && typeof nameControl.value === 'string') {
+    const normalized = this.normalizeNameInput(nameControl.value);
+    if (normalized !== nameControl.value) {
+      nameControl.setValue(normalized);
+    }
+  }
+}
 
   // validatePasswords(): void {
   //   const password = this.formService.multiStepForm.get('personalDetails.password')?.value;

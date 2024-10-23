@@ -6,7 +6,7 @@ import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
 import { faEye, faEyeSlash, faAngleDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, debounceTime, distinctUntilChanged, filter, fromEvent, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter, finalize, from, fromEvent, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 import { HttpClient } from '@angular/common/http';
 import { profile } from 'console';
@@ -34,6 +34,9 @@ export class ProfileComponent implements OnInit {
   @ViewChild('profileImg', { static: false, read: ElementRef }) profileImg!: ElementRef<HTMLElement>;
 
   private subscriptions: Subscription = new Subscription();
+
+  private avatarLoaded = new BehaviorSubject<boolean>(false);
+  private urlImageLoaded = new BehaviorSubject<boolean>(false);
 
   currentUser: User = new User();
   ProfileState = ProfileState; 
@@ -88,6 +91,7 @@ export class ProfileComponent implements OnInit {
   isInClicked = false;
   isOutClicked = false;
   isResetClicked = false;
+  private isInitialLoad = true;
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
@@ -226,7 +230,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
       email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9](?:[a-zA-Z0-9._%+-]*[a-zA-Z0-9])?@[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/)]],
-      dateOfBirth: ['',[]],
+      dateOfBirth: ['',[Validators.pattern(/^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/([0-9]{4})$/)]],
       gender: ['', []],
       weight: ['', []],
       height: ['', []],
@@ -361,6 +365,9 @@ export class ProfileComponent implements OnInit {
     document.removeEventListener('touchmove', this.drag);
     document.removeEventListener('mouseup', this.endDrag);
     document.removeEventListener('touchend', this.endDrag);
+
+    this.avatarLoaded.complete();
+    this.urlImageLoaded.complete();
   }
 
   // ngOnDestroy() {
@@ -433,10 +440,12 @@ export class ProfileComponent implements OnInit {
 
   onMouseDown(button: string) {
     if (button === 'minus') {
+      if (this.zoomLevel <= this.minZoom) return;
       this.isOutClicked = true;
       const minusIcon = document.querySelector('.zoomOut');
       minusIcon?.classList.add('clicked');
     } else if (button === 'plus') {
+      if (this.zoomLevel >= this.maxZoom) return;
       this.isInClicked = true;
       const plusIcon = document.querySelector('.zoomIn');
       plusIcon?.classList.add('clicked');
@@ -490,6 +499,7 @@ export class ProfileComponent implements OnInit {
   }
 
   loadProfile() {
+    this.isInitialLoad = true;
     this.loadingComplete = false;
     this.imageLoaded = false;
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
@@ -648,13 +658,40 @@ export class ProfileComponent implements OnInit {
         } else {
           this.freeTier = false;
         }
+        // if (user.imgUrl) {
+        //   this.preloadImage(user.imgUrl);
+        // } else {
+        //   // If there's no image URL, consider the image "loaded"
+        //   this.imageLoaded = true;
+        //   this.checkLoadingComplete();
+        // }
+
+        // Handle image loading with loading state
         if (user.imgUrl) {
-          this.preloadImage(user.imgUrl);
+          this.preloadImage(user.imgUrl); // Pass true for initial loading
         } else {
-          // If there's no image URL, consider the image "loaded"
+          this.preloadImage(null); // Pass true for initial loading
           this.imageLoaded = true;
           this.checkLoadingComplete();
         }
+
+        // if (user.imgUrl) {
+        //   const img = new Image();
+        //   img.onload = () => {
+        //     this.imageLoaded = true;
+        //     this.checkLoadingComplete();
+        //   };
+        //   img.onerror = () => {
+        //     console.error('Error loading image');
+        //     this.imageLoaded = true;
+        //     this.checkLoadingComplete();
+        //   };
+        //   img.src = user.imgUrl;
+        // } else {
+        //   this.imageLoaded = true;
+        //   this.checkLoadingComplete();
+        // }
+
         // If it's tier three and first visit, trigger animation
         // if (this.tierThree && this.firstTimeAnimationTierThree) {
         //   // Small delay to ensure the view is ready
@@ -750,6 +787,8 @@ export class ProfileComponent implements OnInit {
   }
 
   reloadProfile() {
+    this.isInitialLoad = false;
+
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
 
     this.userId = UserId;
@@ -1022,28 +1061,101 @@ export class ProfileComponent implements OnInit {
     );
   }
 
-  preloadImage(imgUrl: string) {
-    const img = new Image();
-    img.onload = () => {
-      this.imageLoaded = true;
-      this.checkLoadingComplete();
-    };
-    img.onerror = () => {
-      console.error('Error loading image');
-      this.imageLoaded = true; 
-      this.checkLoadingComplete();
-    };
-    img.src = imgUrl;
-  }
+  preloadImage(imgUrl: string | null) {
 
-  checkLoadingComplete() {
-    if (this.imageLoaded) {
-      setInterval(() => {
-        this.loadingComplete = true;
-        this.cdr.detectChanges();
-      }, 500)
+    // Reset loading states
+    if (this.isInitialLoad) {
+      this.imageLoaded = false;
+      this.loadingComplete = false;
+    }
+
+    // Reset BehaviorSubjects
+    this.avatarLoaded.next(false);
+    this.urlImageLoaded.next(false);
+
+    // Create a promise for the avatar image
+    const loadAvatar = new Promise<void>((resolve, reject) => {
+      const avatarImg = new Image();
+      avatarImg.onload = () => resolve();
+      avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
+      avatarImg.src = 'assets/Images/avatar.png';
+    });
+
+    // Handle avatar loading
+    from(loadAvatar).pipe(
+      catchError(error => {
+        console.error('Error loading avatar:', error);
+        return of(null);
+      }),
+      finalize(() => {
+        this.avatarLoaded.next(true);
+        this.checkAllImagesLoaded(this.isInitialLoad);
+      })
+    ).subscribe();
+
+  //   const img = new Image();
+  //   img.onload = () => {
+  //     this.imageLoaded = true;
+  //     this.checkLoadingComplete();
+  //   };
+  //   img.onerror = () => {
+  //     console.error('Error loading image');
+  //     this.imageLoaded = true; 
+  //     this.checkLoadingComplete();
+  //   };
+  //   img.src = imgUrl;
+  // }
+  // If there's a URL image to load, handle it separately
+  if (imgUrl) {
+    const urlImg = new Image();
+    
+    urlImg.onload = () => {
+      this.urlImageLoaded.next(true);
+      this.checkAllImagesLoaded(this.isInitialLoad);
+    };
+    
+    urlImg.onerror = () => {
+      console.error('Error loading URL image');
+      this.urlImageLoaded.next(true); // Consider it "loaded" even if it failed
+      this.checkAllImagesLoaded(this.isInitialLoad);
+    };
+    
+    urlImg.src = imgUrl;
+  } else {
+    // No URL image to load, mark it as "loaded"
+    this.urlImageLoaded.next(true);
+    this.checkAllImagesLoaded(this.isInitialLoad);
+  }
+}
+
+private checkAllImagesLoaded(isInitialLoad: boolean) {
+  // Combine both loading states
+  if (this.avatarLoaded.getValue() && this.urlImageLoaded.getValue()) {
+    this.imageLoaded = true;
+    if (this.isInitialLoad) {
+      this.checkLoadingComplete();
     }
   }
+}
+
+  // checkLoadingComplete() {
+  //   if (this.imageLoaded) {
+  //     setInterval(() => {
+  //       this.loadingComplete = true;
+  //       this.cdr.detectChanges();
+  //     }, 500)
+  //   }
+  // }
+
+  // Update the existing checkLoadingComplete method
+checkLoadingComplete() {
+  if (this.imageLoaded) {
+    setTimeout(() => {
+      this.loadingComplete = true;
+      this.cdr.detectChanges();
+    }, 500);
+  }
+}
 
 
 saveProfile() {
@@ -1141,7 +1253,7 @@ resetImage() {
 isFormValid(formType: 'profile' | 'password' = 'profile'): boolean {
   if (formType === 'profile') {
     if (!this.profileForm) {
-      console.log('Profile form is not initialized');
+      // console.log('Profile form is not initialized');
       return false;
     }
     const nameControl = this.profileForm.get('name');
@@ -1452,12 +1564,29 @@ get passwordGroup() {
     this.cdr.detectChanges();
   
     // Update the UI to reflect the change immediately
-    if (newValue === '') {
-      this.resetImage();
+    if (newValue) {
+      this.isInitialLoad = false;
+      this.preloadImage(newValue); // Pass false for URL input changes
     } else {
-      this.preloadImage(newValue);
+      this.resetImage();
     }
+    this.cdr.detectChanges();
   }
+  //   if (newValue === '') {
+  //     this.resetImage();
+  //   } else { // Preload image without affecting loading state
+  //   const img = new Image();
+  //   img.onload = () => {
+  //     this.updateImageTransform();
+  //     this.cdr.detectChanges();
+  //   };
+  //   img.onerror = () => {
+  //     console.error('Error loading preview image');
+  //     this.cdr.detectChanges();
+  //   };
+  //   img.src = newValue;
+  // }
+
 
   syncFormWithCurrentUser(): void {
     if (this.formSubscription) {
@@ -1603,6 +1732,7 @@ get passwordGroup() {
       emailControl?.setErrors(null);
       return;
     }
+
     if (email && emailControl && emailControl.valid) {
       this.userService.checkEmail(email).subscribe(
         (response: {exists: boolean, message: string}) => {
@@ -1625,13 +1755,31 @@ get passwordGroup() {
     }
   }
 
+  // isImageUrlFilled(): boolean {
+  //   const imgUrlControl = this.profileForm.get('imgUrl');
+  //   const formValue = imgUrlControl?.value?.trim();
+  //   const isFilled = !!formValue;
+  //   // console.log('Image URL filled:', isFilled, 'Form value:', formValue);
+  //   return isFilled;
+  // }
+
   isImageUrlFilled(): boolean {
-    const imgUrlControl = this.profileForm.get('imgUrl');
-    const formValue = imgUrlControl?.value?.trim();
-    const isFilled = !!formValue;
-    // console.log('Image URL filled:', isFilled, 'Form value:', formValue);
-    return isFilled;
+  const imgUrlControl = this.profileForm.get('imgUrl');
+  const formValue = imgUrlControl?.value?.trim();
+  const isFilled = !!formValue;
+
+  if (isFilled) {
+    // Basic URL validation
+    try {
+      const url = new URL(formValue);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return false;
+    }
   }
+  
+  return false;
+}
 
   setupDragListeners() {
     console.log('setupDragListeners called');
@@ -1939,6 +2087,7 @@ getProfileImageStyles(): any {
 zoomIn() {
   if (this.zoomLevel < this.maxZoom) {
     this.zoomLevel += this.zoomStep;
+    this.zoomLevel = Math.min(this.zoomLevel, this.maxZoom);
     this.updateImageTransform();
   }
 }
@@ -1947,6 +2096,7 @@ zoomIn() {
 zoomOut() {
   if (this.zoomLevel > this.minZoom) {
     this.zoomLevel -= this.zoomStep;
+    this.zoomLevel = Math.max(this.zoomLevel, this.minZoom);
     this.updateImageTransform();
   }
 }
@@ -1980,6 +2130,254 @@ zoomOut() {
   //   this.renderer.removeStyle(img, 'transform');
   //   this.cdr.detectChanges();
   // }
+
+  getErrorMessage(controlName: string): string {
+    let control;
+    
+    // Handle password form controls
+    if (controlName === 'oldPassword') {
+      control = this.passwordForm.get('oldPassword');
+      if (!control) return '';
+      
+      if (this.authenticating) {
+        return 'Authenticating...';
+      }
+      if (control.hasError('required')) {
+        return 'Current password is required';
+      }
+      if (this.oldPasswordError) {
+        return this.oldPasswordError;
+      }
+    } 
+    else if (controlName === 'password' || controlName === 'confirmPassword') {
+      const passwordGroup = this.passwordForm.get('passwordGroup');
+      control = passwordGroup?.get(controlName);
+      if (!control) return '';
+  
+      if (this.passwordMismatch && control.touched) {
+        return 'Passwords do not match';
+      }
+      if (control.hasError('required')) {
+        return 'Password is required';
+      }
+      if (control.hasError('minlength')) {
+        return 'Must be at least 8 characters';
+      }
+      if (control.hasError('pattern')) {
+        return 'Requirements not met';
+      }
+    }
+    // Handle profile form controls
+    else {
+      control = this.profileForm.get(controlName);
+      if (!control) return '';
+  
+      switch (controlName) {
+        case 'name':
+          if (control.hasError('required')) {
+            return 'Required';
+          }
+          if (control.hasError('minlength')) {
+            return 'Min 4 characters';
+          }
+          if (control.hasError('pattern')) {
+            return 'Invalid';
+          }
+          break;
+  
+        case 'email':
+          if (control.hasError('required')) {
+            return 'Required';
+          }
+          if (control.hasError('email') || control.hasError('pattern')) {
+            return 'Invalid Format';
+          }
+          if (control.hasError('emailExists')) {
+            return 'Email already exists';
+          }
+          break;
+  
+        case 'dateOfBirth':
+          if (control.hasError('required')) {
+            return 'Date of birth is required';
+          }
+          if (control.hasError('pattern')) {
+            return 'Invalid Format';
+          }
+          if (!this.isValidAge) {
+          if (control.hasError('futureDate')) {
+            return 'Invalid';
+          }
+          }
+          break;
+  
+        case 'weight':
+          if (control.hasError('pattern')) {
+            return 'Invalid';
+          }
+          if (control.hasError('outOfRange')) {
+            return 'Invalid Weight';
+          }
+          break;
+  
+        case 'height':
+          if (control.hasError('pattern')) {
+            return 'Invalid Height';
+          }
+          break;
+  
+        case 'imgUrl':
+          if (control.hasError('pattern')) {
+            return 'Invalid URL';
+          }
+          break;
+      }
+    }
+  
+    return 'Invalid Input';
+  }
+
+  shouldShowError(controlName: string): boolean {
+    let control;
+    
+    if (controlName === 'oldPassword') {
+      control = this.passwordForm.get('oldPassword');
+      if (!control) return false;
+      return (control.invalid && control.touched) || !!this.oldPasswordError;
+    } 
+    else if (controlName === 'password' || controlName === 'confirmPassword') {
+      const passwordGroup = this.passwordForm.get('passwordGroup');
+      control = passwordGroup?.get(controlName);
+      const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+      if (!control) return false;
+  
+      if (controlName === 'password') {
+        return (control.invalid && control.touched) || 
+               (this.passwordMismatch && confirmPasswordControl!.touched);
+      }
+      return (control.invalid && control.touched) || 
+             (this.passwordMismatch && control.touched);
+    }
+    else {
+      control = this.profileForm.get(controlName);
+      if (!control) return false;
+  
+      switch (controlName) {
+        case 'name':
+        case 'email':
+          return (control.invalid && control.touched) || 
+                 (controlName === 'email' && control.hasError('emailExists'));
+        case 'dateOfBirth':
+          return (!this.isValidAge && control.touched);
+        case 'weight':
+          return !this.isWeightValid() && control.touched;
+        case 'height':
+          return control.invalid && control.touched;
+        default:
+          return control.invalid && control.touched;
+      }
+    }
+  }
+
+  getInputStyle(controlName: string): { [key: string]: string } {
+    let control;
+    let isInvalid = false;
+  
+    if (controlName === 'oldPassword') {
+      control = this.passwordForm.get('oldPassword');
+      isInvalid = (control?.invalid && control?.touched) || 
+                  !!this.oldPasswordError;
+    } 
+    else if (controlName === 'password' || controlName === 'confirmPassword') {
+      const passwordGroup = this.passwordForm.get('passwordGroup');
+      control = passwordGroup?.get(controlName);
+      const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+  
+      if (control) {
+        if (controlName === 'password') {
+          isInvalid = (control.invalid && control.touched) || 
+                      (this.passwordMismatch && confirmPasswordControl!.touched);
+        } else {
+          isInvalid = (control.invalid && control.touched) || 
+                      (this.passwordMismatch && control.touched);
+        }
+      }
+    }
+    else {
+      control = this.profileForm.get(controlName);
+      if (control) {
+        const trimmedValue = control.value?.trim() || '';
+        isInvalid = (control.invalid && control.touched) || 
+                    (controlName === 'email' && control.hasError('emailExists')) ||
+                    (!trimmedValue && control.touched);
+      }
+    }
+  
+    const styles: { [key: string]: string } = {
+      'border-color': isInvalid ? 'red' : 'white',
+      '--placeholder-color': isInvalid ? 'red' : 'white',
+      'color': isInvalid ? 'red' : 'white',
+      '--eye-icon-color': isInvalid ? 'red' : 'white',
+      '--eye-icon-hover-color': isInvalid ? '#d01515' : '#c7ff20'
+    };
+  
+    return styles;
+  }
+
+  getLabelStyle(controlName: string): { [key: string]: string } {
+    let control;
+    let isInvalid = false;
+  
+    if (controlName === 'oldPassword') {
+      control = this.passwordForm.get('oldPassword');
+      isInvalid = (control?.invalid && control?.touched) || 
+                  !!this.oldPasswordError;
+    } 
+    else if (controlName === 'password' || controlName === 'confirmPassword') {
+      const passwordGroup = this.passwordForm.get('passwordGroup');
+      control = passwordGroup?.get(controlName);
+      const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+  
+      if (control) {
+        if (controlName === 'password') {
+          isInvalid = (control.invalid && control.touched) || 
+                      (this.passwordMismatch && confirmPasswordControl!.touched);
+        } else {
+          isInvalid = (control.invalid && control.touched) || 
+                      (this.passwordMismatch && control.touched);
+        }
+      }
+    }
+    else {
+      control = this.profileForm.get(controlName);
+      if (control) {
+        switch (controlName) {
+          case 'name':
+          case 'email':
+            const trimmedValue = control.value?.trim() || '';
+            isInvalid = (control.invalid && control.touched) || 
+                        (controlName === 'email' && control.hasError('emailExists')) ||
+                        (!trimmedValue && control.touched);
+            break;
+          case 'dateOfBirth':
+            isInvalid = !this.isValidAge && control.touched;
+            break;
+          case 'weight':
+            isInvalid = !this.isWeightValid() && control.touched;
+            break;
+          case 'height':
+            isInvalid = control.invalid && control.touched;
+            break;
+          default:
+            isInvalid = control.invalid && control.touched;
+        }
+      }
+    }
+  
+    return {
+      'color': isInvalid ? 'red' : 'white',
+    };
+  }
 
 
 }

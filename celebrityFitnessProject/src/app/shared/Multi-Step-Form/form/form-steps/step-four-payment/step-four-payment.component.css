@@ -236,6 +236,29 @@ input[matInput]:focus::placeholder {
   display: none !important;
 } 
 
+/* Error state focus */
+input:focus.error-input {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
+  color: red !important;
+}
+
+/* Placeholder color for focused inputs */
+input[matInput]:focus:not(.error-input)::placeholder {
+  color: #000000 !important;
+}
+
+input[matInput]:focus.error-input::placeholder {
+  color: red !important;
+}
+
+/* Existing placeholder styles for error state */
+input[type="text"].error-input::placeholder,
+input[type="tel"].error-input::placeholder {
+  color: var(--placeholder-color, red);
+  transition: color 0.1s ease;
+}
+
 @media (min-width: 37.5em) {
 
   label {

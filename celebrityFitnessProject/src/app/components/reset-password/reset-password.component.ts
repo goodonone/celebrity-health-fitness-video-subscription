@@ -127,6 +127,18 @@ export class ResetPasswordComponent implements OnInit {
       }
     });
 
+  // Subscribe to confirm password changes
+  const confirmPasswordControl = this.passwordForm.get('passwordGroup.confirmPassword');
+  
+  confirmPasswordControl?.valueChanges
+    .pipe(takeUntil(this.destroy$))
+    .subscribe(() => {
+      // Only check for mismatch if the confirm password field has been touched
+      if (confirmPasswordControl.touched) {
+        this.checkPasswords();
+      }
+    });
+
     this.cdr.detectChanges();
   }
 
@@ -192,54 +204,256 @@ export class ResetPasswordComponent implements OnInit {
   //   this.isPopupVisible = false;
   // }
 
+  // getErrorMessage(controlName: string): string {
+  //   let control;
+    
+  //   if (controlName === 'email') {
+  //     control = this.emailForm.get('email');
+  //     if (!control) return '';
+      
+  //     if (this.emailSendingError) {
+  //       return "Error Sending Email";
+  //     }
+  //     if (control.hasError('required')) {
+  //       return 'Email is required';
+  //     }
+  //     if (control.hasError('email') || control.hasError('pattern')) {
+  //       return 'Invalid email format';
+  //     }
+  //   } else {
+  //     control = this.passwordForm.get(`passwordGroup.${controlName}`);
+  //     if (!control) return '';
+  
+  //     if (control.hasError('required')) {
+  //       return 'Required';
+  //     }
+  //     if (control.hasError('minlength')) {
+  //       return 'Must be at least 8 characters';
+  //     }
+  //     if (control.hasError('pattern')) {
+  //       return 'Requirements not met';
+  //     }
+  //     if (controlName === 'confirmPassword' && this.passwordMismatch) {
+  //       return 'Passwords do not match';
+  //     }
+  //   }
+  
+  //   return 'Invalid';
+  // }
+
+  // getErrorMessage(controlName: string): string {
+  //   let control;
+    
+  //   if (controlName === 'email') {
+  //     control = this.emailForm.get('email');
+  //     if (!control) return '';
+      
+  //     if (this.emailSendingError) {
+  //       return "Error Sending Email";
+  //     }
+  //     if (control.hasError('required')) {
+  //       return 'Email is required';
+  //     }
+  //     if (control.hasError('email') || control.hasError('pattern')) {
+  //       return 'Invalid email format';
+  //     }
+  //   } else {
+  //     const passwordGroup = this.passwordForm.get('passwordGroup');
+  //     control = passwordGroup?.get(controlName);
+  //     if (!control) return '';
+    
+  //     // Show password mismatch error on both fields
+  //     if (this.passwordMismatch && (controlName === 'password' || controlName === 'confirmPassword')) {
+  //       return 'Passwords do not match';
+  //     }
+  //     if (control.hasError('required')) {
+  //       return 'Required';
+  //     }
+  //     if (control.hasError('minlength')) {
+  //       return 'Must be at least 8 characters';
+  //     }
+  //     if (control.hasError('pattern')) {
+  //       return 'Requirements not met';
+  //     }
+  //   }
+    
+  //   return 'Invalid';
+  // }
+
+  getErrorMessage(controlName: string): string {
+    let control;
+    
+    if (controlName === 'email') {
+          control = this.emailForm.get('email');
+          if (!control) return '';
+          
+          if (this.emailSendingError) {
+            return "Error Sending Email";
+          }
+          if (control.hasError('required')) {
+            return 'Email is required';
+          }
+          if (control.hasError('email') || control.hasError('pattern')) {
+            return 'Invalid';
+          }
+    } else {
+      const passwordGroup = this.passwordForm.get('passwordGroup');
+      control = passwordGroup?.get(controlName);
+      if (!control) return '';
+    
+      // Only show mismatch error if the field is touched
+      if (this.passwordMismatch && control.touched) {
+        if (controlName === 'confirmPassword' || 
+           (controlName === 'password' && passwordGroup?.get('confirmPassword')?.touched)) {
+          return 'Passwords do not match';
+        }
+      }
+      
+      if (control.hasError('required')) {
+        return 'Required';
+      }
+      // if (control.hasError('minlength')) {
+      //   return 'Must be at least 8 characters';
+      // }
+      if (control.hasError('pattern')) {
+        return 'Requirements not met';
+      }
+    }
+    
+    return 'Invalid';
+  }
+
   // Prevent copy and paste in confirm password field
   preventCopyPaste(event: ClipboardEvent): void {
     event.preventDefault();
   }
 
+  // isFormValid(): boolean {
+  //   if (!this.passwordForm) {
+  //     console.log('Password form is not initialized');
+  //     return false;
+  //   }
+
+  //   const passwordGroup = this.passwordForm.get('passwordGroup') as FormGroup;
+  //   const passwordControl = passwordGroup?.get('password');
+  //   const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+  //   if (!passwordControl || !confirmPasswordControl) {
+  //     console.log('Password controls are not initialized');
+  //     return false;
+  //   }
+
+  //   const passwordValid =
+  //     passwordControl.valid && !passwordControl.hasError('required');
+  //   const confirmPasswordValid =
+  //     confirmPasswordControl.valid &&
+  //     !confirmPasswordControl.hasError('required');
+  //   const passwordsMatch = !this.passwordMismatch;
+
+  //   console.log('New password valid:', passwordValid);
+  //   console.log('Confirm password valid:', confirmPasswordValid);
+  //   console.log('Passwords match:', passwordsMatch);
+
+  //   return passwordValid && confirmPasswordValid && passwordsMatch;
+  // }
+
   isFormValid(): boolean {
     if (!this.passwordForm) {
-      console.log('Password form is not initialized');
       return false;
     }
-
-    const passwordGroup = this.passwordForm.get('passwordGroup') as FormGroup;
+  
+    const passwordGroup = this.passwordForm.get('passwordGroup');
     const passwordControl = passwordGroup?.get('password');
     const confirmPasswordControl = passwordGroup?.get('confirmPassword');
-
+  
     if (!passwordControl || !confirmPasswordControl) {
-      console.log('Password controls are not initialized');
       return false;
     }
-
-    const passwordValid =
-      passwordControl.valid && !passwordControl.hasError('required');
-    const confirmPasswordValid =
-      confirmPasswordControl.valid &&
-      !confirmPasswordControl.hasError('required');
-    const passwordsMatch = !this.passwordMismatch;
-
-    console.log('New password valid:', passwordValid);
-    console.log('Confirm password valid:', confirmPasswordValid);
-    console.log('Passwords match:', passwordsMatch);
-
-    return passwordValid && confirmPasswordValid && passwordsMatch;
+  
+    const passwordValid = passwordControl.valid && 
+                         !passwordControl.hasError('required') && 
+                         passwordControl.value?.length > 0;
+    
+    const confirmPasswordValid = confirmPasswordControl.valid && 
+                               !confirmPasswordControl.hasError('required') && 
+                               confirmPasswordControl.value?.length > 0;
+    
+    const noMismatch = !this.passwordMismatch;
+    const groupValid = !passwordGroup?.errors;
+  
+    return passwordValid && confirmPasswordValid && noMismatch && groupValid;
   }
 
-  checkPasswords(): void {
-    // this.authenticating = false;
-    const passwordGroup = this.passwordForm.get('passwordGroup');
-    const password = passwordGroup?.get('password')?.value;
-    const confirmPassword = passwordGroup?.get('confirmPassword')?.value;
+  // checkPasswords(): void {
+  //   // this.authenticating = false;
+  //   const passwordGroup = this.passwordForm.get('passwordGroup');
+  //   const password = passwordGroup?.get('password')?.value;
+  //   const confirmPassword = passwordGroup?.get('confirmPassword')?.value;
 
-    if (password && confirmPassword) {
+  //   if (password && confirmPassword) {
+  //     this.passwordMismatch = password !== confirmPassword;
+  //     if (this.passwordMismatch) {
+  //       passwordGroup?.setErrors({ passwordMismatch: true });
+  //     } else {
+  //       passwordGroup?.setErrors(null);
+  //     }
+  //   }
+  //   this.cdr.detectChanges();
+  // }
+
+  // checkPasswords(): void {
+  //   const passwordGroup = this.passwordForm.get('passwordGroup');
+  //   const password = passwordGroup?.get('password')?.value;
+  //   const confirmPassword = passwordGroup?.get('confirmPassword')?.value;
+  
+  //   if (password && confirmPassword) {
+  //     this.passwordMismatch = password !== confirmPassword;
+  //     if (this.passwordMismatch) {
+  //       passwordGroup?.setErrors({ passwordMismatch: true });
+  //     } else {
+  //       // Only clear passwordMismatch error, preserve other errors if they exist
+  //       const currentErrors = passwordGroup?.errors || {};
+  //       if (currentErrors['passwordMismatch']) {
+  //         delete currentErrors['passwordMismatch'];
+  //         passwordGroup?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+  //       }
+  //     }
+  //   }
+  //   this.cdr.detectChanges();
+  // }
+
+  checkPasswords(): void {
+    const passwordGroup = this.passwordForm.get('passwordGroup');
+    const passwordControl = passwordGroup?.get('password');
+    const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+  
+    if (!passwordControl || !confirmPasswordControl) return;
+  
+    const password = passwordControl.value;
+    const confirmPassword = confirmPasswordControl.value;
+  
+    // Only show mismatch error if confirmPassword has a value and has been touched
+    if (confirmPassword && confirmPasswordControl.touched) {
       this.passwordMismatch = password !== confirmPassword;
       if (this.passwordMismatch) {
         passwordGroup?.setErrors({ passwordMismatch: true });
       } else {
-        passwordGroup?.setErrors(null);
+        const currentErrors = passwordGroup?.errors || {};
+        if (currentErrors['passwordMismatch']) {
+          delete currentErrors['passwordMismatch'];
+          passwordGroup?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
+        }
+      }
+    } else {
+      // Reset mismatch state if confirm password is empty
+      this.passwordMismatch = false;
+      const currentErrors = passwordGroup?.errors || {};
+      if (currentErrors['passwordMismatch']) {
+        delete currentErrors['passwordMismatch'];
+        passwordGroup?.setErrors(Object.keys(currentErrors).length ? currentErrors : null);
       }
     }
+    
     this.cdr.detectChanges();
   }
 
@@ -286,31 +500,330 @@ export class ResetPasswordComponent implements OnInit {
   //   };
   // }
 
-  getInputStyle(controlName: string): { [key: string]: string } {
-    // const control = this.passwordForm.get(`passwordGroup.${controlName}`);
-    let control;
-    if (controlName === 'email') {
-      control = this.emailForm.get('email');
-    } else {
-      control = this.passwordForm.get(`passwordGroup.${controlName}`);
-    }
-    const isInvalid = control?.invalid && (control?.dirty || control?.touched);
+  // getInputStyle(controlName: string): { [key: string]: string } {
+  //   // const control = this.passwordForm.get(`passwordGroup.${controlName}`);
+  //   let control;
+  //   if (controlName === 'email') {
+  //     control = this.emailForm.get('email');
+  //   } else {
+  //     control = this.passwordForm.get(`passwordGroup.${controlName}`);
+  //   }
+  //   const isInvalid = control?.invalid && (control?.dirty || control?.touched);
     
-    return {
-        'border-color': isInvalid ? 'red' : 'black',
-        '--placeholder-color': isInvalid ? 'red' : 'black',
-        'color': isInvalid ? 'red' : 'black',
-    };
+  //   return {
+  //       'border-color': isInvalid ? 'red' : 'black',
+  //       '--placeholder-color': isInvalid ? 'red' : 'black',
+  //       'color': isInvalid ? 'red' : 'black',
+  //   };
+  // }
+
+  // getEmailLabelStyle(): { [key: string]: string } {
+  //   const control = this.emailForm.get('email');
+  //   const isInvalid = control?.invalid && (control?.dirty || control?.touched);
+    
+  //   return {
+  //     'color': isInvalid ? 'red' : 'black',
+  //   };
+  // }
+
+  // Update these methods in your ResetPasswordComponent
+
+isEmailFormValid(): boolean {
+  const emailControl = this.emailForm.get('email');
+  if (!emailControl) return false;
+  
+  const trimmedValue = emailControl.value?.trim() || '';
+  return emailControl.valid && trimmedValue.length > 0 && !this.emailSendingError;
+}
+
+// getInputStyle(controlName: string): { [key: string]: string } {
+//   let control;
+//   let isInvalid = false;
+
+//   if (controlName === 'email') {
+//     control = this.emailForm.get('email');
+//     if (control) {
+//       const trimmedValue = control.value?.trim() || '';
+//       isInvalid = (control.invalid && control.touched) || 
+//                   this.emailSendingError ||
+//                   (!trimmedValue && control.touched);
+//     }
+//   } else {
+//     control = this.passwordForm.get(`passwordGroup.${controlName}`);
+//     if (control) {
+//       isInvalid = (control.invalid && control.touched) || 
+//                   (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//     }
+//   }
+  
+//   return {
+//     'border-color': isInvalid ? 'red' : 'black',
+//     '--placeholder-color': isInvalid ? 'red' : 'black',
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+// getInputStyle(controlName: string): { [key: string]: string } {
+//   let control;
+//   let isInvalid = false;
+
+//   if (controlName === 'email') {
+//     control = this.emailForm.get('email');
+//     if (control) {
+//       const trimmedValue = control.value?.trim() || '';
+//       isInvalid = (control.invalid && control.touched) || 
+//                   this.emailSendingError ||
+//                   (!trimmedValue && control.touched);
+//     }
+//   } else {
+//     const passwordGroup = this.passwordForm.get('passwordGroup');
+//     control = passwordGroup?.get(controlName);
+//     if (control) {
+//       // Show red styling on both password fields when there's a mismatch
+//       if (this.passwordMismatch && (controlName === 'password' || controlName === 'confirmPassword')) {
+//         isInvalid = control.touched;
+//       } else {
+//         isInvalid = control.invalid && control.touched;
+//       }
+//     }
+//   }
+  
+//   return {
+//     'border-color': isInvalid ? 'red' : 'black',
+//     '--placeholder-color': isInvalid ? 'red' : 'black',
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+getInputStyle(controlName: string): { [key: string]: string } {
+  let control;
+  let isInvalid = false;
+
+  if (controlName === 'email') {
+    control = this.emailForm.get('email');
+    if (control) {
+      const trimmedValue = control.value?.trim() || '';
+      isInvalid = (control.invalid && control.touched) || 
+                  this.emailSendingError ||
+                  (!trimmedValue && control.touched);
+    }
+  } else {
+    const passwordGroup = this.passwordForm.get('passwordGroup');
+    control = passwordGroup?.get(controlName);
+    const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+
+    if (control) {
+      if (controlName === 'password') {
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && confirmPasswordControl?.touched && confirmPasswordControl?.value);
+      } else if (controlName === 'confirmPassword') {
+        isInvalid = (control.invalid && control.touched) || 
+                    (this.passwordMismatch && control.touched);
+      }
+    }
   }
 
-  getEmailLabelStyle(): { [key: string]: string } {
-    const control = this.emailForm.get('email');
-    const isInvalid = control?.invalid && (control?.dirty || control?.touched);
-    
-    return {
-      'color': isInvalid ? 'red' : 'black',
-    };
+  const styles: { [key: string]: string } = {
+    'border-color': isInvalid ? 'red' : 'black',
+    '--placeholder-color': isInvalid ? 'red' : 'black',
+    'color': isInvalid ? 'red' : 'black',
+    '--eye-icon-color': isInvalid ? 'red' : '#646464',
+    '--eye-icon-hover-color': isInvalid ? '#d01515' : '#333333'
+
+  };
+
+  return styles;
+}
+
+
+// getLabelStyle(controlName: string): { [key: string]: string } {
+//   let control;
+//   let isInvalid = false;
+
+//   if (controlName === 'email') {
+//     control = this.emailForm.get('email');
+//     if (control) {
+//       const trimmedValue = control.value?.trim() || '';
+//       isInvalid = (control.invalid && control.touched) || 
+//                   this.emailSendingError ||
+//                   (!trimmedValue && control.touched);
+//     }
+//   } else {
+//     control = this.passwordForm.get(`passwordGroup.${controlName}`);
+//     if (control) {
+//       isInvalid = (control.invalid && control.touched) || 
+//                   (controlName === 'confirmPassword' && this.passwordMismatch && control.touched);
+//     }
+//   }
+
+//   return {
+//     'color': isInvalid ? 'red' : 'black'
+//   };
+// }
+
+getLabelStyle(controlName: string): { [key: string]: string } {
+  let control;
+  let isInvalid = false;
+
+  if (controlName === 'email') {
+    control = this.emailForm.get('email');
+    if (control) {
+      const trimmedValue = control.value?.trim() || '';
+      isInvalid = (control.invalid && control.touched) || 
+                  this.emailSendingError ||
+                  (!trimmedValue && control.touched);
+    }
+  } else {
+    const passwordGroup = this.passwordForm.get('passwordGroup');
+    control = passwordGroup?.get(controlName);
+    if (control) {
+      // Show red styling on both password labels when there's a mismatch
+      if (this.passwordMismatch && (controlName === 'password' || controlName === 'confirmPassword')) {
+        isInvalid = control.touched;
+      } else {
+        isInvalid = control.invalid && control.touched;
+      }
+    }
   }
+
+  return {
+    'color': isInvalid ? 'red' : 'black'
+  };
+}
+
+// Update your onEmailBlur method
+onEmailBlur() {
+  const emailControl = this.emailForm.get('email');
+  if (emailControl && typeof emailControl.value === 'string') {
+    const trimmedValue = emailControl.value.trim();
+    if (trimmedValue !== emailControl.value) {
+      emailControl.setValue(trimmedValue);
+    }
+  }
+  emailControl?.markAsTouched();
+  this.emailSendingError = false;
+  this.cdr.detectChanges();
+}
+
+// shouldShowError(controlName: string): boolean {
+//   let control;
+  
+//   if (controlName === 'email') {
+//     control = this.emailForm.get('email');
+//     if (!control) return false;
+    
+//     const trimmedValue = control.value?.trim() || '';
+//     return (control.invalid && control.touched) || 
+//            this.emailSendingError || 
+//            (!trimmedValue && control.touched);
+//   } else {
+//     // Handle password form controls
+//     control = this.passwordForm.get(`passwordGroup.${controlName}`);
+//     if (!control) return false;
+
+//     switch (controlName) {
+//       case 'password':
+//         return control.invalid && control.touched;
+      
+//       case 'confirmPassword':
+//         return (control.invalid && control.touched) || 
+//                (this.passwordMismatch && control.touched);
+      
+//       default:
+//         return control.invalid && control.touched;
+//     }
+//   }
+// }
+
+// shouldShowError(controlName: string): boolean {
+//   let control;
+  
+//   if (controlName === 'email') {
+//     control = this.emailForm.get('email');
+//     if (!control) return false;
+    
+//     const trimmedValue = control.value?.trim() || '';
+//     return (control.invalid && control.touched) || 
+//            this.emailSendingError || 
+//            (!trimmedValue && control.touched);
+//   } else {
+//     // Handle password form controls
+//     const passwordGroup = this.passwordForm.get('passwordGroup');
+//     control = passwordGroup?.get(controlName);
+//     if (!control) return false;
+
+//     // Show error on both password fields when there's a mismatch
+//     if (this.passwordMismatch && (controlName === 'password' || controlName === 'confirmPassword')) {
+//       return control.touched;
+//     }
+
+//     return control.invalid && control.touched;
+//   }
+// }
+
+// shouldShowError(controlName: string): boolean {
+//   let control;
+  
+//   if (controlName === 'email') {
+//     // ... existing email validation ...
+//   } else {
+//     const passwordGroup = this.passwordForm.get('passwordGroup');
+//     control = passwordGroup?.get(controlName);
+//     if (!control) return false;
+
+//     // Only show password mismatch error if confirm password is touched
+//     if (this.passwordMismatch && control.touched) {
+//       if (controlName === 'confirmPassword') {
+//         return true;
+//       }
+//       // Only show error on password field if confirm password has a value
+//       if (controlName === 'password') {
+//         const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+//         return confirmPasswordControl?.touched && confirmPasswordControl?.value;
+//       }
+//     }
+
+//     return control.invalid && control.touched;
+//   }
+// }
+
+shouldShowError(controlName: string): boolean {
+  let control;
+  
+  if (controlName === 'email') {
+    control = this.emailForm.get('email');
+    if (!control) return false;
+    
+    const trimmedValue = control.value?.trim() || '';
+    return (control.invalid && control.touched) || 
+           this.emailSendingError || 
+           (!trimmedValue && control.touched);
+  } else {
+    // Handle password form controls
+    const passwordGroup = this.passwordForm.get('passwordGroup');
+    control = passwordGroup?.get(controlName);
+    const confirmPasswordControl = passwordGroup?.get('confirmPassword');
+    if (!control) return false;
+
+    // For password field
+    if (controlName === 'password') {
+      if (this.passwordMismatch && confirmPasswordControl?.touched && confirmPasswordControl?.value) {
+        return true;
+      }
+      return control.invalid && control.touched;
+    }
+    
+    // For confirm password field
+    if (controlName === 'confirmPassword') {
+      if (this.passwordMismatch && control.touched) {
+        return true;
+      }
+      return control.invalid && control.touched;
+    }
+
+    return control.invalid && control.touched;
+  }
+}
 
 
   // sendResetEmail() {
@@ -407,12 +920,12 @@ export class ResetPasswordComponent implements OnInit {
     return '';
   }
 
-  onEmailBlur() {
-    const emailControl = this.emailForm.get('email');
-    emailControl?.markAsTouched();
-    this.emailSendingError = false; // Reset the error when the user interacts with the field
-    this.cdr.detectChanges();
-  }
+  // onEmailBlur() {
+  //   const emailControl = this.emailForm.get('email');
+  //   emailControl?.markAsTouched();
+  //   this.emailSendingError = false; // Reset the error when the user interacts with the field
+  //   this.cdr.detectChanges();
+  // }
 
   updateUserPassword() {
     if (this.isFormValid() && this.resetToken) {

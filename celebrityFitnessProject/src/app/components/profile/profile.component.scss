@@ -686,7 +686,8 @@ fieldset {
   z-index: 5;
 }
 
-.zoomIn, .zoomOut{
+.zoomIn, 
+.zoomOut{
   // font-size: ;
   font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   color: white;
@@ -698,7 +699,12 @@ fieldset {
 
   &.clicked{
     opacity: 1;
-    color: rgb(0, 0, 0);
+    color: rgb(191, 191, 191);
+  }
+
+  &.disabled{
+    cursor: not-allowed;
+    opacity: 0.3;
   }
 }
 
@@ -709,8 +715,6 @@ fieldset {
 ::ng-deep .zoomOut svg, ::ng-deep .zoomIn svg{
   filter: drop-shadow(0 0 4px #000000);
 }
-
-
 
 .profilePictureContainerForDragging{
   position: relative;
@@ -882,16 +886,11 @@ h3.profileDetails.email {
   max-width: 18rem;
   // overflow: visible;
   overflow-x: hidden;
+  // overflow-y: visible;
   text-overflow:ellipsis;
   white-space: nowrap;
   height: 4rem;
-  // margin-bottom: 1.5rem;
-  // overflow-y: visible;
-  //   box-sizing: border-box;
-  //   background-color: #C7FF20;
-  // padding-bottom: 0.2rem;
-  //   height: auto;
-  //   background-color: #c7ff20;
+  
 }
 
 h3.profileDetailsInputDOB {
@@ -914,6 +913,9 @@ h3.profileDetailsInputDOB {
 .spanProfileCategoryDOB {
   font-size: 1.4rem;
   width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 // .errorTwentyOne {
@@ -1000,12 +1002,23 @@ h3.profileDetails.plan{
 
 .spanProfileCategory {
   font-size: 1.4rem;
-  margin-bottom: 0.5rem;
+  // margin-bottom: 0.5rem;
   width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
+// .spanProfileCategory.name {
+//   display: inline-flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   // height: auto;
+// }
+
 .spanProfileCategory.email{
-  width: 10rem;
+  // width: 10rem;
+  width: 100%;
 }
 
 .buttons {
@@ -1224,10 +1237,12 @@ h3.profileDetails.plan{
   cursor: pointer;
   user-select: none;
   color: white;
+  color: var(--eye-icon-color, white) !important;
 }
 
 .eye-icon:hover {
-  color: #c7ff20;
+  color: var(--eye-icon-hover-color, #c7ff20) !important;
+
 }
 
 .popup {
@@ -1300,13 +1315,18 @@ input:disabled:-moz-placeholder {
   color: rgb(49, 49, 49) !important;
 }
 
+// .error{
+
+// }
+
 .error-alert {
   color: red;
   font-weight: bold;
   text-align: right;
   font-size: 0.875rem;
-  line-height: 1.2rem;
-  // line-height: 1rem;
+  // margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  line-height: 1.2rem
 }
 
 .error-alert-input{
@@ -1524,6 +1544,7 @@ select {
 }
 
 select {
+    width: 17.7rem;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1692,7 +1713,7 @@ input#weight,
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgb(255, 255, 255);
   z-index: 9;
 }
 
@@ -1703,13 +1724,13 @@ input#weight,
 }
 
 .spinner .path {
-  stroke: #ffffff;
+  stroke: #000000;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
 }
 
 .spinner-text {
-  color: #ffffff;
+  color: #000000;
   font-size: 1.5rem;
   margin-top: 1rem;
 }
@@ -1741,6 +1762,40 @@ input[matInput]:focus {
   box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
   color: #ffffff !important; /* Change the text color when focused */
 }
+
+  input[type="password"]::placeholder,
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="decimal"]::placeholder {
+    color: var(--placeholder-color, red);
+    transition: color 0.1s ease;
+  }
+  
+  /* input[type="text"]::placeholder {
+    color: var(--placeholder-color, black);
+    transition: color 0.1s ease;
+  } */
+
+  input[type="text"].password-visible {
+    color: inherit;
+  }
+
+  input[type="password"].error-input::placeholder,
+  input[type="text"].error-input::placeholder {
+  color: var(--placeholder-color, red);
+  transition: color 0.1s ease;
+}
+
+
+  input:focus.error-input {
+    border-color: red !important;
+    box-shadow: 0 0 0 1px red !important;
+    color: red !important;
+  }
+
+  input[matInput]:focus.error-input::placeholder {
+    color: red !important;
+  }
 
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */
