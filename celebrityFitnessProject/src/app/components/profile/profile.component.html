@@ -65,7 +65,8 @@
                                 <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (mousedown)="onMouseDown('reset')" 
                                 (mouseup)="onMouseUp('reset')" 
                                 (mouseleave)="onMouseLeave('reset')"
-                                [ngClass]="{'clicked': isResetClicked}"
+                                [ngClass]="{'clicked': isResetClicked, 
+                                'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
                                 <mat-card class="profilePicture" id="profilePicture" 
@@ -330,9 +331,47 @@
                     <div class="profilePictureFormContainer">
                     <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
                       <div class="profilePictureLinkContainer">
-                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture Links</span></h3>
-                        <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" [ngStyle]="getInputStyle('imgUrl')"
-                        [ngClass]="{'error-input': shouldShowError('imgUrl')}" formControlName="imgUrl" (input)="onImageUrlInput($event)">
+                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture Links
+                            <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('imgUrl')" 
+                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
+                        </span></h3>
+
+                        <div class="imageInputContainer">
+                            <input matInput 
+                                class="imgUrl" 
+                                placeholder="Insert URL of Profile Picture"
+                                type="text" 
+                                [ngStyle]="getInputStyle('imgUrl')"
+                                [ngClass]="{'error-input': shouldShowError('imgUrl')}"
+                                formControlName="imgUrl" 
+                                (input)="onImageUrlInput($event)"
+                                pattern="https?://.+">
+
+                            <!-- Hidden File Input -->
+                            <input
+                                #fileInput
+                                type="file"
+                                accept="image/*"
+                                (change)="onFileSelected($event)"
+                                style="display: none">
+                                
+                            
+                            <!-- Upload Button -->
+                            <button mat-button 
+                                class="uploadButton"
+                                (click)="fileInput.click()"
+                                [disabled]="isUploading"
+                                type="button">
+                            <span *ngIf="!isUploading">Upload</span>
+                            <div *ngIf="isUploading" class="uploadingState">
+                            <mat-spinner diameter="20"></mat-spinner>
+                            <span>{{uploadProgress}}%</span>
+                            </div>
+                            </button>
+                        </div>
+
                       </div>
                       <div class="savePictureButtonContainer">
                         <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>

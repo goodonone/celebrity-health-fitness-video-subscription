@@ -350,4 +350,20 @@ resetPassword(token: string, newPassword: string): Observable<any> {
   return this.http.post(`${this.baseURL}/reset-password/${token}`, { password: newPassword });
 }
 
+updateUserWithImage(userId: string, userData: User): Observable<User> {
+  return this.http.patch<User>(`${this.baseURL}/users/${userId}`, {
+    ...userData,
+    imgUrl: userData.imgUrl,
+    profilePictureSettings: userData.profilePictureSettings
+  });
+}
+
+// Add method to delete old image if needed
+deleteOldImage(userId: string, oldImageUrl: string): Observable<any> {
+  return this.http.delete(`${this.baseURL}/users/${userId}/image`, {
+    body: { imageUrl: oldImageUrl }
+  });
+}
+
+
 }

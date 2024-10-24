@@ -20,7 +20,15 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { CustomOAuthService } from './services/oauth.service';
 import { AuthStateService } from './services/authstate.service';
 import { AuthService } from './services/auth.service';
+import { initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
+import { environment } from 'src/environments/environment';
 
+// Initialize Firebase
+const app = initializeApp(environment.firebase);
+
+// Get Storage instance
+export const storage = getStorage(app);
 
 
 @NgModule({

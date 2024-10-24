@@ -692,7 +692,7 @@ fieldset {
   font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   color: white;
   text-shadow: 0 0 7px #000000;
-  opacity: 0.7;
+  opacity: 0.8;
   // line-height: clamp(2rem, 3vw, 3rem);
   // padding-bottom: 1rem;
   cursor: pointer;
@@ -704,7 +704,8 @@ fieldset {
 
   &.disabled{
     cursor: not-allowed;
-    opacity: 0.3;
+    // color: rgb(0, 0, 0);
+    opacity: 0.4;
   }
 }
 
@@ -784,6 +785,67 @@ fieldset {
     opacity: 1;
     color: rgb(0, 0, 0);
     // border-color: rgb(0, 0, 0);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+}
+
+// Upload image button 
+.imageInputContainer {
+  position: relative;
+  width: 100%;
+  
+  .imgUrl {
+    width: 100%;
+    padding-right: 100px; // Make room for upload button
+  }
+  
+  .uploadButton {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    min-width: 90px;
+    
+    .uploadingState {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      mat-spinner {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.uploadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .uploadingContent {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    mat-spinner {
+      margin-bottom: 1rem;
+    }
   }
 }
 
