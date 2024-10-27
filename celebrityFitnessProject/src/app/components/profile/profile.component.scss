@@ -800,15 +800,17 @@ fieldset {
   
   .imgUrl {
     width: 100%;
-    padding-right: 100px; // Make room for upload button
+    // max-width: 17rem;
+    // padding-right: 100px; // Make room for upload button
   }
   
   .uploadButton {
     position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    right: 0.15rem;
+    top: 40.5%;
+    transform: translateY(-49%);
     min-width: 90px;
+    background-color: white;
     
     .uploadingState {
       display: flex;
@@ -845,6 +847,7 @@ fieldset {
 
     mat-spinner {
       margin-bottom: 1rem;
+      stroke: black;
     }
   }
 }
@@ -897,21 +900,41 @@ h3.profileDetails {
   font-weight: 500;
   font-size: 1.9rem;
   margin-bottom: 1.8rem;
+  // line-height: 1.4rem;
 }
 
 h3.profileDetailsInput {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 h3.profileDetailsInput.email {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.1rem;
 }
+
+h3.profileDetailsInputDOB,
+h3.profileDetailsInputWeight,
+h3.profileDetailsInputHeight,
+h3.profileDetailsInputObjective,
+h3.profileDetailsInputGender{
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.9rem;
+}
+
+// h3.profileDetailsInput.email {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   // margin-bottom: 1.5rem;
+//   // margin-bottom: 0.9rem;
+// }
 
 .email:disabled {
   background-color: rgb(50, 50, 50);
@@ -925,44 +948,72 @@ h3.profileDetailsInput.email {
 //     margin-bottom: 1.1rem;
 // }
 
-h3.profileDetails.name {
+h3.profileDetails.name{
   width: 100%;
   max-width: 18rem;
-  height: max-content;
-  // width: 18rem;
-  min-width: 5rem;
-  height: 3.73rem;
-  // max-width: 25rem;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  // min-width: 5rem;
+  // overflow-x: hidden;
+  // overflow-y: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+}
+
+// h3.profileDetails.email {
+// //   // width: 18rem;
+// //   width: 100%;
+// //   max-width: 18rem;
+//   width: 100%;
+//   max-width: 18rem;
+//   overflow-x: hidden;
+//   overflow-y: visible !important;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
+
+// h3.profileDetails.email {
+//   // display: flex;
+//   width: 100%;
+//   max-width: 18rem;     
+// }
+
+/* Ensure the h3 element doesn't constrain the content */
+h3.profileDetails.email {
+  width: 100%;
+  max-width: 18rem;
+  overflow: visible; /* Allow content to expand vertically */
+  /* Remove any height constraints if present */
+  /* height: auto; */ /* Uncomment if necessary */
+}
+
+/* Style the email text to handle overflow */
+.emailSpan {
+  display: block;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  //   overflow: visible;
-  /* background-color: #C7FF20; */
+  font-size: inherit; /* Or specify a size, e.g., 1rem */
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  margin-top: -0.3rem;
 }
 
-h3.profileDetails.email {
-  // width: 18rem;
+// h3.profileDetails.email span:last-child {
+//   overflow-x: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+//   width: 100%;
+//   max-width: 18rem;
+// }
 
-  width: 100%;
-  max-width: 18rem;
-  // overflow: visible;
-  overflow-x: hidden;
-  // overflow-y: visible;
-  text-overflow:ellipsis;
-  white-space: nowrap;
-  height: 4rem;
-  
-}
-
-h3.profileDetailsInputDOB {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  // margin-bottom: 2rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.9rem;
-}
+// h3.profileDetailsInputDOB {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   // margin-bottom: 2rem;
+//   // margin-top: 0.5rem;
+//   // margin-bottom: 0.9rem;
+// }
 
 .dateOfBirthSpanAndErrorContainer {
   display: flex;
@@ -972,13 +1023,6 @@ h3.profileDetailsInputDOB {
   margin: 0;
 }
 
-.spanProfileCategoryDOB {
-  font-size: 1.4rem;
-  width: 100%;
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
 
 // .errorTwentyOne {
 //   color: red;
@@ -990,12 +1034,12 @@ h3.profileDetailsInputDOB {
 //   // line-height: 1rem;
 // }
 
-h3.profileDetailsInputGender {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 1rem;
-}
+// h3.profileDetailsInputGender {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
 
 // h3.profileDetailsInputPhoto {
 //   color: white;
@@ -1025,26 +1069,21 @@ h3.profileDetailsChangePassword {
   margin-bottom: 0.5rem;
 }
 
-h3.profileDetailsInputWeight {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 1rem;
-}
 
-h3.profileDetailsInputHeight {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 0.9rem;
-}
 
-h3.profileDetailsInputObjective {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 0.9rem;
-}
+// h3.profileDetailsInputHeight {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
+
+// h3.profileDetailsInputObjective {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
 
 h3.profileDetails.plan{
   font-size: clamp(1.6rem, 1.5vw, 1.9rem);
@@ -1064,11 +1103,25 @@ h3.profileDetails.plan{
 
 .spanProfileCategory {
   font-size: 1.4rem;
-  // margin-bottom: 0.5rem;
   width: 100%;
   display: inline-flex;
   flex-direction: row;
   justify-content: space-between;
+  min-height: 1.4rem;
+}
+
+.spanProfileCategoryDOB {
+  font-size: 1.4rem;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.spanProfileCategory.email{
+  // width: 10rem;
+  width: 100%;
+  // margin-bottom: 0.5rem;
 }
 
 // .spanProfileCategory.name {
@@ -1078,17 +1131,14 @@ h3.profileDetails.plan{
 //   // height: auto;
 // }
 
-.spanProfileCategory.email{
-  // width: 10rem;
-  width: 100%;
-}
+
 
 .buttons {
   display: flex;
   flex-wrap: wrap;
 }
 
-.editProfilePictureButtonsContainer {
+.editProfileButtonsContainerIncludingPicture {
   /* display: flex;
     flex-direction: column; */
   justify-content: center;
@@ -1607,6 +1657,7 @@ select {
 
 select {
     width: 17.7rem;
+    height: 2.7rem;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1615,6 +1666,32 @@ select {
     background-position: right 0.5rem center;
 }
 
+// .currentState{
+//   width: 100%
+// }
+
+input.imgUrl {
+  box-sizing: border-box;
+  padding-left: 0.5rem;
+  width: calc(17rem - 0.5rem); /* Subtract the padding from the original width */
+}
+
+/* Remove these as they're no longer needed */
+// input.imgUrl::placeholder {
+//   padding-left: 0.5rem; 
+// }
+
+// input.imgUrl{
+//   padding-left: 0; 
+// }
+
+// // input.imgUrl::content{
+// //   padding-left: 0.5rem;
+// // }
+
+// input.imgUrl::placeholder{
+//   padding-left: 0.5rem; 
+// }
 // /* Style for the placeholder option */
 // select option[value=""] {
 //   color: gray;
@@ -1716,11 +1793,11 @@ input#weight,
 
 .profilePictureFormContainer {
   width: 100%;
-  max-width: 21rem;
+  max-width: 17.5rem;
   height: 100%;
   padding-left: 1rem;
   margin-top: 0.2rem;
-  width: fit-content;
+  // width: fit-content;
 }
 
 .savePictureButtonContainer {
@@ -1741,7 +1818,7 @@ input#weight,
   justify-content: space-between;
   align-items: center;
   margin: auto;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   // margin-top: 2rem;
 }
 
@@ -1864,6 +1941,10 @@ input[matInput]:focus {
   outline: none; /* Remove the default outline */
 }
 
+::ng-deep .mat-spinner circle {
+  stroke: black !important;
+}
+
 @media screen and (min-width: 2400px) {
   .profileContainer {
     transform: scale(1);
@@ -1881,29 +1962,21 @@ input[matInput]:focus {
     text-align: center;
     width: 100%;
     min-width: 300px;
-    // max-width: 530px;
-    // min-width: 20rem;
     line-height: clamp(4rem, 8.5vw, 9rem);
-    // padding-right: 0.5rem;
     font-size: clamp(5rem, 8vw, 9rem);
-    // font-weight: 1000;
   }
 
  .profileNameTier.tierTwo{
     display: flex;
     flex-direction: column;
-    // flex-direction: column;
     justify-content: center;
     align-items: center;
-    // font-size: clamp(4rem, 8vw, 9rem);
   }
 
   .profileContainer {
     width: auto;
     min-width: 550px;
     max-width: 600px;
-
-    // min-width: 550px;
   }
 
   .flexAllProfileData {
@@ -1918,14 +1991,6 @@ input[matInput]:focus {
     margin-left: 1rem;
   }
 
-  // .profilePictureAndButtonsContainer {
-  //   width: 40%;
-  //   min-width: 200px;
-  //   max-width: 300px;
-  //   box-sizing: border-box;
-  //   margin-left: 1rem;
-  // }
-
   .profilePictureAndButtons {
     width: 80%;
     min-width: auto;
@@ -1934,15 +1999,9 @@ input[matInput]:focus {
   .profileInfo {
     padding-right: 2rem;
     margin-left: 3rem;
-    // padding-left: 1rem;
   }
 
   .profilePicture {
-    // width: auto;
-    // min-width: 200px;
-    // height: auto;
-    // aspect-ratio: 1 / 1;
-    // margin-bottom: 1rem;
     width: 20vw;
     min-width: 200px;
     max-width: 300px;
@@ -1958,7 +2017,6 @@ input[matInput]:focus {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    // max-width: 14rem;
   }
 
   .updateProfileButtonContainer {
@@ -1969,64 +2027,35 @@ input[matInput]:focus {
     min-width: 14rem;
     margin-left: auto;
     margin-right: auto;
-    // margin: 0 auto;
-    // max-width: 25rem;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
   }
 
   h3.profileDetails.name {
     width: 100%;
     max-width: 15rem;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
   }
 
   h3.profileDetails.email {
     width: 100%;
     max-width: 13rem;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  // .updateOnlyPicture{
-  //   width: 15vw;
-  //   max-width: 14rem;
-  //   min-width: 12rem;
-  // }
-
   input {
-    // width: 100%;
-    // max-width: 18rem;
-    // min-width: 13rem;
-    // font-size: 1rem;
     width: 25vw;
     max-width: 220px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
-    // width: 10vw;
-    // min-width: 250px;
-    // font-size: 1rem;
   }
 
   select {
-    // width: 100%;
-    //   max-width: 18rem;
-    //   min-width: 13rem;
-    //   font-size: 1rem;
     width: 25vw;
-    max-width: 220px;
+    max-width: 230px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
@@ -2035,20 +2064,12 @@ input[matInput]:focus {
   #password,
   #oldPassword,
   #confirmPassword {
-    // width: 100%;
-    // max-width: 18rem;
-    // min-width: 13rem;
-    // font-size: 1rem;
     width: 25vw;
     max-width: 220px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
   }
-
-  // .updateProfileButtonContainer{
-  //   width: auto;
-  // }
 
   .btn-cancelProfileButton,
   .btn-updateProfileButton,
@@ -2057,10 +2078,6 @@ input[matInput]:focus {
     width: 6.5rem;
     height: 2.4rem;
   }
-
-  // {
-  //   width: 6.5rem;
-  // }
 
   .btn-updatePasswordButton,
   .btn-cancelPasswordButton {
@@ -2103,7 +2120,6 @@ input[matInput]:focus {
     z-index: 1;
     background-size: cover;
     background-position: center center;
-    // transform: scale(0.1); /* Scaling down by 10% */
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) scale(0.1);
@@ -2272,7 +2288,7 @@ input[matInput]:focus {
     // transform: translateX(-50%);
   }
 
-  .updateOnlyPicture {
+  .updateProfile {
     padding: 0;
     margin: 0;
     // width: 100%;
@@ -2400,7 +2416,7 @@ input[matInput]:focus {
     font-size: 4.2rem; 
   }
 
-  .editProfilePictureButtonsContainer {
+  .editProfileButtonsContainerIncludingPicture {
     // position: absolute;
     // top: 0;
     // left: 75%;
@@ -2885,12 +2901,12 @@ input[matInput]:focus {
   //   margin-bottom: 0.2rem;
   // }
 
-  // h3.profileDetailsInputPhoto {
-  //   color: white;
-  //   font-weight: 500;
-  //   font-size: 1.9rem;
-  //   margin-bottom: 0rem;
-  // }
+  h3.profileDetailsInputPhoto {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0rem;
+  }
 
   .btn-changePasswordButton,
   .btn-billingDetailsButton {

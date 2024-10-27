@@ -1,13 +1,15 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, catchError, map, Observable, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, from, map, Observable, switchMap, take, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './authstate.service';
 import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 import { CustomOAuthService } from './oauth.service';
-
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { signInWithCustomToken } from 'firebase/auth';
+import { auth } from '../firebase.config';
 
 
 @Injectable({
@@ -79,22 +81,81 @@ export class UserService {
 //     }));
 // }
 
+// login(email: string, password: string) {
+//   let request = { email, password };
+
+//   return this.http.post(`${this.baseURL}/login`, request)
+//     .pipe(tap((response: any) => {
+//       this.updateLoginStatus(true);
+//       this.handleSuccessfulAuth(response);
+//       return response;
+//     }));
+// }
+
 login(email: string, password: string) {
   let request = { email, password };
 
-  return this.http.post(`${this.baseURL}/login`, request)
-    .pipe(tap((response: any) => {
+  return this.http.post(`${this.baseURL}/login`, request).pipe(
+    switchMap(async (response: any) => {
+      // First handle your regular auth flow
       this.updateLoginStatus(true);
       this.handleSuccessfulAuth(response);
-      return response;
-      // localStorage.setItem(this.tokenKey, response.token);
-      // localStorage.setItem(this.userIdKey , response.userId);
-      // localStorage.setItem(this.tierKey, response.tier);
-      // localStorage.setItem('billing', response.paymentFrequency);
 
-      // // Update login state after successful login
-      // localStorage.setItem("isUserLoggedIn", "true");
-    }));
+      try {
+        // Then get a Firebase token and sign in
+        const firebaseToken = await this.getFirebaseToken(response.token);
+        await signInWithCustomToken(auth, firebaseToken);
+        console.log('Firebase auth successful');
+      } catch (error) {
+        console.error('Firebase auth error:', error);
+        // Don't fail the login if Firebase auth fails
+      }
+
+      return response;
+    }),
+    catchError(error => {
+      console.error('Login error:', error);
+      throw error;
+    })
+  );
+}
+
+async getFirebaseToken(backendToken: string): Promise<string> {
+  try {
+    const response = await fetch(`${this.baseURL}/auth/firebase-token`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${backendToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to get Firebase token: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.firebaseToken;
+  } catch (error) {
+    console.error('Error getting Firebase token:', error);
+    throw error;
+  }
+}
+
+async refreshFirebaseAuth(): Promise<void> {
+  const token = localStorage.getItem(this.tokenKey);
+  if (!token) {
+    throw new Error('No auth token found');
+  }
+
+  try {
+    const firebaseToken = await this.getFirebaseToken(token);
+    const userCredential = await signInWithCustomToken(auth, firebaseToken);
+    console.log('Firebase auth refreshed:', userCredential.user);
+  } catch (error) {
+    console.error('Failed to refresh Firebase auth:', error);
+    throw error;
+  }
 }
 
 private handleSuccessfulAuth(response: any) {
@@ -285,6 +346,8 @@ updateUser(updatedUser: User): Observable<User> {
 }
 
 
+
+
   checkPassword(userId: string, password: string): Observable<boolean> {
     let reqHeaders = {
       Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
@@ -365,5 +428,74 @@ deleteOldImage(userId: string, oldImageUrl: string): Observable<any> {
   });
 }
 
+async getUploadSignedUrl(userId: string, fileName: string, contentType: string): Promise<{ signedUrl: string }> {
+  const storage = getStorage();
+  const fileRef = ref(storage, `profileImages/${userId}/${Date.now()}-${fileName}`);
+  
+  // Return a promise that resolves with the reference path
+  return Promise.resolve({ signedUrl: fileRef.fullPath });
+}
 
+updateProfileImage(userId: string, imageUrl: string): Observable<User> {
+  const reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+  };
+
+  const updateData = {
+    imgUrl: imageUrl,
+    profilePictureSettings: {
+      zoom: 1,
+      x: 0,
+      y: 0
+    }
+  };
+
+  return this.http.put<User>(`${this.baseURL}/profile-image/${userId}`, updateData, { headers: reqHeaders })
+    .pipe(
+      map(response => {
+        // Update local storage
+        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const updatedUser = {
+          ...storedUser,
+          imgUrl: imageUrl,
+          profilePictureSettings: updateData.profilePictureSettings
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return response;
+      })
+    );
+}
+
+// Helper method to handle image upload
+uploadImage(userId: string, file: File): Observable<string> {
+  return from(this.getUploadSignedUrl(userId, file.name, file.type)).pipe(
+    switchMap(({ signedUrl }) => {
+      const storage = getStorage();
+      const storageRef = ref(storage, signedUrl);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      // Return a new Observable that tracks the upload
+      return new Observable<string>(observer => {
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+          },
+          (error) => {
+            observer.error(error);
+          },
+          async () => {
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              observer.next(downloadURL);
+              observer.complete();
+            } catch (error) {
+              observer.error(error);
+            }
+          }
+        );
+      });
+    })
+  );
+}
 }

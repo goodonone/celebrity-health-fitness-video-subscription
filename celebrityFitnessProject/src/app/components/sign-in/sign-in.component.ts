@@ -168,8 +168,6 @@ export class SignInComponent implements OnInit {
     // this.oauthService.getAuthComplete().subscribe(() => {
     //   this.isLoadingGoogle = false;
     // });
-
-    this.cdr.detectChanges();
   }
 
   signIn() {

@@ -10,8 +10,10 @@ import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 import { HttpClient } from '@angular/common/http';
 import { profile } from 'console';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { storage } from 'src/app/firebase.config';
+import { ref, uploadBytesResumable, getDownloadURL, getStorage } from 'firebase/storage';
+import { storage, auth } from 'src/app/firebase.config';
+import { signInWithCustomToken } from 'firebase/auth';
+import { UploadTestComponent } from '../upload-test/upload-test.component';
 
 enum ProfileState {
   Viewing,
@@ -104,9 +106,9 @@ export class ProfileComponent implements OnInit {
   isDefaultPosition: boolean = true;
   isUploading = false;
   uploadProgress = 0;
-  retryCount = 0;
-  maxRetries = 3;
-  retryDelay = 1000;
+  retryCount: number = 0;
+  maxRetries: number = 3;
+  retryDelay: number = 1000;
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
@@ -158,7 +160,7 @@ export class ProfileComponent implements OnInit {
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private http: HttpClient,
-    private ngZone : NgZone
+    private ngZone : NgZone,
   ) {
     this.startDrag = this.startDrag.bind(this);
     this.drag = this.drag.bind(this);
@@ -174,7 +176,7 @@ export class ProfileComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
 
     // if (!this.currentUser.profilePictureSettings) {
     //   this.currentUser.profilePictureSettings = {
@@ -184,8 +186,13 @@ export class ProfileComponent implements OnInit {
     //   };
     // }
 
-   
-
+    auth.onAuthStateChanged((user) => {
+      console.log('Auth state changed:', user ? `User logged in: ${user.uid}` : 'No user');
+      if (!user) {
+        // Handle unauthenticated state
+        console.error('User not authenticated');
+      }
+    });
 
   
     console.log("Profile picture settings" + this.currentUser.profilePictureSettings);
@@ -960,7 +967,7 @@ cancelAction(): void {
 
   this.resetPasswordForm();
 }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
  
@@ -974,7 +981,7 @@ removeEventListeners(): void {
   document.removeEventListener('keydown', this.keydownHandler);
   // document.removeEventListener('mousedown', this.mousedownHandler);
 }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
   // loadSavedPositionAndZoom() {
@@ -1023,7 +1030,7 @@ skipAnimations(){
   this.firstTimeAnimation = false;
   this.cdr.detectChanges();
 }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
   
@@ -1231,7 +1238,7 @@ skipAnimations(){
     console.log('Invalid form type');
     return false;
   }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
  
 
 
@@ -1464,7 +1471,7 @@ updateUserPassword() {
     }
     return 'Invalid confirm password';
   }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
 ///// Check if email already exists /////
@@ -1501,7 +1508,7 @@ checkEmail(event: Event) {
     );
   }
 }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
   // isImageUrlFilled(): boolean {
@@ -2084,7 +2091,7 @@ private initializeDragging() {
 isInDefaultPosition(): boolean {
   return this.isDefaultPosition;
 }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
   // loadSavedPosition() {
   //   if (this.isImageUrlFilled()) {
@@ -2402,161 +2409,1056 @@ isInDefaultPosition(): boolean {
       'color': isInvalid ? 'red' : 'white',
     };
   }
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
 
 
 ///// Google Firebase Storage Functions for Profile Pictures /////
-  async onFileSelected(event: Event) {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (!file) return;
+async onFileSelected(event: Event) {
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (!file) return;
 
-      const oldImageUrl = this.currentUser.imgUrl;
+  try {
+    // Initialize upload state
+    this.ngZone.run(() => {
+      this.isUploading = true;
+      this.uploadProgress = 0;
+      this.retryCount = 0;
+      console.log('Upload started');
+      this.cdr.detectChanges();
+    });
 
-      // Check file size
-      if (file.size > 5 * 1024 * 1024) { // 5MB
-        this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-        return;
-      }
+    // Validate file
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('File size exceeds 5MB limit');
+    }
 
-      // Check file type
-      const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-      if (!validTypes.includes(file.type)) {
-        this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-        return;
-      }
-  
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Please use JPG, PNG or GIF');
+    }
+
+    // Ensure Firebase auth
+    let currentUser = auth.currentUser;
+    console.log('No Firebase user, attempting to refresh auth...', currentUser);
+    if (!currentUser) {
+      console.log('No Firebase user, attempting to refresh auth...');
       try {
-        this.isUploading = true;
-        this.uploadProgress = 0;
-        this.retryCount = 0;
-
-        await this.uploadWithRetry(file);
-
-        // After successful upload
-        await this.cleanupOldImage(oldImageUrl!);
-  
-        // First compress the image
-        const compressedFile = await this.compressImage(file);
-        
-        // Create storage reference with unique name
-        const fileName = `${Date.now()}-${file.name}`;
-        const storageRef = ref(storage, `profileImages/${fileName}`);
-        
-        // Start upload
-        const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-  
-        // Monitor upload progress
-        uploadTask.on('state_changed',
-          (snapshot) => {
-            this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            this.cdr.detectChanges();
-          },
-          (error) => {
-            console.error('Upload failed:', error);
-            this.isUploading = false;
-            this.uploadProgress = 0;
-            this.profileForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-            this.cdr.detectChanges();
-          },
-          async () => {
-            // Upload completed
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            
-            // Update form and user object
-            this.profileForm.patchValue({
-              imgUrl: downloadURL
-            });
-            
-            this.currentUser.imgUrl = downloadURL;
-            
-            // Reset upload state
-            this.isUploading = false;
-            this.uploadProgress = 0;
-            this.cdr.detectChanges();
-          }
-        );
-  
+        await this.userService.refreshFirebaseAuth();
+        currentUser = auth.currentUser;
+        console.log('Current Firebase user after refresh:', currentUser);
+        if (!currentUser) throw new Error('Failed to authenticate');
       } catch (error) {
-        console.error('All attempts failed:', error);
-        if (error instanceof NetworkError) {
-          this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
+        console.error('Auth refresh failed:', error);
+        throw new Error('Authentication required');
+      }
+    }
+
+
+    // Get fresh ID token
+    const idToken = await currentUser.getIdToken(true);
+
+    // Compress image
+    const compressedFile = await this.compressImage(file);
+
+    // Start upload with retry logic
+    while (this.retryCount < this.maxRetries) {
+      try {
+        // Create storage reference
+        const fileName = `${Date.now()}-${file.name}`;
+        const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+
+        // Upload with metadata
+        const uploadTask = uploadBytesResumable(storageRef, compressedFile, {
+          customMetadata: {
+            userId: currentUser.uid,
+            uploadedAt: new Date().toISOString()
+          }
+        });
+
+        // Handle upload
+        const downloadURL = await new Promise<string>((resolve, reject) => {
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              this.ngZone.run(() => {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                this.uploadProgress = progress;
+                console.log(`Upload progress: ${progress}%`);
+                this.cdr.detectChanges();
+              });
+            },
+            reject,
+            async () => {
+              try {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(url);
+              } catch (error) {
+                reject(error);
+              }
+            }
+          );
+        });
+
+        // Update profile with new image URL
+        await new Promise<void>((resolve, reject) => {
+          this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
+            next: () => {
+              this.ngZone.run(() => {
+                this.profileForm.patchValue({ imgUrl: downloadURL });
+                this.pictureForm.patchValue({ imgUrl: downloadURL });
+                this.currentUser.imgUrl = downloadURL;
+                this.isUploading = false;
+                this.uploadProgress = 0;
+                this.cdr.detectChanges();
+                resolve();
+              });
+            },
+            error: reject
+          });
+        });
+
+        return; // Success - exit retry loop
+
+      } catch (error) {
+        this.retryCount++;
+        if (this.retryCount >= this.maxRetries) throw error;
+        
+        console.log(`Upload failed, attempt ${this.retryCount} of ${this.maxRetries}`);
+        await new Promise(resolve => setTimeout(resolve, this.retryDelay * Math.pow(2, this.retryCount - 1)));
+        
+        // Refresh token before retry
+        await currentUser.getIdToken(true);
+      }
+    }
+
+  } catch (err) {
+    console.error('Upload failed:', err);
+    this.ngZone.run(() => {
+      this.isUploading = false;
+      this.uploadProgress = 0;
+      
+      if (err instanceof Error) {
+        const error = err as Error;
+        if (error.message.includes('size')) {
+          this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+        } else if (error.message.includes('type')) {
+          this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+        } else if (error.message.includes('auth')) {
+          this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
         } else {
           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
         }
-      } finally {
-        this.isUploading = false;
       }
-        this.uploadProgress = 0;
-        this.cdr.detectChanges();
-    }
+      
+      this.cdr.detectChanges();
+    });
+  }
+}
+
+// async onFileSelected(event: Event) {
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (!file) return;
+
+//   try {
+//     // Initialize upload state
+//     this.ngZone.run(() => {
+//       this.isUploading = true;
+//       this.uploadProgress = 0;
+//       this.retryCount = 0;
+//       console.log('Upload started');
+//       this.cdr.detectChanges();
+//     });
+
+//     // Validate file
+//     if (file.size > 5 * 1024 * 1024) {
+//       throw new Error('File size exceeds 5MB limit');
+//     }
+
+//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+//     if (!validTypes.includes(file.type)) {
+//       throw new Error('Invalid file type. Please use JPG, PNG or GIF');
+//     }
+
+//     // Get current Firebase user
+//     const currentUser = auth.currentUser;
+//     console.log('Got current user:', currentUser);
+//     // if (!currentUser) {
+//     //   // Try to refresh auth state
+//     //   await new Promise<void>((resolve) => {
+//     //     const unsubscribe = auth.onAuthStateChanged((user) => {
+//     //       console.log('Auth state refreshed:', user);
+//     //       unsubscribe();
+//     //       resolve();
+//     //     });
+//     //   });
+//     // }
+//     if (!currentUser) {
+//       // Try to refresh token
+//       const token = localStorage.getItem('token');
+//       if (token) {
+//         try {
+//           const firebaseToken = await this.userService.getFirebaseToken(token);
+//           await signInWithCustomToken(auth, firebaseToken);
+//         } catch (error) {
+//           console.error('Failed to refresh Firebase auth:', error);
+//           throw new Error('Authentication required');
+//         }
+//       } else {
+//         throw new Error('Authentication required');
+//       }
+//     }
+
+//     // Check again after refresh
+//     if (!auth.currentUser) {
+//       throw new Error('No authenticated user found. Please log in again.');
+//     }
+
+//     // Get fresh ID token before upload
+//     const idToken = await currentUser!.getIdToken(true);
+//     console.log('Got fresh ID token');
+
+//     // Compress image
+//     const compressedFile = await this.compressImage(file);
+
+//     // Retry loop
+//     while (this.retryCount < this.maxRetries) {
+//       try {
+//         // Create storage reference with user-specific path
+//         const fileName = `${Date.now()}-${file.name}`;
+//         const storageRef = ref(storage, `profileImages/${currentUser!.uid}/${fileName}`);
+
+//         // Create metadata with auth token
+//         const metadata = {
+//           customMetadata: {
+//             userId: currentUser!.uid,
+//             uploadedAt: new Date().toISOString()
+//           }
+//         };
+
+//         // Create upload task with metadata
+//         const uploadTask = uploadBytesResumable(storageRef, compressedFile, metadata);
+
+//         // Handle upload with Promise
+//         const downloadURL = await new Promise<string>((resolve, reject) => {
+//           uploadTask.on(
+//             'state_changed',
+//             // Progress updates
+//             (snapshot) => {
+//               this.ngZone.run(() => {
+//                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//                 this.uploadProgress = progress;
+//                 console.log(`Upload progress: ${progress}% (Attempt ${this.retryCount + 1})`);
+//                 this.cdr.detectChanges();
+//               });
+//             },
+//             // Error handler
+//             (error) => {
+//               console.error('Upload error:', error);
+//               reject(error);
+//             },
+//             // Success handler
+//             async () => {
+//               try {
+//                 const url = await getDownloadURL(uploadTask.snapshot.ref);
+//                 resolve(url);
+//               } catch (error) {
+//                 reject(error);
+//               }
+//             }
+//           );
+//         });
+
+//         // If we get here, upload was successful
+//         console.log('Upload successful, updating profile');
+
+//         // Update database with new image URL
+//         await new Promise<void>((resolve, reject) => {
+//           this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
+//             next: () => {
+//               this.ngZone.run(() => {
+//                 this.profileForm.patchValue({ imgUrl: downloadURL });
+//                 this.pictureForm.patchValue({ imgUrl: downloadURL });
+//                 this.currentUser.imgUrl = downloadURL;
+                
+//                 // Reset upload state
+//                 this.isUploading = false;
+//                 this.uploadProgress = 0;
+//                 console.log('Profile update complete');
+//                 this.cdr.detectChanges();
+//                 resolve();
+//               });
+//             },
+//             error: (error) => {
+//               console.error('Profile update error:', error);
+//               reject(new Error('Failed to update profile with new image'));
+//             }
+//           });
+//         });
+
+//         // If we get here, everything succeeded, so break the retry loop
+//         return;
+
+//       } catch (error) {
+//         console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+//         this.retryCount++;
+        
+//         if (this.retryCount < this.maxRetries) {
+//           this.ngZone.run(() => {
+//             this.uploadProgress = 0;
+//             console.log('Retrying upload...');
+//             this.cdr.detectChanges();
+//           });
+          
+//           // Wait with exponential backoff before retrying
+//           const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
+//           await new Promise(resolve => setTimeout(resolve, backoffDelay));
+          
+//           // Refresh token before retry
+//           await currentUser!.getIdToken(true);
+          
+//         } else {
+//           throw new Error('Upload failed after max retries');
+//         }
+//       }
+//     }
+
+//   } catch (err: unknown) {
+//     this.ngZone.run(() => {
+//       console.error('Upload failed:', err);
+//       this.isUploading = false;
+//       this.uploadProgress = 0;
+
+//       if (err instanceof Error) {
+//         if (err.message.includes('size')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//         } else if (err.message.includes('type')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+//         } else if (err.message.includes('authenticated')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//         } else {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//         }
+//       } else {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//       }
+
+//       this.cdr.detectChanges();
+//     });
+//   }
+// }
+
+// async onFileSelected(event: Event) {
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (!file) return;
+
+//   try {
+//     // Initialize upload state
+//     this.ngZone.run(() => {
+//       this.isUploading = true;
+//       this.uploadProgress = 0;
+//       this.retryCount = 0;
+//       console.log('Upload started');
+//       this.cdr.detectChanges();
+//     });
+
+//     // Validate file
+//     if (file.size > 5 * 1024 * 1024) {
+//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//     }
+
+//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+//     if (!validTypes.includes(file.type)) {
+//       throw new Error('Invalid file type. Please use JPG, PNG or GIF');
+//     }
+
+//     // Get current Firebase user
+//     const currentUser = auth.currentUser;
+//     if (!currentUser) {
+//       throw new Error('No authenticated user found');
+//     }
+
+//     // Get fresh ID token before upload
+//     const idToken = await currentUser.getIdToken(true);
+//     console.log('Got fresh ID token');
+
+//     // Compress image
+//     const compressedFile = await this.compressImage(file);
+
+//     // Retry loop
+//     while (this.retryCount < this.maxRetries) {
+//       try {
+//         // Create storage reference with user-specific path
+//         const fileName = `${Date.now()}-${file.name}`;
+//         const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+
+//         // Create metadata with auth token
+//         const metadata = {
+//           customMetadata: {
+//             userId: currentUser.uid,
+//             uploadedAt: new Date().toISOString()
+//           }
+//         };
+
+//         // Create upload task with metadata
+//         const uploadTask = uploadBytesResumable(storageRef, compressedFile, metadata);
+
+//         // Handle upload with Promise
+//         const downloadURL = await new Promise<string>((resolve, reject) => {
+//           uploadTask.on(
+//             'state_changed',
+//             // Progress updates
+//             (snapshot) => {
+//               this.ngZone.run(() => {
+//                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//                 this.uploadProgress = progress;
+//                 console.log(`Upload progress: ${progress}% (Attempt ${this.retryCount + 1})`);
+//                 this.cdr.detectChanges();
+//               });
+//             },
+//             // Error handler
+//             (error) => {
+//               console.error('Upload error:', error);
+//               reject(error);
+//             },
+//             // Success handler
+//             async () => {
+//               try {
+//                 const url = await getDownloadURL(uploadTask.snapshot.ref);
+//                 resolve(url);
+//               } catch (error) {
+//                 reject(error);
+//               }
+//             }
+//           );
+//         });
+
+//         // If we get here, upload was successful
+//         console.log('Upload successful, updating profile');
+
+//         // Update database with new image URL
+//         await new Promise<void>((resolve, reject) => {
+//           this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
+//             next: () => {
+//               this.ngZone.run(() => {
+//                 this.profileForm.patchValue({ imgUrl: downloadURL });
+//                 this.pictureForm.patchValue({ imgUrl: downloadURL });
+//                 this.currentUser.imgUrl = downloadURL;
+                
+//                 // Reset upload state
+//                 this.isUploading = false;
+//                 this.uploadProgress = 0;
+//                 console.log('Profile update complete');
+//                 this.cdr.detectChanges();
+//                 resolve();
+//               });
+//             },
+//             error: (error) => {
+//               console.error('Profile update error:', error);
+//               reject(new Error('Failed to update profile with new image'));
+//             }
+//           });
+//         });
+
+//         // If we get here, everything succeeded, so break the retry loop
+//         return;
+
+//       } catch (error) {
+//         console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+//         this.retryCount++;
+        
+//         if (this.retryCount < this.maxRetries) {
+//           this.ngZone.run(() => {
+//             this.uploadProgress = 0;
+//             console.log('Retrying upload...');
+//             this.cdr.detectChanges();
+//           });
+          
+//           // Wait with exponential backoff before retrying
+//           const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
+//           await new Promise(resolve => setTimeout(resolve, backoffDelay));
+          
+//           // Refresh token before retry
+//           await currentUser.getIdToken(true);
+          
+//         } else {
+//           throw new Error('Upload failed after max retries');
+//         }
+//       }
+//     }
+
+//   } catch (err: unknown) {
+//     this.ngZone.run(() => {
+//       console.error('Upload failed:', err);
+//       this.isUploading = false;
+//       this.uploadProgress = 0;
+
+//       if (err instanceof Error) {
+//         if (err.message.includes('size')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//         } else if (err.message.includes('type')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+//         } else if (err.message.includes('authenticated')) {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//         } else {
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//         }
+//       } else {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//       }
+
+//       this.cdr.detectChanges();
+//     });
+//   }
+// }
+
+// private async uploadWithRetry(file: File, userId: string): Promise<string> {
+//   while (this.retryCount < this.maxRetries) {
+//     try {
+//       // Compress image
+//       const compressedFile = await this.compressImage(file);
+      
+//       // Create storage reference
+//       const fileName = `${Date.now()}-${file.name}`;
+//       const storageRef = ref(storage, `profileImages/${userId}/${fileName}`);
+      
+//       // Create upload task
+//       const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+//       // Handle upload with Promise
+//       const downloadURL = await new Promise<string>((resolve, reject) => {
+//         uploadTask.on(
+//           'state_changed',
+//           // Progress updates
+//           (snapshot) => {
+//             this.ngZone.run(() => {
+//               const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//               this.uploadProgress = progress;
+//               console.log('Upload progress:', progress);
+//               this.cdr.detectChanges();
+//             });
+//           },
+//           // Error handler
+//           (error) => {
+//             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+//             reject(error);
+//           },
+//           // Success handler
+//           async () => {
+//             try {
+//               const url = await getDownloadURL(uploadTask.snapshot.ref);
+//               resolve(url);
+//             } catch (error) {
+//               reject(error);
+//             }
+//           }
+//         );
+//       });
+
+//       return downloadURL; // Return URL on success
+
+//     } catch (error) {
+//       this.retryCount++;
+      
+//       if (this.retryCount < this.maxRetries) {
+//         console.log(`Retry attempt ${this.retryCount} of ${this.maxRetries}`);
+        
+//         // Reset progress for retry
+//         this.ngZone.run(() => {
+//           this.uploadProgress = 0;
+//           this.cdr.detectChanges();
+//         });
+        
+//         // Wait with exponential backoff
+//         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
+//         await this.sleep(backoffDelay);
+        
+//       } else {
+//         throw new NetworkError('Upload failed after max retries');
+//       }
+//     }
+//   }
+
+//   throw new NetworkError('Upload failed after max retries');
+// }
+// async onFileSelected(event: Event) {
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (!file) return;
+
+//   // Initialize upload state inside NgZone
+//   this.ngZone.run(() => {
+//     this.isUploading = true;
+//     this.uploadProgress = 0;
+//     this.retryCount = 0;
+//     this.cdr.detectChanges();
+//   });
+
+//   const oldImageUrl = this.currentUser.imgUrl;
+//   const currentUser = auth.currentUser;
+  
+//   if (!currentUser) {
+//     this.ngZone.run(() => {
+//       this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//       this.isUploading = false;
+//       this.cdr.detectChanges();
+//     });
+//     return;
+//   }
+
+//   try {
+//     // Validate file size
+//     if (file.size > 5 * 1024 * 1024) {
+//       this.ngZone.run(() => {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//         this.isUploading = false;
+//         this.cdr.detectChanges();
+//       });
+//       return;
+//     }
+
+//     // Validate file type
+//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+//     if (!validTypes.includes(file.type)) {
+//       this.ngZone.run(() => {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+//         this.isUploading = false;
+//         this.cdr.detectChanges();
+//       });
+//       return;
+//     }
+
+//     // Compress the image
+//     const compressedFile = await this.compressImage(file);
+    
+//     // Create storage reference
+//     const fileName = `${Date.now()}-${file.name}`;
+//     const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+    
+//     // Create upload task
+//     const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+//     // Handle upload states
+//     uploadTask.on(
+//       'state_changed',
+//       // Progress updates
+//       (snapshot) => {
+//         this.ngZone.run(() => {
+//           const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//           this.uploadProgress = progress;
+//           console.log('Upload progress:', progress); // Debug log
+//           this.cdr.detectChanges();
+//         });
+//       },
+//       // Error handler
+//       (error) => {
+//         this.ngZone.run(() => {
+//           console.error('Upload failed:', error);
+//           this.isUploading = false;
+//           this.uploadProgress = 0;
+//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//           this.cdr.detectChanges();
+//         });
+//       },
+//       // Completion handler
+//       () => {
+//         this.ngZone.run(async () => {
+//           try {
+//             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            
+//             // Update forms and user object
+//             this.profileForm.patchValue({ imgUrl: downloadURL });
+//             this.pictureForm.patchValue({ imgUrl: downloadURL });
+//             this.currentUser.imgUrl = downloadURL;
+
+//             // Clean up old image if exists
+//             if (oldImageUrl) {
+//               await this.cleanupOldImage(oldImageUrl);
+//             }
+            
+//             // Reset upload state
+//             this.isUploading = false;
+//             this.uploadProgress = 0;
+//             console.log('Upload complete'); // Debug log
+//             this.cdr.detectChanges();
+//           } catch (error) {
+//             console.error('Error getting download URL:', error);
+//             this.isUploading = false;
+//             this.uploadProgress = 0;
+//             this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//             this.cdr.detectChanges();
+//           }
+//         });
+//       }
+//     );
+
+//   } catch (error) {
+//     this.ngZone.run(() => {
+//       console.error('Upload error:', error);
+//       this.isUploading = false;
+//       this.uploadProgress = 0;
+      
+//       if (error instanceof NetworkError) {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
+//       } else {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//       }
+//       this.cdr.detectChanges();
+//     });
+//   }
+// }
+
+// async onFileSelected(event: Event) {
+//   const file = (event.target as HTMLInputElement).files?.[0];
+//   if (!file) return;
+
+//   const oldImageUrl = this.currentUser.imgUrl;
+//   const currentUser = auth.currentUser;
+  
+//   if (!currentUser) {
+//     this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//     return;
+//   }
+
+//   try {
+//     // Set initial upload state
+//     this.ngZone.run(() => {
+//       this.isUploading = true;
+//       this.uploadProgress = 0;
+//       this.retryCount = 0;
+//       this.cdr.detectChanges();
+//     });
+
+//     // Validate file size
+//     if (file.size > 5 * 1024 * 1024) {
+//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//       this.isUploading = false;
+//       this.cdr.detectChanges();
+//       return;
+//     }
+
+//     // Validate file type
+//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+//     if (!validTypes.includes(file.type)) {
+//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+//       this.isUploading = false;
+//       this.cdr.detectChanges();
+//       return;
+//     }
+
+//     // Try upload with retry logic
+//     await this.uploadWithRetry(file);
+
+//     // Clean up old image if exists
+//     if (oldImageUrl) {
+//       await this.cleanupOldImage(oldImageUrl);
+//     }
+
+//     // Compress the image
+//     const compressedFile = await this.compressImage(file);
+    
+//     // Create storage reference
+//     const fileName = `${Date.now()}-${file.name}`;
+//     const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+    
+//     // Create upload task
+//     const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+
+//     // Handle upload states
+//     uploadTask.on(
+//       'state_changed',
+//       // Progress updates
+//       (snapshot) => {
+//         this.ngZone.run(() => {
+//           this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//           this.cdr.detectChanges();
+//         });
+//       },
+//       // Error handler
+//       (error) => {
+//         this.ngZone.run(() => {
+//           console.error('Upload failed:', error);
+//           this.isUploading = false;
+//           this.uploadProgress = 0;
+//           this.profileForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//           this.cdr.detectChanges();
+//         });
+//       },
+//       // Completion handler
+//       () => {
+//         this.ngZone.run(async () => {
+//           try {
+//             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            
+//             // Update forms and user object
+//             this.profileForm.patchValue({ imgUrl: downloadURL });
+//             this.pictureForm.patchValue({ imgUrl: downloadURL });
+//             this.currentUser.imgUrl = downloadURL;
+            
+//             // Reset upload state
+//             this.isUploading = false;
+//             this.uploadProgress = 0;
+//             this.cdr.detectChanges();
+//           } catch (error) {
+//             console.error('Error getting download URL:', error);
+//             this.isUploading = false;
+//             this.uploadProgress = 0;
+//             this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//             this.cdr.detectChanges();
+//           }
+//         });
+//       }
+//     );
+
+//   } catch (error) {
+//     this.ngZone.run(() => {
+//       console.error('All attempts failed:', error);
+//       this.isUploading = false;
+//       this.uploadProgress = 0;
+      
+//       if (error instanceof NetworkError) {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
+//       } else {
+//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//       }
+//       this.cdr.detectChanges();
+//     });
+//   }
+// }
+  // async onFileSelected(event: Event) {
+  //     const file = (event.target as HTMLInputElement).files?.[0];
+  //     if (!file) return;
+
+  //     const oldImageUrl = this.currentUser.imgUrl;
+
+  //     const currentUser = auth.currentUser;
+      
+  //     if (!currentUser) {
+  //       this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+  //       return;
+  //     }
+  
+  //     try {
+  //       this.isUploading = true;
+  //       this.uploadProgress = 0;
+  //       this.retryCount = 0;
+  //       this.cdr.detectChanges();
+
+
+  //     // Check file size
+  //     if (file.size > 5 * 1024 * 1024) { // 5MB
+  //       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+  //       return;
+  //     }
+
+  //     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+  //     if (!validTypes.includes(file.type)) {
+  //       this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+  //       this.isUploading = false;
+  //       this.cdr.detectChanges();
+  //       return;
+  //     }
+
+  //       await this.uploadWithRetry(file);
+
+  //       // After successful upload
+  //       await this.cleanupOldImage(oldImageUrl!);
+  
+  //       // First compress the image
+  //       const compressedFile = await this.compressImage(file);
+        
+  //       // Create storage reference with unique name
+  //       const fileName = `${Date.now()}-${file.name}`;
+  //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+        
+  //       // Start upload
+  //       const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+  
+  //       // Monitor upload progress
+  //       uploadTask.on('state_changed',
+  //         (snapshot) => {
+  //           this.ngZone.run(() => {
+  //           this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+  //           this.cdr.detectChanges();
+  //         });
+  //       },
+  //         (error) => {
+  //           this.ngZone.run(() => {
+  //           console.error('Upload failed:', error);
+  //           this.isUploading = false;
+  //           this.uploadProgress = 0;
+  //           this.profileForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+  //           this.cdr.detectChanges();
+  //         },
+  //         async () => {
+  //           // Upload completed
+  //           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            
+  //           // Update form and user object
+  //           this.profileForm.patchValue({
+  //             imgUrl: downloadURL
+  //           });
+            
+  //           this.currentUser.imgUrl = downloadURL;
+            
+  //           // Reset upload state
+  //           this.isUploading = false;
+  //           this.uploadProgress = 0;
+  //           this.cdr.detectChanges();
+  //         }
+  //       );
+  
+  //     } catch (error) {
+  //       console.error('All attempts failed:', error);
+  //       if (error instanceof NetworkError) {
+  //         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
+  //       } else {
+  //         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+  //       }
+  //     } finally {
+  //       this.isUploading = false;
+  //     }
+  //       this.uploadProgress = 0;
+  //       this.cdr.detectChanges();
+  //   }
   
 
-    private async uploadWithRetry(file: File): Promise<void> {
-      while (this.retryCount < this.maxRetries) {
-        try {
-          const compressedFile = await this.compressImage(file);
-          const fileName = `${Date.now()}-${file.name}`;
-          const storageRef = ref(storage, `profileImages/${fileName}`);
+    // private async uploadWithRetry(file: File): Promise<void> {
+    //   while (this.retryCount < this.maxRetries) {
+    //     try {
+    //       const compressedFile = await this.compressImage(file);
+    //       const currentUser = auth.currentUser;
+    //       if (!currentUser) throw new Error('User not authenticated');
+    //       const fileName = `${Date.now()}-${file.name}`;
+    //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
           
-          await new Promise<void>((resolve, reject) => {
-            const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+    //       await new Promise<void>((resolve, reject) => {
+    //         const uploadTask = uploadBytesResumable(storageRef, compressedFile);
   
-            uploadTask.on('state_changed',
-              // Progress callback
-              (snapshot) => {
-                this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                this.cdr.detectChanges();
-              },
-              // Error callback
-              (error) => {
-                console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
-                reject(error);
-              },
-              // Complete callback
-              async () => {
-                try {
-                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                  this.profileForm.patchValue({
-                    imgUrl: downloadURL
-                  });
-                  this.currentUser.imgUrl = downloadURL;
-                  this.isUploading = false;
-                  this.uploadProgress = 0;
-                  this.cdr.detectChanges();
-                  resolve();
-                } catch (error) {
-                  reject(error);
-                }
-              }
-            );
-          });
+    //         uploadTask.on('state_changed',
+    //           // Progress callback
+    //           (snapshot) => {
+    //             this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //             this.cdr.detectChanges();
+    //           },
+    //           // Error callback
+    //           (error) => {
+    //             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+    //             reject(error);
+    //           },
+    //           // Complete callback
+    //           async () => {
+    //             try {
+    //               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    //               this.profileForm.patchValue({
+    //                 imgUrl: downloadURL
+    //               });
+    //               this.currentUser.imgUrl = downloadURL;
+    //               this.isUploading = false;
+    //               this.uploadProgress = 0;
+    //               this.cdr.detectChanges();
+    //               resolve();
+    //             } catch (error) {
+    //               reject(error);
+    //             }
+    //           }
+    //         );
+    //       });
   
-          // If we get here, upload was successful
-          return;
+    //       // If we get here, upload was successful
+    //       return;
   
-        } catch (error) {
-          this.retryCount++;
+    //     } catch (error) {
+    //       this.retryCount++;
           
-          if (this.retryCount < this.maxRetries) {
-            // Show retry message to user
-            this.uploadProgress = 0;
-            this.cdr.detectChanges();
+    //       if (this.retryCount < this.maxRetries) {
+    //         // Show retry message to user
+    //         this.uploadProgress = 0;
+    //         this.cdr.detectChanges();
             
-            // Wait with exponential backoff before retrying
-            const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-            await this.sleep(backoffDelay);
+    //         // Wait with exponential backoff before retrying
+    //         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
+    //         await this.sleep(backoffDelay);
             
-            // Update UI to show retry attempt
-            this.uploadProgress = 0;
-            this.cdr.detectChanges();
-          } else {
-            throw new NetworkError('Max retry attempts reached');
-          }
-        }
-      }
-    }
+    //         // Update UI to show retry attempt
+    //         this.uploadProgress = 0;
+    //         this.cdr.detectChanges();
+    //       } else {
+    //         throw new NetworkError('Max retry attempts reached');
+    //       }
+    //     }
+    //   }
+    // }
+
+    // private async uploadWithRetry(file: File): Promise<void> {
+    //   while (this.retryCount < this.maxRetries) {
+    //     try {
+    //       const compressedFile = await this.compressImage(file);
+    //       const currentUser = auth.currentUser;
+    //       if (!currentUser) throw new Error('User not authenticated');
+    
+    //       const fileName = `${Date.now()}-${file.name}`;
+    //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+          
+    //       await new Promise<void>((resolve, reject) => {
+    //         const uploadTask = uploadBytesResumable(storageRef, compressedFile);
+    
+    //         uploadTask.on(
+    //           'state_changed',
+    //           (snapshot) => {
+    //             this.ngZone.run(() => {
+    //               this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //               this.cdr.detectChanges();
+    //             });
+    //           },
+    //           (error) => {
+    //             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+    //             reject(error);
+    //           },
+    //           async () => {
+    //             try {
+    //               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    //               this.ngZone.run(() => {
+    //                 this.profileForm.patchValue({ imgUrl: downloadURL });
+    //                 this.pictureForm.patchValue({ imgUrl: downloadURL });
+    //                 this.currentUser.imgUrl = downloadURL;
+    //                 this.isUploading = false;
+    //                 this.uploadProgress = 0;
+    //                 this.cdr.detectChanges();
+    //               });
+    //               resolve();
+    //             } catch (error) {
+    //               reject(error);
+    //             }
+    //           }
+    //         );
+    //       });
+    
+    //       // If we get here, upload was successful
+    //       return;
+    
+    //     } catch (error) {
+    //       this.retryCount++;
+          
+    //       if (this.retryCount < this.maxRetries) {
+    //         this.ngZone.run(() => {
+    //           this.uploadProgress = 0;
+    //           this.cdr.detectChanges();
+    //         });
+            
+    //         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
+    //         await this.sleep(backoffDelay);
+            
+    //         this.ngZone.run(() => {
+    //           this.uploadProgress = 0;
+    //           this.cdr.detectChanges();
+    //         });
+    //       } else {
+    //         throw new NetworkError('Max retry attempts reached');
+    //       }
+    //     }
+    //   }
+    // }
   
     private sleep(ms: number): Promise<void> {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -2623,8 +3525,7 @@ private async cleanupOldImage(oldImageUrl: string) {
     }
   }
 }  
-
-/* <-----------------------------------------------------------------------> */
+/*-----------------------------------------------------------------------*/
 
 
   }
