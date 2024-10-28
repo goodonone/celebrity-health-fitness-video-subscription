@@ -8,12 +8,14 @@ import { faEye, faEyeSlash, faAngleDown, faPlus, faMinus } from '@fortawesome/fr
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter, finalize, from, fromEvent, of, Subject, Subscription, switchMap, takeUntil, tap } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { profile } from 'console';
-import { ref, uploadBytesResumable, getDownloadURL, getStorage } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from 'firebase/storage';
 import { storage, auth } from 'src/app/firebase.config';
 import { signInWithCustomToken } from 'firebase/auth';
-import { UploadTestComponent } from '../upload-test/upload-test.component';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { StorageService } from 'src/app/services/storage.service';
+import { ImageManagementService } from 'src/app/services/imagemanagement.service';
 
 enum ProfileState {
   Viewing,
@@ -98,6 +100,7 @@ export class ProfileComponent implements OnInit {
   buttonText: string = 'Cancel Subscription';
   isProcessingGoodbye: boolean = false;
   emailExists: boolean = false;
+  imageNotFound = false;
   isWaitingToCheck = false;
   isInClicked = false;
   isOutClicked = false;
@@ -109,6 +112,8 @@ export class ProfileComponent implements OnInit {
   retryCount: number = 0;
   maxRetries: number = 3;
   retryDelay: number = 1000;
+  showImageNavigation = false;
+  imageCount = 0;
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
   // firstTimeAnimationTierTwo: boolean = true;
@@ -161,10 +166,14 @@ export class ProfileComponent implements OnInit {
     private renderer: Renderer2,
     private http: HttpClient,
     private ngZone : NgZone,
+    private firebaseService: FirebaseService,
+    private storageService: StorageService,
+    private imageManagementService: ImageManagementService
   ) {
     this.startDrag = this.startDrag.bind(this);
     this.drag = this.drag.bind(this);
     this.endDrag = this.endDrag.bind(this);
+    this.initializeLoadingState();
 
     // Escape key to escape Cancel Subscription State
     this.keydownHandler = (event) => {
@@ -185,6 +194,28 @@ export class ProfileComponent implements OnInit {
     //     y: 0
     //   };
     // }
+    
+
+    // ////Remove this later
+    // console.log('Auth State on Init:', {
+    //   currentAuth: auth.currentUser,
+    //   userId: this.userId,
+    //   isLoggedIn: await this.userService.isloggedIn().toPromise()
+    // });
+  
+    // auth.onAuthStateChanged((user) => {
+    //   console.log('Auth state changed:', {
+    //     user: user ? {
+    //       uid: user.uid,
+    //       email: user.email,
+    //       provider: user.providerData[0]?.providerId
+    //     } : null,
+    //     componentUserId: this.userId
+    //   });
+    // });
+
+    // /////////
+  
 
     auth.onAuthStateChanged((user) => {
       console.log('Auth state changed:', user ? `User logged in: ${user.uid}` : 'No user');
@@ -441,13 +472,13 @@ export class ProfileComponent implements OnInit {
           weight: this.currentUser.weight,
           height: this.currentUser.height,
           goals: this.currentUser.goals,
-          imgUrl: this.currentUser.imgUrl || '',
+          imgUrl: this.currentUser.imgUrl ? this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '',
           profilePictureSettings: this.currentUser.profilePictureSettings,
           isGoogleAuth: this.currentUser.isGoogleAuth
         });
 
         this.pictureForm.patchValue({
-          imgUrl: this.currentUser.imgUrl || '',
+          imgUrl: this.currentUser.imgUrl ? this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '',
           profilePictureSettings: this.currentUser.profilePictureSettings
         }, { emitEvent: false });
 
@@ -608,11 +639,11 @@ export class ProfileComponent implements OnInit {
           height: this.currentUser.height,
           goals: this.currentUser.goals,
           profilePictureSettings: this.currentUser.profilePictureSettings,
-          imgUrl: this.currentUser.imgUrl || '',
+          imgUrl: this.currentUser.imgUrl ? this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '',
         }, { emitEvent: false });
 
         this.pictureForm.patchValue({
-          imgUrl: this.currentUser.imgUrl || '',
+          imgUrl: this.currentUser.imgUrl ? this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '',
           profilePictureSettings: this.currentUser.profilePictureSettings
         }, { emitEvent: false });
 
@@ -687,6 +718,9 @@ export class ProfileComponent implements OnInit {
   }
 
   updateFormWithUserData(): void {
+    const proxiedUrl = this.currentUser.imgUrl ? 
+    this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '';
+
     // console.log('Updating form with user data' + this.currentUser.email);
     this.profileForm.patchValue({
       name: this.currentUser.name,
@@ -696,11 +730,15 @@ export class ProfileComponent implements OnInit {
       weight: this.currentUser.weight,
       height: this.currentUser.height,
       goals: this.currentUser.goals,
-      imgUrl: this.currentUser.imgUrl || '',
+      imgUrl: proxiedUrl,
       isGoogleAuth: this.currentUser.isGoogleAuth
     });
 
-      // Update other form controls here
+    this.pictureForm.patchValue({
+      imgUrl: proxiedUrl
+    });  
+
+    // Update other form controls here
 
     this.profileForm.get('name')?.updateValueAndValidity();
     this.profileForm.get('email')?.updateValueAndValidity();
@@ -804,12 +842,24 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+// checkLoadingComplete() {
+//   if (this.imageLoaded) {
+//     setTimeout(() => {
+//       this.loadingComplete = true;
+//       this.cdr.detectChanges();
+//     }, 500);
+//   }
+// }
 checkLoadingComplete() {
   if (this.imageLoaded) {
+    console.log('Images loaded, completing loading state');
+    // Add a small delay to ensure UI updates are complete
     setTimeout(() => {
       this.loadingComplete = true;
       this.cdr.detectChanges();
-    }, 500);
+    }, 100);
+  } else {
+    console.log('Images not yet loaded');
   }
 }
 
@@ -1534,19 +1584,21 @@ checkEmail(event: Event) {
   onImageUrlInput(event: Event) {
     const input = event.target as HTMLInputElement;
     const newValue = input.value.trim();
-    this.profileForm.patchValue({ imgUrl: newValue });
+
+    this.imageNotFound = false;
+
+    // this.profileForm.patchValue({ imgUrl: newValue });
     this.pictureForm.patchValue({ imgUrl: newValue });
     this.currentUser.imgUrl = newValue === '' ? null : newValue; // Use null for empty string
     this.cdr.detectChanges();
 
     this.resetImagePositionAndZoom();
-
     this.cdr.detectChanges();
   
     // Update the UI to reflect the change immediately
     if (newValue) {
       this.isInitialLoad = false;
-      this.preloadImage(newValue); // Pass false for URL input changes
+      this.preloadImage(newValue); 
     } else {
       this.resetImage();
     }
@@ -1556,162 +1608,660 @@ checkEmail(event: Event) {
   resetImage() {
     // this.position = { x: 0, y: 0 };
     this.resetImagePositionAndZoom();
+    this.imageNotFound = false;
     // this.isDragged = false;
-    this.profileForm.patchValue({ imgUrl: null }); 
+    // this.profileForm.patchValue({ imgUrl: null }); 
     this.pictureForm.patchValue({ imgUrl: null });
     this.currentUser.imgUrl = null;
     this.cdr.detectChanges();
   }
 
-  saveProfilePicture() {
-    const newImgUrl = this.pictureForm.get('imgUrl')?.value;
-    this.currentUser.imgUrl = newImgUrl === '' ? null : newImgUrl;
-    // this.currentUser.profilePictureSettings = {
-    //   zoom: this.zoomLevel,
-    //   x: this.position.x,
-    //   y: this.position.y
-    // };
+  // saveProfilePicture() {
+  //   const newImgUrl = this.pictureForm.get('imgUrl')?.value;
+  //   this.currentUser.imgUrl = newImgUrl === '' ? null : newImgUrl;
 
-    const updatedUser = { 
-      ...this.currentUser, 
-      imgUrl: this.currentUser.imgUrl, 
-      profilePictureSettings: {
-        zoom: this.zoomLevel,
-        x: this.position.x,
-        y: this.position.y
+
+  //   const updatedUser = { 
+  //     ...this.currentUser, 
+  //     imgUrl: this.currentUser.imgUrl, 
+  //     profilePictureSettings: {
+  //       zoom: this.zoomLevel,
+  //       x: this.position.x,
+  //       y: this.position.y
+  //     }
+  //   };
+  //   this.userService.updateUser(this.currentUser).subscribe(
+  //     (response) => {
+  //       // this.currentState = ProfileState.Viewing;
+  //       // this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+  //       // this.cdr.detectChanges();
+  //       // this.reloadProfile();
+  //       console.log('Profile picture updated successfully', response);
+  //       this.currentUser = { ...this.currentUser, ...response };
+
+  //       // Ensure profilePictureSettings are not overwritten if they come back as null
+  //       if (this.currentUser.profilePictureSettings === null) {
+  //         this.currentUser.profilePictureSettings = updatedUser.profilePictureSettings;
+  //       }
+
+  //       this.currentState = ProfileState.Viewing;
+  //       this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
+  //         profilePictureSettings: this.currentUser.profilePictureSettings
+  //       });
+  //       this.pictureForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
+  //         profilePictureSettings: this.currentUser.profilePictureSettings
+  //       });
+        
+  //       // Reset position and zoom after saving
+  //       // this.resetImagePositionAndZoom();
+        
+  //       this.updateImageTransform();
+  //       this.cdr.detectChanges();
+  //       // this.reloadProfile();
+
+        
+  //     },
+  //     error => {
+  //       console.error('Error updating profile picture:', error);
+  //       // Handle error (e.g., show error message)
+  //     }
+  //   );
+  // }
+
+  // async saveProfilePicture() {
+  //   if (!this.pictureForm.valid) return;
+  
+  //   // const newImgUrl = this.pictureForm.get('imgUrl')?.value
+  
+  //   try {
+
+  //       const formValue = this.pictureForm.getRawValue();
+  //       const updatedUser = {
+  //       ...this.currentUser,
+  //       imgUrl: formValue.imgUrl || null,
+  //       profilePictureSettings: {
+  //         zoom: this.zoomLevel,
+  //         x: this.position.x,
+  //         y: this.position.y
+  //       }
+  //     };
+
+  //     const response = await this.userService.updateUser(updatedUser).toPromise();
+      
+  //     this.ngZone.run(() => {
+  //       // Update current user with response
+  //       this.currentUser = { ...this.currentUser, ...response };
+        
+  //       // Ensure settings aren't overwritten if they come back null
+  //       if (this.currentUser.profilePictureSettings === null) {
+  //         this.currentUser.profilePictureSettings = updatedUser.profilePictureSettings;
+  //       }
+  
+  //       // Update forms
+  //       // this.profileForm.patchValue({
+  //       //   imgUrl: this.currentUser.imgUrl || '',
+  //       //   profilePictureSettings: this.currentUser.profilePictureSettings
+  //       // });
+        
+  //       this.pictureForm.patchValue({
+  //         imgUrl: this.currentUser.imgUrl || '',
+  //         profilePictureSettings: this.currentUser.profilePictureSettings
+  //       });
+  
+  //       // Update state
+  //       this.currentState = ProfileState.Viewing;
+  //       this.updateImageTransform();
+  //       this.cdr.detectChanges();
+  //     });
+  
+  //   } catch (error) {
+  //     console.error('Error updating profile picture:', error);
+  //     this.pictureForm.get('imgUrl')?.setErrors({ 'updateFailed': true });
+  //     this.cdr.detectChanges();
+  //   }
+  // }
+
+  async saveProfilePicture() {
+    if (!this.pictureForm.valid) return;
+  
+    try {
+      // Get current form values
+      const formValue = this.pictureForm.getRawValue();
+      
+      // Get the original Firebase URL instead of the proxied one
+      let originalUrl = formValue.imgUrl;
+      if (originalUrl && originalUrl.includes('localhost:3000/api/storage')) {
+        // Convert back to Firebase URL if it's a proxied URL
+        originalUrl = this.currentUser.imgUrl; // Use the original Firebase URL stored in currentUser
       }
-    };
-    this.userService.updateUser(this.currentUser).subscribe(
-      (response) => {
-        // this.currentState = ProfileState.Viewing;
-        // this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl });
-        // this.cdr.detectChanges();
-        // this.reloadProfile();
-        console.log('Profile picture updated successfully', response);
+  
+      // Ensure profilePictureSettings is properly structured
+      const settings = {
+        zoom: Number(this.zoomLevel) || 1,
+        x: Number(this.position.x) || 0,
+        y: Number(this.position.y) || 0
+      };
+  
+      // Create the update object with properly formatted data
+      const updatedUser = {
+        ...this.currentUser,
+        imgUrl: originalUrl || null, // Use the original Firebase URL
+        profilePictureSettings: settings
+      };
+  
+      // Remove any circular references or computed properties
+      delete updatedUser.paymentFrequency;
+  
+      console.log('Sending update to server:', {
+        imgUrl: updatedUser.imgUrl,
+        settings: updatedUser.profilePictureSettings
+      });
+  
+      const response = await this.userService.updateUser(updatedUser).toPromise();
+      
+      this.ngZone.run(() => {
+        // Update current user with response
         this.currentUser = { ...this.currentUser, ...response };
-
-        // Ensure profilePictureSettings are not overwritten if they come back as null
-        if (this.currentUser.profilePictureSettings === null) {
-          this.currentUser.profilePictureSettings = updatedUser.profilePictureSettings;
-        }
-
+        
+        // Always ensure settings are preserved
+        this.currentUser.profilePictureSettings = settings;
+  
+        // Update both forms with proxied URL for display
+        const proxiedUrl = this.currentUser.imgUrl ? 
+          this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) : '';
+  
+        this.profileForm.patchValue({
+          imgUrl: proxiedUrl,
+          profilePictureSettings: settings
+        }, { emitEvent: false });
+        
+        this.pictureForm.patchValue({
+          imgUrl: proxiedUrl,
+          profilePictureSettings: settings
+        }, { emitEvent: false });
+  
+        // Update position and zoom
+        this.position = {
+          x: settings.x,
+          y: settings.y
+        };
+        this.zoomLevel = settings.zoom;
+  
+        // Change state and update UI
         this.currentState = ProfileState.Viewing;
-        this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
-          profilePictureSettings: this.currentUser.profilePictureSettings
-        });
-        this.pictureForm.patchValue({ imgUrl: this.currentUser.imgUrl || '',
-          profilePictureSettings: this.currentUser.profilePictureSettings
-        });
-        
-        // Reset position and zoom after saving
-        // this.resetImagePositionAndZoom();
-        
         this.updateImageTransform();
-        this.cdr.detectChanges();
-        // this.reloadProfile();
-
         
-      },
-      error => {
-        console.error('Error updating profile picture:', error);
-        // Handle error (e.g., show error message)
+        this.cdr.detectChanges();
+      });
+  
+    } catch (error) {
+      console.error('Error saving profile picture:', error);
+      if (error instanceof HttpErrorResponse) {
+        console.error('Server error details:', error.error);
       }
-    );
+      
+      const imgUrlControl = this.pictureForm.get('imgUrl');
+      imgUrlControl?.setErrors({ 'updateFailed': true });
+      this.cdr.detectChanges();
+  
+      // Keep the current state if there's an error
+      this.currentState = ProfileState.ChangingPicture;
+    }
   }
 
-  preloadImage(imgUrl: string | null) {
-
-    // Reset loading states
-    if (this.isInitialLoad) {
-      this.imageLoaded = false;
-      this.loadingComplete = false;
+  private getImageUrlErrorMessage(control: AbstractControl): string {
+    if (this.isUploading) {
+      return `Uploading... ${this.uploadProgress}%`;
     }
+  
+    if (control.hasError('fileSize')) {
+      return 'Max file size 5MB';
+    }
+    if (control.hasError('fileType')) {
+      return 'Only .jpg, .jpeg, .png & .gif';
+    }
+    if (control.hasError('unauthorized')) {
+      return 'Please log in to upload files';
+    }
+    if (control.hasError('uploadFailed')) {
+      return 'Upload failed. Please try again.';
+    }
+    if (control.hasError('updateFailed')) {
+      return 'Failed to update profile. Please try again.';
+    }
+    if (control.hasError('pattern')) {
+      return 'Invalid image URL';
+    }
+  
+    return 'Invalid input';
+  }
+  
+  // Update the imgUrl case in your getErrorMessage method:
+  
 
-    // Reset BehaviorSubjects
-    this.avatarLoaded.next(false);
-    this.urlImageLoaded.next(false);
+//  preloadImage(imgUrl: string | null, isInitialLoad = false) {
 
-    // Create a promise for the avatar image
-    const loadAvatar = new Promise<void>((resolve, reject) => {
-      const avatarImg = new Image();
+//     // Reset loading states
+//     if (this.isInitialLoad) {
+//       this.imageLoaded = false;
+//       this.loadingComplete = false;
+//     }
+
+//     this.imageNotFound = false;
+//     // Reset BehaviorSubjects
+//     this.avatarLoaded.next(false);
+//     this.urlImageLoaded.next(false);
+    
+
+//     // Create a promise for the avatar image
+//     const loadAvatar = new Promise<void>((resolve, reject) => {
+//       const avatarImg = new Image();
+//       avatarImg.onload = () => resolve();
+//       avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
+//       avatarImg.src = 'assets/Images/avatar.png';
+//     });
+
+//     // Handle avatar loading
+//     from(loadAvatar).pipe(
+//       catchError(error => {
+//         console.error('Error loading avatar:', error);
+//         return of(null);
+//       }),
+//       finalize(() => {
+//         this.avatarLoaded.next(true);
+//         this.checkAllImagesLoaded(this.isInitialLoad);
+//       })
+//     ).subscribe();
+
+//   //   const img = new Image();
+//   //   img.onload = () => {
+//   //     this.imageLoaded = true;
+//   //     this.checkLoadingComplete();
+//   //   };
+//   //   img.onerror = () => {
+//   //     console.error('Error loading image');
+//   //     this.imageLoaded = true; 
+//   //     this.checkLoadingComplete();
+//   //   };
+//   //   img.src = imgUrl;
+//   // }
+//   // If there's a URL image to load, handle it separately
+//   if (imgUrl) {
+//     const urlImg = new Image();
+    
+//     urlImg.onload = () => {
+//       this.imageNotFound = false;
+//       this.urlImageLoaded.next(true);
+//       this.checkAllImagesLoaded(this.isInitialLoad);
+//     };
+    
+//     urlImg.onerror = () => {
+//       console.error('Error loading URL image');
+//       this.imageNotFound = true;
+//       this.urlImageLoaded.next(true); // Consider it "loaded" even if it failed
+//       this.checkAllImagesLoaded(this.isInitialLoad);
+//     };
+    
+//     urlImg.src = imgUrl;
+//   } else {
+//     // No URL image to load, mark it as "loaded"
+//     this.imageNotFound = false;
+//     this.urlImageLoaded.next(true);
+//     this.checkAllImagesLoaded(this.isInitialLoad);
+//   }
+// }
+
+// async preloadImage(imgUrl: string | null, isInitialLoad = false) {
+//   if (this.isInitialLoad) {
+//     this.imageLoaded = false;
+//     this.loadingComplete = false;
+//   }
+
+//   this.imageNotFound = false;
+//   this.avatarLoaded.next(false);
+//   this.urlImageLoaded.next(false);
+
+//   // Handle avatar loading
+//   const loadAvatar = new Promise<void>((resolve, reject) => {
+//     const avatarImg = new Image();
+//     avatarImg.onload = () => resolve();
+//     avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
+//     avatarImg.src = 'assets/Images/avatar.png';
+//   });
+
+//   try {
+//     await loadAvatar;
+//     this.avatarLoaded.next(true);
+//   } catch (error) {
+//     console.error('Error loading avatar:', error);
+//   } finally {
+//     this.checkAllImagesLoaded(isInitialLoad);
+//   }
+
+//   if (imgUrl) {
+//     try {
+//       // Verify image exists in Firebase
+//       const validUrl = await this.imageManagementService.checkAndUpdateImageUrl(
+//         this.userId, 
+//         imgUrl
+//       );
+
+//       if (!validUrl) {
+//         throw new Error('Image not found');
+//       }
+
+//       const urlImg = new Image();
+//       await new Promise<void>((resolve, reject) => {
+//         urlImg.onload = () => resolve();
+//         urlImg.onerror = () => reject(new Error('Failed to load image'));
+//         urlImg.src = validUrl;
+//       });
+
+//       this.imageNotFound = false;
+//       this.currentUser.imgUrl = validUrl;
+//     } catch (error) {
+//       console.error('Error loading image:', error);
+//       this.imageNotFound = true;
+//       this.currentUser.imgUrl = null;
+      
+//       // Clear the form values
+//       this.profileForm.patchValue({ imgUrl: null });
+//       this.pictureForm.patchValue({ imgUrl: null });
+//     } finally {
+//       this.urlImageLoaded.next(true);
+//       this.checkAllImagesLoaded(isInitialLoad);
+//     }
+//   } else {
+//     this.imageNotFound = false;
+//     this.urlImageLoaded.next(true);
+//     this.checkAllImagesLoaded(isInitialLoad);
+//   }
+// }
+
+// async preloadImage(imgUrl: string | null, isInitialLoad = false) {
+//   if (this.isInitialLoad) {
+//     this.imageLoaded = false;
+//     this.loadingComplete = false;
+//   }
+
+//   this.imageNotFound = false;
+//   this.avatarLoaded.next(false);
+//   this.urlImageLoaded.next(false);
+
+//   // Handle avatar loading
+//   const loadAvatar = new Promise<void>((resolve, reject) => {
+//     const avatarImg = new Image();
+//     avatarImg.onload = () => resolve();
+//     avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
+//     avatarImg.src = 'assets/Images/avatar.png';
+//   });
+
+//   try {
+//     await loadAvatar;
+//     this.avatarLoaded.next(true);
+//   } catch (error) {
+//     console.error('Error loading avatar:', error);
+//   } finally {
+//     this.checkAllImagesLoaded(isInitialLoad);
+//   }
+
+//   if (imgUrl) {
+//     try {
+//       // Verify image exists and get valid URL
+//       const validUrl = await this.imageManagementService.checkAndUpdateImageUrl(
+//         this.userId, 
+//         imgUrl
+//       );
+
+//       if (!validUrl) {
+//         throw new Error('Image not found');
+//       }
+
+//       // For display, use proxied URL if it's a Firebase URL
+//       const displayUrl = validUrl.includes('firebasestorage.googleapis.com') 
+//         ? this.storageService.convertFirebaseUrl(validUrl)
+//         : validUrl;
+
+//       // Load the image
+//       const urlImg = new Image();
+//       await new Promise<void>((resolve, reject) => {
+//         urlImg.onload = () => resolve();
+//         urlImg.onerror = () => reject(new Error('Failed to load image'));
+//         urlImg.src = displayUrl;
+//       });
+
+//       this.imageNotFound = false;
+//       // Store original URL in currentUser
+//       this.currentUser.imgUrl = validUrl;  // Keep original URL in model
+      
+//       // Update forms with original URL
+//       if (this.currentUser.imgUrl.includes('firebasestorage.googleapis.com')) {
+//         // For Firebase URLs, store original but display proxied
+//         this.profileForm.patchValue({ 
+//           imgUrl: this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) 
+//         });
+//         this.pictureForm.patchValue({ 
+//           imgUrl: this.storageService.convertFirebaseUrl(this.currentUser.imgUrl)
+//         });
+//       } else {
+//         // For external URLs, use as-is
+//         this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+//         this.pictureForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+//       }
+      
+//     } catch (error) {
+//       console.error('Error loading image:', error);
+//       this.imageNotFound = true;
+//       this.currentUser.imgUrl = null;
+      
+//       // Clear the form values
+//       this.profileForm.patchValue({ imgUrl: null });
+//       this.pictureForm.patchValue({ imgUrl: null });
+//     } finally {
+//       this.urlImageLoaded.next(true);
+//       this.checkAllImagesLoaded(isInitialLoad);
+//     }
+//   } else {
+//     this.imageNotFound = false;
+//     this.urlImageLoaded.next(true);
+//     this.checkAllImagesLoaded(isInitialLoad);
+//   }
+// }
+
+async preloadImage(imgUrl: string | null, isInitialLoad = false) {
+  console.log('Starting preloadImage', { isInitialLoad, imgUrl });
+
+  if (this.isInitialLoad) {
+    this.imageLoaded = false;
+    this.loadingComplete = false;
+  }
+
+  this.imageNotFound = false;
+  this.avatarLoaded.next(false);
+  this.urlImageLoaded.next(false);
+
+  // Handle avatar loading
+  try {
+    const avatarImg = new Image();
+    await new Promise<void>((resolve, reject) => {
       avatarImg.onload = () => resolve();
       avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
       avatarImg.src = 'assets/Images/avatar.png';
     });
+    this.avatarLoaded.next(true);
+  } catch (error) {
+    console.error('Error loading avatar:', error);
+    // Still mark avatar as loaded even if it fails
+    this.avatarLoaded.next(true);
+  }
 
-    // Handle avatar loading
-    from(loadAvatar).pipe(
-      catchError(error => {
-        console.error('Error loading avatar:', error);
-        return of(null);
-      }),
-      finalize(() => {
-        this.avatarLoaded.next(true);
-        this.checkAllImagesLoaded(this.isInitialLoad);
-      })
-    ).subscribe();
-
-  //   const img = new Image();
-  //   img.onload = () => {
-  //     this.imageLoaded = true;
-  //     this.checkLoadingComplete();
-  //   };
-  //   img.onerror = () => {
-  //     console.error('Error loading image');
-  //     this.imageLoaded = true; 
-  //     this.checkLoadingComplete();
-  //   };
-  //   img.src = imgUrl;
-  // }
-  // If there's a URL image to load, handle it separately
   if (imgUrl) {
-    const urlImg = new Image();
-    
-    urlImg.onload = () => {
-      this.urlImageLoaded.next(true);
-      this.checkAllImagesLoaded(this.isInitialLoad);
-    };
-    
-    urlImg.onerror = () => {
-      console.error('Error loading URL image');
-      this.urlImageLoaded.next(true); // Consider it "loaded" even if it failed
-      this.checkAllImagesLoaded(this.isInitialLoad);
-    };
-    
-    urlImg.src = imgUrl;
-  } else {
-    // No URL image to load, mark it as "loaded"
-    this.urlImageLoaded.next(true);
-    this.checkAllImagesLoaded(this.isInitialLoad);
-  }
-}
-
-private checkAllImagesLoaded(isInitialLoad: boolean) {
-  // Combine both loading states
-  if (this.avatarLoaded.getValue() && this.urlImageLoaded.getValue()) {
-    this.imageLoaded = true;
-    if (this.isInitialLoad) {
-      this.checkLoadingComplete();
-    }
-  }
-}
-
-  isImageUrlFilled(): boolean {
-  const imgUrlControl = this.profileForm.get('imgUrl');
-  const formValue = imgUrlControl?.value?.trim();
-  const isFilled = !!formValue;
-
-  if (isFilled) {
-    // Basic URL validation
     try {
-      const url = new URL(formValue);
-      return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch {
-      return false;
+      // Verify image exists and get valid URL
+      const validUrl = await this.imageManagementService.checkAndUpdateImageUrl(
+        this.userId, 
+        imgUrl
+      );
+
+      if (!validUrl) {
+        throw new Error('Image not found');
+      }
+
+      // For display, use proxied URL if it's a Firebase URL
+      const displayUrl = validUrl.includes('firebasestorage.googleapis.com') 
+        ? this.storageService.convertFirebaseUrl(validUrl)
+        : validUrl;
+
+      // Load the image
+      const urlImg = new Image();
+      await new Promise<void>((resolve, reject) => {
+        urlImg.onload = () => resolve();
+        urlImg.onerror = () => reject(new Error('Failed to load image'));
+        urlImg.src = displayUrl;
+      });
+
+      this.imageNotFound = false;
+      // Store original URL in currentUser
+      this.currentUser.imgUrl = validUrl;  // Keep original URL in model
+      
+      // Update forms with original URL
+      if (this.currentUser.imgUrl.includes('firebasestorage.googleapis.com')) {
+        // For Firebase URLs, store original but display proxied
+        this.profileForm.patchValue({ 
+          imgUrl: this.storageService.convertFirebaseUrl(this.currentUser.imgUrl) 
+        });
+        this.pictureForm.patchValue({ 
+          imgUrl: this.storageService.convertFirebaseUrl(this.currentUser.imgUrl)
+        });
+      } else {
+        // For external URLs, use as-is
+        this.profileForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+        this.pictureForm.patchValue({ imgUrl: this.currentUser.imgUrl });
+      }
+      
+    } catch (error) {
+      console.error('Error loading image:', error);
+      this.imageNotFound = true;
+      this.currentUser.imgUrl = null;
+      
+      // Clear the form values
+      this.profileForm.patchValue({ imgUrl: null });
+      this.pictureForm.patchValue({ imgUrl: null });
+    } finally {
+      // Always mark URL image as loaded
+      this.urlImageLoaded.next(true);
     }
+  } else {
+    // No image URL provided
+    this.imageNotFound = false;
+    this.urlImageLoaded.next(true);
   }
+
+  // Final check for loading completion
+  this.checkLoadingComplete();
+}
+
+
+// Helper method to check if all images are loaded
+private checkAllImagesLoaded(isInitialLoad: boolean) {
+  const avatarLoaded = this.avatarLoaded.getValue();
+  const urlLoaded = this.urlImageLoaded.getValue();
   
-  return false;
+  console.log('Checking image loading status:', { avatarLoaded, urlLoaded });
+
+  if (avatarLoaded && urlLoaded) {
+    this.imageLoaded = true;
+    this.checkLoadingComplete();
+    this.cdr.detectChanges();
+  }
+}
+
+// async refreshImages() {
+//   await this.imageManagementService.loadUserImages(this.userId);
+//   if (this.currentUser.imgUrl) {
+//     await this.preloadImage(this.currentUser.imgUrl);
+//   }
+// }
+// async refreshImages() {
+//   try {
+//     await this.imageManagementService.loadUserImages(this.userId);
+//     if (this.currentUser.imgUrl) {
+//       // Add a small delay before preloading image
+//       await new Promise(resolve => setTimeout(resolve, 300));
+//       await this.preloadImage(this.currentUser.imgUrl);
+//     }
+//   } catch (error) {
+//     console.error('Error refreshing images:', error);
+//   }
+// }
+
+async refreshImages(forceRefresh: boolean = false) {
+  try {
+    await this.imageManagementService.loadUserImages(this.userId);
+    
+    if (this.currentUser.imgUrl) {
+      if (forceRefresh) {
+        // Add cache-busting parameter to the URL
+        const cacheBuster = `?t=${Date.now()}`;
+        const baseUrl = this.currentUser.imgUrl.split('?')[0];
+        await this.preloadImage(baseUrl + cacheBuster);
+      } else {
+        await this.preloadImage(this.currentUser.imgUrl);
+      }
+    }
+  } catch (error) {
+    console.error('Error refreshing images:', error);
+  }
+}
+
+// private checkAllImagesLoaded(isInitialLoad: boolean) {
+//   // Combine both loading states
+//   if (this.avatarLoaded.getValue() && this.urlImageLoaded.getValue()) {
+//     this.imageLoaded = true;
+//     if (this.isInitialLoad) {
+//       this.checkLoadingComplete();
+//     }
+//   }
+// }
+
+//   isImageUrlFilled(): boolean {
+//   const imgUrlControl = this.profileForm.get('imgUrl');
+  
+//   const formValue = imgUrlControl?.value?.trim();
+//   const isFilled = !!formValue;
+
+
+//   if (isFilled) {
+//     // Basic URL validation
+//     try {
+//       const url = new URL(formValue);
+//       return url.protocol === 'http:' || url.protocol === 'https:';
+//     } catch {
+//       return false;
+//     }
+//   }
+  
+//   return false;
+// }
+
+isImageUrlFilled(): boolean {
+  this.imageNotFound = false;
+  const imgUrlControl = this.pictureForm.get('imgUrl');
+  if (!imgUrlControl) return false;
+  
+  const formValue = imgUrlControl.value?.trim();
+  if (!formValue) return false;
+
+  // For uploaded images (Firebase URLs)
+  if (formValue.includes('firebasestorage.googleapis.com')) return true;
+
+  // For external URLs
+  try {
+    const url = new URL(formValue);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
   setupDragListeners() {
@@ -1980,44 +2530,110 @@ updateImageTransform() {
 //   }
 // }
 
+// getProfileImageStyles(): any {
+//   let settings = this.currentUser.profilePictureSettings;
+//   if (typeof settings === 'string') {
+//     try {
+//       settings = JSON.parse(settings);
+//     } catch (e) {
+//       console.error('Error parsing profilePictureSettings:', e);
+//       settings = null;
+//     }
+//   }
+//   // const imageUrl = this.currentUser.imgUrl;
+
+//   console.log('getProfileImageStyles called', {
+//     x: this.position.x,
+//     y: this.position.y,
+//     zoom: this.zoomLevel,
+//     settings: this.currentUser.profilePictureSettings
+//   });
+
+//   const imageUrl = this.currentUser.imgUrl;
+//   const proxiedUrl = imageUrl ? this.storageService.convertFirebaseUrl(imageUrl) : '';
+//   console.log('Proxied URL:', proxiedUrl);
+//   const x = this.position.x ?? settings?.x ?? 0;
+//   const y = this.position.y ?? settings?.y ?? 0;
+//   const zoom = this.zoomLevel ?? settings?.zoom ?? 1;
+
+//   console.log({
+//     original: imageUrl,
+//     proxied: proxiedUrl,
+//     isConverted: imageUrl !== proxiedUrl
+//   });
+
+
+//   // console.log("X is " + x);
+
+//   // return {
+//   //   'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
+//   //   'background-position': `${x}px ${y}px`,
+//   //   'background-repeat': 'no-repeat',
+//   //   'background-size': `${zoom * 100}%`
+//   // }
+
+//   return {
+//     // 'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
+//     // 'background-position': `${x}% ${y}%`,
+//     // 'background-repeat': 'no-repeat',
+//     // 'background-size': `${this.zoomLevel * 100}%`
+//     // 'background-image': imageUrl ? `url(${imageUrl}?${new Date().getTime()})` : 'none',
+//     // 'background-position': `${this.position.x}% ${this.position.y}%`,
+//     // 'background-repeat': 'no-repeat',
+//     // 'background-size': `${this.zoomLevel * 100}%`
+//     'background-image': proxiedUrl ? `url(${proxiedUrl})` : 'none',
+//     'background-position': `${this.position.x}% ${this.position.y}%`,
+//     'background-repeat': 'no-repeat',
+//     'background-size': `${this.zoomLevel * 100}%`
+//   };
+// }
+
 getProfileImageStyles(): any {
   let settings = this.currentUser.profilePictureSettings;
   if (typeof settings === 'string') {
     try {
       settings = JSON.parse(settings);
     } catch (e) {
-      console.error('Error parsing profilePictureSettings:', e);
-      settings = null;
+      settings = {
+        zoom: this.zoomLevel,
+        x: this.position.x,
+        y: this.position.y
+      };
     }
   }
 
-  console.log('getProfileImageStyles called', {
-    x: this.position.x,
-    y: this.position.y,
-    zoom: this.zoomLevel,
-    settings: this.currentUser.profilePictureSettings
-  });
-
-  const x = this.position.x ?? settings?.x ?? 0;
-  const y = this.position.y ?? settings?.y ?? 0;
-  const zoom = this.zoomLevel ?? settings?.zoom ?? 1;
-
-  // console.log("X is " + x);
-
-  // return {
-  //   'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
-  //   'background-position': `${x}px ${y}px`,
-  //   'background-repeat': 'no-repeat',
-  //   'background-size': `${zoom * 100}%`
-  // }
+  // Always use proxied URL for display
+  const imageUrl = this.currentUser.imgUrl;
+  const proxiedUrl = imageUrl ? this.storageService.convertFirebaseUrl(imageUrl) : '';
+  
+  const x = Number(this.position.x) || 0;
+  const y = Number(this.position.y) || 0;
+  const zoom = Number(this.zoomLevel) || 1;
 
   return {
-    'background-image': this.currentUser.imgUrl ? `url(${this.currentUser.imgUrl})` : 'none',
-    'background-position': `${x}% ${y}%`,
+    'background-image': proxiedUrl ? `url(${proxiedUrl})` : 'none',
+    'background-position': `${x}px ${y}px`,
     'background-repeat': 'no-repeat',
-    'background-size': `${zoom * 100}%`
+    'background-size': `${zoom * 100}%`,
+    'background-color': '#c7ff20'
   };
 }
+
+// Add a helper method to determine if we're using a Firebase URL
+private isFirebaseUrl(url: string): boolean | "" {
+  return url && url.includes('firebasestorage.googleapis.com');
+}
+
+// // Update getProfileImageStyles
+// getProfileImageStyles(): any {
+//   const imageUrl = this.currentUser.imgUrl;
+//   return {
+//     'background-image': imageUrl ? `url(${imageUrl}?${new Date().getTime()})` : 'none',
+//     'background-position': `${this.position.x}% ${this.position.y}%`,
+//     'background-repeat': 'no-repeat',
+//     'background-size': `${this.zoomLevel * 100}%`
+//   };
+// }
 
 
 zoomIn() {
@@ -2218,50 +2834,55 @@ isInDefaultPosition(): boolean {
             return 'Invalid Height';
           }
           break;
-  
+
           case 'imgUrl':
             control = this.profileForm.get('imgUrl');
             if (!control) return '';
+            return this.getImageUrlErrorMessage(control);
+  
+          // case 'imgUrl':
+          //   control = this.profileForm.get('imgUrl');
+          //   if (!control) return '';
             
-            // Show upload progress if uploading
-            if (this.isUploading) {
-              return `Uploading... ${this.uploadProgress}%`;
-            }
+          //   // Show upload progress if uploading
+          //   if (this.isUploading) {
+          //     return `Uploading... ${this.uploadProgress}%`;
+          //   }
         
-            // Show retry message if retrying
-            if (this.showRetryProgress) {
-              return this.retryMessage;
-            }
+          //   // Show retry message if retrying
+          //   if (this.showRetryProgress) {
+          //     return this.retryMessage;
+          //   }
         
-            // Various error states
-            if (control.hasError('required')) {
-              return 'Required';
-            }
-            if (control.hasError('pattern')) {
-              return 'Invalid URL';
-            }
-            if (control.hasError('fileSize')) {
-              return 'Max file size 5MB';
-            }
-            if (control.hasError('fileType')) {
-              return 'Only .jpg, .jpeg, .png & .gif';
-            }
-            if (control.hasError('dimensions')) {
-              return 'Min size 200x200 pixels';
-            }
-            if (control.hasError('uploadFailed')) {
-              return 'Upload failed';
-            }
-            if (control.hasError('invalidImage')) {
-              return 'Invalid file or URL';
-            }
-            if (control.hasError('networkError')) {
-              return 'Network error.';
-            }
-            if (control.hasError('urlNotAccessible')) {
-              return 'URL not accessible';
-            }
-            break;
+          //   // Various error states
+          //   if (control.hasError('required')) {
+          //     return 'Required';
+          //   }
+          //   if (control.hasError('pattern')) {
+          //     return 'Invalid URL';
+          //   }
+          //   if (control.hasError('fileSize')) {
+          //     return 'Max file size 5MB';
+          //   }
+          //   if (control.hasError('fileType')) {
+          //     return 'Only .jpg, .jpeg, .png & .gif';
+          //   }
+          //   if (control.hasError('dimensions')) {
+          //     return 'Min size 200x200 pixels';
+          //   }
+          //   if (control.hasError('uploadFailed')) {
+          //     return 'Upload failed';
+          //   }
+          //   if (control.hasError('invalidImage')) {
+          //     return 'Invalid file or URL';
+          //   }
+          //   if (control.hasError('networkError')) {
+          //     return 'Network error.';
+          //   }
+          //   if (control.hasError('urlNotAccessible')) {
+          //     return 'URL not accessible';
+          //   }
+          //   break;
       }
     }
   
@@ -2416,18 +3037,23 @@ isInDefaultPosition(): boolean {
 
 ///// Google Firebase Storage Functions for Profile Pictures /////
 async onFileSelected(event: Event) {
+  this.imageNotFound = false;
+
   const file = (event.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
   try {
-    // Initialize upload state
-    this.ngZone.run(() => {
-      this.isUploading = true;
-      this.uploadProgress = 0;
-      this.retryCount = 0;
-      console.log('Upload started');
-      this.cdr.detectChanges();
-    });
+    // Get current Firebase user
+    const currentUser = this.firebaseService.getCurrentUser();
+    if (!currentUser) {
+      throw new Error('No authenticated user found');
+    }
+
+    this.isUploading = true;
+    this.uploadProgress = 0;
+
+    // Store the old image URL for cleanup
+    const oldImageUrl = this.currentUser.imgUrl;
 
     // Validate file
     if (file.size > 5 * 1024 * 1024) {
@@ -2439,137 +3065,121 @@ async onFileSelected(event: Event) {
       throw new Error('Invalid file type. Please use JPG, PNG or GIF');
     }
 
-    // Ensure Firebase auth
-    let currentUser = auth.currentUser;
-    console.log('No Firebase user, attempting to refresh auth...', currentUser);
-    if (!currentUser) {
-      console.log('No Firebase user, attempting to refresh auth...');
+    // Let the Firebase service handle the upload using the backend-generated URL
+    const downloadURL = await this.firebaseService.uploadFile(file, this.userId, 'profileImages');
+
+    // After successful upload, delete old image if it exists
+    if (oldImageUrl && oldImageUrl.includes('firebasestorage.googleapis.com')) {
       try {
-        await this.userService.refreshFirebaseAuth();
-        currentUser = auth.currentUser;
-        console.log('Current Firebase user after refresh:', currentUser);
-        if (!currentUser) throw new Error('Failed to authenticate');
+        await this.deleteOldImage(oldImageUrl);
+        console.log('Old image deleted successfully');
       } catch (error) {
-        console.error('Auth refresh failed:', error);
-        throw new Error('Authentication required');
+        console.error('Error deleting old image:', error);
       }
     }
 
+    // Convert to proxied URL for display
+    const proxiedUrl = this.storageService.convertFirebaseUrl(downloadURL);
+    console.log('Proxied URL:', proxiedUrl);
 
-    // Get fresh ID token
-    const idToken = await currentUser.getIdToken(true);
-
-    // Compress image
-    const compressedFile = await this.compressImage(file);
-
-    // Start upload with retry logic
-    while (this.retryCount < this.maxRetries) {
-      try {
-        // Create storage reference
-        const fileName = `${Date.now()}-${file.name}`;
-        const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-
-        // Upload with metadata
-        const uploadTask = uploadBytesResumable(storageRef, compressedFile, {
-          customMetadata: {
-            userId: currentUser.uid,
-            uploadedAt: new Date().toISOString()
-          }
-        });
-
-        // Handle upload
-        const downloadURL = await new Promise<string>((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-              this.ngZone.run(() => {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                this.uploadProgress = progress;
-                console.log(`Upload progress: ${progress}%`);
-                this.cdr.detectChanges();
-              });
-            },
-            reject,
-            async () => {
-              try {
-                const url = await getDownloadURL(uploadTask.snapshot.ref);
-                resolve(url);
-              } catch (error) {
-                reject(error);
-              }
-            }
-          );
-        });
-
-        // Update profile with new image URL
-        await new Promise<void>((resolve, reject) => {
-          this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
-            next: () => {
-              this.ngZone.run(() => {
-                this.profileForm.patchValue({ imgUrl: downloadURL });
-                this.pictureForm.patchValue({ imgUrl: downloadURL });
-                this.currentUser.imgUrl = downloadURL;
-                this.isUploading = false;
-                this.uploadProgress = 0;
-                this.cdr.detectChanges();
-                resolve();
-              });
-            },
-            error: reject
-          });
-        });
-
-        return; // Success - exit retry loop
-
-      } catch (error) {
-        this.retryCount++;
-        if (this.retryCount >= this.maxRetries) throw error;
-        
-        console.log(`Upload failed, attempt ${this.retryCount} of ${this.maxRetries}`);
-        await new Promise(resolve => setTimeout(resolve, this.retryDelay * Math.pow(2, this.retryCount - 1)));
-        
-        // Refresh token before retry
-        await currentUser.getIdToken(true);
-      }
+    // Update form with proxied URL
+    // this.pictureForm.patchValue({
+    //   imgUrl: proxiedUrl
+    // }, { emitEvent: false });
+    if (this.currentUser.imgUrl !== proxiedUrl) {
+      this.pictureForm.patchValue({
+        imgUrl: proxiedUrl
+      }, { emitEvent: false });
     }
 
-  } catch (err) {
-    console.error('Upload failed:', err);
+    // Prepare user update with current settings
+    const currentSettings = this.currentUser.profilePictureSettings || {
+      zoom: this.zoomLevel,
+      x: this.position.x,
+      y: this.position.y
+    };
+
+    const updatedUser = {
+      ...this.currentUser,
+      imgUrl: downloadURL,
+      profilePictureSettings: currentSettings
+    };
+
+    // Update user in database
+    await this.userService.updateUser(updatedUser).toPromise();
+
+    // Update local state
+    this.ngZone.run(() => {
+      this.currentUser.imgUrl = downloadURL;
+      this.resetImagePositionAndZoom();
+      this.isUploading = false;
+      this.uploadProgress = 0;
+      
+      const profileImg = this.profileImg?.nativeElement;
+      if (profileImg) {
+        profileImg.style.backgroundImage = `url(${proxiedUrl}?${new Date().getTime()})`;
+      }
+      
+      this.pictureForm.markAsDirty();
+      this.pictureForm.markAsTouched();
+      this.pictureForm.updateValueAndValidity();
+      
+      this.cdr.detectChanges();
+    });
+
+  } catch (error) {
+    console.error('Upload failed:', error);
     this.ngZone.run(() => {
       this.isUploading = false;
       this.uploadProgress = 0;
       
-      if (err instanceof Error) {
-        const error = err as Error;
+      if (error instanceof Error) {
+        const imgUrlControl = this.pictureForm.get('imgUrl');
         if (error.message.includes('size')) {
-          this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+          imgUrlControl?.setErrors({ 'fileSize': true });
         } else if (error.message.includes('type')) {
-          this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
+          imgUrlControl?.setErrors({ 'fileType': true });
         } else if (error.message.includes('auth')) {
-          this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+          imgUrlControl?.setErrors({ 'unauthorized': true });
         } else {
-          this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+          imgUrlControl?.setErrors({ 'uploadFailed': true });
         }
       }
       
       this.cdr.detectChanges();
     });
+  } finally {
+    // Reset file input
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
   }
 }
 
 // async onFileSelected(event: Event) {
+//   this.imageNotFound = false;
+
 //   const file = (event.target as HTMLInputElement).files?.[0];
 //   if (!file) return;
 
 //   try {
-//     // Initialize upload state
-//     this.ngZone.run(() => {
-//       this.isUploading = true;
-//       this.uploadProgress = 0;
-//       this.retryCount = 0;
-//       console.log('Upload started');
-//       this.cdr.detectChanges();
-//     });
+//     // Ensure we're using the current authenticated user's ID
+//     const currentUser = this.firebaseService.getCurrentUser();
+//     if (!currentUser) {
+//       throw new Error('No authenticated user found');
+//     }
+
+//     const userId = currentUser.uid; // Use the authenticated user's ID
+//     console.log('Using authenticated user ID:', userId);
+
+//     this.isUploading = true;
+//     this.uploadProgress = 0;
+//     await this.imageManagementService.uploadImage(userId, file);
+//     await this.initializeImageNavigation();
+
+//     // Store the old image URL for cleanup
+//     const oldImageUrl = this.currentUser.imgUrl;
 
 //     // Validate file
 //     if (file.size > 5 * 1024 * 1024) {
@@ -2581,191 +3191,138 @@ async onFileSelected(event: Event) {
 //       throw new Error('Invalid file type. Please use JPG, PNG or GIF');
 //     }
 
-//     // Get current Firebase user
-//     const currentUser = auth.currentUser;
-//     console.log('Got current user:', currentUser);
-//     // if (!currentUser) {
-//     //   // Try to refresh auth state
-//     //   await new Promise<void>((resolve) => {
-//     //     const unsubscribe = auth.onAuthStateChanged((user) => {
-//     //       console.log('Auth state refreshed:', user);
-//     //       unsubscribe();
-//     //       resolve();
-//     //     });
-//     //   });
-//     // }
-//     if (!currentUser) {
-//       // Try to refresh token
-//       const token = localStorage.getItem('token');
-//       if (token) {
-//         try {
-//           const firebaseToken = await this.userService.getFirebaseToken(token);
-//           await signInWithCustomToken(auth, firebaseToken);
-//         } catch (error) {
-//           console.error('Failed to refresh Firebase auth:', error);
-//           throw new Error('Authentication required');
-//         }
-//       } else {
-//         throw new Error('Authentication required');
-//       }
-//     }
-
-//     // Check again after refresh
-//     if (!auth.currentUser) {
-//       throw new Error('No authenticated user found. Please log in again.');
-//     }
-
-//     // Get fresh ID token before upload
-//     const idToken = await currentUser!.getIdToken(true);
-//     console.log('Got fresh ID token');
-
-//     // Compress image
+//     // Generate unique filename
+//     const timestamp = Date.now();
+//     const fileName = `${timestamp}-${file.name}`;
+//     const storageRef = ref(storage, `profileImages/${userId}/${fileName}`);
 //     const compressedFile = await this.compressImage(file);
 
-//     // Retry loop
-//     while (this.retryCount < this.maxRetries) {
-//       try {
-//         // Create storage reference with user-specific path
-//         const fileName = `${Date.now()}-${file.name}`;
-//         const storageRef = ref(storage, `profileImages/${currentUser!.uid}/${fileName}`);
+//     const uploadTask = uploadBytesResumable(storageRef, compressedFile, {
+//       contentType: file.type,
+//       customMetadata: {
+//         userId: userId,
+//         originalName: file.name,
+//         uploadedAt: new Date().toISOString()
+//       }
+//     });
 
-//         // Create metadata with auth token
-//         const metadata = {
-//           customMetadata: {
-//             userId: currentUser!.uid,
-//             uploadedAt: new Date().toISOString()
-//           }
-//         };
-
-//         // Create upload task with metadata
-//         const uploadTask = uploadBytesResumable(storageRef, compressedFile, metadata);
-
-//         // Handle upload with Promise
-//         const downloadURL = await new Promise<string>((resolve, reject) => {
-//           uploadTask.on(
-//             'state_changed',
-//             // Progress updates
-//             (snapshot) => {
-//               this.ngZone.run(() => {
-//                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-//                 this.uploadProgress = progress;
-//                 console.log(`Upload progress: ${progress}% (Attempt ${this.retryCount + 1})`);
-//                 this.cdr.detectChanges();
-//               });
-//             },
-//             // Error handler
-//             (error) => {
-//               console.error('Upload error:', error);
-//               reject(error);
-//             },
-//             // Success handler
-//             async () => {
-//               try {
-//                 const url = await getDownloadURL(uploadTask.snapshot.ref);
-//                 resolve(url);
-//               } catch (error) {
-//                 reject(error);
-//               }
-//             }
-//           );
-//         });
-
-//         // If we get here, upload was successful
-//         console.log('Upload successful, updating profile');
-
-//         // Update database with new image URL
-//         await new Promise<void>((resolve, reject) => {
-//           this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
-//             next: () => {
-//               this.ngZone.run(() => {
-//                 this.profileForm.patchValue({ imgUrl: downloadURL });
-//                 this.pictureForm.patchValue({ imgUrl: downloadURL });
-//                 this.currentUser.imgUrl = downloadURL;
-                
-//                 // Reset upload state
-//                 this.isUploading = false;
-//                 this.uploadProgress = 0;
-//                 console.log('Profile update complete');
-//                 this.cdr.detectChanges();
-//                 resolve();
-//               });
-//             },
-//             error: (error) => {
-//               console.error('Profile update error:', error);
-//               reject(new Error('Failed to update profile with new image'));
-//             }
-//           });
-//         });
-
-//         // If we get here, everything succeeded, so break the retry loop
-//         return;
-
-//       } catch (error) {
-//         console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
-//         this.retryCount++;
-        
-//         if (this.retryCount < this.maxRetries) {
+//     const downloadURL = await new Promise<string>((resolve, reject) => {
+//       uploadTask.on(
+//         'state_changed',
+//         (snapshot) => {
 //           this.ngZone.run(() => {
-//             this.uploadProgress = 0;
-//             console.log('Retrying upload...');
+//             const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//             this.uploadProgress = progress;
 //             this.cdr.detectChanges();
 //           });
-          
-//           // Wait with exponential backoff before retrying
-//           const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-//           await new Promise(resolve => setTimeout(resolve, backoffDelay));
-          
-//           // Refresh token before retry
-//           await currentUser!.getIdToken(true);
-          
-//         } else {
-//           throw new Error('Upload failed after max retries');
+//         },
+//         reject,
+//         async () => {
+//           try {
+//             const url = await getDownloadURL(uploadTask.snapshot.ref);
+//             resolve(url);
+//           } catch (error) {
+//             reject(error);
+//           }
 //         }
+//       );
+//     });
+
+//     // After successful upload, delete old image if it exists
+//     if (oldImageUrl && oldImageUrl.includes('firebasestorage.googleapis.com')) {
+//       try {
+//         await this.deleteOldImage(oldImageUrl);
+//         console.log('Old image deleted successfully');
+//       } catch (error) {
+//         console.error('Error deleting old image:', error);
 //       }
 //     }
 
-//   } catch (err: unknown) {
+//     const proxiedUrl = this.storageService.convertFirebaseUrl(downloadURL);
+//     console.log('Proxied URL:', proxiedUrl);
+
+//     this.pictureForm.patchValue({
+//       imgUrl: proxiedUrl
+//     }, { emitEvent: false });
+
+//     const currentSettings = this.currentUser.profilePictureSettings || {
+//       zoom: this.zoomLevel,
+//       x: this.position.x,
+//       y: this.position.y
+//     };
+
+//     const updatedUser = {
+//       ...this.currentUser,
+//       imgUrl: downloadURL,
+//       profilePictureSettings: currentSettings
+//     };
+
+//     await this.userService.updateUser(updatedUser).toPromise();
+
 //     this.ngZone.run(() => {
-//       console.error('Upload failed:', err);
+//       this.currentUser.imgUrl = downloadURL;
+//       this.resetImagePositionAndZoom();
 //       this.isUploading = false;
 //       this.uploadProgress = 0;
 
-//       if (err instanceof Error) {
-//         if (err.message.includes('size')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-//         } else if (err.message.includes('type')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-//         } else if (err.message.includes('authenticated')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//       const profileImg = this.profileImg?.nativeElement;
+//       if (profileImg) {
+//         profileImg.style.backgroundImage = `url(${proxiedUrl}?${new Date().getTime()})`;
+//       }
+
+//       this.pictureForm.markAsDirty();
+//       this.pictureForm.markAsTouched();
+//       this.pictureForm.updateValueAndValidity();
+//       this.cdr.detectChanges();
+//     });
+
+//   } catch (error) {
+//     console.error('Upload failed:', error);
+//     this.ngZone.run(() => {
+//       this.isUploading = false;
+//       this.uploadProgress = 0;
+
+//       if (error instanceof Error) {
+//         const imgUrlControl = this.pictureForm.get('imgUrl');
+//         if (error.message.includes('size')) {
+//           imgUrlControl?.setErrors({ 'fileSize': true });
+//         } else if (error.message.includes('type')) {
+//           imgUrlControl?.setErrors({ 'fileType': true });
+//         } else if (error.message.includes('auth')) {
+//           imgUrlControl?.setErrors({ 'unauthorized': true });
 //         } else {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//           imgUrlControl?.setErrors({ 'uploadFailed': true });
 //         }
-//       } else {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
 //       }
 
 //       this.cdr.detectChanges();
 //     });
 //   }
 // }
-
 // async onFileSelected(event: Event) {
+//   this.imageNotFound = false;
+
 //   const file = (event.target as HTMLInputElement).files?.[0];
 //   if (!file) return;
 
+//   // this.ngZone.run(() => {
+//   //   this.isUploading = true;
+//   //   this.uploadProgress = 0;
+//   //   this.cdr.detectChanges();
+//   // });
+
 //   try {
-//     // Initialize upload state
-//     this.ngZone.run(() => {
-//       this.isUploading = true;
-//       this.uploadProgress = 0;
-//       this.retryCount = 0;
-//       console.log('Upload started');
-//       this.cdr.detectChanges();
-//     });
+//     this.isUploading = true;
+//     this.uploadProgress = 0;
+//     await this.imageManagementService.uploadImage(this.userId, file);
+//     await this.initializeImageNavigation();
+
+//     // Store the old image URL for cleanup
+//     const oldImageUrl = this.currentUser.imgUrl;
 
 //     // Validate file
 //     if (file.size > 5 * 1024 * 1024) {
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
+//       throw new Error('File size exceeds 5MB limit');
 //     }
 
 //     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -2773,696 +3330,162 @@ async onFileSelected(event: Event) {
 //       throw new Error('Invalid file type. Please use JPG, PNG or GIF');
 //     }
 
-//     // Get current Firebase user
-//     const currentUser = auth.currentUser;
+//     // Ensure Firebase auth
+//     let currentUser = auth.currentUser;
 //     if (!currentUser) {
-//       throw new Error('No authenticated user found');
+//       await this.userService.refreshFirebaseAuth();
+//       currentUser = auth.currentUser;
+//       if (!currentUser) throw new Error('Authentication required');
 //     }
 
-//     // Get fresh ID token before upload
-//     const idToken = await currentUser.getIdToken(true);
-//     console.log('Got fresh ID token');
-
-//     // Compress image
+//     // Generate unique filename
+//     const fileName = `${Date.now()}-${file.name}`;
+//     const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
 //     const compressedFile = await this.compressImage(file);
 
-//     // Retry loop
-//     while (this.retryCount < this.maxRetries) {
-//       try {
-//         // Create storage reference with user-specific path
-//         const fileName = `${Date.now()}-${file.name}`;
-//         const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
+//     // Create upload task with metadata
+//     const uploadTask = uploadBytesResumable(storageRef, compressedFile, {
+//       contentType: file.type,
+//       customMetadata: {
+//         userId: currentUser.uid,
+//         originalName: file.name,
+//         uploadedAt: new Date().toISOString()
+//       }
+//     });
 
-//         // Create metadata with auth token
-//         const metadata = {
-//           customMetadata: {
-//             userId: currentUser.uid,
-//             uploadedAt: new Date().toISOString()
-//           }
-//         };
-
-//         // Create upload task with metadata
-//         const uploadTask = uploadBytesResumable(storageRef, compressedFile, metadata);
-
-//         // Handle upload with Promise
-//         const downloadURL = await new Promise<string>((resolve, reject) => {
-//           uploadTask.on(
-//             'state_changed',
-//             // Progress updates
-//             (snapshot) => {
-//               this.ngZone.run(() => {
-//                 const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-//                 this.uploadProgress = progress;
-//                 console.log(`Upload progress: ${progress}% (Attempt ${this.retryCount + 1})`);
-//                 this.cdr.detectChanges();
-//               });
-//             },
-//             // Error handler
-//             (error) => {
-//               console.error('Upload error:', error);
-//               reject(error);
-//             },
-//             // Success handler
-//             async () => {
-//               try {
-//                 const url = await getDownloadURL(uploadTask.snapshot.ref);
-//                 resolve(url);
-//               } catch (error) {
-//                 reject(error);
-//               }
-//             }
-//           );
-//         });
-
-//         // If we get here, upload was successful
-//         console.log('Upload successful, updating profile');
-
-//         // Update database with new image URL
-//         await new Promise<void>((resolve, reject) => {
-//           this.userService.updateProfileImage(this.userId, downloadURL).subscribe({
-//             next: () => {
-//               this.ngZone.run(() => {
-//                 this.profileForm.patchValue({ imgUrl: downloadURL });
-//                 this.pictureForm.patchValue({ imgUrl: downloadURL });
-//                 this.currentUser.imgUrl = downloadURL;
-                
-//                 // Reset upload state
-//                 this.isUploading = false;
-//                 this.uploadProgress = 0;
-//                 console.log('Profile update complete');
-//                 this.cdr.detectChanges();
-//                 resolve();
-//               });
-//             },
-//             error: (error) => {
-//               console.error('Profile update error:', error);
-//               reject(new Error('Failed to update profile with new image'));
-//             }
-//           });
-//         });
-
-//         // If we get here, everything succeeded, so break the retry loop
-//         return;
-
-//       } catch (error) {
-//         console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
-//         this.retryCount++;
-        
-//         if (this.retryCount < this.maxRetries) {
+//     // Handle upload with progress
+//     const downloadURL = await new Promise<string>((resolve, reject) => {
+//       uploadTask.on(
+//         'state_changed',
+//         (snapshot) => {
 //           this.ngZone.run(() => {
-//             this.uploadProgress = 0;
-//             console.log('Retrying upload...');
+//             const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+//             this.uploadProgress = progress;
 //             this.cdr.detectChanges();
 //           });
-          
-//           // Wait with exponential backoff before retrying
-//           const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-//           await new Promise(resolve => setTimeout(resolve, backoffDelay));
-          
-//           // Refresh token before retry
-//           await currentUser.getIdToken(true);
-          
-//         } else {
-//           throw new Error('Upload failed after max retries');
-//         }
-//       }
-//     }
-
-//   } catch (err: unknown) {
-//     this.ngZone.run(() => {
-//       console.error('Upload failed:', err);
-//       this.isUploading = false;
-//       this.uploadProgress = 0;
-
-//       if (err instanceof Error) {
-//         if (err.message.includes('size')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-//         } else if (err.message.includes('type')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-//         } else if (err.message.includes('authenticated')) {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
-//         } else {
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//         }
-//       } else {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//       }
-
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// private async uploadWithRetry(file: File, userId: string): Promise<string> {
-//   while (this.retryCount < this.maxRetries) {
-//     try {
-//       // Compress image
-//       const compressedFile = await this.compressImage(file);
-      
-//       // Create storage reference
-//       const fileName = `${Date.now()}-${file.name}`;
-//       const storageRef = ref(storage, `profileImages/${userId}/${fileName}`);
-      
-//       // Create upload task
-//       const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-
-//       // Handle upload with Promise
-//       const downloadURL = await new Promise<string>((resolve, reject) => {
-//         uploadTask.on(
-//           'state_changed',
-//           // Progress updates
-//           (snapshot) => {
-//             this.ngZone.run(() => {
-//               const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-//               this.uploadProgress = progress;
-//               console.log('Upload progress:', progress);
-//               this.cdr.detectChanges();
-//             });
-//           },
-//           // Error handler
-//           (error) => {
-//             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
+//         },
+//         reject,
+//         async () => {
+//           try {
+//             const url = await getDownloadURL(uploadTask.snapshot.ref);
+//             // console.log('Firebase download URL:', url);
+//             resolve(url);
+//           } catch (error) {
 //             reject(error);
-//           },
-//           // Success handler
-//           async () => {
-//             try {
-//               const url = await getDownloadURL(uploadTask.snapshot.ref);
-//               resolve(url);
-//             } catch (error) {
-//               reject(error);
-//             }
 //           }
-//         );
-//       });
+//         }
+//       );
+//     });
 
-//       return downloadURL; // Return URL on success
-
-//     } catch (error) {
-//       this.retryCount++;
-      
-//       if (this.retryCount < this.maxRetries) {
-//         console.log(`Retry attempt ${this.retryCount} of ${this.maxRetries}`);
-        
-//         // Reset progress for retry
-//         this.ngZone.run(() => {
-//           this.uploadProgress = 0;
-//           this.cdr.detectChanges();
-//         });
-        
-//         // Wait with exponential backoff
-//         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-//         await this.sleep(backoffDelay);
-        
-//       } else {
-//         throw new NetworkError('Upload failed after max retries');
+//     // After successful upload, delete old image if it exists
+//     if (oldImageUrl && oldImageUrl.includes('firebasestorage.googleapis.com')) {
+//       try {
+//         await this.deleteOldImage(oldImageUrl);
+//         console.log('Old image deleted successfully');
+//       } catch (error) {
+//         console.error('Error deleting old image:', error);
+//         // Continue with update even if deletion fails
 //       }
 //     }
-//   }
 
-//   throw new NetworkError('Upload failed after max retries');
-// }
-// async onFileSelected(event: Event) {
-//   const file = (event.target as HTMLInputElement).files?.[0];
-//   if (!file) return;
+//     const proxiedUrl = this.storageService.convertFirebaseUrl(downloadURL);
+//     console.log('Proxied URL:', proxiedUrl);
 
-//   // Initialize upload state inside NgZone
-//   this.ngZone.run(() => {
-//     this.isUploading = true;
-//     this.uploadProgress = 0;
-//     this.retryCount = 0;
-//     this.cdr.detectChanges();
-//   });
+//     this.pictureForm.patchValue({
+//       imgUrl: proxiedUrl
+//     }, { emitEvent: false });
 
-//   const oldImageUrl = this.currentUser.imgUrl;
-//   const currentUser = auth.currentUser;
-  
-//   if (!currentUser) {
+//     // Update current user but don't reset position/zoom settings
+//     const currentSettings = this.currentUser.profilePictureSettings || {
+//       zoom: this.zoomLevel,
+//       x: this.position.x,
+//       y: this.position.y
+//     };
+
+//     // Update profile with new image URL
+//     const updatedUser = {
+//       ...this.currentUser,
+//       imgUrl: downloadURL,
+//       profilePictureSettings: currentSettings
+//     };
+
+//     // Update in database
+//     await this.userService.updateUser(updatedUser).toPromise();
+
+//     // Update local state
 //     this.ngZone.run(() => {
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
+//       this.currentUser.imgUrl = downloadURL;
+//       // this.pictureForm.patchValue({ imgUrl: proxiedUrl });
+//       this.resetImagePositionAndZoom();
 //       this.isUploading = false;
+//       this.uploadProgress = 0;
+      
+//       // Force the image to reload with cache busting
+//       const profileImg = this.profileImg?.nativeElement;
+//       if (profileImg) {
+//         profileImg.style.backgroundImage = `url(${proxiedUrl}?${new Date().getTime()})`;
+//       }
+      
+//       this.pictureForm.markAsDirty();
+//       this.pictureForm.markAsTouched();
+//       this.pictureForm.updateValueAndValidity();
 //       this.cdr.detectChanges();
 //     });
-//     return;
-//   }
-
-//   try {
-//     // Validate file size
-//     if (file.size > 5 * 1024 * 1024) {
-//       this.ngZone.run(() => {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-//         this.isUploading = false;
-//         this.cdr.detectChanges();
-//       });
-//       return;
-//     }
-
-//     // Validate file type
-//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-//     if (!validTypes.includes(file.type)) {
-//       this.ngZone.run(() => {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-//         this.isUploading = false;
-//         this.cdr.detectChanges();
-//       });
-//       return;
-//     }
-
-//     // Compress the image
-//     const compressedFile = await this.compressImage(file);
-    
-//     // Create storage reference
-//     const fileName = `${Date.now()}-${file.name}`;
-//     const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-    
-//     // Create upload task
-//     const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-
-//     // Handle upload states
-//     uploadTask.on(
-//       'state_changed',
-//       // Progress updates
-//       (snapshot) => {
-//         this.ngZone.run(() => {
-//           const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-//           this.uploadProgress = progress;
-//           console.log('Upload progress:', progress); // Debug log
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       // Error handler
-//       (error) => {
-//         this.ngZone.run(() => {
-//           console.error('Upload failed:', error);
-//           this.isUploading = false;
-//           this.uploadProgress = 0;
-//           this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       // Completion handler
-//       () => {
-//         this.ngZone.run(async () => {
-//           try {
-//             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            
-//             // Update forms and user object
-//             this.profileForm.patchValue({ imgUrl: downloadURL });
-//             this.pictureForm.patchValue({ imgUrl: downloadURL });
-//             this.currentUser.imgUrl = downloadURL;
-
-//             // Clean up old image if exists
-//             if (oldImageUrl) {
-//               await this.cleanupOldImage(oldImageUrl);
-//             }
-            
-//             // Reset upload state
-//             this.isUploading = false;
-//             this.uploadProgress = 0;
-//             console.log('Upload complete'); // Debug log
-//             this.cdr.detectChanges();
-//           } catch (error) {
-//             console.error('Error getting download URL:', error);
-//             this.isUploading = false;
-//             this.uploadProgress = 0;
-//             this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//             this.cdr.detectChanges();
-//           }
-//         });
-//       }
-//     );
 
 //   } catch (error) {
+//     console.error('Upload failed:', error);
 //     this.ngZone.run(() => {
-//       console.error('Upload error:', error);
 //       this.isUploading = false;
 //       this.uploadProgress = 0;
       
-//       if (error instanceof NetworkError) {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
-//       } else {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
+//       if (error instanceof Error) {
+//         const imgUrlControl = this.pictureForm.get('imgUrl');
+//         if (error.message.includes('size')) {
+//           imgUrlControl?.setErrors({ 'fileSize': true });
+//         } else if (error.message.includes('type')) {
+//           imgUrlControl?.setErrors({ 'fileType': true });
+//         } else if (error.message.includes('auth')) {
+//           imgUrlControl?.setErrors({ 'unauthorized': true });
+//         } else {
+//           imgUrlControl?.setErrors({ 'uploadFailed': true });
+//         }
 //       }
+      
 //       this.cdr.detectChanges();
 //     });
 //   }
 // }
 
-// async onFileSelected(event: Event) {
-//   const file = (event.target as HTMLInputElement).files?.[0];
-//   if (!file) return;
-
-//   const oldImageUrl = this.currentUser.imgUrl;
-//   const currentUser = auth.currentUser;
-  
-//   if (!currentUser) {
-//     this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
-//     return;
-//   }
-
-//   try {
-//     // Set initial upload state
-//     this.ngZone.run(() => {
-//       this.isUploading = true;
-//       this.uploadProgress = 0;
-//       this.retryCount = 0;
-//       this.cdr.detectChanges();
-//     });
-
-//     // Validate file size
-//     if (file.size > 5 * 1024 * 1024) {
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-//       this.isUploading = false;
-//       this.cdr.detectChanges();
-//       return;
-//     }
-
-//     // Validate file type
-//     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-//     if (!validTypes.includes(file.type)) {
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-//       this.isUploading = false;
-//       this.cdr.detectChanges();
-//       return;
-//     }
-
-//     // Try upload with retry logic
-//     await this.uploadWithRetry(file);
-
-//     // Clean up old image if exists
-//     if (oldImageUrl) {
-//       await this.cleanupOldImage(oldImageUrl);
-//     }
-
-//     // Compress the image
-//     const compressedFile = await this.compressImage(file);
-    
-//     // Create storage reference
-//     const fileName = `${Date.now()}-${file.name}`;
-//     const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-    
-//     // Create upload task
-//     const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-
-//     // Handle upload states
-//     uploadTask.on(
-//       'state_changed',
-//       // Progress updates
-//       (snapshot) => {
-//         this.ngZone.run(() => {
-//           this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       // Error handler
-//       (error) => {
-//         this.ngZone.run(() => {
-//           console.error('Upload failed:', error);
-//           this.isUploading = false;
-//           this.uploadProgress = 0;
-//           this.profileForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//           this.cdr.detectChanges();
-//         });
-//       },
-//       // Completion handler
-//       () => {
-//         this.ngZone.run(async () => {
-//           try {
-//             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            
-//             // Update forms and user object
-//             this.profileForm.patchValue({ imgUrl: downloadURL });
-//             this.pictureForm.patchValue({ imgUrl: downloadURL });
-//             this.currentUser.imgUrl = downloadURL;
-            
-//             // Reset upload state
-//             this.isUploading = false;
-//             this.uploadProgress = 0;
-//             this.cdr.detectChanges();
-//           } catch (error) {
-//             console.error('Error getting download URL:', error);
-//             this.isUploading = false;
-//             this.uploadProgress = 0;
-//             this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//             this.cdr.detectChanges();
-//           }
-//         });
-//       }
-//     );
-
-//   } catch (error) {
-//     this.ngZone.run(() => {
-//       console.error('All attempts failed:', error);
-//       this.isUploading = false;
-//       this.uploadProgress = 0;
-      
-//       if (error instanceof NetworkError) {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
-//       } else {
-//         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-//       }
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-  // async onFileSelected(event: Event) {
-  //     const file = (event.target as HTMLInputElement).files?.[0];
-  //     if (!file) return;
-
-  //     const oldImageUrl = this.currentUser.imgUrl;
-
-  //     const currentUser = auth.currentUser;
-      
-  //     if (!currentUser) {
-  //       this.pictureForm.get('imgUrl')?.setErrors({ 'unauthorized': true });
-  //       return;
-  //     }
-  
-  //     try {
-  //       this.isUploading = true;
-  //       this.uploadProgress = 0;
-  //       this.retryCount = 0;
-  //       this.cdr.detectChanges();
-
-
-  //     // Check file size
-  //     if (file.size > 5 * 1024 * 1024) { // 5MB
-  //       this.pictureForm.get('imgUrl')?.setErrors({ 'fileSize': true });
-  //       return;
-  //     }
-
-  //     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
-  //     if (!validTypes.includes(file.type)) {
-  //       this.pictureForm.get('imgUrl')?.setErrors({ 'fileType': true });
-  //       this.isUploading = false;
-  //       this.cdr.detectChanges();
-  //       return;
-  //     }
-
-  //       await this.uploadWithRetry(file);
-
-  //       // After successful upload
-  //       await this.cleanupOldImage(oldImageUrl!);
-  
-  //       // First compress the image
-  //       const compressedFile = await this.compressImage(file);
-        
-  //       // Create storage reference with unique name
-  //       const fileName = `${Date.now()}-${file.name}`;
-  //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-        
-  //       // Start upload
-  //       const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-  
-  //       // Monitor upload progress
-  //       uploadTask.on('state_changed',
-  //         (snapshot) => {
-  //           this.ngZone.run(() => {
-  //           this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-  //           this.cdr.detectChanges();
-  //         });
-  //       },
-  //         (error) => {
-  //           this.ngZone.run(() => {
-  //           console.error('Upload failed:', error);
-  //           this.isUploading = false;
-  //           this.uploadProgress = 0;
-  //           this.profileForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-  //           this.cdr.detectChanges();
-  //         },
-  //         async () => {
-  //           // Upload completed
-  //           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            
-  //           // Update form and user object
-  //           this.profileForm.patchValue({
-  //             imgUrl: downloadURL
-  //           });
-            
-  //           this.currentUser.imgUrl = downloadURL;
-            
-  //           // Reset upload state
-  //           this.isUploading = false;
-  //           this.uploadProgress = 0;
-  //           this.cdr.detectChanges();
-  //         }
-  //       );
-  
-  //     } catch (error) {
-  //       console.error('All attempts failed:', error);
-  //       if (error instanceof NetworkError) {
-  //         this.pictureForm.get('imgUrl')?.setErrors({ 'networkError': true });
-  //       } else {
-  //         this.pictureForm.get('imgUrl')?.setErrors({ 'uploadFailed': true });
-  //       }
-  //     } finally {
-  //       this.isUploading = false;
-  //     }
-  //       this.uploadProgress = 0;
-  //       this.cdr.detectChanges();
-  //   }
-  
-
-    // private async uploadWithRetry(file: File): Promise<void> {
-    //   while (this.retryCount < this.maxRetries) {
-    //     try {
-    //       const compressedFile = await this.compressImage(file);
-    //       const currentUser = auth.currentUser;
-    //       if (!currentUser) throw new Error('User not authenticated');
-    //       const fileName = `${Date.now()}-${file.name}`;
-    //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-          
-    //       await new Promise<void>((resolve, reject) => {
-    //         const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-  
-    //         uploadTask.on('state_changed',
-    //           // Progress callback
-    //           (snapshot) => {
-    //             this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //             this.cdr.detectChanges();
-    //           },
-    //           // Error callback
-    //           (error) => {
-    //             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
-    //             reject(error);
-    //           },
-    //           // Complete callback
-    //           async () => {
-    //             try {
-    //               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-    //               this.profileForm.patchValue({
-    //                 imgUrl: downloadURL
-    //               });
-    //               this.currentUser.imgUrl = downloadURL;
-    //               this.isUploading = false;
-    //               this.uploadProgress = 0;
-    //               this.cdr.detectChanges();
-    //               resolve();
-    //             } catch (error) {
-    //               reject(error);
-    //             }
-    //           }
-    //         );
-    //       });
-  
-    //       // If we get here, upload was successful
-    //       return;
-  
-    //     } catch (error) {
-    //       this.retryCount++;
-          
-    //       if (this.retryCount < this.maxRetries) {
-    //         // Show retry message to user
-    //         this.uploadProgress = 0;
-    //         this.cdr.detectChanges();
-            
-    //         // Wait with exponential backoff before retrying
-    //         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-    //         await this.sleep(backoffDelay);
-            
-    //         // Update UI to show retry attempt
-    //         this.uploadProgress = 0;
-    //         this.cdr.detectChanges();
-    //       } else {
-    //         throw new NetworkError('Max retry attempts reached');
-    //       }
-    //     }
-    //   }
-    // }
-
-    // private async uploadWithRetry(file: File): Promise<void> {
-    //   while (this.retryCount < this.maxRetries) {
-    //     try {
-    //       const compressedFile = await this.compressImage(file);
-    //       const currentUser = auth.currentUser;
-    //       if (!currentUser) throw new Error('User not authenticated');
-    
-    //       const fileName = `${Date.now()}-${file.name}`;
-    //       const storageRef = ref(storage, `profileImages/${currentUser.uid}/${fileName}`);
-          
-    //       await new Promise<void>((resolve, reject) => {
-    //         const uploadTask = uploadBytesResumable(storageRef, compressedFile);
-    
-    //         uploadTask.on(
-    //           'state_changed',
-    //           (snapshot) => {
-    //             this.ngZone.run(() => {
-    //               this.uploadProgress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //               this.cdr.detectChanges();
-    //             });
-    //           },
-    //           (error) => {
-    //             console.error(`Upload attempt ${this.retryCount + 1} failed:`, error);
-    //             reject(error);
-    //           },
-    //           async () => {
-    //             try {
-    //               const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-    //               this.ngZone.run(() => {
-    //                 this.profileForm.patchValue({ imgUrl: downloadURL });
-    //                 this.pictureForm.patchValue({ imgUrl: downloadURL });
-    //                 this.currentUser.imgUrl = downloadURL;
-    //                 this.isUploading = false;
-    //                 this.uploadProgress = 0;
-    //                 this.cdr.detectChanges();
-    //               });
-    //               resolve();
-    //             } catch (error) {
-    //               reject(error);
-    //             }
-    //           }
-    //         );
-    //       });
-    
-    //       // If we get here, upload was successful
-    //       return;
-    
-    //     } catch (error) {
-    //       this.retryCount++;
-          
-    //       if (this.retryCount < this.maxRetries) {
-    //         this.ngZone.run(() => {
-    //           this.uploadProgress = 0;
-    //           this.cdr.detectChanges();
-    //         });
-            
-    //         const backoffDelay = this.retryDelay * Math.pow(2, this.retryCount - 1);
-    //         await this.sleep(backoffDelay);
-            
-    //         this.ngZone.run(() => {
-    //           this.uploadProgress = 0;
-    //           this.cdr.detectChanges();
-    //         });
-    //       } else {
-    //         throw new NetworkError('Max retry attempts reached');
-    //       }
-    //     }
-    //   }
-    // }
-  
-    private sleep(ms: number): Promise<void> {
-      return new Promise(resolve => setTimeout(resolve, ms));
+// Helper method for deleting old images
+private async deleteOldImage(oldImageUrl: string): Promise<void> {
+  try {
+    if (!oldImageUrl || !oldImageUrl.includes('firebasestorage.googleapis.com')) {
+      return;
     }
+
+    // Extract the path from the Firebase Storage URL
+    const urlObj = new URL(oldImageUrl);
+    const path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+    
+    // Create reference to old file
+    const oldFileRef = ref(storage, path);
+    
+    try {
+      // Delete the file
+      await deleteObject(oldFileRef);
+      console.log('Old image deleted successfully');
+    } catch (error) {
+      if ((error as any)?.code === 'storage/object-not-found') {
+        console.log('Old image already deleted or not found');
+        return;
+      }
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error deleting old image:', error);
+    throw error;
+  }
+}
   
     // Add these properties to track retry state
     get retryMessage(): string {
@@ -3516,16 +3539,63 @@ async onFileSelected(event: Event) {
       });
     }
 
-private async cleanupOldImage(oldImageUrl: string) {
-  if (oldImageUrl && oldImageUrl !== this.currentUser.imgUrl) {
+  async initializeImageNavigation() {
+    await this.imageManagementService.loadUserImages(this.userId);
+    this.imageManagementService.getImageCount(this.userId).subscribe(count => {
+      this.imageCount = count;
+      this.showImageNavigation = count > 1;
+    });
+
+    this.imageManagementService.getCurrentImage(this.userId).subscribe(url => {
+      if (url) {
+        this.currentUser.imgUrl = url;
+        this.updateImageTransform();
+      }
+    });
+  }
+
+  async deleteCurrentImage() {
     try {
-      await this.userService.deleteOldImage(this.userId, oldImageUrl);
+      await this.imageManagementService.deleteCurrentImage(this.userId);
+      if (this.imageCount === 0) {
+        this.currentUser.imgUrl = null;
+        this.resetImage();
+      }
     } catch (error) {
-      console.error('Error cleaning up old image:', error);
+      console.error('Error deleting image:', error);
     }
   }
+
+  nextImage() {
+    this.imageManagementService.nextImage(this.userId);
+  }
+
+  previousImage() {
+    this.imageManagementService.previousImage(this.userId);
+  }
+
+private initializeLoadingState() {
+    this.avatarLoaded.subscribe(loaded => {
+      console.log('Avatar loaded:', loaded);
+      this.checkAllImagesLoaded(this.isInitialLoad);
+    });
+  
+    this.urlImageLoaded.subscribe(loaded => {
+      console.log('URL image loaded:', loaded);
+      this.checkAllImagesLoaded(this.isInitialLoad);
+    });
+  }  
+
+// private async cleanupOldImage(oldImageUrl: string) {
+//   if (oldImageUrl && oldImageUrl !== this.currentUser.imgUrl) {
+//     try {
+//       await this.userService.deleteOldImage(this.userId, oldImageUrl);
+//     } catch (error) {
+//       console.error('Error cleaning up old image:', error);
+//     }
+//   }
 }  
 /*-----------------------------------------------------------------------*/
 
 
-  }
+  // }

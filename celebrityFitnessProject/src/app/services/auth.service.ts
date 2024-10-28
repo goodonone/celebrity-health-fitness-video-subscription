@@ -26,6 +26,8 @@ export class AuthService {
         console.log('User email:', user.email);
       }
     });
+
+    
   }
 
   private checkInitialAuthState(): boolean {

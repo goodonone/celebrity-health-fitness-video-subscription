@@ -43,6 +43,11 @@ export class UserService {
   // Observable for components to subscribe to
   // isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
+  // getUserId(): string | null {
+  //   const currentUser = auth.currentUser;
+  //   return currentUser ? currentUser.uid : null;
+  // }
+
   private checkInitialLoginState(): boolean {
     return this.checkLocalStorageAuth() && this.authStateService.checkAuthStatus();
   }
@@ -249,9 +254,7 @@ checkEmail(email: string): Observable<{exists: boolean, message: string}> {
 // }
 
 getUserId(): string {
-  // console.log('UserService: getUserId called');
   const userId = localStorage.getItem(this.userIdKey) || localStorage.getItem('user');
-  // console.log('UserService: userId from localStorage:', userId);
   
   if (userId) {
     if (userId.startsWith('{')) {
@@ -260,17 +263,30 @@ getUserId(): string {
         const userObject = JSON.parse(userId);
         return userObject.userId || '';
       } catch (error) {
-        // console.error('Error parsing user object:', error);
       }
     } else {
-      // It's just the userId string
       return userId;
     }
   }
   
-  // console.log('UserService: No userId found');
   return '';
 }
+
+
+// getUserId(): string | ''{
+//   const currentUser = auth.currentUser;
+//   return currentUser ? currentUser.uid : '';
+// }
+
+// getUser(userId: string): Observable<User> {
+//   console.log('Getting user profile:', {
+//     requestedId: userId,
+//     authUserId: auth.currentUser?.uid,
+//     isOwnProfile: userId === auth.currentUser?.uid
+//   });
+  
+//   return this.http.get<User>(`${this.apiUrl}/users/${userId}`);
+// }
 
 // signUpWithGoogle(userData: any): Observable<User> {
 //   return this.http.post<User>(`${this.baseURL}/signup-google`, userData);

@@ -1110,6 +1110,23 @@ h3.profileDetails.plan{
   min-height: 1.4rem;
 }
 
+.imageNotFound{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+  // font-size: 1.2rem;
+}
+
 .spanProfileCategoryDOB {
   font-size: 1.4rem;
   width: 100%;
@@ -1328,6 +1345,11 @@ h3.profileDetails.plan{
   color: black !important;
 }
 
+.btn-savePhotoButton:disabled{
+  background-color: rgb(62, 61, 61);
+  color: rgb(116, 115, 115) !important;
+}
+
 .btn-cancelSubscriptionButtonFinal {
   height: 3rem;
   padding-left: 0.6rem;
@@ -1544,6 +1566,48 @@ input:disabled:-moz-placeholder {
   // overflow: hidden;
 }
 
+.profile-image-navigation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.nav-button.prev {
+  left: -16px;
+}
+
+.nav-button.next {
+  right: -16px;
+}
+
+.nav-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nav-button fa-icon {
+  color: white;
+  font-size: 16px;
+}
+
 .cancelSubscription {
   display: flex;
   flex-direction: column;
@@ -1674,6 +1738,10 @@ input.imgUrl {
   box-sizing: border-box;
   padding-left: 0.5rem;
   width: calc(17rem - 0.5rem); /* Subtract the padding from the original width */
+}
+
+input.imgUrl::placeholder {
+ font-size: 1rem
 }
 
 /* Remove these as they're no longer needed */
@@ -1965,6 +2033,10 @@ input[matInput]:focus {
     line-height: clamp(4rem, 8.5vw, 9rem);
     font-size: clamp(5rem, 8vw, 9rem);
   }
+
+  input.imgUrl::placeholder {
+    font-size: 0.7rem
+   }
 
  .profileNameTier.tierTwo{
     display: flex;

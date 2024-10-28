@@ -69,6 +69,17 @@
                                 'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
+                                <div class="profile-image-navigation" *ngIf="showImageNavigation">
+                                    <button class="nav-button prev" (click)="previousImage()" 
+                                            [class.disabled]="imageCount <= 1">
+                                      <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
+                                    </button>
+                                    
+                                    <button class="nav-button next" (click)="nextImage()"
+                                            [class.disabled]="imageCount <= 1">
+                                      <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
+                                    </button>
+                                  </div>
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="getProfileImageStyles()" 
                                     [ngClass]="{'default-position': !isDragged, 
@@ -78,14 +89,14 @@
                                     (mousedown)="startDrag($event)"
                                     (touchstart)="startDrag($event)" 
                                     #profileImg>
-
+                                <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
                                 <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
                                 </mat-card>
                             </div>
                             <div class="editProfileButtonsContainerIncludingPicture">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture">Delete Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()">Delete Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -100,6 +111,7 @@
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Cancel Subscription</button>
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Sign Out</button>
                         </div>
+
                      </div>
                     <!-- </div> -->
                     <!-- [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}" -->
@@ -116,7 +128,8 @@
                         <h3 class="profileDetails height" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{displayHeight}}</h3>
                         <h3 class="profileDetails objective" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
                         <div class="planContainer">
-                            <h3 class="profileDetails plan" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <h3 class="profileDetails plan" *ngIf="currentUser.tier === 'Just Looking'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <h3 class="profileDetails" *ngIf="currentUser.tier === 'All In' || currentUser.tier === 'Motivated'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
                         <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
@@ -342,7 +355,7 @@
                         <div class="imageInputContainer">
                             <input matInput 
                                 class="imgUrl" 
-                                placeholder="Paste URL &nbsp; &nbsp; Or "
+                                placeholder="Paste Link/File Upload"
                                 type="text" 
                                 [ngStyle]="getInputStyle('imgUrl')"
                                 [ngClass]="{'error-input': shouldShowError('imgUrl')}"
@@ -376,7 +389,7 @@
                       </div>
                       <div class="savePictureButtonContainer">
                         <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit">Save</button>
+                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">Save</button>
                       </div>
                     </form>
                 </div> 
@@ -503,6 +516,5 @@
     </div>
 
 </div>
-
-<app-upload-test></app-upload-test>
+<!-- <app-upload-test></app-upload-test> -->
 
