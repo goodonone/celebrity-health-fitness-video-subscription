@@ -2211,6 +2211,23 @@ async saveProfilePicture() {
   }
 }
 
+private updateProfileImage(url: string) {
+  if (this.profileImg && this.profileImg.nativeElement) {
+    const imgElement = this.profileImg.nativeElement;
+    const styles = {
+      'background-image': `url(${url})`,
+      'background-position': `${this.position.x}% ${this.position.y}%`,
+      'background-size': `${this.zoomLevel * 100}%`,
+      'background-repeat': 'no-repeat'
+    };
+    
+    Object.entries(styles).forEach(([key, value]) => {
+      this.renderer.setStyle(imgElement, key, value);
+    });
+  }
+}
+
+
   private async cleanupStagedImage() {
     if (this.stagingImageUrl) {
       try {

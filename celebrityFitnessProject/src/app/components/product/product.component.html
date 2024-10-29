@@ -1,50 +1,5 @@
-<!-- <div class="pageContainer">
-<mat-card class="productContainer">
-    <mat-card-content class="cardFlex">
-        <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + currentProduct.productUrl + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-        </mat-card>
-        <div class="productInfo">
-            <p class="name">{{currentProduct.productName}}</p>
-            <p class="price">${{currentProduct.productPrice}}</p>
-            <div class="productDescriptionContainer">
-            <p class="descriptionTitle"> Product Description: <br><br> </p>
-            <p class="productDescriptionLorem">{{currentProduct.productDescription}}</p>
-           </div>
-           <div class="buttonContainer">
-            <button mat-button class="backButton"  routerLink="/store">Back To Store</button>
-            <button mat-button class="addToCartButton"  (click)="addToCart(currentProduct)">Add to Cart</button>
-            <button mat-button class="viewCartButton"  routerLink="/cart">View Cart</button>
-           </div>
-        </div>
-    </mat-card-content>
-</mat-card>
-</div> -->
-
-
-<!-- <div class="pageContainer">
-    <mat-card class="productContainer">
-        <mat-card-content class="cardFlex">
-            <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl() + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-            </mat-card>
-            <div class="productInfo">
-                <p class="name">{{currentProduct.productName}}</p>
-                <p class="price">${{currentProduct.productPrice}}</p>
-                <div class="productDescriptionContainer">
-                <p class="descriptionTitle"> Product Description: <br><br> </p>
-                <p class="productDescriptionLorem">{{currentProduct.productDescription}}</p>
-               </div>
-               <div class="buttonContainer">
-                <button mat-button class="backButton" routerLink="/store">Back To Store</button>
-                <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">Add to Cart</button>
-                <button mat-button class="viewCartButton" routerLink="/cart">View Cart</button>
-               </div>
-            </div>
-        </mat-card-content>
-    </mat-card>
-    </div> -->
-
-    <div class="pageContainer">
-        <ng-container *ngIf="currentProduct$ | async as currentProduct; else loading">
+<div class="pageContainer">
+        <ng-container *ngIf="currentProduct$ | async as currentProduct;">
             <mat-card class="productContainer">
                 <mat-card-content class="cardFlex">
                     <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl(currentProduct) + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
@@ -56,32 +11,36 @@
                             <p class="descriptionTitle"> Product Description <br><br> </p>
                             <p class="productDescriptionLorem">{{currentProduct.productDescription}}</p>
                         </div>
-                        <div class="buttonContainer">
-                            <button mat-button class="backButton" routerLink="/store">Back To Store</button>
-                            <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
-                            <button mat-button 
-                                class="addToCartButton" 
-                                (click)="addToCart(currentProduct)"
-                                (mouseenter)="onMouseEnter(currentProduct)"
-                                (mouseleave)="onMouseLeave(currentProduct)"
-                                [class.limit-reached]="isLimitReached(currentProduct)">
-                                {{ getButtonText(currentProduct) }}
-                            </button>
-                            <!-- <button mat-button class="viewCartButton" routerLink="/cart" [disabled]="isCartEmpty">View Cart</button> -->
-                            <button mat-button 
-                                class="viewCartButton" 
-                                [routerLink]="isCartEmpty ? null : '/cart'"
-                                (mouseenter)="onViewCartMouseEnter()"
-                                (mouseleave)="onViewCartMouseLeave()">
-                                {{ viewCartButtonText }}
-                            </button>
-                        </div>
+                       
+                    
+                    <div class="buttonContainer">
+                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'wide': true}">Back To Store</button>
+                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'narrow': true}"> < Store </button>
+                        <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
+                        <button mat-button 
+                            class="addToCartButton" 
+                            (click)="addToCart(currentProduct)"
+                            (mouseenter)="onMouseEnter(currentProduct)"
+                            (mouseleave)="onMouseLeave(currentProduct)"
+                            [class.limit-reached]="isLimitReached(currentProduct)">
+                            {{ getButtonText(currentProduct) }}
+                        </button>
+                        <!-- <button mat-button class="viewCartButton" routerLink="/cart" [disabled]="isCartEmpty">View Cart</button> -->
+                        <button mat-button 
+                            class="viewCartButton" 
+                            [routerLink]="isCartEmpty ? null : '/cart'"
+                            (mouseenter)="onViewCartMouseEnter()"
+                            (mouseleave)="onViewCartMouseLeave()">
+                            {{ viewCartButtonText }}
+                        </button>
                     </div>
+                </div>
                 </mat-card-content>
+               
             </mat-card>
         </ng-container>
     
-        <ng-template #loading>
+        <!-- <ng-template #loading>
             <mat-card class="loadingContainer">
                 <mat-card-content>
                     <mat-spinner *ngIf="!errorMessage"></mat-spinner>
@@ -89,5 +48,14 @@
                     <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
                 </mat-card-content>
             </mat-card>
-        </ng-template>
+        </ng-template> -->
+
+        <!-- <ng-template class="spinnerContainer" #loading>
+            <div class="spinner-overlay">
+                <svg class="spinner" viewBox="0 0 50 50">
+                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                </svg>
+                <div class="spinner-text">Loading Product...</div>
+            </div>
+        </ng-template> -->
     </div>

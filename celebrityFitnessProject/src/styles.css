@@ -29,7 +29,19 @@ body {
 
 @font-face {
     font-family: "Outfit";
-    src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('ttf');
+    src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url('./assets/Fonts/RobotoMono-VariableFont_wght.ttf'), format('truetype');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url('./assets/Fonts/RobotoMono-Italic-VariableFont_wght.ttf'), format('truetype');
     font-display: swap;
 }
 
