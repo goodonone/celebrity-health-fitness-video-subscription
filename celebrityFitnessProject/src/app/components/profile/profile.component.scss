@@ -1124,6 +1124,9 @@ h3.profileDetails.plan{
   height: 100%;
   font-size: 1.2rem;
   font-weight: 500;
+  color: rgb(0, 0, 0);
+  z-index: 2;
+  // text-shadow: 0 0 7px #000000;
   // font-size: 1.2rem;
 }
 
@@ -1345,10 +1348,10 @@ h3.profileDetails.plan{
   color: black !important;
 }
 
-.btn-savePhotoButton:disabled{
-  background-color: rgb(62, 61, 61);
-  color: rgb(116, 115, 115) !important;
-}
+// .btn-savePhotoButton:disabled{
+//   background-color: rgb(62, 61, 61);
+//   color: rgb(116, 115, 115) !important;
+// }
 
 .btn-cancelSubscriptionButtonFinal {
   height: 3rem;
@@ -1741,7 +1744,32 @@ input.imgUrl {
 }
 
 input.imgUrl::placeholder {
- font-size: 1rem
+  font-size: 1rem
+ }
+
+.btn-savePhotoButton {
+  &:disabled {
+    background-color: rgb(62, 61, 61);
+    color: rgb(116, 115, 115) !important;
+
+    .savingState {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.savingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  
+  mat-spinner {
+    margin: 0 auto;
+  }
 }
 
 /* Remove these as they're no longer needed */

@@ -148,7 +148,12 @@ div.priceContainer{
 
 p.price{
     font-size: 2rem;
-    font-weight: 600;
+    // font-weight: 600;
+    font-family: "Roboto Mono", monospace;
+    // font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
 }
 
 h1.totalText{
@@ -184,6 +189,11 @@ p.totalCount{
 p.totalPrice{
     font-size: 3rem;
     font-weight: 500;
+    font-family: "Roboto Mono", monospace;
+    // font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
 }
 
 .totalPriceContainer{
@@ -194,7 +204,12 @@ p.totalPrice{
     font-size: 0.7em; /* Reduce the font size */
     vertical-align: top; /* Align it closer to the top */
     line-height: 0; /* Reduce extra space */
-    margin-left: -0.4em; /* Move it closer to the decimal point */
+    margin-left: -1em; /* Move it closer to the decimal point */
+    font-family: "Roboto Mono", monospace;
+    // font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
   }
 
 button.buttonCheckOut{

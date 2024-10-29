@@ -66,9 +66,14 @@ p.name{
 
 p.price{
     margin-left: 2rem;
-    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Roboto', sans-serif;
     font-style: italic;
-    font-weight: 1000;
+    font-weight: 1000; */
+    font-family: "Roboto Mono", monospace;
+    font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -5px;
     font-size: 6rem;
     line-height: 3rem;
     padding-left: 0.5rem;

@@ -97,32 +97,58 @@ export class UserService {
 //     }));
 // }
 
+// login(email: string, password: string) {
+//   let request = { email, password };
+
+//   return this.http.post(`${this.baseURL}/login`, request).pipe(
+//     switchMap(async (response: any) => {
+//       // First handle your regular auth flow
+//       this.updateLoginStatus(true);
+//       this.handleSuccessfulAuth(response);
+
+//       try {
+//         // Then get a Firebase token and sign in
+//         const firebaseToken = await this.getFirebaseToken(response.token);
+//         await signInWithCustomToken(auth, firebaseToken);
+//         console.log('Firebase auth successful');
+//       } catch (error) {
+//         console.error('Firebase auth error:', error);
+//         // Don't fail the login if Firebase auth fails
+//       }
+
+//       return response;
+//     }),
+//     catchError(error => {
+//       console.error('Login error:', error);
+//       throw error;
+//     })
+//   );
+// }
+
 login(email: string, password: string) {
   let request = { email, password };
 
   return this.http.post(`${this.baseURL}/login`, request).pipe(
-    switchMap(async (response: any) => {
-      // First handle your regular auth flow
+    tap((response: any) => {
       this.updateLoginStatus(true);
       this.handleSuccessfulAuth(response);
-
-      try {
-        // Then get a Firebase token and sign in
-        const firebaseToken = await this.getFirebaseToken(response.token);
-        await signInWithCustomToken(auth, firebaseToken);
-        console.log('Firebase auth successful');
-      } catch (error) {
-        console.error('Firebase auth error:', error);
-        // Don't fail the login if Firebase auth fails
-      }
-
-      return response;
     }),
     catchError(error => {
       console.error('Login error:', error);
-      throw error;
+      return throwError(() => error); // Ensure the error is properly returned
     })
   );
+}
+
+async authenticateWithFirebase(backendToken: string): Promise<void> {
+  try {
+    const firebaseToken = await this.getFirebaseToken(backendToken);
+    await signInWithCustomToken(auth, firebaseToken);
+    console.log('Firebase auth successful');
+  } catch (error) {
+    console.error('Firebase auth error:', error);
+    // Log the error but don’t disrupt the user's session
+  }
 }
 
 async getFirebaseToken(backendToken: string): Promise<string> {

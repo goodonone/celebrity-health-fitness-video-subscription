@@ -90,7 +90,7 @@
                                     (touchstart)="startDrag($event)" 
                                     #profileImg>
                                 <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
-                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
+                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && !imageNotFound">
                                 </mat-card>
                             </div>
                             <div class="editProfileButtonsContainerIncludingPicture">
@@ -381,7 +381,7 @@
                             <span *ngIf="!isUploading">Upload</span>
                             <div *ngIf="isUploading" class="uploadingState">
                             <mat-spinner diameter="20" style="--mdc-circular-progress-active-indicator-color: black"></mat-spinner>
-                            <span>{{uploadProgress}}%</span>
+                            <span>{{uploadProgress | number:'1.0-0'}}%</span>
                             </div>
                             </button>
                         </div>
@@ -389,7 +389,14 @@
                       </div>
                       <div class="savePictureButtonContainer">
                         <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">Save</button>
+                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
+                            <ng-container *ngIf="!isSavingPicture">Save</ng-container>
+                                <div *ngIf="isSavingPicture" class="savingState">
+                                <mat-spinner diameter="16" 
+                                            style="--mdc-circular-progress-active-indicator-color: white">
+                                </mat-spinner>
+                                </div>
+                        </button>
                       </div>
                     </form>
                 </div> 
@@ -517,4 +524,3 @@
 
 </div>
 <!-- <app-upload-test></app-upload-test> -->
-

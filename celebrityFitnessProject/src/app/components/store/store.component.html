@@ -26,7 +26,7 @@
     <div class="pageContent">
         <h1 class="pageName">Store</h1>
 
-        <ng-container *ngIf="productList$ | async as productList; else loading">
+        <ng-container *ngIf="productList$ | async as productList">
             <div class="productsContainer">
                 <div class="cardsDiv" *ngFor="let product of productList">
                     <mat-card class="products" [ngStyle]="{'background-image': 'url(' + (product.productUrl || 'assets/default-product-image.jpg') + ')', 'background-size': 'cover', 'background-position': 'center center'}">
@@ -59,18 +59,28 @@
             </ng-template>
         </ng-container>
 
-        <ng-template #loading>
+        <!-- <ng-template #loading>
             <div class="loading-container">
                 <mat-spinner class="loading-spinner" diameter="50"></mat-spinner>
                 <p class="loading-text">Loading products...</p>
             </div>
-        </ng-template>
+        </ng-template> -->
 
         <p *ngIf="error" class="error-message">{{ error }}</p>
     </div>
+    <ng-container *ngIf="isLoading && initialLoad" class="spinnerContainer">
+        <div class="spinner-overlay">
+            <svg class="spinner" viewBox="0 0 50 50">
+                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+            </svg>
+            <div class="spinner-text">Loading...</div>
+        </div>
+    </ng-container>
+    
     <div class="actionButtonsContainer">
         <button mat-button class="btn-backToTop" appScrollToTop>&#8682; Back to Top</button>
     </div>
+
 </div>
 
 

@@ -188,9 +188,9 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, Subject } from 'rxjs';
 import { storage, auth } from '../firebase.config';
-import { ref, uploadBytesResumable, getDownloadURL, StorageReference, UploadTaskSnapshot } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, StorageReference, UploadTaskSnapshot, deleteObject } from 'firebase/storage';
 
 interface UploadResponse {
   uploadUrl: string;
@@ -208,7 +208,14 @@ interface UploadProgress {
   providedIn: 'root'
 })
 export class FirebaseService {
+  private uploadProgress = new Subject<UploadProgress>();
+  private stagedFiles: Map<string, string> = new Map();
+
   constructor(private http: HttpClient) {}
+
+  getUploadProgress(): Observable<UploadProgress> {
+    return this.uploadProgress.asObservable();
+  }
 
 //   async uploadFile(file: File, userId: string, folder: string = 'profileImages'): Promise<string> {
 //     try {
@@ -231,7 +238,7 @@ export class FirebaseService {
 //     }
 //   }
 
-async uploadFile(file: File, userId: string, folder: string = 'profileImages'): Promise<string> {
+async uploadFile(file: File, userId: string, folder: string = 'profileImages', isStaged: boolean = true): Promise<string> {
     try {
       await this.validateUserAuthentication(userId);
       
@@ -241,7 +248,9 @@ async uploadFile(file: File, userId: string, folder: string = 'profileImages'): 
       const uniqueFileName = `${timestamp}-${Math.random().toString(36).substring(7)}.${fileExtension}`;
       
       // Create the full storage path
-      const storagePath = `${folder}/${userId}/${uniqueFileName}`;
+      const storagePath = isStaged ?
+      `staging/${folder}/${userId}/${uniqueFileName}` :
+      `${folder}/${userId}/${uniqueFileName}`;
       
       const token = await this.getAuthToken();
       const compressedFile = await this.compressImage(file);
@@ -251,12 +260,283 @@ async uploadFile(file: File, userId: string, folder: string = 'profileImages'): 
         userId, 
         file
       );
+
+      // Track staged file if applicable
+      if (isStaged) {
+        // Remove any existing staged file first
+        await this.cleanupStagedFile(userId);
+        this.stagedFiles.set(userId, storagePath);
+      }
       
       return downloadUrl;
     } catch (error) {
       console.error('Error in uploadFile:', error);
       throw this.handleUploadError(error);
     }
+  }
+
+  async cleanupStagedFile(userId: string): Promise<void> {
+    const stagedPath = this.stagedFiles.get(userId);
+    if (stagedPath) {
+      try {
+        const fileRef = ref(storage, stagedPath);
+        await deleteObject(fileRef);
+        this.stagedFiles.delete(userId);
+        console.log('Cleaned up staged file:', stagedPath);
+      } catch (error) {
+        console.error('Error cleaning up staged file:', error);
+        // Don't throw error as this is cleanup
+      }
+    }
+  }
+
+  // async moveToPermStorage(userId: string): Promise<string | null> {
+  //   const stagedPath = this.stagedFiles.get(userId);
+  //   if (!stagedPath) {
+  //     console.log('No staged file found for user:', userId);
+  //     return null;
+  //   }
+
+  //   try {
+  //     // Get the file name from the staged path
+  //     const fileName = stagedPath.split('/').pop();
+  //     if (!fileName) throw new Error('Invalid staged path');
+
+  //     // Create permanent path
+  //     const permPath = `profileImages/${userId}/${fileName}`;
+      
+  //     // Get download URL of staged file
+  //     const stagedRef = ref(storage, stagedPath);
+  //     const stagedUrl = await getDownloadURL(stagedRef);
+
+  //     // Download staged file
+  //     const response = await fetch(stagedUrl);
+  //     const blob = await response.blob();
+
+  //     // Upload to permanent location
+  //     const permRef = ref(storage, permPath);
+  //     const uploadTask = uploadBytesResumable(permRef, blob);
+
+  //     const downloadUrl = await new Promise<string>((resolve, reject) => {
+  //       uploadTask.on(
+  //         'state_changed',
+  //         (snapshot) => {
+  //           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //           this.uploadProgress.next({
+  //             progress: Math.round(progress),
+  //             snapshot
+  //           });
+  //         },
+  //         reject,
+  //         async () => {
+  //           try {
+  //             const url = await getDownloadURL(uploadTask.snapshot.ref);
+  //             resolve(url);
+  //           } catch (error) {
+  //             reject(error);
+  //           }
+  //         }
+  //       );
+  //     });
+
+  //     // Cleanup staged file
+  //     await this.cleanupStagedFile(userId);
+
+  //     return downloadUrl;
+  //   } catch (error) {
+  //     console.error('Error moving file to permanent storage:', error);
+  //     throw error;
+  //   }
+  // }
+// firebase.service.ts
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     // Instead of fetching, use the Firebase Admin SDK's copy operation
+//     const bucket = storage.bucket();
+//     const stagingPath = `staging/profileImages/${userId}/${fileName}`;
+//     const permanentPath = `profileImages/${userId}/${fileName}`;
+    
+//     // Get reference to both files
+//     const stagingFile = bucket.file(stagingPath);
+//     const permanentFile = bucket.file(permanentPath);
+
+//     // Check if staged file exists
+//     const [exists] = await stagingFile.exists();
+//     if (!exists) {
+//       throw new Error('Staged file not found');
+//     }
+
+//     // Copy to permanent location
+//     await stagingFile.copy(permanentFile);
+    
+//     // Delete staged file
+//     await stagingFile.delete();
+
+//     // Get the download URL
+//     const [signedUrl] = await permanentFile.getSignedUrl({
+//       action: 'read',
+//       expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+//     });
+
+//     console.log('Image moved successfully:', {
+//       from: stagingPath,
+//       to: permanentPath,
+//       url: signedUrl
+//     });
+
+//     return signedUrl;
+    
+//   } catch (error) {
+//     console.error('Error moving file to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// // Add method to get signed URL for a file
+// async getSignedUrl(filePath: string): Promise<string> {
+//   try {
+//     const file = storage.bucket().file(filePath);
+//     const [exists] = await file.exists();
+    
+//     if (!exists) {
+//       throw new Error('File not found');
+//     }
+
+//     const [url] = await file.getSignedUrl({
+//       action: 'read',
+//       expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+//     });
+
+//     return url;
+//   } catch (error) {
+//     console.error('Error getting signed URL:', error);
+//     throw error;
+//   }
+// }
+
+async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+  try {
+    const stagingPath = `staging/profileImages/${userId}/${fileName}`;
+    const permanentPath = `profileImages/${userId}/${fileName}`;
+    
+    // Get references to both locations
+    const stagingRef = ref(storage, stagingPath);
+    const permanentRef = ref(storage, permanentPath);
+
+    // Get download URL of staged file
+    try {
+      await getDownloadURL(stagingRef);
+    } catch (error) {
+      console.error('Staged file not found:', error);
+      throw new Error('Staged file not found');
+    }
+
+    // Download staged file
+    const stagingResponse = await fetch(await getDownloadURL(stagingRef));
+    const fileBlob = await stagingResponse.blob();
+
+    // Upload to permanent location
+    const uploadTask = uploadBytesResumable(permanentRef, fileBlob);
+
+    const downloadUrl = await new Promise<string>((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          this.uploadProgress.next({
+            progress: Math.round(progress),
+            snapshot
+          });
+        },
+        reject,
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(url);
+          } catch (error) {
+            reject(error);
+          }
+        }
+      );
+    });
+
+    // Delete staged file after successful move
+    await deleteObject(stagingRef);
+
+    // Remove from tracked staged files
+    this.stagedFiles.delete(userId);
+
+    console.log('Image moved successfully:', {
+      from: stagingPath,
+      to: permanentPath,
+      url: downloadUrl
+    });
+
+    return downloadUrl;
+    
+  } catch (error) {
+    console.error('Error moving file to permanent storage:', error);
+    throw error;
+  }
+}
+
+// firebase.service.ts
+getFileName(url: string): string {
+  if (!url) {
+    throw new Error('URL is required');
+  }
+
+  try {
+    // Handle both Firebase Storage URLs and proxied URLs
+    if (url.includes('firebasestorage.googleapis.com')) {
+      // For Firebase Storage URLs
+      // Extract the path after /o/ and before ?
+      const match = url.match(/\/o\/(.+?)\?/);
+      if (match && match[1]) {
+        // URL decode the path and get the last segment
+        const fullPath = decodeURIComponent(match[1]);
+        const segments = fullPath.split('/');
+        return segments[segments.length - 1];
+      }
+    } else if (url.includes('/api/storage/')) {
+      // For proxied URLs
+      // Split on the last forward slash to get the filename
+      const segments = url.split('/');
+      return segments[segments.length - 1];
+    }
+
+    // If URL format is not recognized, extract anything after the last slash
+    const lastSlashIndex = url.lastIndexOf('/');
+    if (lastSlashIndex !== -1) {
+      // Remove any query parameters
+      const fileName = url.substring(lastSlashIndex + 1).split('?')[0];
+      return fileName;
+    }
+
+    throw new Error('Could not extract filename from URL');
+  } catch (error) {
+    console.error('Error extracting filename from URL:', error);
+    throw new Error('Invalid URL format');
+  }
+}
+
+// Helper method to check if URL is a Firebase Storage URL
+private isFirebaseStorageUrl(url: string): boolean {
+  return url.includes('firebasestorage.googleapis.com');
+}
+
+// Helper method to check if URL is a proxied URL
+private isProxiedUrl(url: string): boolean {
+  return url.includes('/api/storage/');
+}
+
+  hasStagedFile(userId: string): boolean {
+    return this.stagedFiles.has(userId);
+  }
+
+  // Add method to get staged file path
+  getStagedFilePath(userId: string): string | null {
+    return this.stagedFiles.get(userId) || null;
   }
 
   private async validateUserAuthentication(userId: string): Promise<void> {
@@ -316,35 +596,6 @@ async uploadFile(file: File, userId: string, folder: string = 'profileImages'): 
     }
   }
 
-//   private async uploadToFirebase(
-//     file: File, 
-//     fullPath: string, 
-//     userId: string, 
-//     originalFile: File
-//   ): Promise<string> {
-//     const storageRef = ref(storage, fullPath);
-//     const metadata = this.createUploadMetadata(userId, originalFile);
-//     const uploadTask = uploadBytesResumable(storageRef, file, metadata);
-
-//     return new Promise((resolve, reject) => {
-//       uploadTask.on(
-//         'state_changed',
-//         (snapshot) => this.handleUploadProgress(snapshot),
-//         (error) => this.handleUploadError(error, reject),
-//         async () => {
-//           try {
-//             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-//             console.log('Upload successful, URL:', downloadURL);
-//             resolve(downloadURL);
-//           } catch (error) {
-//             console.error('Error getting download URL:', error);
-//             reject(error);
-//           }
-//         }
-//       );
-//     });
-//   }
-
 private async uploadToFirebase(
     file: File, 
     storagePath: string, 
@@ -362,7 +613,8 @@ private async uploadToFirebase(
           userId,
           originalName: originalFile.name,
           uploadedAt: new Date().toISOString(),
-          provider: auth.currentUser?.providerData[0]?.providerId || 'unknown'
+          provider: auth.currentUser?.providerData[0]?.providerId || 'unknown',
+          size: file.size.toString()
         }
       };
 
@@ -375,6 +627,10 @@ private async uploadToFirebase(
           (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log('Upload is ' + progress + '% done');
+            this.uploadProgress.next({
+              progress: Math.round(progress),
+              snapshot
+            });
           },
           (error) => {
             console.error('Upload error:', {
@@ -507,6 +763,27 @@ private async uploadToFirebase(
       console.error('Error refreshing auth:', error);
       throw error;
     }
+}
+
+async deleteFile(userId: string, filePath: string): Promise<void> {
+  if (!userId || !filePath) {
+    throw new Error('Both userId and filePath are required to delete a file');
+  }
+
+  try {
+    await this.validateUserAuthentication(userId);
+    
+    const fileRef = ref(storage, filePath);
+    await deleteObject(fileRef);
+
+    // If this was a staged file, remove from tracking
+    if (filePath.startsWith('staging/')) {
+      this.stagedFiles.delete(userId);
+    }
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    throw error;
+  }
 }
 
 }
