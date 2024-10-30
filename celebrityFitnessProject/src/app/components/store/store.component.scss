@@ -1,5 +1,5 @@
 * {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', sans-serif !important;
     user-select: none;
 }
 
@@ -101,7 +101,7 @@ mat-card.products {
 }
 
 .price {
-    font-family: "Roboto Mono", monospace;
+    font-family: "Roboto Mono", monospace !important;
     font-style:italic;
     font-weight: bold;
     font-optical-sizing: auto;

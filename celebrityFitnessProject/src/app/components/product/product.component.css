@@ -37,6 +37,7 @@
     height: 40rem; */
   width: 95%;
   max-width: 70rem;
+  aspect-ratio: 8/4;
   /* height: 40rem; */
   height: auto;
   /* max-height: 40rem; */
@@ -54,6 +55,8 @@
   max-width: 38rem;
   aspect-ratio: 1/1;
   background-size: cover;
+  background-position: center; /* Ensures image center focus */
+  background-repeat: no-repeat;
   border-radius: 1rem;
   margin-right: 1rem;
 }
@@ -80,6 +83,7 @@ p.name {
   font-weight: 500;
   height: 5rem;
   line-height: 2rem;
+  text-wrap: nowrap;
 }
 
 p.price {

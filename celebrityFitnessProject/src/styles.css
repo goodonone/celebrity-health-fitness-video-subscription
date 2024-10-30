@@ -29,21 +29,27 @@ body {
 
 @font-face {
     font-family: "Outfit";
-    src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('truetype');
+    src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('ttf');
     font-display: swap;
+}
+
+
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url('./assets/Fonts/RobotoMono-VariableFont_wght.ttf'), format('ttf');
+    font-display: swap;
+    font-style: normal;
+    
 }
 
 @font-face {
     font-family: "Roboto Mono";
-    src: url('./assets/Fonts/RobotoMono-VariableFont_wght.ttf'), format('truetype');
+    src: url('./assets/Fonts/RobotoMono-Italic-VariableFont_wght.ttf'), format('ttf');
     font-display: swap;
+    font-style: italic;
 }
 
-@font-face {
-    font-family: "Roboto Mono";
-    src: url('./assets/Fonts/RobotoMono-Italic-VariableFont_wght.ttf'), format('truetype');
-    font-display: swap;
-}
 
 /* ::-webkit-scrollbar
 {

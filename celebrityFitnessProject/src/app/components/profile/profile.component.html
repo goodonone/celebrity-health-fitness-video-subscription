@@ -47,39 +47,51 @@
                     <!-- <div class="flexPictureAndButtons"> -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag()}" >
+                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
                                 <!-- <p style="color: red; font-weight: bold">Position: {{ position.x }}, {{ position.y }}</p> -->
-                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()">DRAG <br> TO <br> POSITION</p>
+                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
                                 <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
                                     <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
+                                    (mouseenter)="!isDisabled('minus') && onMouseEnter('minus')"
                                     (mousedown)="onMouseDown('minus')" 
                                     (mouseup)="onMouseUp('minus')" 
                                     (mouseleave)="onMouseLeave('minus')"
                                     (click)="zoomOut()"></fa-icon>
                                     <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
+                                    (mouseenter)="!isDisabled('plus') && onMouseEnter('plus')"
                                     (mousedown)="onMouseDown('plus')" 
                                     (mouseup)="onMouseUp('plus')" 
                                     (mouseleave)="onMouseLeave('plus')"
                                     (click)="zoomIn()"></fa-icon>
                                 </div>
                                 <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (mousedown)="onMouseDown('reset')" 
+                                (mouseenter)="!isDisabled('reset') && onMouseEnter('reset')"
                                 (mouseup)="onMouseUp('reset')" 
                                 (mouseleave)="onMouseLeave('reset')"
                                 [ngClass]="{'clicked': isResetClicked, 
                                 'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
-                                <div class="profile-image-navigation" *ngIf="showImageNavigation">
-                                    <button class="nav-button prev" (click)="previousImage()" 
-                                            [class.disabled]="imageCount <= 1">
-                                      <fa-icon [icon]="['fas', 'chevron-left']"></fa-icon>
-                                    </button>
-                                    
-                                    <button class="nav-button next" (click)="nextImage()"
-                                            [class.disabled]="imageCount <= 1">
-                                      <fa-icon [icon]="['fas', 'chevron-right']"></fa-icon>
-                                    </button>
-                                  </div>
+                                <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
+                                    <fa-icon [icon]="['fas', 'chevron-left']" 
+                                             class="chevronLeft" 
+                                             (click)="previousImage()"
+                                             (mousedown)="onMouseDown('left')"
+                                             (mouseenter)="!isDisabled('left') && onMouseEnter('left')"
+                                             (mouseup)="onMouseUp('left')" 
+                                             (mouseleave)="onMouseLeave('left')"
+                                             [ngClass]="{'clicked': leftClicked}">
+                                    </fa-icon>                                   
+                                    <fa-icon [icon]="['fas', 'chevron-right']" 
+                                             class="chevronRight"
+                                             (click)="nextImage()"
+                                             (mousedown)="onMouseDown('right')"
+                                             (mouseenter)="!isDisabled('right') && onMouseEnter('right')"
+                                             (mouseup)="onMouseUp('right')" 
+                                             (mouseleave)="onMouseLeave('right')"
+                                             [ngClass]="{'clicked': rightClicked}">
+                                    </fa-icon>
+                                </div>
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="getProfileImageStyles()" 
                                     [ngClass]="{'default-position': !isDragged, 

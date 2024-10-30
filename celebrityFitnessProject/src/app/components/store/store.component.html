@@ -68,7 +68,7 @@
 
         <p *ngIf="error" class="error-message">{{ error }}</p>
     </div>
-    <ng-container *ngIf="isLoading && initialLoad" class="spinnerContainer">
+    <ng-container *ngIf="isLoading" class="spinnerContainer">
         <div class="spinner-overlay">
             <svg class="spinner" viewBox="0 0 50 50">
                 <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>

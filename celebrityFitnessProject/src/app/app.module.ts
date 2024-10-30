@@ -19,6 +19,7 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { CustomOAuthService } from './services/oauth.service';
 import { AuthStateService } from './services/authstate.service';
 import { AuthService } from './services/auth.service';
+import { ImageUrlManagerService } from './services/imageurlmanager.service';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,7 @@ import { AuthService } from './services/auth.service';
     SharedModule,
     OAuthModule.forRoot()
   ],
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService, AuthService],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService, AuthService, ImageUrlManagerService,],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

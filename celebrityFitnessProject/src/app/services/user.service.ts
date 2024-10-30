@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, catchError, from, map, Observable, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, from, lastValueFrom, map, Observable, switchMap, take, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './authstate.service';
@@ -10,6 +10,7 @@ import { CustomOAuthService } from './oauth.service';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../firebase.config';
+import { ImageUrlManagerService } from './imageurlmanager.service';
 
 
 @Injectable({
@@ -27,7 +28,9 @@ export class UserService {
   private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
   isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector) {
+  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector,
+    private imageUrlManager: ImageUrlManagerService
+  ) {
     // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
     //   this.isLoggedInSubject.next(isAuthenticated);
     // });
@@ -387,8 +390,72 @@ updateUser(updatedUser: User): Observable<User> {
     );
 }
 
+async updateProfile(userData: any): Promise<any> {
+  try {
+    // Get current userId and token
+    const userId = this.getUserId();
+    const token = localStorage.getItem(this.tokenKey);
+    
+    if (!userId) {
+      throw new Error('User ID not found');
+    }
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
 
+    console.log('Updating profile for user:', {
+      userId,
+      providedId: userData.id,
+      imageUrl: userData.imgUrl
+    });
 
+    // Ensure we're using the correct user ID
+    const dataToUpdate = {
+      ...userData,
+      userId: userId // Ensure userId is set
+    };
+
+    // Make the HTTP request with authorization header
+    const response = await lastValueFrom(
+      this.http.put(`${this.baseURL}/data/${userId}`, dataToUpdate, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Profile update error:', {
+            status: error.status,
+            message: error.message,
+            error: error.error
+          });
+          throw error;
+        })
+      )
+    );
+
+    // Convert any image URLs in the response
+    const updatedUser = response as any;
+    if (updatedUser?.imgUrl) {
+      updatedUser.imgUrl = await this.imageUrlManager.getDisplayUrl(
+        userId,
+        updatedUser.imgUrl
+      );
+    }
+
+    // Update local storage
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedStoredUser = {
+      ...storedUser,
+      ...updatedUser
+    };
+    localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+
+    return updatedUser;
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+}
 
   checkPassword(userId: string, password: string): Observable<boolean> {
     let reqHeaders = {

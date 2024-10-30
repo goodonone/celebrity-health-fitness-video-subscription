@@ -1,5 +1,5 @@
 * {
-  font-family: "Outfit", sans-serif;
+  font-family: 'Outfit', sans-serif !important;
   user-select: none;
 }
 
@@ -116,7 +116,7 @@
   line-height: clamp(6rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5.5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
+  font-weight: 700;
   // overflow: hidden;
   // overflow-x: hidden;
   // text-overflow: ellipsis;
@@ -152,7 +152,7 @@
   line-height: clamp(6rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(4.5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
+  font-weight: 700;
   // height: auto;
   // overflow-x: hidden;
   // text-overflow: ellipsis;
@@ -197,7 +197,8 @@
   line-height: clamp(6rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
+  font-weight: 700;
+  // letter-spacing: -15px;
   // background-color: lavender;
   // overflow: hidden;
   // position: relative;
@@ -733,8 +734,9 @@ fieldset {
       cursor: grabbing;
     }
   }
-
 }
+
+
 
 .dragToCenter {
   position: absolute;
@@ -761,7 +763,7 @@ fieldset {
 
 .reset{
   position: absolute;
-  top: 80%;
+  top: 78%;
   left: 50%;
   transform: translate(-50%, -50%); 
   z-index: 5;
@@ -770,7 +772,7 @@ fieldset {
   text-shadow: 0 0 7px #000000;
   opacity: 0.7;
   // line-height: clamp(2rem, 3vw, 3rem);
-  padding-bottom: 1rem;
+  // padding-bottom: 1rem;
   cursor: pointer;
   font-weight: 530;
   // border: white 1.5px solid;
@@ -783,7 +785,7 @@ fieldset {
 
   &.clicked{
     opacity: 1;
-    color: rgb(0, 0, 0);
+    color: rgb(191, 191, 191);
     // border-color: rgb(0, 0, 0);
   }
 
@@ -791,6 +793,721 @@ fieldset {
     cursor: not-allowed;
     opacity: 0.4;
   }
+}
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+    
+//     &.fadeOut {
+//       opacity: 0;
+//     }
+    
+//     &.fadeIn {
+//       opacity: 0.8;
+//     }
+//   }
+
+//   // When hovering over minus button
+//   .zoomOut:hover ~ .zoomIn,
+//   .zoomOut:hover ~ .dragToCenter,
+//   .zoomOut:hover ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over plus button
+//   .zoomIn:hover ~ .zoomOut,
+//   .zoomIn:hover ~ .dragToCenter,
+//   .zoomIn:hover ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over reset button
+//   .reset:hover ~ .zoomIn,
+//   .reset:hover ~ .zoomOut,
+//   .reset:hover ~ .dragToCenter {
+//     opacity: 0;
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     cursor: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fade-transition {
+//   transition: opacity 0.3s ease;
+// }
+
+// .hidden {
+//   opacity: 0;
+// }
+
+// .visible {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // Hover states for minus button
+//   .zoomOut:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomIn,
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Hover states for plus button
+//   .zoomIn:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomOut,
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Hover states for reset button
+//   .reset:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomIn,
+//     & ~ .zoomOut,
+//     & ~ .dragToCenter {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     cursor: not-allowed;
+    
+//     &:hover {
+//       opacity: 0.4; // Maintain disabled opacity even on hover
+//     }
+//   }
+// }
+
+// // Fade transitions
+// .fadeOut {
+//   opacity: 0 !important;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any font awesome icon
+//   .zoomOut:hover:not(.disabled) ~ .dragToCenter,
+//   .zoomOut:hover:not(.disabled) ~ .reset,
+//   .zoomIn:hover:not(.disabled) ~ .dragToCenter,
+//   .zoomIn:hover:not(.disabled) ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over reset button
+//   .reset:hover:not(.disabled) {
+//     opacity: 0.8;
+    
+//     & ~ .dragToCenter,
+//     & ~ .zoomButtons {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Special handling for zoomButtons container to keep both icons visible
+//   .zoomButtons {
+//     .zoomIn, .zoomOut {
+//       &:hover:not(.disabled) {
+//         opacity: 1;
+//       }
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// // Fade transitions
+// .fadeOut {
+//   opacity: 0 !important;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any font awesome icon in zoom buttons
+//   .zoomButtons:hover {
+//     .zoomIn:not(.disabled), 
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+    
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button, hide other elements
+//   &:has(.reset:hover:not(.disabled)) {
+//     .zoomButtons,
+//     .dragToCenter {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any zoom button
+//   .zoomOut:hover:not(.disabled),
+//   .zoomIn:hover:not(.disabled) {
+//     opacity: 1;
+    
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over zoom buttons container
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over individual zoom buttons
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Existing hover states...
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Existing hover states...
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over zoom buttons container or individual icons
+//   .zoomButtons:hover,
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over zoom buttons container or individual icons
+//   .zoomButtons:hover,
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over chevron-left button
+//   &:has(.chevronLeft:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons,
+//     .reset {
+//       opacity: 0;
+//     }
+    
+//     .chevronLeft:not(.disabled),
+//     .chevronRight:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over chevron-right button
+//   &:has(.chevronRight:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons,
+//     .reset {
+//       opacity: 0;
+//     }
+    
+//     .chevronLeft:not(.disabled),
+//     .chevronRight:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state for all controls
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled,
+//   .chevronLeft.disabled,
+//   .chevronRight.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+.profilePictureContainerForDragging {
+  .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+    transition: opacity 0.3s ease;
+  }
+  
+  // Default state - all elements visible
+  .zoomIn, .zoomOut, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+    opacity: 0.8;
+  }
+
+  // When dragging, hide all controls
+  &.is-dragging {
+    .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+      opacity: 0;
+    }
+  }
+
+  // When hovering over zoom buttons container or individual icons
+  .zoomButtons:hover,
+  &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+  &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+    .dragToCenter,
+    .reset,
+    .chevronLeft,
+    .chevronRight {
+      opacity: 0;
+    }
+
+    .zoomIn:not(.disabled),
+    .zoomOut:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over reset button
+  &:has(.reset:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .chevronLeft,
+    .chevronRight {
+      opacity: 0;
+    }
+    
+    .reset:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over chevron-left button
+  &:has(.chevronLeft:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .reset {
+      opacity: 0;
+    }
+    
+    .chevronLeft:not(.disabled),
+    .chevronRight:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over chevron-right button
+  &:has(.chevronRight:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .reset {
+      opacity: 0;
+    }
+    
+    .chevronLeft:not(.disabled),
+    .chevronRight:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // Handle disabled state for all controls
+  .zoomIn.disabled,
+  .zoomOut.disabled,
+  .reset.disabled,
+  .chevronLeft.disabled,
+  .chevronRight.disabled {
+    opacity: 0.4;
+    pointer-events: not-allowed;
+  }
+}
+
+// Additional helper classes
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fadeIn {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 // Upload image button 
@@ -1569,12 +2286,58 @@ input:disabled:-moz-placeholder {
   // overflow: hidden;
 }
 
+// .profile-image-navigation {
+//   position: relative;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100%;
+// }
+
 .profile-image-navigation {
-  position: relative;
+  position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100%;
+  justify-content: space-between;
+  width: 98%;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  padding: 0 8px;
+}
+
+.chevronLeft,
+.chevronRight {
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  color: white;
+  text-shadow: 0 0 7px #000000;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 8px;
+  border-radius: 50%;
+  // background: rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &.clicked{
+    opacity: 1;
+    color: rgb(191, 191, 191);
+  }
+
+  &.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+// Style for the chevron icons specifically
+::ng-deep .chevronLeft svg,
+::ng-deep .chevronRight svg {
+  filter: drop-shadow(0 0 4px #000000);
 }
 
 .nav-button {
@@ -1591,6 +2354,7 @@ input:disabled:-moz-placeholder {
   justify-content: center;
   cursor: pointer;
   transition: opacity 0.3s;
+  background-color: red;
 }
 
 .nav-button.prev {
@@ -1672,6 +2436,16 @@ img.warningImg {
   transform: scale(30%, 30%);
   margin-bottom: 5rem;
 }
+
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 1;
+//   transition: opacity 0.3s ease;
+// }
 
 .avatar {
   position: absolute;
@@ -2465,6 +3239,12 @@ input[matInput]:focus {
     padding-left: 2rem;
     // flex: 1;
     // margin: auto;
+  }
+
+  .profileNameTier.tierOne, 
+  .profileNameTier.tierTwo, 
+  .profileNameTier.tierThree {
+    letter-spacing: -3px;
   }
 
   // .profilePicture{
