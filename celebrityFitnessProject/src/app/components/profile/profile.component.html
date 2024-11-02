@@ -144,7 +144,7 @@
                             <h3 class="profileDetails" *ngIf="currentUser.tier === 'All In' || currentUser.tier === 'Motivated'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
-                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> <span class="planPricing">${{currentUser.price}}</span>/{{monthOrYear}}</h3>
                         <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> Free</h3>
                     </div>
                 </ng-container>

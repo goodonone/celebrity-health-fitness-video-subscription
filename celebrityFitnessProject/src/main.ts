@@ -10,6 +10,13 @@ WebFont.load({
   }
 }); 
 
+WebFont.load({
+  custom: {
+    families: ['Roboto Mono'],
+    urls: ['./assets/Fonts/Roboto-Mono.css']
+  }
+});
+
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));

@@ -15,7 +15,7 @@
               <button mat-button class="btn-change"
                       (click)="changePlan()">Change</button>
             </div>
-            <div class="cost">${{planDetails.planCost}}/{{planDetails.billing === 'yearly' ? 'yr' : 'mo'}}</div>
+            <div class="cost">$<span class="costSpan">{{planDetails.planCost}}</span>/{{planDetails.billing === 'yearly' ? 'yr' : 'mo'}}</div>
           </tr>
         </th>
         <mat-divider></mat-divider>
@@ -23,7 +23,7 @@
   
       <div class="total">
         <div>Total (per {{planDetails.billing === 'yearly' ? 'year' : 'month'}})</div>
-        <div class="cost summary">${{planDetails.totalCost }}/{{planDetails.billing === 'yearly' ? 'yr' :
+        <div class="cost summary">$<span class="totalCostSpan">{{planDetails.totalCost }}</span>/{{planDetails.billing === 'yearly' ? 'yr' :
           'mo'}} 
         </div>
       </div>

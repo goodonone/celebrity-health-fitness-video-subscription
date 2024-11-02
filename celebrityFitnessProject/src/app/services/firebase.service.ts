@@ -186,39 +186,7 @@
 
 // }  
 
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { firstValueFrom, Observable, Subject } from 'rxjs';
-import { storage, auth } from '../firebase.config';
-import { ref, uploadBytesResumable, getDownloadURL, StorageReference, UploadTaskSnapshot, deleteObject } from 'firebase/storage';
-import { environment } from 'src/environments/environment';
 
-interface UploadResponse {
-  uploadUrl: string;
-  fileName: string;
-  fullPath: string;
-  downloadUrl: string;
-}
-
-interface UploadProgress {
-  progress: number;
-  snapshot: UploadTaskSnapshot;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class FirebaseService {
-  private uploadProgress = new Subject<UploadProgress>();
-  private stagedFiles: Map<string, string> = new Map();
-
-  private readonly baseUrl = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
-
-  getUploadProgress(): Observable<UploadProgress> {
-    return this.uploadProgress.asObservable();
-  }
 
 //   async uploadFile(file: File, userId: string, folder: string = 'profileImages'): Promise<string> {
 //     try {
@@ -341,30 +309,29 @@ export class FirebaseService {
 //   }
 // }
 
-async uploadFile(file: File, userId: string): Promise<string> {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     const formData = new FormData();
+//     formData.append('file', file);
     
-    // Use backend proxy to handle the upload
-    const response = await firstValueFrom(
-      this.http.post<any>(`${this.baseUrl}/upload-url/${userId}`, {
-        contentType: file.type,
-        folder: 'staging/profileImages'
-      })
-    );
+//     // Use backend proxy to handle the upload
+//     const response = await firstValueFrom(
+//       this.http.post<any>(`${this.baseUrl}/api/images/upload-url/${userId}`, {
+//         contentType: file.type,
+//         folder: 'staging/profileImages'
+//       })
+//     );
 
-    if (!response.success) {
-      throw new Error('Failed to upload file');
-    }
+//     if (!response.success) {
+//       throw new Error('Failed to upload file');
+//     }
 
-    return response.data.downloadUrl;
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    throw error;
-  }
-}
-
+//     return response.data.downloadUrl;
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
   // async cleanupStagedFile(userId: string): Promise<void> {
   //   const stagedPath = this.stagedFiles.get(userId);
   //   if (stagedPath) {
@@ -380,17 +347,18 @@ async uploadFile(file: File, userId: string): Promise<string> {
   //   }
   // }
 
-  async cleanupStagedFile(userId: string): Promise<void> {
-    if (!userId) return;
+  // async cleanupStagedFile(userId: string): Promise<void> {
+  //   if (!userId) return;
     
-    try {
-      await firstValueFrom(
-        this.http.delete(`${this.baseUrl}/staging/profileImages/${userId}`)
-      );
-    } catch (error) {
-      console.error('Error cleaning up staged file:', error);
-    }
-  }
+  //   try {
+  //     await firstValueFrom(
+  //       this.http.delete(`${this.baseUrl}/api/images/profile-picture/${userId}`)
+  //     );
+  //   } catch (error) {
+  //     console.error('Error cleaning up staged file:', error);
+  //   }
+  // }
+
 
   // async moveToPermStorage(userId: string): Promise<string | null> {
   //   const stagedPath = this.stagedFiles.get(userId);
@@ -632,19 +600,280 @@ async uploadFile(file: File, userId: string): Promise<string> {
 //   }
 // }
 
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const response = await firstValueFrom(
+//       this.http.post<any>(`${this.baseUrl}/api/images/profile-picture/${userId}`, {
+//         fileName
+//       })
+//     );
+
+//     if (!response.url) {
+//       throw new Error('Failed to move file to permanent storage');
+//     }
+
+//     return response.url;
+//   } catch (error) {
+//     console.error('Error moving file to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+
+
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { firstValueFrom, Observable, Subject } from 'rxjs';
+import { storage, auth } from '../firebase.config';
+import { ref, uploadBytesResumable, getDownloadURL, StorageReference, UploadTaskSnapshot, deleteObject, getStorage } from 'firebase/storage';
+import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
+
+interface UploadResponse {
+  uploadUrl: string;
+  fileName: string;
+  fullPath: string;
+  downloadUrl: string;
+}
+
+interface UploadProgress {
+  progress: number;
+  snapshot: UploadTaskSnapshot;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FirebaseService {
+  private uploadProgress = new Subject<UploadProgress>();
+  private stagedFiles: Map<string, string> = new Map();
+
+  private readonly baseUrl = environment.apiUrl;
+
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  getUploadProgress(): Observable<UploadProgress> {
+    return this.uploadProgress.asObservable();
+  }
+
+  // private getAuthHeaders() {
+  //   const token = localStorage.getItem('token');
+  //   return {
+  //     headers: new HttpHeaders({
+  //       'Authorization': `Bearer ${token}`
+  //     })
+  //   };
+  // }
+
+  // getAuthHeaders(): { headers: HttpHeaders } {
+  //   const token = localStorage.getItem('token');
+  //   return {
+  //     headers: new HttpHeaders({
+  //       'Authorization': `Bearer ${token}`,
+  //     }),
+  //   };
+  // }
+
+  getAuthHeaders(): { headers: HttpHeaders } {
+    const token = this.authService.getToken();
+    return {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+      }),
+    };
+  }
+
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${this.baseUrl}/api/images/upload-url/${userId}`, 
+//         {
+//           contentType: file.type,
+//           folder: 'staging/profileImages'
+//         },
+//         this.getAuthHeaders() // Add auth headers
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error('Failed to upload file');
+//     }
+
+//     return response.data.downloadUrl;
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
+
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     // Step 1: Get the signed upload URL from the backend
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${this.baseUrl}/api/images/upload-url/${userId}`,
+//         {
+//           contentType: file.type,
+//           folder: 'staging/profileImages'
+//         },
+//         this.getAuthHeaders() // Add auth headers
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error('Failed to get upload URL');
+//     }
+
+//     const uploadUrl = response.data.uploadUrl;
+
+//     // Step 2: Upload the file to Firebase Storage using the signed URL
+//     const uploadResponse = await fetch(uploadUrl, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': file.type,
+//         // Include any additional headers if required
+//       },
+//       body: file
+//     });
+
+//     if (!uploadResponse.ok) {
+//       throw new Error('Failed to upload file to Firebase Storage');
+//     }
+
+//     // Step 3: Return the download URL for later use
+//     return response.data.downloadUrl;
+
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
+
+// firebase.service.ts
+
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     // Get the signed upload URL from the backend
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${this.baseUrl}/api/images/upload-url/${userId}`,
+//         {
+//           contentType: file.type,
+//           folder: 'staging/profileImages'
+//         },
+//         this.getAuthHeaders()
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error('Failed to get upload URL');
+//     }
+
+//     const uploadUrl = response.data.uploadUrl;
+
+//     // Upload the file to Firebase Storage using the signed URL
+//     const uploadResponse = await fetch(uploadUrl, {
+//       method: 'PUT',
+//       headers: {
+//         'Content-Type': file.type,
+//       },
+//       body: file
+//     });
+
+//     if (!uploadResponse.ok) {
+//       const errorText = await uploadResponse.text();
+//       throw new Error(`Failed to upload file to Firebase Storage: ${errorText}`);
+//     }
+
+//     // Return the download URL for later use
+//     return response.data.downloadUrl;
+
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
+
+
+async uploadFile(file: File, userId: string): Promise<string> {
+  try {
+    const storage = getStorage();
+    const storageRef = ref(storage, `staging/profileImages/${userId}/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    await new Promise<void>((resolve, reject) => {
+      uploadTask.on(
+        'state_changed',
+        null,
+        (error) => reject(error),
+        () => resolve()
+      );
+    });
+
+    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    return downloadURL;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+}
+
+
+  async cleanupStagedFile(userId: string): Promise<void> {
+    if (!userId) return;
+    
+    try {
+      await firstValueFrom(
+        this.http.delete(
+          `${this.baseUrl}/api/images/profile-picture/${userId}`,
+          this.getAuthHeaders() // Add auth headers
+        )
+      );
+    } catch (error) {
+      console.error('Error cleaning up staged file:', error);
+    }
+  }
+
+
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const response = await firstValueFrom(
+//       this.http.put<any>(
+//         `${this.baseUrl}/api/images/profile-picture/${userId}`,
+//         { fileName },
+//         this.getAuthHeaders() // Add auth headers
+//       )
+//     );
+
+//     if (!response.url) {
+//       throw new Error('Failed to move file to permanent storage');
+//     }
+
+//     return response.url;
+//   } catch (error) {
+//     console.error('Error moving file to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
 async moveToPermStorage(userId: string, fileName: string): Promise<string> {
   try {
+    const options = this.getAuthHeaders(); // Returns { headers: HttpHeaders }
+
     const response = await firstValueFrom(
-      this.http.post<any>(`${this.baseUrl}/storage/move/${userId}`, {
-        fileName
-      })
+      this.http.post<any>(
+        `${this.baseUrl}/api/storage/move/${userId}`,
+        { fileName },
+        options // Pass options directly
+      )
     );
 
-    if (!response.url) {
-      throw new Error('Failed to move file to permanent storage');
+    if (response.success && response.url) {
+      return response.url;
+    } else {
+      throw new Error(response.message || 'Failed to move file to permanent storage');
     }
-
-    return response.url;
   } catch (error) {
     console.error('Error moving file to permanent storage:', error);
     throw error;

@@ -105,7 +105,9 @@
 //   }
 // }
 
-.profileNameTier.tierOne {
+.profileNameTier.tierOne,
+.profileNameTier.tierTwo,
+.profileNameTier.tierThree {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -117,6 +119,8 @@
   padding-right: 0.5rem;
   font-size: clamp(5.5rem, 7.5vw, 7.5rem);
   font-weight: 700;
+  letter-spacing: -2px;
+  // font-family: "Roboto", sans-serif !important;
   // overflow: hidden;
   // overflow-x: hidden;
   // text-overflow: ellipsis;
@@ -138,43 +142,44 @@
   }
 }
 
-.profileNameTier.tierTwo{
-  display: flex;
-  flex-direction: column;
-  // margin: 0 auto;
-  // justify-content: flex-start;
-  justify-content: center;
-  align-items: center;
-  // text-align: center;
-  width: 100%;
-  max-width: 40rem;
-  // height: 100%;
-  line-height: clamp(6rem, 8.5vw, 9rem);
-  padding-right: 0.5rem;
-  font-size: clamp(4.5rem, 7.5vw, 7.5rem);
-  font-weight: 700;
-  // height: auto;
-  // overflow-x: hidden;
-  // text-overflow: ellipsis;
-  // white-space: nowrap;
-  // overflow: hidden;
-  // background-color: turquoise;
-  // position: relative;
+// .profileNameTier.tierTwo{
+//   display: flex;
+//   flex-direction: column;
+//   // margin: 0 auto;
+//   // justify-content: flex-start;
+//   justify-content: center;
+//   align-items: center;
+//   // text-align: center;
+//   width: 100%;
+//   max-width: 40rem;
+//   // height: 100%;
+//   line-height: clamp(6rem, 8.5vw, 9rem);
+//   padding-right: 0.5rem;
+//   font-size: clamp(4.5rem, 7.5vw, 7.5rem);
+//   font-weight: 700;
+//   letter-spacing: -2px;
+//   // height: auto;
+//   // overflow-x: hidden;
+//   // text-overflow: ellipsis;
+//   // white-space: nowrap;
+//   // overflow: hidden;
+//   // background-color: turquoise;
+//   // position: relative;
 
-  /* Adding the fade-in class for the fade-in effect */
-  &.firstTimeAnimation {
-    animation: fadeIn 0.5s ease-in-out 0.5s both;
-  }
-}
+//   /* Adding the fade-in class for the fade-in effect */
+//   &.firstTimeAnimation {
+//     animation: fadeIn 0.5s ease-in-out 0.5s both;
+//   }
+// }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
 
 .mobileTierTwo{
   font-size: inherit;
@@ -184,41 +189,42 @@
   // margin-right: 50rem;
 }
 
-.profileNameTier.tierThree {
-  display: flex;
-  flex-direction: column;
-  // text-align: center;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  // min-width: 20rem;
-  max-width: 40rem;
-  // max-width: fit-content;
-  line-height: clamp(6rem, 8.5vw, 9rem);
-  padding-right: 0.5rem;
-  font-size: clamp(5rem, 7.5vw, 7.5rem);
-  font-weight: 700;
-  // letter-spacing: -15px;
-  // background-color: lavender;
-  // overflow: hidden;
-  // position: relative;
+// .profileNameTier.tierThree {
+//   display: flex;
+//   flex-direction: column;
+//   // text-align: center;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+//   // min-width: 20rem;
+//   max-width: 40rem;
+//   // max-width: fit-content;
+//   line-height: clamp(6rem, 8.5vw, 9rem);
+//   padding-right: 0.5rem;
+//   font-size: clamp(5rem, 7.5vw, 7.5rem);
+//   font-weight: 700;
+//   letter-spacing: -2px;
+//   // letter-spacing: -15px;
+//   // background-color: lavender;
+//   // overflow: hidden;
+//   // position: relative;
  
-  // padding-right: 2.5rem;
+//   // padding-right: 2.5rem;
 
-  /* Adding the fade-in class for the fade-in effect */
-  &.firstTimeAnimation {
-    animation: fadeIn 1s ease-in-out 0.5s both;
-  }
-}
+//   /* Adding the fade-in class for the fade-in effect */
+//   &.firstTimeAnimation {
+//     animation: fadeIn 1s ease-in-out 0.5s both;
+//   }
+// }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
 
 // .nameTierOne, .nameTierTwo, .nameTierThree {
 //   display: inline-block;
@@ -251,6 +257,7 @@
   font-weight: inherit;
   font-family: inherit;
   position: relative;
+  // font-family: "Roboto", sans-serif !important;
   // background-color: lawngreen;
 }
 
@@ -1804,6 +1811,11 @@ h3.profileDetailsChangePassword {
 
 h3.profileDetails.plan{
   font-size: clamp(1.6rem, 1.5vw, 1.9rem);
+}
+
+.planPricing{
+  font-family: "Roboto Mono", monospace !important;
+  letter-spacing: -2px;
 }
 
 .profileDataContainer {

@@ -1,5 +1,5 @@
 * {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', sans-serif !important;
   }
 
   mat-card{
@@ -141,6 +141,10 @@ div.cost.summary{
   line-height: 1.25rem;
 }
 
+.costSpan, .totalCostSpan {
+  font-family: "Roboto Mono", monospace !important;
+  font-size: inherit;
+}
 
 @media (min-width: 37.5em) {
 

@@ -131,6 +131,7 @@ export class ProfileComponent implements OnInit {
   hoveredButton: string | null = null;
   rightClicked = false;
   leftClicked = false;
+  stagedFileName: string | null = null;
 
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
@@ -2379,16 +2380,250 @@ checkEmail(event: Event) {
 //   }
 // }
 
+// async saveProfilePicture() {
+//   if (!this.pictureForm.valid) return;
+
+//   try {
+//     this.isSavingPicture = true;
+//     const imageUrl = this.pictureForm.get('imgUrl')?.value;
+
+//     if (!imageUrl) {
+//       throw new Error('No image URL provided');
+//     }
+
+//     // Get current user ID
+//     const userId = this.userService.getUserId();
+//     if (!userId) {
+//       throw new Error('User ID not found');
+//     }
+
+//     // Create settings object
+//     const settings = {
+//       zoom: Number(this.zoomLevel) || 1,
+//       x: Number(this.position.x) || 0,
+//       y: Number(this.position.y) || 0
+//     };
+
+//     // Save image and get Firebase URL
+//     const finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, imageUrl);
+
+//     // Update user profile
+//     const updatedUser = await this.userService.updateProfile({
+//       ...this.currentUser,
+//       id: userId,
+//       userId: userId,
+//       imgUrl: finalImageUrl,
+//       profilePictureSettings: settings
+//     });
+
+//     // Update current user state
+//     this.currentUser = {
+//       ...this.currentUser,
+//       ...updatedUser,
+//       profilePictureSettings: settings
+//     };
+
+//     // Update form with proxied URL
+//     const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
+//     this.pictureForm.patchValue({
+//       imgUrl: displayUrl
+//     }, { emitEvent: false });
+
+//     // Update position and transform
+//     this.position = {
+//       x: settings.x,
+//       y: settings.y
+//     };
+//     this.zoomLevel = settings.zoom;
+
+//     // Change state and update UI
+//     this.currentState = ProfileState.Viewing;
+//     this.updateImageTransform();
+//     this.cdr.detectChanges();
+
+//   } catch (error) {
+//     console.error('Error saving profile picture:', error);
+//     // Show error to user
+//     // Optionally stay in current state
+//   } finally {
+//     this.isSavingPicture = false;
+//     this.cdr.detectChanges();
+//   }
+// }
+
+// async saveProfilePicture() {
+//   if (!this.pictureForm.valid) return;
+
+//   try {
+//     this.isSavingPicture = true;
+
+//     // Get current user ID
+//     const userId = this.userService.getUserId();
+//     if (!userId) {
+//       throw new Error('User ID not found');
+//     }
+
+//     // Create settings object
+//     const settings = {
+//       zoom: Number(this.zoomLevel) || 1,
+//       x: Number(this.position.x) || 0,
+//       y: Number(this.position.y) || 0,
+//     };
+
+//     let finalImageUrl: string;
+
+//     if (this.stagedFileName) {
+//       // Move image from staging to permanent storage
+//       finalImageUrl = await this.imageUrlManager.moveToPermStorage(userId, this.stagedFileName);
+
+//       // Clear the staged file name
+//       this.stagedFileName = null;
+//     } else {
+//       // No staged image, use existing image URL from the form
+//       const imageUrl = this.pictureForm.get('imgUrl')?.value;
+
+//       if (!imageUrl) {
+//         throw new Error('No image URL provided');
+//       }
+
+//       finalImageUrl = imageUrl;
+//     }
+
+//     // Update user profile
+//     const updatedUser = await this.userService.updateProfile({
+//       ...this.currentUser,
+//       id: userId,
+//       userId: userId,
+//       imgUrl: finalImageUrl,
+//       profilePictureSettings: settings,
+//     });
+
+//     // Update current user state
+//     this.currentUser = {
+//       ...this.currentUser,
+//       ...updatedUser,
+//       profilePictureSettings: settings,
+//     };
+
+//     // Update form with proxied URL
+//     const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
+//     this.pictureForm.patchValue(
+//       {
+//         imgUrl: displayUrl,
+//       },
+//       { emitEvent: false }
+//     );
+
+//     // Update position and transform
+//     this.position = {
+//       x: settings.x,
+//       y: settings.y,
+//     };
+//     this.zoomLevel = settings.zoom;
+
+//     // Change state and update UI
+//     this.currentState = ProfileState.Viewing;
+//     this.updateImageTransform();
+//     this.cdr.detectChanges();
+//   } catch (error) {
+//     console.error('Error saving profile picture:', error);
+//     // Show error to user
+//     // Optionally stay in current state
+//   } finally {
+//     this.isSavingPicture = false;
+//     this.cdr.detectChanges();
+//   }
+// }
+
+// async saveProfilePicture() {
+//   if (!this.pictureForm.valid) return;
+
+//   try {
+//     this.isSavingPicture = true;
+
+//     // Get current user ID
+//     const userId = this.userService.getUserId();
+//     if (!userId) {
+//       throw new Error('User ID not found');
+//     }
+
+//     // Create settings object
+//     const settings = {
+//       zoom: Number(this.zoomLevel) || 1,
+//       x: Number(this.position.x) || 0,
+//       y: Number(this.position.y) || 0,
+//     };
+
+//     let finalImageUrl: string;
+
+//     if (this.stagedFileName) {
+//       // Move image from staging to permanent storage
+//       finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, this.stagedFileName);
+
+//       // Clear the staged file name
+//       this.stagedFileName = null;
+//     } else {
+//       // No staged image, use existing image URL from the form
+//       const imageUrl = this.pictureForm.get('imgUrl')?.value;
+
+//       if (!imageUrl) {
+//         throw new Error('No image URL provided');
+//       }
+
+//       finalImageUrl = imageUrl;
+//     }
+
+//     // Update user profile
+//     const updatedUser = await this.userService.updateProfile({
+//       ...this.currentUser,
+//       id: userId,
+//       userId: userId,
+//       imgUrl: finalImageUrl,
+//       profilePictureSettings: settings,
+//     });
+
+//     // Update current user state
+//     this.currentUser = {
+//       ...this.currentUser,
+//       ...updatedUser,
+//       profilePictureSettings: settings,
+//     };
+
+//     // Update form with proxied URL
+//     const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
+//     this.pictureForm.patchValue(
+//       {
+//         imgUrl: displayUrl,
+//       },
+//       { emitEvent: false }
+//     );
+
+//     // Update position and transform
+//     this.position = {
+//       x: settings.x,
+//       y: settings.y,
+//     };
+//     this.zoomLevel = settings.zoom;
+
+//     // Change state and update UI
+//     this.currentState = ProfileState.Viewing;
+//     this.updateImageTransform();
+//     this.cdr.detectChanges();
+//   } catch (error) {
+//     console.error('Error saving profile picture:', error);
+//     // Show error to user
+//     // Optionally stay in current state
+//   } finally {
+//     this.isSavingPicture = false;
+//     this.cdr.detectChanges();
+//   }
+// }
+
 async saveProfilePicture() {
   if (!this.pictureForm.valid) return;
 
   try {
     this.isSavingPicture = true;
-    const imageUrl = this.pictureForm.get('imgUrl')?.value;
-
-    if (!imageUrl) {
-      throw new Error('No image URL provided');
-    }
 
     // Get current user ID
     const userId = this.userService.getUserId();
@@ -2400,10 +2635,17 @@ async saveProfilePicture() {
     const settings = {
       zoom: Number(this.zoomLevel) || 1,
       x: Number(this.position.x) || 0,
-      y: Number(this.position.y) || 0
+      y: Number(this.position.y) || 0,
     };
 
-    // Save image and get Firebase URL
+    // Get image URL from the form
+    const imageUrl = this.pictureForm.get('imgUrl')?.value;
+
+    if (!imageUrl) {
+      throw new Error('No image URL provided');
+    }
+
+    // Save profile image (handles moving from staging to permanent if needed)
     const finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, imageUrl);
 
     // Update user profile
@@ -2412,26 +2654,29 @@ async saveProfilePicture() {
       id: userId,
       userId: userId,
       imgUrl: finalImageUrl,
-      profilePictureSettings: settings
+      profilePictureSettings: settings,
     });
 
     // Update current user state
     this.currentUser = {
       ...this.currentUser,
       ...updatedUser,
-      profilePictureSettings: settings
+      profilePictureSettings: settings,
     };
 
     // Update form with proxied URL
     const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
-    this.pictureForm.patchValue({
-      imgUrl: displayUrl
-    }, { emitEvent: false });
+    this.pictureForm.patchValue(
+      {
+        imgUrl: displayUrl,
+      },
+      { emitEvent: false }
+    );
 
     // Update position and transform
     this.position = {
       x: settings.x,
-      y: settings.y
+      y: settings.y,
     };
     this.zoomLevel = settings.zoom;
 
@@ -2439,7 +2684,6 @@ async saveProfilePicture() {
     this.currentState = ProfileState.Viewing;
     this.updateImageTransform();
     this.cdr.detectChanges();
-
   } catch (error) {
     console.error('Error saving profile picture:', error);
     // Show error to user
@@ -4093,29 +4337,68 @@ isInDefaultPosition(): boolean {
 
 ///// Google Firebase Storage Functions for Profile Pictures /////
 async onFileSelected(event: any) {
-  const file = event?.target?.files?.[0];
-  if (!file) return;
+  const file: File = event.target.files[0];
+  if (file) {
+    try {
+      const userId = this.userService.getUserId();
+      if (!userId) {
+        throw new Error('User ID not found');
+      }
 
-  try {
-    this.isUploading = true;
-    
-    // Upload and get proxied URL
-    const displayUrl = await this.imageUrlManager.handleImageUpload(file, this.currentUser.userId!);
-    
-    // Update form with proxied URL
-    this.pictureForm.patchValue({
-      imgUrl: displayUrl
-    });
+      // Handle image upload and get display URL
+      const displayUrl = await this.imageUrlManager.handleImageUpload(file, userId);
 
-    // Trigger change detection
-    this.cdr.detectChanges();
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    // Handle error appropriately
-  } finally {
-    this.isUploading = false;
+      // Update the form with the staging image URL
+      this.pictureForm.patchValue(
+        {
+          imgUrl: displayUrl,
+        },
+        { emitEvent: false }
+      );
+
+      // Update the display
+      this.updateProfileImageDisplay(displayUrl);
+
+      // Get the staged file name from ImageUrlManagerService
+      const stagedFileInfo = this.imageUrlManager.getStagedFileInfo();
+      this.stagedFileName = stagedFileInfo.fileName;
+    } catch (error) {
+      console.error('Error handling file selection:', error);
+      // Handle error appropriately
+    }
   }
 }
+
+private updateProfileImageDisplay(imageUrl: string) {
+  const profileImg = this.profileImg?.nativeElement;
+  if (profileImg) {
+    profileImg.style.backgroundImage = `url(${imageUrl})`;
+  }
+}
+// async onFileSelected(event: any) {
+//   const file = event?.target?.files?.[0];
+//   if (!file) return;
+
+//   try {
+//     this.isUploading = true;
+    
+//     // Upload and get proxied URL
+//     const displayUrl = await this.imageUrlManager.handleImageUpload(file, this.currentUser.userId!);
+    
+//     // Update form with proxied URL
+//     this.pictureForm.patchValue({
+//       imgUrl: displayUrl
+//     });
+
+//     // Trigger change detection
+//     this.cdr.detectChanges();
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     // Handle error appropriately
+//   } finally {
+//     this.isUploading = false;
+//   }
+// }
 
 // async onFileSelected(event: Event) {
 //   this.imageNotFound = false;

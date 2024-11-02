@@ -30,6 +30,22 @@ export class AuthService {
     
   }
 
+  // src/app/services/auth.service.ts
+
+// src/app/services/auth.service.ts
+
+getToken(): Promise<string | null> {
+  return Promise.resolve(this.retrieveToken());
+}
+
+private retrieveToken(): string | null {
+  let token = localStorage.getItem('token');
+  if (!token) {
+    token = localStorage.getItem('googleAuthToken');
+  }
+  return token;
+}
+
   private checkInitialAuthState(): boolean {
     const token = localStorage.getItem("token");
     return !!token && !this.isTokenExpired(token);
