@@ -674,14 +674,35 @@ export class FirebaseService {
   //   };
   // }
 
-  getAuthHeaders(): { headers: HttpHeaders } {
+  // getAuthHeaders(): { headers: HttpHeaders } {
+  //   const token = this.authService.getToken();
+  //   return {
+  //     headers: new HttpHeaders({
+  //       'Authorization': `Bearer ${token}`,
+  //     }),
+  //   };
+  // }
+
+  private getAuthHeaders(): { headers: HttpHeaders } {
     const token = this.authService.getToken();
+    if (!token) {
+      throw new Error('No auth token available');
+    }
     return {
-      headers: new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-      }),
+      headers: new HttpHeaders()
+        .set('Authorization', `Bearer ${token}`)
     };
   }
+
+  // private getAuthHeaders(): { headers: HttpHeaders } {
+  //   const token = this.authService.getToken();
+  //   return {
+  //     headers: new HttpHeaders()
+  //       .set('Authorization', `Bearer ${token}`)
+  //       .set('Cache-Control', 'no-cache')
+  //       .set('Pragma', 'no-cache')
+  //   };
+  // }  
 
 // async uploadFile(file: File, userId: string): Promise<string> {
 //   try {
@@ -796,12 +817,44 @@ export class FirebaseService {
 // }
 
 
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     const storage = getStorage();
+//     const timestamp = Date.now();
+//     const filename = `${timestamp}-${file.name}`;
+//     const storagePath = `staging/profileImages/${userId}/${filename}`;
+//     // const storageRef = ref(storage, `staging/profileImages/${userId}/${file.name}`);
+//     const storageRef = ref(storage, storagePath);
+
+
+//     const uploadTask = uploadBytesResumable(storageRef, file);
+//     await new Promise<void>((resolve, reject) => {
+//       uploadTask.on(
+//         'state_changed',
+//         null,
+//         (error) => reject(error),
+//         () => resolve()
+//       );
+//     });
+
+//     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+//     return downloadURL;
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
+
 async uploadFile(file: File, userId: string): Promise<string> {
   try {
     const storage = getStorage();
-    const storageRef = ref(storage, `staging/profileImages/${userId}/${file.name}`);
+    const timestamp = Date.now();
+    const filename = `${timestamp}-${file.name}`;
+    const storagePath = `staging/profileImages/${userId}/${filename}`;
+    const storageRef = ref(storage, storagePath);
+    
     const uploadTask = uploadBytesResumable(storageRef, file);
-
+    
     await new Promise<void>((resolve, reject) => {
       uploadTask.on(
         'state_changed',
@@ -820,7 +873,7 @@ async uploadFile(file: File, userId: string): Promise<string> {
 }
 
 
-  async cleanupStagedFile(userId: string): Promise<void> {
+async cleanupStagedFile(userId: string): Promise<void> {
     if (!userId) return;
     
     try {
@@ -857,29 +910,155 @@ async uploadFile(file: File, userId: string): Promise<string> {
 //   }
 // }
 
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const options = this.getAuthHeaders(); // Returns { headers: HttpHeaders }
+
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${this.baseUrl}/api/storage/move/${userId}`,
+//         { fileName },
+//         options // Pass options directly
+//       )
+//     );
+
+//     if (response.success && response.url) {
+//       return response.url;
+//     } else {
+//       throw new Error(response.message || 'Failed to move file to permanent storage');
+//     }
+//   } catch (error) {
+//     console.error('Error moving file to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const response = await this.http.post<any>(
+//       `${this.baseUrl}/api/storage/move/${userId}`,
+//       { fileName },
+//       this.getAuthHeaders()
+//     ).toPromise();
+
+//     if (!response.success) {
+//       throw new Error(response.message || 'Failed to move file');
+//     }
+
+//     return response.url;
+//   } catch (error) {
+//     console.error('Error moving to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${environment.apiUrl}/api/storage/move/${userId}`,
+//         { fileName },
+//         this.getAuthHeaders()
+//       )
+//     );
+
+//     if (response.success && response.url) {
+//       return response.url;
+//     } else {
+//       throw new Error(response.message || 'Failed to move file');
+//     }
+//   } catch (error) {
+//     console.error('Error moving to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const headers = this.getAuthHeaders();
+//     console.log('Making request with headers:', headers);
+
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${environment.apiUrl}/api/storage/move/${userId}`,
+//         { fileName },
+//         headers
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error(response.message || 'Failed to move file');
+//     }
+
+//     return response.url;
+//   } catch (error) {
+//     console.error('Error moving to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
+//   try {
+//     const token = await this.authService.getToken();
+//     if (!token) {
+//       throw new Error('No authentication token available');
+//     }
+
+//     const headers = new HttpHeaders()
+//       .set('Authorization', `Bearer ${token}`)
+//       .set('Content-Type', 'application/json');
+
+//     const response = await firstValueFrom(
+//       this.http.post<any>(
+//         `${environment.apiUrl}/api/storage/move/${userId}`,
+//         { fileName },
+//         { headers }
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error(response.message || 'Failed to move file');
+//     }
+
+//     return response.url;
+//   } catch (error) {
+//     console.error('Error moving to permanent storage:', error);
+//     throw error;
+//   }
+// }
+
+// firebase.service.ts
+// firebase.service.ts
 async moveToPermStorage(userId: string, fileName: string): Promise<string> {
   try {
-    const options = this.getAuthHeaders(); // Returns { headers: HttpHeaders }
+    const token = await this.authService.getToken();
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
 
+    // Match the exact route from your backend
     const response = await firstValueFrom(
       this.http.post<any>(
-        `${this.baseUrl}/api/storage/move/${userId}`,
+        `${environment.apiUrl}/api/storage/move/${userId}`, // Matches backend route
         { fileName },
-        options // Pass options directly
+        {
+          headers: new HttpHeaders()
+            .set('Authorization', `Bearer ${token}`)
+            .set('Content-Type', 'application/json')
+        }
       )
     );
 
-    if (response.success && response.url) {
-      return response.url;
-    } else {
-      throw new Error(response.message || 'Failed to move file to permanent storage');
+    if (!response.success) {
+      throw new Error(response.message || 'Failed to move file');
     }
+
+    return response.url;
   } catch (error) {
-    console.error('Error moving file to permanent storage:', error);
+    console.error('Error moving to permanent storage:', error);
     throw error;
   }
 }
-
 
 // firebase.service.ts
 getFileName(url: string): string {

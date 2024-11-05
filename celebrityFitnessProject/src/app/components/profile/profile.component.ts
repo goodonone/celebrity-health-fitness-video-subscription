@@ -17,6 +17,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { ImageManagementService } from 'src/app/services/imagemanagement.service';
 import { ImageUrlManagerService } from 'src/app/services/imageurlmanager.service';
+import { AuthService } from 'src/app/services/auth.service';
 
 enum ProfileState {
   Viewing,
@@ -132,6 +133,7 @@ export class ProfileComponent implements OnInit {
   rightClicked = false;
   leftClicked = false;
   stagedFileName: string | null = null;
+  currentImageUrl: string | null = null;
 
   // isClicked = false;
   // firstTimeAnimationTierOne: boolean = true;
@@ -195,6 +197,7 @@ export class ProfileComponent implements OnInit {
     private storageService: StorageService,
     private imageManagementService: ImageManagementService,
     private imageUrlManager: ImageUrlManagerService,
+    private authService: AuthService
   ) {
 
 
@@ -249,6 +252,22 @@ export class ProfileComponent implements OnInit {
     // });
 
     // /////////
+
+
+    this.imageManagementService.getCurrentImage(this.userId)
+      .pipe(
+        switchMap(async (url) => {
+          if (!url) return null;
+          return this.getDisplayUrl(url);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(url => {
+        if (url) {
+          this.currentImageUrl = url;
+          this.updateImageDisplay(url);
+        }
+      });
 
     // Subscribe to upload progress
     this.progressSubscription = this.firebaseService.getUploadProgress().subscribe(
@@ -1660,6 +1679,27 @@ checkEmail(event: Event) {
     // this.syncFormWithCurrentUser();
   }
 
+  private async getDisplayUrl(url: string): Promise<string> {
+    if (!url) return '';
+    if (url.includes('firebasestorage.googleapis.com')) {
+      return await this.storageService.convertFirebaseUrl(url);
+    }
+    return url;
+  }
+
+  private async updateImageDisplay(url: string) {
+    try {
+      const displayUrl = await this.getDisplayUrl(url);
+      this.ngZone.run(() => {
+        if (this.profileImg?.nativeElement) {
+          this.profileImg.nativeElement.style.backgroundImage = `url(${displayUrl})`;
+        }
+      });
+    } catch (error) {
+      console.error('Error updating image display:', error);
+    }
+  }
+
   // onImageUrlInput(event: Event) {
   //   const input = event.target as HTMLInputElement;
   //   const newValue = input.value.trim();
@@ -2619,6 +2659,81 @@ checkEmail(event: Event) {
 //   }
 // }
 
+// async saveProfilePicture() {
+//   if (!this.pictureForm.valid) return;
+
+//   try {
+//     this.isSavingPicture = true;
+
+//     // Get current user ID
+//     const userId = this.userService.getUserId();
+//     if (!userId) {
+//       throw new Error('User ID not found');
+//     }
+
+//     // Create settings object
+//     const settings = {
+//       zoom: Number(this.zoomLevel) || 1,
+//       x: Number(this.position.x) || 0,
+//       y: Number(this.position.y) || 0,
+//     };
+
+//     // Get image URL from the form
+//     const imageUrl = this.pictureForm.get('imgUrl')?.value;
+
+//     if (!imageUrl) {
+//       throw new Error('No image URL provided');
+//     }
+
+//     // Save profile image (handles moving from staging to permanent if needed)
+//     const finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, imageUrl);
+
+//     // Update user profile
+//     const updatedUser = await this.userService.updateProfile({
+//       ...this.currentUser,
+//       id: userId,
+//       userId: userId,
+//       imgUrl: finalImageUrl,
+//       profilePictureSettings: settings,
+//     });
+
+//     // Update current user state
+//     this.currentUser = {
+//       ...this.currentUser,
+//       ...updatedUser,
+//       profilePictureSettings: settings,
+//     };
+
+//     // Update form with proxied URL
+//     const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
+//     this.pictureForm.patchValue(
+//       {
+//         imgUrl: displayUrl,
+//       },
+//       { emitEvent: false }
+//     );
+
+//     // Update position and transform
+//     this.position = {
+//       x: settings.x,
+//       y: settings.y,
+//     };
+//     this.zoomLevel = settings.zoom;
+
+//     // Change state and update UI
+//     this.currentState = ProfileState.Viewing;
+//     this.updateImageTransform();
+//     this.cdr.detectChanges();
+//   } catch (error) {
+//     console.error('Error saving profile picture:', error);
+//     // Show error to user
+//     // Optionally stay in current state
+//   } finally {
+//     this.isSavingPicture = false;
+//     this.cdr.detectChanges();
+//   }
+// }
+
 async saveProfilePicture() {
   if (!this.pictureForm.valid) return;
 
@@ -2631,6 +2746,12 @@ async saveProfilePicture() {
       throw new Error('User ID not found');
     }
 
+    // Get auth token
+    const token = await this.authService.getToken();
+    if (!token) {
+      throw new Error('No authentication token available');
+    }
+
     // Create settings object
     const settings = {
       zoom: Number(this.zoomLevel) || 1,
@@ -2638,18 +2759,17 @@ async saveProfilePicture() {
       y: Number(this.position.y) || 0,
     };
 
-    // Get image URL from the form
-    const imageUrl = this.pictureForm.get('imgUrl')?.value;
+    // Get image URL from form
+    // const imageUrl = this.pictureForm.get('imgUrl')?.value;
+    // if (!imageUrl) {
+    //   throw new Error('No image URL provided');
+    // }
 
-    if (!imageUrl) {
-      throw new Error('No image URL provided');
-    }
-
-    // Save profile image (handles moving from staging to permanent if needed)
-    const finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, imageUrl);
+    // Save profile image (handles moving from staging if needed)
+    const finalImageUrl = await this.imageUrlManager.saveProfileImage(userId, this.pictureForm.get('imgUrl')?.value);
 
     // Update user profile
-    const updatedUser = await this.userService.updateProfile({
+    await this.userService.updateProfile({
       ...this.currentUser,
       id: userId,
       userId: userId,
@@ -2657,37 +2777,42 @@ async saveProfilePicture() {
       profilePictureSettings: settings,
     });
 
-    // Update current user state
-    this.currentUser = {
-      ...this.currentUser,
-      ...updatedUser,
-      profilePictureSettings: settings,
-    };
+    // Update state inside NgZone
+    // this.ngZone.run(() => {
+    //   this.currentUser = {
+    //     ...this.currentUser,
+    //     ...updatedUser,
+    //     profilePictureSettings: settings,
+    //   };
 
-    // Update form with proxied URL
-    const displayUrl = await this.imageUrlManager.getDisplayUrl(userId, finalImageUrl);
-    this.pictureForm.patchValue(
-      {
-        imgUrl: displayUrl,
-      },
-      { emitEvent: false }
-    );
+    //   // Update form with proxied URL
+    //   this.pictureForm.patchValue(
+    //     {
+    //       imgUrl: this.storageService.convertFirebaseUrl(finalImageUrl),
+    //     },
+    //     { emitEvent: false }
+    //   );
+    this.ngZone.run(() => {
+      this.currentUser.imgUrl = finalImageUrl;
+      this.pictureForm.patchValue({ imgUrl: finalImageUrl });
+      this.cdr.detectChanges();
+   
 
-    // Update position and transform
-    this.position = {
-      x: settings.x,
-      y: settings.y,
-    };
-    this.zoomLevel = settings.zoom;
+      // Update position and transform
+      this.position = {
+        x: settings.x,
+        y: settings.y,
+      };
+      this.zoomLevel = settings.zoom;
 
-    // Change state and update UI
-    this.currentState = ProfileState.Viewing;
-    this.updateImageTransform();
-    this.cdr.detectChanges();
+      // Change state and update UI
+      this.currentState = ProfileState.Viewing;
+      this.updateImageTransform();
+      this.cdr.detectChanges();
+    });
   } catch (error) {
     console.error('Error saving profile picture:', error);
     // Show error to user
-    // Optionally stay in current state
   } finally {
     this.isSavingPicture = false;
     this.cdr.detectChanges();
@@ -3314,9 +3439,9 @@ async preloadImage(imgUrl: string | null, isInitialLoad = false, isFromTyping = 
     }
 
     // Prepare display URL
-    const displayUrl = validUrl.includes('firebasestorage.googleapis.com')
+    const displayUrl = await (validUrl.includes('firebasestorage.googleapis.com')
       ? this.storageService.convertFirebaseUrl(validUrl)
-      : validUrl;
+      : Promise.resolve(validUrl));
 
     // Load and verify the actual image
     try {
@@ -3335,21 +3460,31 @@ async preloadImage(imgUrl: string | null, isInitialLoad = false, isFromTyping = 
       });
 
       // Success path - update all states at once
-      this.ngZone.run(() => {
+      this.ngZone.run(async () => {
         this.imageNotFound = false;
         this.currentUser.imgUrl = validUrl;
         
         // Update form with appropriate URL
+      // if (!isFromTyping && this.currentInputValue !== displayUrl) {
+      //   if (validUrl.includes('firebasestorage.googleapis.com')) {
+      //   const convertedUrl = await this.storageService.convertFirebaseUrl(validUrl);
+      //     this.pictureForm.patchValue({
+      //       imgUrl: convertedUrl
+      //     }, { emitEvent: false });
+      //   } else {
+      //     this.pictureForm.patchValue({
+      //       imgUrl: validUrl
+      //     }, { emitEvent: false });
+      //   }
+      // }
       if (!isFromTyping && this.currentInputValue !== displayUrl) {
-        if (validUrl.includes('firebasestorage.googleapis.com')) {
-          this.pictureForm.patchValue({
-            imgUrl: this.storageService.convertFirebaseUrl(validUrl)
-          }, { emitEvent: false });
-        } else {
-          this.pictureForm.patchValue({
-            imgUrl: validUrl
-          }, { emitEvent: false });
-        }
+        const formUrl = validUrl.includes('firebasestorage.googleapis.com')
+          ? await this.storageService.convertFirebaseUrl(validUrl)
+          : validUrl;
+          
+        this.pictureForm.patchValue({
+          imgUrl: formUrl
+        }, { emitEvent: false });
       }
         this.stateUpdateDebouncer.next();
       });

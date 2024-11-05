@@ -11,6 +11,7 @@ export class AuthService {
   private redirectUrl: string | null = null;
   public authStateSubject: BehaviorSubject<boolean>;
   public authState$: Observable<boolean>;
+  private tokenPromise: Promise<string | null> | null = null;
 
   constructor(private router: Router) {
     const isAuthenticated = this.checkInitialAuthState();
@@ -27,15 +28,137 @@ export class AuthService {
       }
     });
 
-    
+    this.getToken()
   }
 
   // src/app/services/auth.service.ts
 
 // src/app/services/auth.service.ts
 
-getToken(): Promise<string | null> {
-  return Promise.resolve(this.retrieveToken());
+// getToken(): Promise<string | null> {
+//   return Promise.resolve(this.retrieveToken());
+// }
+
+
+// async getToken(): Promise<string | null> {
+//   try {
+//     // If we already have a token retrieval in progress, return that
+//     if (this.tokenPromise) {
+//       return this.tokenPromise;
+//     }
+
+//     // Create new token retrieval promise
+//     this.tokenPromise = new Promise<string | null>((resolve) => {
+//       const token = localStorage.getItem('auth_token');
+//       if (!token) {
+//         console.warn('No token found in localStorage');
+//       }
+//       resolve(token);
+//     });
+
+//     // Get the result and clear the promise
+//     const token = await this.tokenPromise;
+//     this.tokenPromise = null;
+//     return token;
+
+//   } catch (error) {
+//     console.error('Error getting token:', error);
+//     this.tokenPromise = null;
+//     return null;
+//   }
+// }
+
+// setToken(token: string): void {
+//   localStorage.setItem('auth_token', token);
+// }
+
+// clearToken(): void {
+//   localStorage.removeItem('auth_token');
+// }
+
+// async getToken(): Promise<string | null> {
+//   try {
+//     if (!this.tokenPromise) {
+//       this.tokenPromise = (async () => {
+//         const token = localStorage.getItem('auth_token');
+//         if (!token) {
+//           console.warn('No token found in localStorage');
+//           return null;
+//         }
+//         return token;
+//       })();
+//     }
+//     return await this.tokenPromise;
+//   } catch (error) {
+//     console.error('Error getting token:', error);
+//     this.tokenPromise = null;
+//     return null;
+//   }
+// }
+
+// async getToken(): Promise<string | null> {
+//   try {
+//     if (!this.tokenPromise) {
+//       this.tokenPromise = (async () => {
+//         // First try auth_token, then fall back to regular token
+//         const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+//         if (!token) {
+//           console.warn('No token found in localStorage');
+//           return null;
+//         }
+//         // Verify token is not expired
+//         if (this.isTokenExpired(token)) {
+//           console.warn('Token is expired');
+//           this.clearToken();
+//           return null;
+//         }
+//         return token;
+//       })();
+//     }
+//     return await this.tokenPromise;
+//   } catch (error) {
+//     console.error('Error getting token:', error);
+//     this.tokenPromise = null;
+//     return null;
+//   }
+// }
+// auth.service.ts
+async getToken(): Promise<string | null> {
+  try {
+    if (!this.tokenPromise) {
+      this.tokenPromise = (async () => {
+        // Try both token locations
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('token');
+        if (!token) {
+          console.warn('No token found in localStorage');
+          return null;
+        }
+        return token;
+      })();
+    }
+    return await this.tokenPromise;
+  } catch (error) {
+    console.error('Error getting token:', error);
+    this.tokenPromise = null;
+    return null;
+  }
+}
+
+setToken(token: string): void {
+  // Store in both locations for compatibility
+  localStorage.setItem('auth_token', token);
+  localStorage.setItem('token', token);
+  this.tokenPromise = Promise.resolve(token);
+}
+
+// setToken(token: string): void {
+//   localStorage.setItem('auth_token', token);
+//   this.tokenPromise = Promise.resolve(token);
+// }
+
+clearToken(): void {
+  localStorage.removeItem('auth_token');
+  this.tokenPromise = null;
 }
 
 private retrieveToken(): string | null {

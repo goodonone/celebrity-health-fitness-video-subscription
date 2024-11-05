@@ -1,3 +1,4 @@
+// API Restrictions Applied
 export const firebaseConfig = {
   apiKey: "AIzaSyBdQFzjf-d4P0Sm8pmKKh0HwdmG0BFW0qY",
   authDomain: "hugh-jackedman-e13ce.firebaseapp.com",

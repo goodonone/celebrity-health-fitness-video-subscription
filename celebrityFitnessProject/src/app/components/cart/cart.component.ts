@@ -457,6 +457,8 @@ import { Product } from 'src/app/models/product';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-cart',
@@ -480,6 +482,15 @@ export class CartComponent implements OnInit {
   hoveredItemPreview: HTMLElement | null = null; // Reference to the preview element
   hoveredItemIndex: number | null = null;
   private hoverTimeout: any = null; 
+  isMinusClicked: boolean = false;
+  isPlusClicked: boolean = false;
+  minusClicked: boolean = false;
+  plusClicked: boolean = false;
+  hoveredButton: string | null = null;
+  isIconHovered: boolean = false;
+
+  faPlus = faPlus;
+  faMinus = faMinus;
 
   constructor(
     private cartService: CartService,
@@ -551,18 +562,90 @@ onMouseLeave(event: MouseEvent) {
   preview.style.display = 'none';
 }
 
-  loadCart(): void {
-    this.cartService.getCartObservable().pipe(
-      map(backendCart => this.mapBackendCartToCart(backendCart)),
-      catchError(error => {
-        console.error('Error loading cart:', error);
-        return [];
-      })
-    ).subscribe(cart => {
-      // console.log('Mapped cart:', cart);
-      this.cartSubject.next(cart);
+onMouseHover(button: string) {
+  this.hoveredButton = button;
+  this.isIconHovered = true;
+  // Existing functionality for specific button actions
+}
+
+
+onMouseDown(button: string) {
+  if (button === 'minus') {
+    this.minusClicked = true;
+  } else if (button === 'plus') {
+    this.plusClicked = true;
+  }
+}
+
+onMouseUp(button: string) {
+  this.resetButtonState(button);
+}
+
+onMouseOff(button: string) {
+  this.hoveredButton = null;
+  this.isIconHovered = false;
+  this.resetButtonState(button);
+}
+
+isButtonHovered(button: string): boolean {
+  return this.hoveredButton === button;
+}
+
+increase(cartItem: CartItem): void {
+  if (cartItem.quantity < 10) {
+    this.updateQuantity(cartItem, cartItem.quantity + 1);
+  }
+}
+
+decrease(cartItem: CartItem): void {
+  if (cartItem.quantity > 1) {
+    this.updateQuantity(cartItem, cartItem.quantity - 1);
+  }
+}
+
+isDisabled(button: string, quantity: number): boolean {
+  if (button === 'minus') {
+    return quantity <= 1;
+  } else if (button === 'plus') {
+    return quantity >= 10;
+  }
+  return false;
+}
+
+private updateQuantity(cartItem: CartItem, newQuantity: number): void {
+  if (cartItem.Product.productId && newQuantity >= 1 && newQuantity <= 10) {
+    this.cartService.updateQuantity(cartItem.Product.productId, newQuantity).subscribe({
+      next: () => {
+        cartItem.quantity = newQuantity; // Update local state
+      },
+      error: (error) => {
+        console.error('Error updating quantity:', error);
+      }
     });
   }
+}
+
+resetButtonState(button: string) {
+  if (button === 'minus') {
+    this.minusClicked = false;
+  } else if (button === 'plus') {
+    this.plusClicked = false;
+  }
+}
+
+
+loadCart(): void {
+  this.cartService.getCartObservable().pipe(
+    map(backendCart => this.mapBackendCartToCart(backendCart)),
+    catchError(error => {
+      console.error('Error loading cart:', error);
+      return [];
+    })
+  ).subscribe(cart => {
+    // console.log('Mapped cart:', cart);
+    this.cartSubject.next(cart);
+  });
+}
 
   private mapBackendCartToCart(backendCart: any): Cart {
     // console.log('Backend cart received:', backendCart);

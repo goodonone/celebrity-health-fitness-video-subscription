@@ -818,7 +818,7 @@ import { Injectable } from '@angular/core';
 import { storage, auth } from '../firebase.config';
 import { ref, listAll, getDownloadURL, deleteObject, StorageReference, uploadBytesResumable, getMetadata } from 'firebase/storage';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { FirebaseService } from './firebase.service';
 import { StorageService } from './storage.service';
 
@@ -945,23 +945,138 @@ export class ImageManagementService {
     urls.forEach(url => this.imageLoadErrors.delete(url));
   }
 
+  // async verifyImageExists(url: string): Promise<boolean> {
+  //   try {
+  //     if (url.includes('firebasestorage.googleapis.com')) {
+  //       const proxiedUrl = this.storageService.convertFirebaseUrl(url);
+  //       const response = await fetch(proxiedUrl, { method: 'HEAD' });
+  //       return response.ok;
+  //     }
+      
+  //     const response = await fetch(url, { 
+  //       method: 'HEAD',
+  //       mode: 'no-cors'
+  //     });
+  //     return true;
+  //   } catch (error) {
+  //     console.error('Error verifying image:', error);
+  //     return false;
+  //   }
+  // }
+
   async verifyImageExists(url: string): Promise<boolean> {
     try {
       if (url.includes('firebasestorage.googleapis.com')) {
-        const proxiedUrl = this.storageService.convertFirebaseUrl(url);
-        const response = await fetch(proxiedUrl, { method: 'HEAD' });
-        return response.ok;
+        const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
+        
+        // Add error check for proxied URL
+        if (!proxiedUrl) {
+          console.warn('Failed to get proxied URL');
+          return false;
+        }
+  
+        try {
+          const response = await fetch(proxiedUrl, { 
+            method: 'HEAD',
+            headers: {
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache'
+            }
+          });
+          return response.ok;
+        } catch (fetchError) {
+          console.error('Error fetching proxied URL:', fetchError);
+          return false;
+        }
       }
       
-      const response = await fetch(url, { 
-        method: 'HEAD',
-        mode: 'no-cors'
-      });
-      return true;
+      // For non-Firebase URLs
+      try {
+        const response = await fetch(url, { 
+          method: 'HEAD',
+          mode: 'no-cors',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        return true; // no-cors always returns opaque response, so we assume success
+      } catch (fetchError) {
+        console.error('Error fetching external URL:', fetchError);
+        return false;
+      }
     } catch (error) {
       console.error('Error verifying image:', error);
       return false;
     }
+  }
+  
+  // Helper method for cleaner error handling
+  private async safeImageFetch(url: string, options: RequestInit = {}): Promise<boolean> {
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
+      return response.ok;
+    } catch (error) {
+      console.error(`Error fetching URL (${url}):`, error);
+      return false;
+    }
+  }
+  
+  // Optional: Add retry mechanism for flaky connections
+  private async retryFetch(
+    url: string, 
+    options: RequestInit = {}, 
+    retries: number = 3
+  ): Promise<boolean> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const result = await this.safeImageFetch(url, options);
+        if (result) return true;
+        
+        // Add exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+      } catch (error) {
+        if (i === retries - 1) throw error;
+        console.warn(`Retry ${i + 1}/${retries} failed for ${url}`);
+      }
+    }
+    return false;
+  }
+  
+  // Usage with retry
+  async verifyImageExistsWithRetry(url: string): Promise<boolean> {
+    try {
+      if (url.includes('firebasestorage.googleapis.com')) {
+        const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
+        if (!proxiedUrl) return false;
+        
+        return await this.retryFetch(proxiedUrl, { 
+          method: 'HEAD' 
+        });
+      }
+      
+      return await this.retryFetch(url, { 
+        method: 'HEAD',
+        mode: 'no-cors'
+      });
+    } catch (error) {
+      console.error('Error verifying image with retry:', error);
+      return false;
+    }
+  }
+
+  private async getDisplayUrl(url: string): Promise<string> {
+    if (!url) return '';
+    return url.includes('firebasestorage.googleapis.com') ? 
+      await this.storageService.convertFirebaseUrl(url) : 
+      url;
   }
 
   // Image Upload and Management
@@ -1085,14 +1200,44 @@ async uploadImage(userId: string, file: File): Promise<string> {
   }
 
   // Navigation and State Management
+  // getCurrentImage(userId: string): Observable<string | null> {
+  //   return this.getUserImagesSubject(userId).pipe(
+  //     map(state => {
+  //       const url = state.urls[state.currentIndex];
+  //       if (!url) return null;
+  //       return url.includes('firebasestorage.googleapis.com') ? 
+  //         this.storageService.convertFirebaseUrl(url) : 
+  //         url;
+  //     })
+  //   );
+  // }
   getCurrentImage(userId: string): Observable<string | null> {
     return this.getUserImagesSubject(userId).pipe(
-      map(state => {
+      map(async state => {
         const url = state.urls[state.currentIndex];
         if (!url) return null;
         return url.includes('firebasestorage.googleapis.com') ? 
-          this.storageService.convertFirebaseUrl(url) : 
+          await this.storageService.convertFirebaseUrl(url) : 
           url;
+      }),
+      switchMap(async (urlPromise) => {
+        if (!urlPromise) return null;
+        return urlPromise;
+      })
+    );
+  }
+
+  getImages(userId: string): Observable<string[]> {
+    return this.getUserImagesSubject(userId).pipe(
+      switchMap(async (state) => {
+        const processedUrls = await Promise.all(
+          state.urls.map(async url => 
+            url.includes('firebasestorage.googleapis.com') ? 
+              await this.storageService.convertFirebaseUrl(url) : 
+              url
+          )
+        );
+        return processedUrls;
       })
     );
   }

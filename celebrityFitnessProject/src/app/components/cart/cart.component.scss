@@ -126,9 +126,57 @@ div.quantity{
     z-index: 10;
 }
 
-select{
-    cursor: pointer;
-}
+.quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; 
+    
+    .minus, .plus {
+        cursor: pointer;
+        padding: 0.25rem; // Reduced padding
+        transition: all 0.2s ease;
+        font-size: 0.875rem; // Slightly smaller icons
+        line-height: 1; // Ensures vertical centering
+        display: flex; // Helps with alignment
+        align-items: center;
+    //   &:hover:not(.disabled) {
+    //     color: grey;
+    //   }
+      
+      &.clicked:not(.disabled) {
+        // transform: scale(0.9);
+        color: rgb(191, 191, 191);
+      }
+      
+      &.disabled {
+        opacity: 1;
+        cursor: not-allowed;
+        color:  rgb(198, 197, 197);
+      }
+    }
+    
+    // .quantity-value {
+    //   min-width: 2rem;
+    //   text-align: center;
+    //   font-weight: 500;
+    // }
+
+    .quantity-value {
+        min-width: 1.5rem;
+        text-align: center;
+        font-weight: 500;
+        margin: 0; 
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+  }
+
+// select{
+//     cursor: pointer;
+// }
 
 div.removeButton{
     position: absolute;
@@ -301,7 +349,11 @@ p.payment{
     // box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
     pointer-events: none;
-
+    // padding: 1rem 1rem 0.8rem 1rem;
+    // background-color: rgb(236, 236, 236);
+    // border-radius: 1rem;
+    // box-shadow: 0 0 10px rgb(120, 120, 120);
+    
     // animation: fadeIn 0.5s ease-in-out; 
     // // animation-duration: 0.5s;
 
@@ -347,7 +399,7 @@ p.payment{
 
 
 
-@media screen and (min-width: 500px) and (max-width: 1286px){
+@media screen and (min-width: 937px) and (max-width: 1286px){
 
 // .cartContainer{
 //     height: fit-content;
@@ -415,6 +467,14 @@ p.payment{
 //     width: 12rem;
 //     margin-left: 24rem;
 // }
+
+}
+
+@media screen and (min-width: 300px) and (max-width: 937px){
+
+.largeImagePreview{
+    display: none;
+}
 
 }
 
