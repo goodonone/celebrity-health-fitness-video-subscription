@@ -858,29 +858,25 @@ export class ImageManagementService {
       console.log('Already loading images, skipping...');
       return;
     }
-
+  
     this.loadingImages = true;
     const imagesRef = ref(storage, `profileImages/${userId}`);
-
+  
     try {
-      // Get list of files
       const result = await listAll(imagesRef);
       console.log('Initial file list:', result.items.map(item => item.fullPath));
-
-      // Get metadata and sort by creation time
+  
       const validItems = await this.getValidItemsWithMetadata(result.items);
       console.log('Valid items:', validItems.map(item => ({
         path: item.path,
         timeCreated: new Date(item.timeCreated)
       })));
-
-      // Get and verify URLs
+  
       const urls = await this.getValidUrls(validItems);
       console.log('Final valid URLs:', urls);
-
-      // Update state
+  
       this.updateUserImagesState(userId, urls);
-
+  
     } catch (error) {
       console.error('Error loading user images:', error);
       throw error;
@@ -888,6 +884,42 @@ export class ImageManagementService {
       this.loadingImages = false;
     }
   }
+  // async loadUserImages(userId: string): Promise<void> {
+  //   if (this.loadingImages) {
+  //     console.log('Already loading images, skipping...');
+  //     return;
+  //   }
+
+  //   this.loadingImages = true;
+  //   const imagesRef = ref(storage, `profileImages/${userId}`);
+
+  //   try {
+  //     // Get list of files
+  //     const result = await listAll(imagesRef);
+  //     console.log('Initial file list:', result.items.map(item => item.fullPath));
+
+  //     // Get metadata and sort by creation time
+  //     const validItems = await this.getValidItemsWithMetadata(result.items);
+  //     console.log('Valid items:', validItems.map(item => ({
+  //       path: item.path,
+  //       timeCreated: new Date(item.timeCreated)
+  //     })));
+
+  //     // Get and verify URLs
+  //     const urls = await this.getValidUrls(validItems);
+  //     console.log('Final valid URLs:', urls);
+
+  //     // Update state
+  //     this.updateUserImagesState(userId, urls);
+
+  //   } catch (error) {
+  //     console.error('Error loading user images:', error);
+  //     throw error;
+  //   } finally {
+  //     this.loadingImages = false;
+  //   }
+  // }
+
 
   private async getValidItemsWithMetadata(items: StorageReference[]) {
     const itemsWithMetadata = await Promise.all(
@@ -916,13 +948,15 @@ export class ImageManagementService {
     const urlPromises = validItems.map(async (item) => {
       try {
         const url = await getDownloadURL(item.ref);
-        const exists = await this.verifyImageExists(url);
+        // Convert to proxied URL
+        const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
+        const exists = await this.verifyImageExists(proxiedUrl);
         if (!exists) {
           console.log('File not accessible:', item.path);
           this.imageLoadErrors.add(url);
           return null;
         }
-        return url;
+        return proxiedUrl;
       } catch (error) {
         console.error('Error getting download URL for:', item.path, error);
         return null;
@@ -945,71 +979,47 @@ export class ImageManagementService {
     urls.forEach(url => this.imageLoadErrors.delete(url));
   }
 
-  // async verifyImageExists(url: string): Promise<boolean> {
-  //   try {
-  //     if (url.includes('firebasestorage.googleapis.com')) {
-  //       const proxiedUrl = this.storageService.convertFirebaseUrl(url);
-  //       const response = await fetch(proxiedUrl, { method: 'HEAD' });
-  //       return response.ok;
-  //     }
-      
-  //     const response = await fetch(url, { 
-  //       method: 'HEAD',
-  //       mode: 'no-cors'
-  //     });
-  //     return true;
-  //   } catch (error) {
-  //     console.error('Error verifying image:', error);
-  //     return false;
-  //   }
-  // }
-
   async verifyImageExists(url: string): Promise<boolean> {
     try {
-      if (url.includes('firebasestorage.googleapis.com')) {
+      let fetchUrl = url;
+      let fetchOptions: RequestInit = {
+        method: 'HEAD',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
+      };
+  
+      if (url.includes('firebasestorage.googleapis.com') || !url.startsWith('http')) {
+        // Convert Firebase Storage URL to proxied URL
         const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
         
-        // Add error check for proxied URL
         if (!proxiedUrl) {
           console.warn('Failed to get proxied URL');
           return false;
         }
-  
-        try {
-          const response = await fetch(proxiedUrl, { 
-            method: 'HEAD',
-            headers: {
-              'Cache-Control': 'no-cache',
-              'Pragma': 'no-cache'
-            }
-          });
-          return response.ok;
-        } catch (fetchError) {
-          console.error('Error fetching proxied URL:', fetchError);
-          return false;
-        }
+        fetchUrl = proxiedUrl;
+      } else {
+        // For non-Firebase URLs, set mode to 'no-cors'
+        fetchOptions.mode = 'no-cors';
       }
-      
-      // For non-Firebase URLs
-      try {
-        const response = await fetch(url, { 
-          method: 'HEAD',
-          mode: 'no-cors',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        });
-        return true; // no-cors always returns opaque response, so we assume success
-      } catch (fetchError) {
-        console.error('Error fetching external URL:', fetchError);
+  
+      const response = await fetch(fetchUrl, fetchOptions);
+  
+      if (response.ok) {
+        return true;
+      } else if (response.status === 404) {
+        console.warn('Image not found (404):', fetchUrl);
+        return false;
+      } else {
+        console.error('Error fetching image:', response.statusText);
         return false;
       }
     } catch (error) {
-      console.error('Error verifying image:', error);
+      console.error('Network error when fetching image:', error);
       return false;
     }
-  }
+  }  
   
   // Helper method for cleaner error handling
   private async safeImageFetch(url: string, options: RequestInit = {}): Promise<boolean> {
@@ -1199,33 +1209,21 @@ async uploadImage(userId: string, file: File): Promise<string> {
     }
   }
 
-  // Navigation and State Management
-  // getCurrentImage(userId: string): Observable<string | null> {
-  //   return this.getUserImagesSubject(userId).pipe(
-  //     map(state => {
-  //       const url = state.urls[state.currentIndex];
-  //       if (!url) return null;
-  //       return url.includes('firebasestorage.googleapis.com') ? 
-  //         this.storageService.convertFirebaseUrl(url) : 
-  //         url;
-  //     })
-  //   );
-  // }
   getCurrentImage(userId: string): Observable<string | null> {
     return this.getUserImagesSubject(userId).pipe(
-      map(async state => {
+      switchMap(async (state) => {
         const url = state.urls[state.currentIndex];
         if (!url) return null;
-        return url.includes('firebasestorage.googleapis.com') ? 
-          await this.storageService.convertFirebaseUrl(url) : 
-          url;
-      }),
-      switchMap(async (urlPromise) => {
-        if (!urlPromise) return null;
-        return urlPromise;
+  
+        if (url.includes('firebasestorage.googleapis.com')) {
+          const convertedUrl = await this.storageService.convertFirebaseUrl(url);
+          return convertedUrl;
+        } else {
+          return url;
+        }
       })
     );
-  }
+  }  
 
   getImages(userId: string): Observable<string[]> {
     return this.getUserImagesSubject(userId).pipe(
@@ -1273,3 +1271,98 @@ async uploadImage(userId: string, file: File): Promise<string> {
     return this.imageLoadErrors.has(url);
   }
 }
+
+  // async verifyImageExists(url: string): Promise<boolean> {
+  //   try {
+  //     if (url.includes('firebasestorage.googleapis.com')) {
+  //       const proxiedUrl = this.storageService.convertFirebaseUrl(url);
+  //       const response = await fetch(proxiedUrl, { method: 'HEAD' });
+  //       return response.ok;
+  //     }
+      
+  //     const response = await fetch(url, { 
+  //       method: 'HEAD',
+  //       mode: 'no-cors'
+  //     });
+  //     return true;
+  //   } catch (error) {
+  //     console.error('Error verifying image:', error);
+  //     return false;
+  //   }
+  // }
+
+  // async verifyImageExists(url: string): Promise<boolean> {
+  //   try {
+  //     if (url.includes('firebasestorage.googleapis.com')) {
+  //       const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
+        
+  //       // Add error check for proxied URL
+  //       if (!proxiedUrl) {
+  //         console.warn('Failed to get proxied URL');
+  //         return false;
+  //       }
+  
+  //       try {
+  //         const response = await fetch(proxiedUrl, { 
+  //           method: 'HEAD',
+  //           headers: {
+  //             'Cache-Control': 'no-cache',
+  //             'Pragma': 'no-cache'
+  //           }
+  //         });
+  //         return response.ok;
+  //       } catch (fetchError) {
+  //         console.error('Error fetching proxied URL:', fetchError);
+  //         return false;
+  //       }
+  //     }
+      
+  //     // For non-Firebase URLs
+  //     try {
+  //       const response = await fetch(url, { 
+  //         method: 'HEAD',
+  //         mode: 'no-cors',
+  //         headers: {
+  //           'Cache-Control': 'no-cache',
+  //           'Pragma': 'no-cache'
+  //         }
+  //       });
+  //       return true; // no-cors always returns opaque response, so we assume success
+  //     } catch (fetchError) {
+  //       console.error('Error fetching external URL:', fetchError);
+  //       return false;
+  //     }
+  //   } catch (error) {
+  //     console.error('Error verifying image:', error);
+  //     return false;
+  //   }
+  // }
+
+
+  // Navigation and State Management
+  // getCurrentImage(userId: string): Observable<string | null> {
+  //   return this.getUserImagesSubject(userId).pipe(
+  //     map(state => {
+  //       const url = state.urls[state.currentIndex];
+  //       if (!url) return null;
+  //       return url.includes('firebasestorage.googleapis.com') ? 
+  //         this.storageService.convertFirebaseUrl(url) : 
+  //         url;
+  //     })
+  //   );
+  // }
+  // getCurrentImage(userId: string): Observable<string | null> {
+  //   return this.getUserImagesSubject(userId).pipe(
+  //     map(async state => {
+  //       const url = state.urls[state.currentIndex];
+  //       if (!url) return null;
+  //       return url.includes('firebasestorage.googleapis.com') ? 
+  //         await this.storageService.convertFirebaseUrl(url) : 
+  //         url;
+  //     }),
+  //     switchMap(async (urlPromise) => {
+  //       if (!urlPromise) return null;
+  //       return urlPromise;
+  //     })
+  //   );
+  // }

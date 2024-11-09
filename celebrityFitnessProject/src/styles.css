@@ -1,13 +1,19 @@
-html, body { height: 100%; width: 100%; margin:0; box-sizing: border-box}
-
-:root{
-    --footer-height: 60px;
-}
-
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Outfit', sans-serif !important;
+    user-select: none;
+}
+
+:root {
+    --footer-height: 60px;
+}
+
+html { 
+    height: 100%; 
+    width: 100%; 
+    margin:0; 
+    box-sizing: border-box
 }
 
 body {
@@ -16,15 +22,15 @@ body {
     /* display: flex;
     flex-direction: column;
     margin: auto; */
-    font-family: 'Outfit', sans-serif;
+    /* font-family: 'Outfit', sans-serif; */
     padding-top: 80px;
     overflow:auto;
     background:rgb(255, 255, 255);
-    
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
+    box-sizing: border-box
 }
 
 @font-face {
@@ -32,7 +38,6 @@ body {
     src: url('./assets/Fonts/Outfit-VariableFont_wght.ttf'), format('ttf');
     font-display: swap;
 }
-
 
 
 @font-face {

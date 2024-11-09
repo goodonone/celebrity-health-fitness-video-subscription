@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, catchError, from, lastValueFrom, map, Observable, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, from, lastValueFrom, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './authstate.service';
@@ -238,9 +238,35 @@ private handleSuccessfulAuth(response: any) {
 //   );
 // }
 
+// isloggedIn(): Observable<boolean> {
+//   return this.isLoggedIn$;
+// }
+
 isloggedIn(): Observable<boolean> {
-  return this.isLoggedIn$;
+  // Update current state before returning observable
+  const currentState = this.authService.isAuthenticated();
+  this.isLoggedInSubject.next(currentState);
+  
+  return this.isLoggedInSubject.asObservable().pipe(
+      tap(isLoggedIn => {
+          if (!isLoggedIn) {
+              // Clear all auth-related tokens
+              localStorage.removeItem('token');
+              localStorage.removeItem('auth_token');
+              localStorage.removeItem('googleAuthToken');
+              // this.isLoggedInSubject.next(false);
+          }
+      })
+  );
 }
+
+// private checkInitialLoginState(): boolean {
+//   return this.checkLocalStorageAuth() && 
+//          this.authStateService.checkAuthStatus() && 
+//          this.authService.isAuthenticated();
+// }
+
+
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
@@ -346,48 +372,231 @@ getUserId(): string {
 //       localStorage.setItem('user', JSON.stringify(updatedStoredUser));
 //     })
 //   );
+// // }
+
+// updateUser(updatedUser: User): Observable<User> {
+//   let reqHeaders = {
+//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+//   };
+
+//   // Prepare the user data for the API
+//   const userForApi = {
+//     ...updatedUser,
+//     profilePictureSettings: updatedUser.profilePictureSettings 
+//       ? JSON.stringify(updatedUser.profilePictureSettings) 
+//       : null
+//   };
+
+//   // Use the /data/ endpoint for all updates
+//   return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, userForApi, { headers: reqHeaders })
+//     .pipe(
+//       map(response => {
+//         // Parse the profilePictureSettings if it exists in the response
+//         if (typeof response.profilePictureSettings === 'string') {
+//           response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+//         }
+//         // If profilePictureSettings come back as null, use the ones we sent
+//         if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+//           response.profilePictureSettings = updatedUser.profilePictureSettings;
+//         }
+//         return response;
+//       }),
+//       tap(response => {
+//         // Update the user in localStorage, preserving the imgUrl if it's not being updated
+//         console.log('Updated user:', response);
+//         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+//         const updatedStoredUser = {
+//           ...storedUser,
+//           ...response,
+//           imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+//           profilePictureSettings: response.profilePictureSettings || storedUser.profilePictureSettings
+//         };
+//         localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+//       })
+//     );
+// }
+
+// async updateUser(updatedUser: User): Promise<User> {
+//   try {
+//     // Wait for and validate token
+//     const token = await this.authService.waitForToken();
+//     if (!token) {
+//       throw new Error('Not authenticated');
+//     }
+
+//     const headers = {
+//       Authorization: `Bearer ${token}`
+//     };
+
+//     // Prepare user data with proper profilePictureSettings handling
+//     const userForApi = {
+//       ...updatedUser,
+//       profilePictureSettings: updatedUser.profilePictureSettings 
+//         ? JSON.stringify(updatedUser.profilePictureSettings) 
+//         : null
+//     };
+
+//     // Make API request with error handling
+//     const response = await firstValueFrom(
+//       this.http.put<User>(
+//         `${this.baseURL}/data/${updatedUser.userId}`, 
+//         userForApi, 
+//         { headers }
+//       ).pipe(
+//         map(response => {
+//           // Parse profilePictureSettings if it exists
+//           if (typeof response.profilePictureSettings === 'string') {
+//             try {
+//               response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+//             } catch (e) {
+//               console.error('Error parsing profilePictureSettings:', e);
+//               // Fallback to original settings if parsing fails
+//               response.profilePictureSettings = updatedUser.profilePictureSettings;
+//             }
+//           }
+
+//           // Use original settings if response settings are null
+//           if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+//             response.profilePictureSettings = updatedUser.profilePictureSettings;
+//           }
+
+//           return response;
+//         }),
+//         tap(response => {
+//           // Update localStorage with proper merging of existing data
+//           try {
+//             const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+//             const updatedStoredUser = {
+//               ...storedUser,
+//               ...response,
+//               // Preserve existing imgUrl if not being updated
+//               imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+//               // Preserve existing settings if not in response
+//               profilePictureSettings: response.profilePictureSettings || 
+//                                     updatedUser.profilePictureSettings || 
+//                                     storedUser.profilePictureSettings
+//             };
+//             localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+//             console.log('Updated user in localStorage:', updatedStoredUser);
+//           } catch (e) {
+//             console.error('Error updating localStorage:', e);
+//             // Don't fail the update if localStorage fails
+//           }
+//         })
+//       )
+//     );
+
+//     return response;
+
+//   } catch (error) {
+//     console.error('Error updating user:', error);
+    
+//     // Handle specific error cases
+//     if (error instanceof HttpErrorResponse) {
+//       switch (error.status) {
+//         case 401:
+//           this.authService.logout();
+//           throw new Error('Authentication expired');
+//         case 403:
+//           throw new Error('Not authorized to update user');
+//         case 404:
+//           throw new Error('User not found');
+//         default:
+//           throw new Error('Failed to update user');
+//       }
+//     }
+
+//     // Re-throw original error if not HTTP error
+//     throw error;
+//   }
 // }
 
 updateUser(updatedUser: User): Observable<User> {
-  let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-  };
+  // Create an observable from the token check
+  return from(this.authService.waitForToken()).pipe(
+    switchMap(token => {
+      if (!token) {
+        return throwError(() => new Error('Not authenticated'));
+      }
 
-  // Prepare the user data for the API
-  const userForApi = {
-    ...updatedUser,
-    profilePictureSettings: updatedUser.profilePictureSettings 
-      ? JSON.stringify(updatedUser.profilePictureSettings) 
-      : null
-  };
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
 
-  // Use the /data/ endpoint for all updates
-  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, userForApi, { headers: reqHeaders })
-    .pipe(
-      map(response => {
-        // Parse the profilePictureSettings if it exists in the response
-        if (typeof response.profilePictureSettings === 'string') {
-          response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
-        }
-        // If profilePictureSettings come back as null, use the ones we sent
-        if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
-          response.profilePictureSettings = updatedUser.profilePictureSettings;
-        }
-        return response;
-      }),
-      tap(response => {
-        // Update the user in localStorage, preserving the imgUrl if it's not being updated
-        console.log('Updated user:', response);
-        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        const updatedStoredUser = {
-          ...storedUser,
-          ...response,
-          imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
-          profilePictureSettings: response.profilePictureSettings || storedUser.profilePictureSettings
-        };
-        localStorage.setItem('user', JSON.stringify(updatedStoredUser));
-      })
-    );
+      // Prepare user data with proper profilePictureSettings handling
+      const userForApi = {
+        ...updatedUser,
+        profilePictureSettings: updatedUser.profilePictureSettings 
+          ? JSON.stringify(updatedUser.profilePictureSettings) 
+          : null
+      };
+
+      return this.http.put<User>(
+        `${this.baseURL}/data/${updatedUser.userId}`, 
+        userForApi, 
+        { headers }
+      ).pipe(
+        map(response => {
+          // Parse profilePictureSettings if it exists
+          if (typeof response.profilePictureSettings === 'string') {
+            try {
+              response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+            } catch (e) {
+              console.error('Error parsing profilePictureSettings:', e);
+              // Fallback to original settings if parsing fails
+              response.profilePictureSettings = updatedUser.profilePictureSettings;
+            }
+          }
+
+          // Use original settings if response settings are null
+          if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+            response.profilePictureSettings = updatedUser.profilePictureSettings;
+          }
+
+          return response;
+        }),
+        tap(response => {
+          // Update localStorage with proper merging of existing data
+          try {
+            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const updatedStoredUser = {
+              ...storedUser,
+              ...response,
+              // Preserve existing imgUrl if not being updated
+              imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+              // Preserve existing settings if not in response
+              profilePictureSettings: response.profilePictureSettings || 
+                                    updatedUser.profilePictureSettings || 
+                                    storedUser.profilePictureSettings
+            };
+            localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+            console.log('Updated user in localStorage:', updatedStoredUser);
+          } catch (e) {
+            console.error('Error updating localStorage:', e);
+            // Don't fail the update if localStorage fails
+          }
+        }),
+        catchError(error => {
+          console.error('Error updating user:', error);
+          
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 401:
+                this.authService.logout();
+                return throwError(() => new Error('Authentication expired'));
+              case 403:
+                return throwError(() => new Error('Not authorized to update user'));
+              case 404:
+                return throwError(() => new Error('User not found'));
+              default:
+                return throwError(() => new Error('Failed to update user'));
+            }
+          }
+          return throwError(() => error);
+        })
+      );
+    })
+  );
 }
 
 async updateProfile(userData: any): Promise<any> {
@@ -574,6 +783,20 @@ updateProfileImage(userId: string, imageUrl: string): Observable<User> {
       })
     );
 }
+
+// async updateProfilePicture(userId: string, fileName: string, profilePictureSettings: any): Promise<any> {
+//   const token = await this.authService.getToken();
+//   const headers = new HttpHeaders()
+//     .set('Authorization', `Bearer ${token}`)
+//     .set('Content-Type', 'application/json');
+
+//   const body = {
+//     fileName,
+//     profilePictureSettings,
+//   };
+
+//   return this.http.put(`${this.baseURL}/images/profile-picture/${userId}`, body, { headers }).toPromise();
+// }
 
 // Helper method to handle image upload
 uploadImage(userId: string, file: File): Observable<string> {

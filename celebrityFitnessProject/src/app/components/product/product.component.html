@@ -14,8 +14,8 @@
                        
                     
                     <div class="buttonContainer">
-                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'wide': true}">Back To Store</button>
-                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'narrow': true}"> < Store </button>
+                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'wide': true}"> Back To Store</button>
+                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'narrow': true}"> Store </button>
                         <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
                         <button mat-button 
                             class="addToCartButton" 
@@ -38,7 +38,10 @@
                 </mat-card-content>
                
             </mat-card>
+
+    
         </ng-container>
+        </div>
     
         <!-- <ng-template #loading>
             <mat-card class="loadingContainer">
@@ -58,4 +61,4 @@
                 <div class="spinner-text">Loading Product...</div>
             </div>
         </ng-template> -->
-    </div>
+    <!-- </div> -->

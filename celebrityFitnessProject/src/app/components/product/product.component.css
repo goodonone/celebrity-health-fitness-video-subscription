@@ -1,6 +1,7 @@
-* {
-  font-family: "Outfit", sans-serif;
-}
+/* * {
+  /* font-family: "Outfit", sans-serif; */
+/* } */
+
 
 .pageContainer {
   position: relative;
@@ -48,15 +49,13 @@
 }
 
 .productImage {
-  /* height: 38rem;
-    width: 38rem; */
   height: auto;
-  width: 100%; /* Adjusted to 100% to fit within the container */
+  width: 100%; 
   max-width: 38rem;
   aspect-ratio: 1/1;
-  background-size: cover;
-  background-position: center; /* Ensures image center focus */
-  background-repeat: no-repeat;
+  /* background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat; */
   border-radius: 1rem;
   margin-right: 1rem;
 }
@@ -154,6 +153,9 @@ p.price {
 .viewCartButton,
 .backButton {
   width: 8rem;
+  line-height: 1;
+  /* text-wrap: wrap; */
+  /* line-height: 1; */
 }
 
 /* .viewCartButton{
@@ -363,7 +365,7 @@ margin-top: 3.3rem; */
   .pageContainer {
     height: fit-content;
     min-height: 100vh;
-    padding: 2rem 0;
+    padding: 1.5rem 0 2rem 0;
     display: flex;
     align-items: center;
   }
@@ -381,7 +383,10 @@ margin-top: 3.3rem; */
     width: 95%;
     max-width: 30rem;
     height: auto;
-    max-height: fit-content;
+    /* aspect-ratio: 3/2; */
+    /* min-height: 100vh; */
+    /* min-height: 100vh; */
+    /* max-height: fit-content; */
     background-color: white;
     border-radius: 1rem;
     position: relative;
@@ -422,7 +427,7 @@ margin-top: 3.3rem; */
 
   .buttonContainer {
     padding-top: 1rem;
-    position: relative;
+    position: absolute;
     bottom: 0;
     width: 100%;
     max-width: 28rem;
@@ -438,10 +443,20 @@ margin-top: 3.3rem; */
 
   p.price {
     font-size: 4rem;
+    margin-top: 0.5rem;
+    letter-spacing: -3px;
     /* line-height: 2.5rem; */
   }
 
   .productDescriptionContainer {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 2.5rem;
+    min-height: 20vh;
+    /* margin-left: 0; */
+  }
+
+  .productDescriptionLorem{
+    padding-top: 0;
+    margin-top: -0.5rem;
   }
 }

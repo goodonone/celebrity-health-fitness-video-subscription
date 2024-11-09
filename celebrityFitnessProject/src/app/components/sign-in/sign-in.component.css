@@ -1,5 +1,6 @@
 * {
-  font-family: "Outfit", sans-serif;
+  /* font-family: "Outfit", sans-serif; */
+  user-select: none;
 }
 
 /* .background {
@@ -101,8 +102,14 @@ input {
   color: black;
   background-color: white;
   font-size: clamp(1rem, 1.5vw, 1.2rem);
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
+  outline: none;
 }
+
+/* ::ng-deep input[matInput]:focus {
+  outline: none;
+  box-shadow: 0 0 10px #c7ff20;
+} */
 
 input#password {
   margin-bottom: 0.4rem;

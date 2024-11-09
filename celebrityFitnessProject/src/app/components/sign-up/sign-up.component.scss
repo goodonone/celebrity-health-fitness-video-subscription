@@ -2,6 +2,10 @@
 //   background-color: black;
 // }
 
+* {
+  user-select: none;
+}
+
 .background {
   opacity: 0;
   height: 100%;

@@ -1,5 +1,5 @@
 * {
-  font-family: 'Outfit', sans-serif !important;
+  // font-family: 'Outfit', sans-serif !important;
   user-select: none;
 }
 
@@ -711,7 +711,8 @@ fieldset {
   }
 
   &.disabled{
-    cursor: not-allowed;
+    // cursor: not-allowed;
+    pointer-events: none;
     // color: rgb(0, 0, 0);
     opacity: 0.4;
   }
@@ -798,6 +799,7 @@ fieldset {
 
   &.disabled {
     cursor: not-allowed;
+    // pointer-events: none;
     opacity: 0.4;
   }
 }
@@ -1502,7 +1504,8 @@ fieldset {
   .chevronLeft.disabled,
   .chevronRight.disabled {
     opacity: 0.4;
-    pointer-events: not-allowed;
+    // pointer-events: not-allowed;
+    pointer-events: none;
   }
 }
 
@@ -2342,7 +2345,8 @@ input:disabled:-moz-placeholder {
 
   &.disabled {
     opacity: 0.4;
-    cursor: not-allowed;
+    // cursor: not-allowed;
+    pointer-events: none;
   }
 }
 
@@ -2352,40 +2356,40 @@ input:disabled:-moz-placeholder {
   filter: drop-shadow(0 0 4px #000000);
 }
 
-.nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: opacity 0.3s;
-  background-color: red;
-}
+// .nav-button {
+//   position: absolute;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   background: rgba(0, 0, 0, 0.5);
+//   border: none;
+//   border-radius: 50%;
+//   width: 32px;
+//   height: 32px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: opacity 0.3s;
+//   background-color: red;
+// }
 
-.nav-button.prev {
-  left: -16px;
-}
+// .nav-button.prev {
+//   left: -16px;
+// }
 
-.nav-button.next {
-  right: -16px;
-}
+// .nav-button.next {
+//   right: -16px;
+// }
 
-.nav-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+// .nav-button.disabled {
+//   opacity: 0.5;
+//   cursor: not-allowed;
+// }
 
-.nav-button fa-icon {
-  color: white;
-  font-size: 16px;
-}
+// .nav-button fa-icon {
+//   color: white;
+//   font-size: 16px;
+// }
 
 .cancelSubscription {
   display: flex;
@@ -3896,7 +3900,6 @@ input[matInput]:focus {
       }
     }
   }
-
     /* Both fade-in and bounce animations combined */
 
     .arrows{
@@ -3949,7 +3952,7 @@ input[matInput]:focus {
   }
   
   .spinner-text {
-    color: #ffffff;
+    color: #000000;
     font-size: 1rem;
     margin-top: 1rem;
   }

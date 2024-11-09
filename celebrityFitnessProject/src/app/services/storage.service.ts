@@ -1,4 +1,3 @@
-// src/app/services/storage.service.ts
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
@@ -12,304 +11,98 @@ export class StorageService {
   constructor(private authService: AuthService) {
   }
 
-  // generateImageUrl(userId: string, fileName: string): string {
-  //   // Extract filename from Firebase URL if needed
-  //   if (fileName.includes('firebase')) {
-  //     const match = fileName.match(/profileImages\/[^\/]+\/([^?]+)/);
-  //     if (match) {
-  //       fileName = match[1];
-  //     }
-  //   }
-    
-  //   return `${this.baseUrl}/api/storage/profileImages/${userId}/${fileName}`;
-  // }
-generateImageUrl(userId: string, fileName: string, isStaged: boolean = false): string {
-  const pathPrefix = isStaged ? 'staging/' : '';
-  return `${this.baseUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
-}  
-
-
-// convertFirebaseUrl(url: string): string {
-//   if (!url) return '';
-  
-//   // Skip conversion if not a Firebase Storage URL
-//   if (!url.includes('firebasestorage.googleapis.com')) {
-//     return url;
-//   }
-  
-//   // Check if it's already a proxied URL
-//   if (url.includes(this.baseUrl)) {
-//     return url;
-//   }
-
-//   try {
-//     // Parse the URL to extract components
-//     const urlObj = new URL(url);
-    
-//     // Check if we have the expected path structure
-//     if (!urlObj.pathname.includes('/o/')) {
-//       console.log('Not a Firebase Storage URL structure');
-//       return url;
-//     }
-
-//     const fullPath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-    
-//     // Check if this is a staged image
-//     const isStaged = fullPath.startsWith('staging/');
-
-//     // Extract path components
-//     const pathSegments = fullPath.split('/');
-//     let userId, fileName;
-    
-//     if (isStaged) {
-//       // For staged images: staging/profileImages/userId/fileName
-//       userId = pathSegments[2];
-//       fileName = pathSegments[3];
-//     } else {
-//       // For permanent images: profileImages/userId/fileName
-//       userId = pathSegments[1];
-//       fileName = pathSegments[2];
-//     }
-    
-//     if (!userId || !fileName) {
-//       return url;
-//     }
-
-//     // Construct the proxied URL maintaining the staging path if present
-//     const pathPrefix = isStaged ? 'staging/' : '';
-//     const proxiedUrl = `${this.baseUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
-    
-//     return proxiedUrl;
-
-//   } catch (e) {
-//     console.error('Error converting Firebase URL:', e);
-//     return url;
-//   }
+// async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
+//   const token = await this.authService.getToken();
+//   const pathPrefix = isStaged ? 'staging/' : '';
+//   const path = `${pathPrefix}profileImages/${userId}/${fileName}`.replace(/^\/+/, '');
+//   const timestamp = Date.now();
+//   return `${environment.apiUrl}/api/storage/${path}?token=${token}&t=${timestamp}`;
 // }
 
-// convertFirebaseUrl(url: string): string {
-//     if (!url) return '';
-    
-//     // Skip conversion if not a Firebase Storage URL
-//     if (!url.includes('firebasestorage.googleapis.com')) {
-//       return url;
-//     }
-    
-//     // console.log('Converting URL:', url);
-
-//     // Check if it's already a proxied URL
-//     if (url.includes(this.baseUrl)) {
-//       console.log('URL is already proxied');
-//       return url;
-//     }
-
-//     try {
-//       // Parse the URL to extract components
-//       const urlObj = new URL(url);
-      
-//       // Check if we have the expected path structure
-//       if (!urlObj.pathname.includes('/o/')) {
-//         console.log('Not a Firebase Storage URL structure');
-//         return url;
-//       }
-
-//       const path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-      
-//       // Check if this is a staged image
-//       const isStaged = fullPath.startsWith('staging/');
-
-//       // Extract path components
-//       const pathSegments = fullPath.split('/');
-//       let userId, fileName;
-      
-//       if (isStaged) {
-//         // For staged images: staging/profileImages/userId/fileName
-//         userId = pathSegments[2];
-//         fileName = pathSegments[3];
-//       } else {
-//         // For permanent images: profileImages/userId/fileName
-//         userId = pathSegments[1];
-//         fileName = pathSegments[2];
-//       }
-      
-//       if (!userId || !fileName) {
-//         return url;
-//       }
-
-//   //     // Extract userId and fileName from the path
-//   //     const match = path.match(/profileImages\/([^\/]+)\/([^\/]+)/);
-      
-//   //     if (!match) {
-//   //       console.log('No match found in path:', path);
-//   //       return url;
-//   //     }
-
-//   //     const [_, userId, fileName] = match;
-      
-//   //     // Construct the proxied URL
-//   //     const proxiedUrl = `${this.baseUrl}/api/storage/profileImages/${userId}/${fileName}`;
-//   //     // console.log('Converted to:', proxiedUrl);
-      
-//   //     return proxiedUrl;
-
-//   //   } catch (e) {
-//   //     console.error('Error converting Firebase URL:', e);
-//   //     // Return original URL if conversion fails
-//   //     return url;
-//   //   }
-//   // }
-//   // Construct the proxied URL maintaining the staging path if present
-//     const pathPrefix = isStaged ? 'staging/' : '';
-//     const proxiedUrl = `${this.baseUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
-    
-//     return proxiedUrl;
-
-//   } catch (e) {
-//     console.error('Error converting Firebase URL:', e);
-//     return url;
-//   }
-// }
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   // Skip conversion if not a Firebase Storage URL
-//   if (!url.includes('firebasestorage.googleapis.com')) {
-//     return url;
-//   }
-  
-//   // Check if it's already a proxied URL
-//   if (url.includes(this.baseUrl)) {
-//     // If already proxied, ensure it has auth token
-//     return this.addAuthToUrl(url);
-//   }
-
-//   try {
-//     // Parse the URL to extract components
-//     const urlObj = new URL(url);
-    
-//     // Check if we have the expected path structure
-//     if (!urlObj.pathname.includes('/o/')) {
-//       console.log('Not a Firebase Storage URL structure');
-//       return url;
-//     }
-
-//     const fullPath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-    
-//     // Check if this is a staged image
-//     const isStaged = fullPath.startsWith('staging/');
-
-//     // Extract path components
-//     const pathSegments = fullPath.split('/');
-//     let userId, fileName;
-    
-//     if (isStaged) {
-//       // For staged images: staging/profileImages/userId/fileName
-//       userId = pathSegments[2];
-//       fileName = pathSegments[3];
-//     } else {
-//       // For permanent images: profileImages/userId/fileName
-//       userId = pathSegments[1];
-//       fileName = pathSegments[2];
-//     }
-    
-//     if (!userId || !fileName) {
-//       return url;
-//     }
-
-//     // Construct the proxied URL maintaining the staging path if present
-//     const pathPrefix = isStaged ? 'staging/' : '';
-//     const proxiedUrl = `${this.baseUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
-    
-//     // Add auth token to URL
-//     return this.addAuthToUrl(proxiedUrl);
-
-//   } catch (e) {
-//     console.error('Error converting Firebase URL:', e);
-//     return url;
-//   }
-// }
-
-// private async addAuthToUrl(url: string): Promise<string> {
+// async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
 //   try {
 //     const token = await this.authService.getToken();
 //     if (!token) {
-//       console.warn('No auth token available for URL conversion');
-//       return url;
+//       throw new Error('No auth token available');
 //     }
 
-//     // Parse existing URL
-//     const urlObj = new URL(url);
-    
-//     // Remove any existing token
-//     urlObj.searchParams.delete('token');
-    
-//     // Add new token
-//     urlObj.searchParams.set('token', token);
-    
-//     return urlObj.toString();
-//   } catch (error) {
-//     console.error('Error adding auth to URL:', error);
+//     // If a full URL is passed, extract the path
+//     let path: string;
+//     if (fileName.startsWith('http')) {
+//       const url = new URL(fileName);
+//       path = url.pathname.replace('/api/storage/', '');
+//     } else {
+//       path = fileName.startsWith('/') ? fileName.substring(1) : fileName;
+//     }
+
+//     // Add staging prefix if needed
+//     if (isStaged) {
+//       path = `staging/${path}`;
+//     }
+
+//     // Ensure the path is properly formatted
+//     path = path.replace(/^\/+/, '');
+
+//     // Generate the full URL with token and timestamp
+//     const url = `${this.baseUrl}/api/storage/${path}?token=${token}&t=${Date.now()}`;
+//     console.log('Generated image URL:', url);
 //     return url;
+//   } catch (error) {
+//     console.error('Error generating image URL:', error);
+//     throw error;
 //   }
 // }
 
-// async convertFirebaseUrl(url: string): Promise<string> {
+async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
+  try {
+    const token = await this.authService.getToken();
+    if (!token) {
+      throw new Error('No auth token available');
+    }
+
+    // If a full URL is passed, extract the path
+    let path: string;
+    if (fileName.startsWith('http')) {
+      const url = new URL(fileName);
+      path = url.pathname.replace('/api/storage/', '');
+    } else if (fileName.includes('/')) {
+      // If it's already a path, use it directly
+      path = fileName;
+    } else {
+      // If it's just a filename, construct the full path
+      path = `${isStaged ? 'staging/' : ''}profileImages/${userId}/${fileName}`;
+    }
+
+    // Ensure the path is properly formatted
+    path = path.replace(/^\/+/, '');
+
+    console.log('Generating URL for path:', path);
+    const url = `${this.baseUrl}/api/storage/${path}?token=${token}&t=${Date.now()}`;
+    console.log('Generated URL:', url);
+    
+    return url;
+  } catch (error) {
+    console.error('Error generating image URL:', error);
+    throw error;
+  }
+}
+
+
+// async getBackgroundImageUrl(url: string): Promise<string> {
 //   if (!url) return '';
-  
-//   // Skip conversion if not a Firebase Storage URL
-//   if (!url.includes('firebasestorage.googleapis.com')) {
-//     return url;
-//   }
-  
-//   // Check if it's already a proxied URL
-//   if (url.includes(this.baseUrl)) {
-//     return this.addAuthToUrl(url);
-//   }
-
 //   try {
-//     // Parse the URL to extract components
-//     const urlObj = new URL(url);
-    
-//     // Check if we have the expected path structure
-//     if (!urlObj.pathname.includes('/o/')) {
-//       console.log('Not a Firebase Storage URL structure');
-//       return url;
+//     if (url.includes('firebasestorage.googleapis.com')) {
+//       return this.convertFirebaseUrl(url);
 //     }
-
-//     const fullPath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-    
-//     // Check if this is a staged image
-//     const isStaged = fullPath.startsWith('staging/');
-
-//     // Extract path components
-//     const pathSegments = fullPath.split('/');
-//     let userId, fileName;
-    
-//     if (isStaged) {
-//       // For staged images: staging/profileImages/userId/fileName
-//       userId = pathSegments[2];
-//       fileName = pathSegments[3];
-//     } else {
-//       // For permanent images: profileImages/userId/fileName
-//       userId = pathSegments[1];
-//       fileName = pathSegments[2];
-//     }
-    
-//     if (!userId || !fileName) {
-//       return url;
-//     }
-
-//     // Construct the proxied URL maintaining the staging path if present
-//     const pathPrefix = isStaged ? 'staging/' : '';
-//     const proxiedUrl = `${this.baseUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
-    
-//     // Add auth token
-//     return this.addAuthToUrl(proxiedUrl);
-
-//   } catch (e) {
-//     console.error('Error converting Firebase URL:', e);
-//     return url;
+//     // If it's already a path or URL, just ensure it's properly formatted
+//     return this.generateImageUrl(
+//       this.userId, 
+//       url,
+//       false
+//     );
+//   } catch (error) {
+//     console.error('Error getting background image URL:', error);
+//     return '';
 //   }
 // }
 
@@ -332,83 +125,82 @@ generateImageUrl(userId: string, fileName: string, isStaged: boolean = false): s
 //     }
 
 //     // Create URL object to handle parameters properly
-//     // const urlObj = new URL(proxiedUrl);
-//     // urlObj.searchParams.set('token', token);
+//     const urlObj = new URL(proxiedUrl);
+//     urlObj.searchParams.set('token', token);
     
-//     // return urlObj.toString();
-//     return proxiedUrl;
+//     return urlObj.toString();
 //   } catch (error) {
 //     console.error('Error converting Firebase URL:', error);
 //     return url;
 //   }
 // }
-
-// // storage.service.ts
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   if (!url.includes('firebasestorage.googleapis.com')) {
-//     return url;
-//   }
-
-//   try {
-//     // Get the base proxied URL
-//     const proxiedUrl = await this.getProxiedUrl(url);
-    
-//     // Add auth token to headers instead of URL
-//     const token = await this.authService.getToken();
-//     if (!token) {
-//       console.warn('No auth token available for URL conversion');
-//       return proxiedUrl;
-//     }
-
-//     return proxiedUrl;
-//   } catch (error) {
-//     console.error('Error converting Firebase URL:', error);
-//     return url;
-//   }
-// }
-
-// storage.service.ts
 async convertFirebaseUrl(url: string): Promise<string> {
   if (!url) return '';
   
-  if (!url.includes('firebasestorage.googleapis.com')) {
-    return url;
-  }
-
   try {
-    const proxiedUrl = await this.getProxiedUrl(url);
     const token = await this.authService.getToken();
-    
-    // For staged images, add auth token
-    if (proxiedUrl.includes('/staging/')) {
-      const urlObj = new URL(proxiedUrl);
-      urlObj.searchParams.set('token', token || '');
-      return urlObj.toString();
+    if (!token) {
+      throw new Error('No auth token available');
     }
 
-    return proxiedUrl;
+    let path: string;
+    if (url.includes('firebasestorage.googleapis.com')) {
+      // Extract path from Firebase URL
+      const urlObj = new URL(url);
+      path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+      console.log('Extracted path from Firebase URL:', path);
+    } else if (!url.startsWith('http')) {
+      // Treat as relative path
+      path = url.startsWith('/') ? url.substring(1) : url;
+      console.log('Using relative path:', path);
+    } else {
+      console.log('Using direct URL:', url);
+      return url; // Return as-is if it's already a valid HTTP URL
+    }
+
+    const convertedUrl = `${this.baseUrl}/api/storage/${path}?token=${token}&t=${Date.now()}`;
+    console.log('Converted URL:', convertedUrl);
+    
+    return convertedUrl;
+
   } catch (error) {
-    console.error('Error converting Firebase URL:', error);
+    console.error('Error converting Firebase URL:', {
+      originalUrl: url,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
     return url;
   }
 }
 
 private getProxiedUrl(firebaseUrl: string): string {
-  const urlObj = new URL(firebaseUrl);
-  const path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-  const isStaged = path.startsWith('staging/');
-  const segments = path.split('/');
-  
-  // Extract userId and fileName based on path structure
-  const userId = isStaged ? segments[2] : segments[1];
-  const fileName = segments[segments.length - 1];
+  try {
+    const urlObj = new URL(firebaseUrl);
+    const path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+    const isStaged = path.startsWith('staging/');
+    const segments = path.split('/');
+    
+    let userId, fileName;
+    if (isStaged) {
+      userId = segments[2];
+      fileName = segments[3];
+    } else {
+      userId = segments[1];
+      fileName = segments[2];
+    }
 
-  // Generate URL matching backend routes
-  return isStaged 
-    ? `${environment.apiUrl}/api/storage/staging/profileImages/${userId}/${fileName}`
-    : `${environment.apiUrl}/api/storage/profileImages/${userId}/${fileName}`;
+    // Generate URL matching backend routes
+  //   const pathPrefix = isStaged ? 'staging/' : '';
+  //   return `${environment.apiUrl}/api/storage/${pathPrefix}profileImages/${userId}/${fileName}`;
+  // } catch (error) {
+  //   console.error('Error creating proxied URL:', error);
+  //   return firebaseUrl;
+  // }
+  const pathPrefix = isStaged ? '/storage/staging/' : '/storage/';
+  return `${this.baseUrl}${pathPrefix}profileImages/${userId}/${fileName}`;
+} catch (error) {
+  console.error('Error creating proxied URL:', error);
+  return firebaseUrl;
+}
 }
 
 // private async getProxiedUrl(firebaseUrl: string): Promise<string> {
@@ -478,7 +270,7 @@ private isFirebaseStorageUrl(url: string): boolean {
 }
 
 private isProxiedUrl(url: string): boolean {
-  return url.includes(this.baseUrl);
+  return url.includes(`${this.baseUrl}/storage/`);
 }
 
 private getCleanPath(url: string): string {
@@ -497,7 +289,7 @@ isStagedImage(url: string): boolean {
   try {
     if (url.includes(this.baseUrl)) {
       // Check proxied URL
-      return url.includes('/staging/');
+      return url.includes('/storage/staging/');
     } else if (url.includes('firebasestorage.googleapis.com')) {
       // Check Firebase URL
       const urlObj = new URL(url);
