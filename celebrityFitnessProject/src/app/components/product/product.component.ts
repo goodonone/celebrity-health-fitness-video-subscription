@@ -109,6 +109,7 @@ import { ProductStatusService } from 'src/app/services/productstatus.service';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
 })
+
 export class ProductComponent implements OnInit {
   currentProduct$: Observable<Product | null> = of(null);
   errorMessage: string = '';

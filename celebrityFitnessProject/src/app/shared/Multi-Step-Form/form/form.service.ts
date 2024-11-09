@@ -9,6 +9,7 @@ import { PaymentService } from 'src/app/services/payment.service';
 import { expirationDateValidator } from '../../expiry-date-validator';
 import { AuthService } from 'src/app/services/auth.service';
 import { NavigationService } from 'src/app/services/navigation.service';
+import { sign } from 'crypto';
 // import { CustomOAuthService} from 'src/app/services/oauth.service';
 // import { expirationDateValidator } from '../../expiry-date-validator';
 
@@ -99,7 +100,7 @@ export class FormService implements OnInit {
   return this.fb.group({
     personalDetails: this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ]+([ '-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/)]],
-      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9](?:[a-zA-Z0-9._%+-]*[a-zA-Z0-9])?@[a-zA-Z0-9](?:[a-zA-Z0-9.-]*[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/)]],
       password: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       confirmPassword: [{value: '', disabled: false}, [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
       isGoogleAuth: [false]
@@ -590,10 +591,11 @@ export class FormService implements OnInit {
 
 
   submit() {
-    console.log("Submit button clicked");
+    // console.log("Submit button clicked");
     const type: string = "subscription";
     const userInfo = this.multiStepForm.get('personalDetails')?.value;
     const planInfo = this.multiStepForm.get('planDetails')?.value;
+    const paymentDetails = this.multiStepForm.get('paymentDetails')?.value;
   
     // Check if user is signed in
     // const userId = localStorage.getItem('userId') || '';
@@ -612,7 +614,7 @@ export class FormService implements OnInit {
       }
     }
 
-    console.log('USER ID!!!!!!!!!!! AREA 1', userId);
+    // console.log('USER ID!!!!!!!!!!! AREA 1', userId);
 
     if (!userId) {
       userId = this.user.getUserId();
@@ -620,7 +622,7 @@ export class FormService implements OnInit {
   
     // Creating a new user/new payment for initial signUp of new user if not signed in else update user
     if (!userId) {
-      const userData = {
+      const signupData = {
         name: userInfo.name,
         password: userInfo.isGoogleAuth ? null : userInfo.password,
         isGoogleAuth: userInfo.isGoogleAuth,
@@ -629,38 +631,15 @@ export class FormService implements OnInit {
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
         purchaseType: type,
-        paymentType: type
+        billingAddress: paymentDetails.billingAddress,
+        billingZipcode: paymentDetails.billingZip,
       }
-  
-      console.log('USER ID!!!!!!!!!!! AREA 2', userId);
 
-      this.user.signUp(userData).subscribe(() => {
+      this.user.signUp(signupData).subscribe(() => {
         this.handleNewUserSignup(false);
       });
-      // if(userInfo.isGoogleAuth) {
-      //   console.log('GOOGLE AUTH USER DATA:');
-      //   const userDataString = localStorage.getItem('user');
-      //   if (userDataString) {
-      //     const userData = JSON.parse(userDataString);
-      //     const googleAuthUser = {
-      //       userId: userData.userId, // Extract userId from localStorage
-      //       tier: planInfo.plan,
-      //       paymentFrequency: planInfo.billing,
-      //       price: planInfo.totalCost
-      //     };
-      //     console.log('USER ID!!!!!!!!!!! AREA 3', userId);
-      //     this.user.updateUser(googleAuthUser).subscribe(() => {
-      //       this.handleNewUserSignup(true);
-      //     });
-      //   } 
-      // } else {
-      //   this.user.signUp(userData).subscribe(() => {
-      //     this.handleNewUserSignup(false);
-      //   });
-      //   console.log('USER ID!!!!!!!!!!! AREA 4', userId);
-      // }
-
-    // Upgrading Plan for existing user
+    
+    // Upgrading Plan for existing user & Google Auth User
     } else {
 
        if(userInfo.isGoogleAuth) {
@@ -669,19 +648,24 @@ export class FormService implements OnInit {
         if (userDataString) {
           const userData = JSON.parse(userDataString);
           const googleAuthUser = {
-            userId: userData.userId, // Extract userId from localStorage
+            userId: userData.userId, 
             tier: planInfo.plan,
             paymentFrequency: planInfo.billing,
-            price: planInfo.totalCost
+            price: planInfo.totalCost,
+            purchaseType: type,
+            paymentType: type,
+            billingAddress: paymentDetails.billingAddress,
+            billingZipcode: paymentDetails.billingZip,
           };
-          console.log('USER ID!!!!!!!!!!! AREA 3', userId);
+      
           this.user.updateUser(googleAuthUser).subscribe(() => {
             this.handleNewUserSignup(true);
+            this.createPayment(userId, googleAuthUser);
           });
-      }
+        }
       }
 
-      console.log('USER ID!!!!!!!!!!! AREA 5', userId);
+      // console.log('USER ID!!!!!!!!!!! AREA 5', userId);
       this.UserId = this.user.getUserId() ?? "";
       this.userId = this.UserId;
   
@@ -696,21 +680,52 @@ export class FormService implements OnInit {
       }
       this.user.updateUser(this.currentUser).subscribe(() => {
       });
-  
-      const planData = {
+      const paymentData = {
+        userId: this.userId,
         tier: planInfo.plan,
         paymentFrequency: planInfo.billing,
         price: planInfo.totalCost,
         purchaseType: type,
+        billingAddress: paymentDetails.billingAddress,
+        billingZipcode: paymentDetails.billingZip,
+        shippingAddress: paymentDetails.shippingAddress || null,
+        shippingZipcode: paymentDetails.shippingZip || null
       }
-      this.payment.newPayment(planData).subscribe(() => {
-      });
-  
-      this.handleExistingUserUpdate(planInfo);
-    }
+    //   this.payment.newPayment(planData).subscribe((response) => {
+    //     console.log('Payment created successfully', response);
+    //   });
+    //   console.log('Payment created successfully', planData);
+    //   this.handleExistingUserUpdate(planInfo);
+    // }
+    // console.log('SENDING PLANDATA |||||||||||||||||||||', planData);
 
-    // implement checkout for store page here
+      this.payment.newPayment(paymentData).subscribe(
+        (response) => {
+          // console.log('||||||||||||||||||||| Payment created successfully', response);
+          this.handleExistingUserUpdate(planInfo);
+        },
+        (error) => {
+          console.error('Error creating payment', error);
+        }
+    );
   }
+}
+
+private createPayment(userId: string, planData: any) {
+  const paymentData = {
+    ...planData,
+    userId: userId
+  };
+
+  this.payment.newPayment(paymentData).subscribe(
+    (response) => {
+      console.log('Payment created successfully', response);
+    },
+    (error) => {
+      console.error('Error creating payment', error);
+    }
+  );
+}
   
   // private handleNewUserSignup(isGoogleAuth: boolean) {
   //   this.goToNextStep(4);
@@ -824,7 +839,7 @@ export class FormService implements OnInit {
     console.log("Signup URL not detected, redirecting immediately.");
     this.router.navigateByUrl(`/content/${this.UserId}`);
   }
-  
+}
     // if(this.router.url.includes('signup')) {
     //   setTimeout(() => {
     //     this.goToNextStep(4);
@@ -833,7 +848,7 @@ export class FormService implements OnInit {
     // }
 
     // this.router.navigateByUrl(`/content/${this.UserId}`);
-  }
+  // }
   
   // resetForm() {
   //   const initialValues = this.getInitialTierAndBilling();

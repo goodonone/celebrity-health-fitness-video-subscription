@@ -1,0 +1,18 @@
+/* Regular Variable Font */
+@font-face {
+    font-family: "Roboto Mono";
+    src: url('RobotoMono-VariableFont_wght.ttf') format('ttf');
+    font-weight: 100 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  /* Italic Variable Font */
+  @font-face {
+    font-family: "Roboto Mono";
+    src: url('RobotoMono-Italic-VariableFont_wght.ttf') format('ttf');
+    font-weight: 100 700;
+    font-style: italic;
+    font-display: swap;
+  }
+

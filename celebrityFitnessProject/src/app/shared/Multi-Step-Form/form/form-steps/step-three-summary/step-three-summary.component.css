@@ -1,5 +1,5 @@
 * {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', sans-serif !important;
   }
 
   mat-card{
@@ -89,6 +89,19 @@ button {
   color: rgb(0, 0, 0);
 }
 
+.paymentBtn{
+  bottom: 2.2rem;
+  right: 0.5rem;
+}
+
+.paymentContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 0.5rem;
+}
+
 .cost {
   font-size: 0.875rem;
 }
@@ -113,7 +126,8 @@ div.cost.summary{
 
 .total {
   width: 100%;
-  padding: 0 0 2rem 0.5rem;
+  padding-left: 0.5rem;
+  /* padding: 0 0 2rem 0.5rem; */
   color: rgb(0, 0, 0);
   font-size: 0.875rem;
   font-weight: 400;
@@ -127,6 +141,10 @@ div.cost.summary{
   line-height: 1.25rem;
 }
 
+.costSpan, .totalCostSpan {
+  font-family: "Roboto Mono", monospace !important;
+  font-size: inherit;
+}
 
 @media (min-width: 37.5em) {
 

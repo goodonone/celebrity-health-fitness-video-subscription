@@ -34,6 +34,7 @@
                  id="password"
                  placeholder="Enter your password"
                  [(ngModel)]="password"
+                 
                  required>
             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
           </div>

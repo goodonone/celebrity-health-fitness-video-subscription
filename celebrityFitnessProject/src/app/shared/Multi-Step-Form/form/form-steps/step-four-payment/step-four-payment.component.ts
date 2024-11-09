@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   FormGroupDirective,
   Validators,
 } from '@angular/forms';
+import { Subject } from 'rxjs';
 import { expirationDateValidator } from 'src/app/shared/expiry-date-validator';
 
 @Component({
@@ -14,10 +15,8 @@ import { expirationDateValidator } from 'src/app/shared/expiry-date-validator';
 })
 export class StepFourPaymentComponent implements OnInit {
   stepForm!: FormGroup;
-
   @Input() formGroupName!: string;
   @Input() shipping!: boolean;
-
   sameAsBilling = true;
   isChecked = true;
   showShipping = false;
@@ -27,10 +26,12 @@ export class StepFourPaymentComponent implements OnInit {
 
   private billingAddressSubscription: any;
   private billingZipSubscription: any;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private rootFormGroup: FormGroupDirective,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -79,18 +80,14 @@ export class StepFourPaymentComponent implements OnInit {
       }, '');
 
     // Subscribe to billing address and zip changes to update shipping fields automatically
-    this.billingAddressSubscription = this.stepForm
-      .get('billingAddress')
-      ?.valueChanges.subscribe(() => {
+    this.billingAddressSubscription = this.stepForm.get('billingAddress')?.valueChanges.subscribe(() => {
         if (this.isChecked) {
           this.updateShippingFields(true);
         }
       });
 
     // For shipping address
-    this.billingZipSubscription = this.stepForm
-      .get('billingZip')
-      ?.valueChanges.subscribe(() => {
+    this.billingZipSubscription = this.stepForm.get('billingZip')?.valueChanges.subscribe(() => {
         if (this.isChecked) {
           this.updateShippingFields(true);
         }
@@ -108,6 +105,8 @@ export class StepFourPaymentComponent implements OnInit {
     // Unsubscribe to prevent memory leaks
     this.billingAddressSubscription?.unsubscribe();
     this.billingZipSubscription?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   toggleShipping() {
@@ -262,4 +261,186 @@ export class StepFourPaymentComponent implements OnInit {
     }
   }
 
+  getInputStyle(controlName: string): { [key: string]: string } {
+    const control = this.stepForm.get(controlName);
+    let isInvalid = false;
+
+    if (control) {
+      const trimmedValue = typeof control.value === 'string' ? control.value.trim() : control.value;
+      
+      switch (controlName) {
+        case 'nameOnCard':
+        case 'billingAddress':
+          isInvalid = (control.invalid && control.touched) || (!trimmedValue && control.touched);
+          break;
+        case 'ccNumber':
+          isInvalid = (control.invalid && control.touched) || 
+                      (control.value && !/^[0-9\s]{13,19}$/.test(control.value));
+          break;
+        case 'expDate':
+          isInvalid = (control.invalid && control.touched) || 
+                      control.hasError('expiredDate');
+          break;
+        case 'cvv':
+          isInvalid = (control.invalid && control.touched) || 
+                      (control.value && !/^[0-9]{3}$/.test(control.value));
+          break;
+        case 'zipCode':
+        case 'billingZip':
+        case 'shippingZip':
+          isInvalid = (control.invalid && control.touched) || 
+                      (control.value && !/^\d{5}$/.test(control.value));
+          break;
+        default:
+          isInvalid = control.invalid && control.touched;
+      }
+    }
+
+    return {
+      'border-color': isInvalid ? 'red' : 'black',
+      '--placeholder-color': isInvalid ? 'red' : 'black',
+      'color': isInvalid ? 'red' : 'black'
+    };
+  }
+
+  getErrorMessage(controlName: string): string {
+    const control = this.stepForm.get(controlName);
+    if (!control) return '';
+
+    switch (controlName) {
+      case 'nameOnCard':
+        if (!control.value?.trim()) return 'Required';
+        return 'Invalid';
+
+      case 'ccNumber':
+        if (!control.value) return 'Required';
+        if (!/^[0-9\s]{13,19}$/.test(control.value)) return 'Invalid';
+        return 'Invalid';
+
+      case 'expDate':
+        if (!control.value) return 'Required';
+        if (control.hasError('expiredDate')) return 'Expired';
+        return 'Invalid';
+
+      case 'cvv':
+        if (!control.value) return 'Required';
+        if (!/^[0-9]{3}$/.test(control.value)) return 'Invalid';
+        return 'Invalid';
+
+      case 'zipCode':
+      case 'billingZip':
+      case 'shippingZip':
+        if (!control.value) return 'Required';
+        if (!/^\d{5}$/.test(control.value)) return 'Invalid';
+        return 'Invalid';
+
+      case 'billingAddress':
+      case 'shippingAddress':
+        if (!control.value?.trim()) return 'Required';
+        return 'Invalid';
+
+      default:
+        return 'Invalid';
+    }
+  }
+
+  onInputBlur(controlName: string) {
+    const control = this.stepForm.get(controlName);
+    if (!control) return;
+
+    switch (controlName) {
+      case 'nameOnCard':
+      case 'billingAddress':
+      case 'shippingAddress':
+        if (typeof control.value === 'string') {
+          const normalized = control.value.replace(/\s+/g, ' ').trim();
+          if (normalized !== control.value) {
+            control.setValue(normalized);
+          }
+        }
+        break;
+
+      case 'ccNumber':
+        // Additional credit card validation/formatting if needed
+        break;
+
+      case 'expDate':
+        this.checkExpirationDate();
+        break;
+
+      // Add any specific blur handling for other fields as needed
+    }
+
+    control.updateValueAndValidity();
+    this.cdr.detectChanges();
+  }
+
+  shouldShowError(controlName: string): boolean {
+    const control = this.stepForm.get(controlName);
+    if (!control) return false;
+
+    switch (controlName) {
+      case 'nameOnCard':
+      case 'billingAddress':
+      case 'shippingAddress':
+        return (control.invalid && control.touched) || 
+               (!control.value?.trim() && control.touched);
+      
+      case 'expDate':
+        return (control.invalid && control.touched) || 
+               control.hasError('expiredDate');
+      
+      default:
+        return control.invalid && control.touched;
+    }
+  }
+
+  // Add this method to your StepFourComponent class
+
+getLabelStyle(controlName: string): { [key: string]: string } {
+  const control = this.stepForm.get(controlName);
+  let isInvalid = false;
+
+  if (control) {
+    switch (controlName) {
+      case 'nameOnCard':
+      case 'billingAddress':
+      case 'shippingAddress':
+        const trimmedValue = control.value?.trim() || '';
+        isInvalid = (control.invalid && control.touched) || (!trimmedValue && control.touched);
+        break;
+
+      case 'ccNumber':
+        isInvalid = (control.invalid && control.touched) || 
+                    (control.value && !/^[0-9\s]{13,19}$/.test(control.value));
+        break;
+
+      case 'expDate':
+        isInvalid = (control.invalid && control.touched) || 
+                    control.hasError('expiredDate');
+        break;
+
+      case 'cvv':
+        isInvalid = (control.invalid && control.touched) || 
+                    (control.value && !/^[0-9]{3}$/.test(control.value));
+        break;
+
+      case 'zipCode':
+      case 'billingZip':
+      case 'shippingZip':
+        isInvalid = (control.invalid && control.touched) || 
+                    (control.value && !/^\d{5}$/.test(control.value));
+        break;
+
+      default:
+        isInvalid = control.invalid && control.touched;
+    }
+  }
+
+  return {
+    'color': isInvalid ? 'red' : 'black'
+  };
+}
+
+  
 }

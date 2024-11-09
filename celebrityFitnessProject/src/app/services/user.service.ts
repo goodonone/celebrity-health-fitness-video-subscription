@@ -1,13 +1,16 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, catchError, map, Observable, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, firstValueFrom, from, lastValueFrom, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './authstate.service';
 import { FormService } from '../shared/Multi-Step-Form/form/form.service';
 import { CustomOAuthService } from './oauth.service';
-
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { signInWithCustomToken } from 'firebase/auth';
+import { auth } from '../firebase.config';
+import { ImageUrlManagerService } from './imageurlmanager.service';
 
 
 @Injectable({
@@ -25,7 +28,9 @@ export class UserService {
   private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
   isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector) {
+  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector,
+    private imageUrlManager: ImageUrlManagerService
+  ) {
     // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
     //   this.isLoggedInSubject.next(isAuthenticated);
     // });
@@ -40,6 +45,11 @@ export class UserService {
 
   // Observable for components to subscribe to
   // isLoggedIn$ = this.isLoggedInSubject.asObservable();
+
+  // getUserId(): string | null {
+  //   const currentUser = auth.currentUser;
+  //   return currentUser ? currentUser.uid : null;
+  // }
 
   private checkInitialLoginState(): boolean {
     return this.checkLocalStorageAuth() && this.authStateService.checkAuthStatus();
@@ -79,22 +89,107 @@ export class UserService {
 //     }));
 // }
 
+// login(email: string, password: string) {
+//   let request = { email, password };
+
+//   return this.http.post(`${this.baseURL}/login`, request)
+//     .pipe(tap((response: any) => {
+//       this.updateLoginStatus(true);
+//       this.handleSuccessfulAuth(response);
+//       return response;
+//     }));
+// }
+
+// login(email: string, password: string) {
+//   let request = { email, password };
+
+//   return this.http.post(`${this.baseURL}/login`, request).pipe(
+//     switchMap(async (response: any) => {
+//       // First handle your regular auth flow
+//       this.updateLoginStatus(true);
+//       this.handleSuccessfulAuth(response);
+
+//       try {
+//         // Then get a Firebase token and sign in
+//         const firebaseToken = await this.getFirebaseToken(response.token);
+//         await signInWithCustomToken(auth, firebaseToken);
+//         console.log('Firebase auth successful');
+//       } catch (error) {
+//         console.error('Firebase auth error:', error);
+//         // Don't fail the login if Firebase auth fails
+//       }
+
+//       return response;
+//     }),
+//     catchError(error => {
+//       console.error('Login error:', error);
+//       throw error;
+//     })
+//   );
+// }
+
 login(email: string, password: string) {
   let request = { email, password };
 
-  return this.http.post(`${this.baseURL}/login`, request)
-    .pipe(tap((response: any) => {
+  return this.http.post(`${this.baseURL}/login`, request).pipe(
+    tap((response: any) => {
       this.updateLoginStatus(true);
       this.handleSuccessfulAuth(response);
-      return response;
-      // localStorage.setItem(this.tokenKey, response.token);
-      // localStorage.setItem(this.userIdKey , response.userId);
-      // localStorage.setItem(this.tierKey, response.tier);
-      // localStorage.setItem('billing', response.paymentFrequency);
+    }),
+    catchError(error => {
+      console.error('Login error:', error);
+      return throwError(() => error); // Ensure the error is properly returned
+    })
+  );
+}
 
-      // // Update login state after successful login
-      // localStorage.setItem("isUserLoggedIn", "true");
-    }));
+async authenticateWithFirebase(backendToken: string): Promise<void> {
+  try {
+    const firebaseToken = await this.getFirebaseToken(backendToken);
+    await signInWithCustomToken(auth, firebaseToken);
+    console.log('Firebase auth successful');
+  } catch (error) {
+    console.error('Firebase auth error:', error);
+    // Log the error but don’t disrupt the user's session
+  }
+}
+
+async getFirebaseToken(backendToken: string): Promise<string> {
+  try {
+    const response = await fetch(`${this.baseURL}/auth/firebase-token`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${backendToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to get Firebase token: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.firebaseToken;
+  } catch (error) {
+    console.error('Error getting Firebase token:', error);
+    throw error;
+  }
+}
+
+async refreshFirebaseAuth(): Promise<void> {
+  const token = localStorage.getItem(this.tokenKey);
+  if (!token) {
+    throw new Error('No auth token found');
+  }
+
+  try {
+    const firebaseToken = await this.getFirebaseToken(token);
+    const userCredential = await signInWithCustomToken(auth, firebaseToken);
+    console.log('Firebase auth refreshed:', userCredential.user);
+  } catch (error) {
+    console.error('Failed to refresh Firebase auth:', error);
+    throw error;
+  }
 }
 
 private handleSuccessfulAuth(response: any) {
@@ -143,9 +238,35 @@ private handleSuccessfulAuth(response: any) {
 //   );
 // }
 
+// isloggedIn(): Observable<boolean> {
+//   return this.isLoggedIn$;
+// }
+
 isloggedIn(): Observable<boolean> {
-  return this.isLoggedIn$;
+  // Update current state before returning observable
+  const currentState = this.authService.isAuthenticated();
+  this.isLoggedInSubject.next(currentState);
+  
+  return this.isLoggedInSubject.asObservable().pipe(
+      tap(isLoggedIn => {
+          if (!isLoggedIn) {
+              // Clear all auth-related tokens
+              localStorage.removeItem('token');
+              localStorage.removeItem('auth_token');
+              localStorage.removeItem('googleAuthToken');
+              // this.isLoggedInSubject.next(false);
+          }
+      })
+  );
 }
+
+// private checkInitialLoginState(): boolean {
+//   return this.checkLocalStorageAuth() && 
+//          this.authStateService.checkAuthStatus() && 
+//          this.authService.isAuthenticated();
+// }
+
+
 
 logoutUser() {
   localStorage.removeItem(this.tokenKey);
@@ -188,9 +309,7 @@ checkEmail(email: string): Observable<{exists: boolean, message: string}> {
 // }
 
 getUserId(): string {
-  // console.log('UserService: getUserId called');
   const userId = localStorage.getItem(this.userIdKey) || localStorage.getItem('user');
-  // console.log('UserService: userId from localStorage:', userId);
   
   if (userId) {
     if (userId.startsWith('{')) {
@@ -199,17 +318,30 @@ getUserId(): string {
         const userObject = JSON.parse(userId);
         return userObject.userId || '';
       } catch (error) {
-        // console.error('Error parsing user object:', error);
       }
     } else {
-      // It's just the userId string
       return userId;
     }
   }
   
-  // console.log('UserService: No userId found');
   return '';
 }
+
+
+// getUserId(): string | ''{
+//   const currentUser = auth.currentUser;
+//   return currentUser ? currentUser.uid : '';
+// }
+
+// getUser(userId: string): Observable<User> {
+//   console.log('Getting user profile:', {
+//     requestedId: userId,
+//     authUserId: auth.currentUser?.uid,
+//     isOwnProfile: userId === auth.currentUser?.uid
+//   });
+  
+//   return this.http.get<User>(`${this.apiUrl}/users/${userId}`);
+// }
 
 // signUpWithGoogle(userData: any): Observable<User> {
 //   return this.http.post<User>(`${this.baseURL}/signup-google`, userData);
@@ -240,50 +372,299 @@ getUserId(): string {
 //       localStorage.setItem('user', JSON.stringify(updatedStoredUser));
 //     })
 //   );
+// // }
+
+// updateUser(updatedUser: User): Observable<User> {
+//   let reqHeaders = {
+//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+//   };
+
+//   // Prepare the user data for the API
+//   const userForApi = {
+//     ...updatedUser,
+//     profilePictureSettings: updatedUser.profilePictureSettings 
+//       ? JSON.stringify(updatedUser.profilePictureSettings) 
+//       : null
+//   };
+
+//   // Use the /data/ endpoint for all updates
+//   return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, userForApi, { headers: reqHeaders })
+//     .pipe(
+//       map(response => {
+//         // Parse the profilePictureSettings if it exists in the response
+//         if (typeof response.profilePictureSettings === 'string') {
+//           response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+//         }
+//         // If profilePictureSettings come back as null, use the ones we sent
+//         if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+//           response.profilePictureSettings = updatedUser.profilePictureSettings;
+//         }
+//         return response;
+//       }),
+//       tap(response => {
+//         // Update the user in localStorage, preserving the imgUrl if it's not being updated
+//         console.log('Updated user:', response);
+//         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+//         const updatedStoredUser = {
+//           ...storedUser,
+//           ...response,
+//           imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+//           profilePictureSettings: response.profilePictureSettings || storedUser.profilePictureSettings
+//         };
+//         localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+//       })
+//     );
+// }
+
+// async updateUser(updatedUser: User): Promise<User> {
+//   try {
+//     // Wait for and validate token
+//     const token = await this.authService.waitForToken();
+//     if (!token) {
+//       throw new Error('Not authenticated');
+//     }
+
+//     const headers = {
+//       Authorization: `Bearer ${token}`
+//     };
+
+//     // Prepare user data with proper profilePictureSettings handling
+//     const userForApi = {
+//       ...updatedUser,
+//       profilePictureSettings: updatedUser.profilePictureSettings 
+//         ? JSON.stringify(updatedUser.profilePictureSettings) 
+//         : null
+//     };
+
+//     // Make API request with error handling
+//     const response = await firstValueFrom(
+//       this.http.put<User>(
+//         `${this.baseURL}/data/${updatedUser.userId}`, 
+//         userForApi, 
+//         { headers }
+//       ).pipe(
+//         map(response => {
+//           // Parse profilePictureSettings if it exists
+//           if (typeof response.profilePictureSettings === 'string') {
+//             try {
+//               response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+//             } catch (e) {
+//               console.error('Error parsing profilePictureSettings:', e);
+//               // Fallback to original settings if parsing fails
+//               response.profilePictureSettings = updatedUser.profilePictureSettings;
+//             }
+//           }
+
+//           // Use original settings if response settings are null
+//           if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+//             response.profilePictureSettings = updatedUser.profilePictureSettings;
+//           }
+
+//           return response;
+//         }),
+//         tap(response => {
+//           // Update localStorage with proper merging of existing data
+//           try {
+//             const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+//             const updatedStoredUser = {
+//               ...storedUser,
+//               ...response,
+//               // Preserve existing imgUrl if not being updated
+//               imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+//               // Preserve existing settings if not in response
+//               profilePictureSettings: response.profilePictureSettings || 
+//                                     updatedUser.profilePictureSettings || 
+//                                     storedUser.profilePictureSettings
+//             };
+//             localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+//             console.log('Updated user in localStorage:', updatedStoredUser);
+//           } catch (e) {
+//             console.error('Error updating localStorage:', e);
+//             // Don't fail the update if localStorage fails
+//           }
+//         })
+//       )
+//     );
+
+//     return response;
+
+//   } catch (error) {
+//     console.error('Error updating user:', error);
+    
+//     // Handle specific error cases
+//     if (error instanceof HttpErrorResponse) {
+//       switch (error.status) {
+//         case 401:
+//           this.authService.logout();
+//           throw new Error('Authentication expired');
+//         case 403:
+//           throw new Error('Not authorized to update user');
+//         case 404:
+//           throw new Error('User not found');
+//         default:
+//           throw new Error('Failed to update user');
+//       }
+//     }
+
+//     // Re-throw original error if not HTTP error
+//     throw error;
+//   }
 // }
 
 updateUser(updatedUser: User): Observable<User> {
-  let reqHeaders = {
-    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-  };
+  // Create an observable from the token check
+  return from(this.authService.waitForToken()).pipe(
+    switchMap(token => {
+      if (!token) {
+        return throwError(() => new Error('Not authenticated'));
+      }
 
-  // Prepare the user data for the API
-  const userForApi = {
-    ...updatedUser,
-    profilePictureSettings: updatedUser.profilePictureSettings 
-      ? JSON.stringify(updatedUser.profilePictureSettings) 
-      : null
-  };
+      const headers = {
+        Authorization: `Bearer ${token}`
+      };
 
-  // Use the /data/ endpoint for all updates
-  return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, userForApi, { headers: reqHeaders })
-    .pipe(
-      map(response => {
-        // Parse the profilePictureSettings if it exists in the response
-        if (typeof response.profilePictureSettings === 'string') {
-          response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
-        }
-        // If profilePictureSettings come back as null, use the ones we sent
-        if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
-          response.profilePictureSettings = updatedUser.profilePictureSettings;
-        }
-        return response;
-      }),
-      tap(response => {
-        // Update the user in localStorage, preserving the imgUrl if it's not being updated
-        console.log('Updated user:', response);
-        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-        const updatedStoredUser = {
-          ...storedUser,
-          ...response,
-          imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
-          profilePictureSettings: response.profilePictureSettings || storedUser.profilePictureSettings
-        };
-        localStorage.setItem('user', JSON.stringify(updatedStoredUser));
-      })
-    );
+      // Prepare user data with proper profilePictureSettings handling
+      const userForApi = {
+        ...updatedUser,
+        profilePictureSettings: updatedUser.profilePictureSettings 
+          ? JSON.stringify(updatedUser.profilePictureSettings) 
+          : null
+      };
+
+      return this.http.put<User>(
+        `${this.baseURL}/data/${updatedUser.userId}`, 
+        userForApi, 
+        { headers }
+      ).pipe(
+        map(response => {
+          // Parse profilePictureSettings if it exists
+          if (typeof response.profilePictureSettings === 'string') {
+            try {
+              response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
+            } catch (e) {
+              console.error('Error parsing profilePictureSettings:', e);
+              // Fallback to original settings if parsing fails
+              response.profilePictureSettings = updatedUser.profilePictureSettings;
+            }
+          }
+
+          // Use original settings if response settings are null
+          if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
+            response.profilePictureSettings = updatedUser.profilePictureSettings;
+          }
+
+          return response;
+        }),
+        tap(response => {
+          // Update localStorage with proper merging of existing data
+          try {
+            const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+            const updatedStoredUser = {
+              ...storedUser,
+              ...response,
+              // Preserve existing imgUrl if not being updated
+              imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
+              // Preserve existing settings if not in response
+              profilePictureSettings: response.profilePictureSettings || 
+                                    updatedUser.profilePictureSettings || 
+                                    storedUser.profilePictureSettings
+            };
+            localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+            console.log('Updated user in localStorage:', updatedStoredUser);
+          } catch (e) {
+            console.error('Error updating localStorage:', e);
+            // Don't fail the update if localStorage fails
+          }
+        }),
+        catchError(error => {
+          console.error('Error updating user:', error);
+          
+          if (error instanceof HttpErrorResponse) {
+            switch (error.status) {
+              case 401:
+                this.authService.logout();
+                return throwError(() => new Error('Authentication expired'));
+              case 403:
+                return throwError(() => new Error('Not authorized to update user'));
+              case 404:
+                return throwError(() => new Error('User not found'));
+              default:
+                return throwError(() => new Error('Failed to update user'));
+            }
+          }
+          return throwError(() => error);
+        })
+      );
+    })
+  );
 }
 
+async updateProfile(userData: any): Promise<any> {
+  try {
+    // Get current userId and token
+    const userId = this.getUserId();
+    const token = localStorage.getItem(this.tokenKey);
+    
+    if (!userId) {
+      throw new Error('User ID not found');
+    }
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    console.log('Updating profile for user:', {
+      userId,
+      providedId: userData.id,
+      imageUrl: userData.imgUrl
+    });
+
+    // Ensure we're using the correct user ID
+    const dataToUpdate = {
+      ...userData,
+      userId: userId // Ensure userId is set
+    };
+
+    // Make the HTTP request with authorization header
+    const response = await lastValueFrom(
+      this.http.put(`${this.baseURL}/data/${userId}`, dataToUpdate, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Profile update error:', {
+            status: error.status,
+            message: error.message,
+            error: error.error
+          });
+          throw error;
+        })
+      )
+    );
+
+    // Convert any image URLs in the response
+    const updatedUser = response as any;
+    if (updatedUser?.imgUrl) {
+      updatedUser.imgUrl = await this.imageUrlManager.getDisplayUrl(
+        userId,
+        updatedUser.imgUrl
+      );
+    }
+
+    // Update local storage
+    const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+    const updatedStoredUser = {
+      ...storedUser,
+      ...updatedUser
+    };
+    localStorage.setItem('user', JSON.stringify(updatedStoredUser));
+
+    return updatedUser;
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+}
 
   checkPassword(userId: string, password: string): Observable<boolean> {
     let reqHeaders = {
@@ -350,4 +731,103 @@ resetPassword(token: string, newPassword: string): Observable<any> {
   return this.http.post(`${this.baseURL}/reset-password/${token}`, { password: newPassword });
 }
 
+updateUserWithImage(userId: string, userData: User): Observable<User> {
+  return this.http.patch<User>(`${this.baseURL}/users/${userId}`, {
+    ...userData,
+    imgUrl: userData.imgUrl,
+    profilePictureSettings: userData.profilePictureSettings
+  });
+}
+
+// Add method to delete old image if needed
+deleteOldImage(userId: string, oldImageUrl: string): Observable<any> {
+  return this.http.delete(`${this.baseURL}/users/${userId}/image`, {
+    body: { imageUrl: oldImageUrl }
+  });
+}
+
+async getUploadSignedUrl(userId: string, fileName: string, contentType: string): Promise<{ signedUrl: string }> {
+  const storage = getStorage();
+  const fileRef = ref(storage, `profileImages/${userId}/${Date.now()}-${fileName}`);
+  
+  // Return a promise that resolves with the reference path
+  return Promise.resolve({ signedUrl: fileRef.fullPath });
+}
+
+updateProfileImage(userId: string, imageUrl: string): Observable<User> {
+  const reqHeaders = {
+    Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
+  };
+
+  const updateData = {
+    imgUrl: imageUrl,
+    profilePictureSettings: {
+      zoom: 1,
+      x: 0,
+      y: 0
+    }
+  };
+
+  return this.http.put<User>(`${this.baseURL}/profile-image/${userId}`, updateData, { headers: reqHeaders })
+    .pipe(
+      map(response => {
+        // Update local storage
+        const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+        const updatedUser = {
+          ...storedUser,
+          imgUrl: imageUrl,
+          profilePictureSettings: updateData.profilePictureSettings
+        };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        return response;
+      })
+    );
+}
+
+// async updateProfilePicture(userId: string, fileName: string, profilePictureSettings: any): Promise<any> {
+//   const token = await this.authService.getToken();
+//   const headers = new HttpHeaders()
+//     .set('Authorization', `Bearer ${token}`)
+//     .set('Content-Type', 'application/json');
+
+//   const body = {
+//     fileName,
+//     profilePictureSettings,
+//   };
+
+//   return this.http.put(`${this.baseURL}/images/profile-picture/${userId}`, body, { headers }).toPromise();
+// }
+
+// Helper method to handle image upload
+uploadImage(userId: string, file: File): Observable<string> {
+  return from(this.getUploadSignedUrl(userId, file.name, file.type)).pipe(
+    switchMap(({ signedUrl }) => {
+      const storage = getStorage();
+      const storageRef = ref(storage, signedUrl);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      // Return a new Observable that tracks the upload
+      return new Observable<string>(observer => {
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+          },
+          (error) => {
+            observer.error(error);
+          },
+          async () => {
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              observer.next(downloadURL);
+              observer.complete();
+            } catch (error) {
+              observer.error(error);
+            }
+          }
+        );
+      });
+    })
+  );
+}
 }

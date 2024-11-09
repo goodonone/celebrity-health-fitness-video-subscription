@@ -1,15 +1,23 @@
 <div class="background"></div>
 
 <div class="pageContainer">
-  <!-- Upgrade button for Tier Two and Three -->
-  <div class="upgradeButtonContainer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">
-      <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]" [class.hidden]="upgradeTimer">Upgrade</button>
-  </div>
+
+<ng-container *ngIf="isLoading" class="spinnerContainer">
+    <div class="spinner-overlay">
+        <svg class="spinnerPage" viewBox="0 0 50 50">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+        </svg>
+        <div class="spinner-text page">Loading...</div>
+    </div>
+</ng-container>
+
 
   <!-- Countdown timer for First and Second Tiers -->
   <div class="bannerFirstAndSecondTiers" id="timer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'" [class.hidden]="upgradeTimer">
     <span class="timer-base">{{timerBase}}</span>
     <span class="timer-upgrade" [class.fade-out]="upgradeTimer"> Upgrade For Live Access!</span>
+     <!-- Upgrade button for Tier Two and Three -->
+        <button class="btn btn-upgrade" mat-button [routerLink]="['/upgrade/', currentUser.userId]" [class.hidden]="upgradeTimer" *ngIf="currentUser?.tier === 'Just Looking' || currentUser?.tier === 'Motivated'">Upgrade</button>
   </div>
 
   <!-- Countdown timer for Third Tier -->

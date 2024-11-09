@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductStatusService {
-  private limitReachedProducts = new BehaviorSubject<Set<string>>(new Set<string>());
+  private limitReachedProducts = new BehaviorSubject<Set<string>>(
+    new Set<string>()
+  );
   private hoverStates = new Map<string, boolean>();
   private temporaryQuantities = new Map<string, number>();
   private productQuantities = new Map<string, number>();
+  // private imagesLoaded = false;
 
   setLimitReached(productId: string, isLimitReached: boolean) {
     const currentSet = new Set(this.limitReachedProducts.value);
@@ -66,4 +69,13 @@ export class ProductStatusService {
     this.hoverStates.delete(productId);
     this.temporaryQuantities.delete(productId);
   }
+
+//   areImagesLoaded(): boolean {
+//     return this.imagesLoaded;
+//   }
+
+//   setImagesLoaded(status: boolean): void {
+//     this.imagesLoaded = status;
+//   }
+// }
 }

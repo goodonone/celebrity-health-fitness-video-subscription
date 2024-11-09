@@ -457,6 +457,8 @@ import { Product } from 'src/app/models/product';
 import { AuthService } from 'src/app/services/auth.service';
 import { CartService } from 'src/app/services/cart.service';
 import { PaymentService } from 'src/app/services/payment.service';
+import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-cart',
@@ -480,6 +482,15 @@ export class CartComponent implements OnInit {
   hoveredItemPreview: HTMLElement | null = null; // Reference to the preview element
   hoveredItemIndex: number | null = null;
   private hoverTimeout: any = null; 
+  isMinusClicked: boolean = false;
+  isPlusClicked: boolean = false;
+  minusClicked: boolean = false;
+  plusClicked: boolean = false;
+  hoveredButton: string | null = null;
+  isIconHovered: boolean = false;
+
+  faPlus = faPlus;
+  faMinus = faMinus;
 
   constructor(
     private cartService: CartService,
@@ -509,163 +520,6 @@ export class CartComponent implements OnInit {
 ngAfterViewInit() {
   // this.setupImagePreviews();
 }
-
-// setupImagePreviews() {
-//   this.productImages.forEach((imageEl: ElementRef<HTMLElement>) => {
-//     const img = imageEl.nativeElement;
-//     const preview = img.parentElement?.querySelector('.largeImagePreview') as HTMLElement;
-
-//     if (preview) {
-//       img.addEventListener('mouseenter', () => this.showPreview(img, preview));
-//       img.addEventListener('mouseleave', () => this.hidePreview(preview));
-//     }
-//   });
-// }
-
-// showPreview(img: HTMLElement, preview: HTMLElement) {
-//   const rect = img.getBoundingClientRect();
-//   const cartContainer = document.querySelector('.cartContainer') as HTMLElement;
-//   const cartRect = cartContainer.getBoundingClientRect();
-
-//   preview.style.position = 'fixed';
-//   preview.style.left = `${cartRect.left}px`;
-//   preview.style.top = `${cartRect.top}px`;
-//   preview.style.display = 'block';
-//   preview.style.zIndex = '1000';
-// }
-
-// Method to handle mouse enter and show the preview
-
-  // Method to handle mouse enter and show the preview
-  // showPreview(index: number, cartItem: CartItem) {
-  //   this.hoveredItem = cartItem;
-
-  //   setTimeout(() => {
-  //     if (this.productImages && this.largeImagePreview) {
-  //       const imageElement = this.productImages.toArray()[index];
-  //       if (imageElement) {
-  //         const rect = imageElement.nativeElement.getBoundingClientRect();
-  //         const previewElement = this.largeImagePreview.nativeElement;
-  //         previewElement.style.display = 'block';
-  //         previewElement.style.position = 'fixed';
-  //         previewElement.style.left = `${rect.right}px`;
-  //         previewElement.style.top = `${rect.top}px`;
-  //       }
-  //     }
-  //   });
-  // }
-
-  // hidePreview() {
-  //   this.hoveredItem = null;
-  //   if (this.largeImagePreview) {
-  //     this.largeImagePreview.nativeElement.style.display = 'none';
-  //   }
-  // }
-
-  // showPreview(index: number): void {
-  //   this.hoveredItemIndex = index;
-  //   this.cart$.subscribe(cart => {
-  //     if (cart && cart.items) {
-  //       this.hoveredItem = cart.items[index];
-  //     }
-  //   });
-  // }
-
-  // hidePreview(): void {
-  //   this.hoveredItemIndex = null;
-  //   this.hoveredItem = null;
-  // }
-
-//   onMouseEnter(event: MouseEvent, cartItem: any) {
-//     const target = event.target as HTMLElement;
-//     const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-//     const scrollTop = window.scrollY || window.pageYOffset;
-//     preview.style.top = `${target.getBoundingClientRect().top + scrollTop}px`; 
-// }
-
-// onMouseEnter(event: MouseEvent) {
-//   const target = event.currentTarget as HTMLElement;
-//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
-
-//   const scrollTop = window.scrollY || window.pageYOffset;
-//   preview.style.top = `${targetRect.top + scrollTop}px - 350px`; // Set the top dynamically
-//   preview.style.display = 'block';
-
-//   console.log('Preview top:', preview.style.top);
-// }
-
-// onMouseEnter(event: MouseEvent) {
-//   const target = event.currentTarget as HTMLElement;
-//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-//   const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
-
-//   const scrollTop = window.scrollY || window.pageYOffset;
-  
-//   // Subtract 350 pixels from the calculated top position
-//   const newTop = targetRect.top + scrollTop - 170;
-
-//   // Apply the new top value
-//   preview.style.top = `${newTop}px`;
-//   preview.style.display = 'block';
-//   // preview.style.animation = 'fade-in 0.5s ease-in-out';
-
-//   // console.log('Preview top:', preview.style.top);
-// }
-
-// onMouseLeave(event: MouseEvent) {
-//   const target = event.currentTarget as HTMLElement;
-//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-//   preview.style.display = 'none';
-// }
-
-// onMouseEnter(event: MouseEvent) {
-//   const target = event.currentTarget as HTMLElement;
-//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-  
-//   // Clear any existing timeout to avoid multiple triggers
-//   if (this.hoverTimeout) {
-//     clearTimeout(this.hoverTimeout);
-//   }
-
-//   // Set a timeout for 150ms to show the preview
-//   this.hoverTimeout = setTimeout(() => {
-//     const targetRect = target.getBoundingClientRect(); // Get the position of the hovered image
-//     const scrollTop = window.scrollY || window.pageYOffset;
-//     const newTop = targetRect.top + scrollTop - 170; // Adjust the top position dynamically
-
-//     preview.style.top = `${newTop}px`;
-//     preview.style.display = 'block';
-
-//     console.log('Preview top:', preview.style.top);
-//   }, 100); // Trigger after 150ms
-// }
-
-// onMouseLeave(event: MouseEvent) {
-//   const target = event.currentTarget as HTMLElement;
-//   const preview = target.querySelector('.largeImagePreview') as HTMLElement;
-
-//   // Clear the timeout if mouse leaves before 150ms
-//   if (this.hoverTimeout) {
-//     clearTimeout(this.hoverTimeout);
-//   }
-
-//   // Hide the preview when the mouse leaves
-//   preview.style.display = 'none';
-// }
-
-
-
- // Method to show the preview for the hovered item
-//  showPreview(cartItem: CartItem) {
-//   this.hoveredItem = cartItem;
-//   // console.log('Hovered item:', cartItem);
-// }
-
-// // Method to hide the preview
-// hidePreview() {
-//   this.hoveredItem = null;
-// }
 
 onMouseEnter(event: MouseEvent) {
   const target = event.currentTarget as HTMLElement;
@@ -708,18 +562,90 @@ onMouseLeave(event: MouseEvent) {
   preview.style.display = 'none';
 }
 
-  loadCart(): void {
-    this.cartService.getCartObservable().pipe(
-      map(backendCart => this.mapBackendCartToCart(backendCart)),
-      catchError(error => {
-        console.error('Error loading cart:', error);
-        return [];
-      })
-    ).subscribe(cart => {
-      // console.log('Mapped cart:', cart);
-      this.cartSubject.next(cart);
+onMouseHover(button: string) {
+  this.hoveredButton = button;
+  this.isIconHovered = true;
+  // Existing functionality for specific button actions
+}
+
+
+onMouseDown(button: string) {
+  if (button === 'minus') {
+    this.minusClicked = true;
+  } else if (button === 'plus') {
+    this.plusClicked = true;
+  }
+}
+
+onMouseUp(button: string) {
+  this.resetButtonState(button);
+}
+
+onMouseOff(button: string) {
+  this.hoveredButton = null;
+  this.isIconHovered = false;
+  this.resetButtonState(button);
+}
+
+isButtonHovered(button: string): boolean {
+  return this.hoveredButton === button;
+}
+
+increase(cartItem: CartItem): void {
+  if (cartItem.quantity < 10) {
+    this.updateQuantity(cartItem, cartItem.quantity + 1);
+  }
+}
+
+decrease(cartItem: CartItem): void {
+  if (cartItem.quantity > 1) {
+    this.updateQuantity(cartItem, cartItem.quantity - 1);
+  }
+}
+
+isDisabled(button: string, quantity: number): boolean {
+  if (button === 'minus') {
+    return quantity <= 1;
+  } else if (button === 'plus') {
+    return quantity >= 10;
+  }
+  return false;
+}
+
+private updateQuantity(cartItem: CartItem, newQuantity: number): void {
+  if (cartItem.Product.productId && newQuantity >= 1 && newQuantity <= 10) {
+    this.cartService.updateQuantity(cartItem.Product.productId, newQuantity).subscribe({
+      next: () => {
+        cartItem.quantity = newQuantity; // Update local state
+      },
+      error: (error) => {
+        console.error('Error updating quantity:', error);
+      }
     });
   }
+}
+
+resetButtonState(button: string) {
+  if (button === 'minus') {
+    this.minusClicked = false;
+  } else if (button === 'plus') {
+    this.plusClicked = false;
+  }
+}
+
+
+loadCart(): void {
+  this.cartService.getCartObservable().pipe(
+    map(backendCart => this.mapBackendCartToCart(backendCart)),
+    catchError(error => {
+      console.error('Error loading cart:', error);
+      return [];
+    })
+  ).subscribe(cart => {
+    // console.log('Mapped cart:', cart);
+    this.cartSubject.next(cart);
+  });
+}
 
   private mapBackendCartToCart(backendCart: any): Cart {
     // console.log('Backend cart received:', backendCart);
@@ -758,65 +684,6 @@ onMouseLeave(event: MouseEvent) {
     };
   }
 
-  // removeFromCart(cartItem: CartItem) {
-  //   if (cartItem.Product.productId) {
-  //     this.cartService.removeFromCart(cartItem.Product.productId).subscribe({
-  //       next: () => {
-  //         // Update the cart by removing the item locally
-  //         this.cart$ = this.cart$.pipe(
-  //           map(cart => {
-  //             // Recalculate items by removing the specified cart item
-  //             const updatedItems = cart.CartProducts
-  //               .map(cp => ({
-  //                 cartProductId: cp.cartProductId,
-  //                 cartId: cp.cartId,
-  //                 productId: cp.productId,
-  //                 quantity: cp.quantity,
-  //                 createdAt: new Date(cp.createdAt), // Add createdAt
-  //                 updatedAt: new Date(cp.updatedAt), // Add updatedAt
-  //                 Product: {
-  //                   productId: cp.Product.productId,
-  //                   productName: cp.Product.productName,
-  //                   productPrice: cp.Product.productPrice,
-  //                   productDescription: cp.Product.productDescription,
-  //                   productUrl: cp.Product.productUrl,
-  //                   createdAt: new Date(cp.Product.createdAt),
-  //                   updatedAt: new Date(cp.Product.updatedAt)
-  //                 }
-  //               }))
-  //               .filter(item => item.Product.productId !== cartItem.Product.productId); // Remove the item
-  
-  //             // Recalculate total price and total count based on updated items
-  //             const totalPrice = updatedItems.reduce(
-  //               (total: number, item: CartItem) => total + item.Product.productPrice * item.quantity,
-  //               0
-  //             );
-  //             const totalCount = updatedItems.reduce(
-  //               (count: number, item: CartItem) => count + item.quantity,
-  //               0
-  //             );
-  
-  //             // Create a new cart object
-  //             const updatedCart: Cart = {
-  //               ...cart,
-  //               items: updatedItems, // Update items
-  //               totalPrice: totalPrice, // Set recalculated total price
-  //               totalCount: totalCount, // Set recalculated total count
-  //               calculatedTotalPrice: totalPrice, // Set recalculated total price for calculatedTotalPrice
-  //               calculatedTotalCount: totalCount // Set recalculated total count for calculatedTotalCount
-  //             };
-  
-  //             return updatedCart;
-  //           })
-  //         );
-  //       },
-  //       error: (error) => {
-  //         console.error('Error removing item from cart:', error);
-  //       }
-  //     });
-  //   }
-  // }
-
   removeFromCart(cartItem: CartItem) {
     if (cartItem.Product.productId) {
       this.cartService.removeFromCart(cartItem.Product.productId).subscribe({
@@ -829,31 +696,6 @@ onMouseLeave(event: MouseEvent) {
       });
     }
   }
-
-  // changeQuantity(cartItem: CartItem, event: Event) {
-  //   const target = event.target as HTMLSelectElement;
-  //   const newQuantity = parseInt(target.value);
-  
-  //   if (cartItem.Product.productId && newQuantity > 0) {
-  //     this.cartService.updateQuantity(cartItem.Product.productId, newQuantity).subscribe({
-  //       next: () => {
-  //         const currentCart = this.cartSubject.getValue();
-  //         const updatedCart = new Cart();
-  //         Object.assign(updatedCart, currentCart);
-  //         const updatedItem = updatedCart.CartProducts.find(item => item.Product.productId === cartItem.Product.productId);
-  //         if (updatedItem) {
-  //           updatedItem.quantity = newQuantity;
-  //           this.updateCartTotals(updatedCart);
-  //           this.cartSubject.next(updatedCart);
-  //         }
-  //       },
-  //       error: (error) => {
-  //         console.error('Error updating quantity:', error);
-  //       }
-  //     });
-  //   }
-  // }
-
   changeQuantity(cartItem: CartItem, event: Event) {
     const target = event.target as HTMLSelectElement;
     const newQuantity = parseInt(target.value);
@@ -869,28 +711,6 @@ onMouseLeave(event: MouseEvent) {
       });
     }
   }
-
-  // private updateCartTotals(cart: Cart): void {
-  //   cart.totalCount = cart.calculatedTotalCount;
-  //   cart.totalPrice = cart.calculatedTotalPrice;
-  // }
-
-  // checkoutCart() {
-  //   const currentCart = this.cartSubject.getValue();
-  //   const newPayment = {
-  //     userId: this.userId!,
-  //     tier: localStorage.getItem("tier") || "",
-  //     price: currentCart.totalPrice,
-  //     paymentType: 'store purchase',
-  //   };
-
-  //   this.paymentService.newPaymentStore(newPayment).subscribe(() => {
-  //     this.cartService.clearCart().subscribe(() => {
-  //       this.cartStatic = !this.cartStatic;
-  //       this.cartSubject.next(new Cart()); // Reset the cart after checkout
-  //     });
-  //   });
-  // }
 
   checkoutCart() {
     this.cart$.subscribe(cart => {

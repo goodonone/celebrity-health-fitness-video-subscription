@@ -1,5 +1,5 @@
 * {
-  font-family: "Outfit", sans-serif;
+  // font-family: 'Outfit', sans-serif !important;
   user-select: none;
 }
 
@@ -105,7 +105,9 @@
 //   }
 // }
 
-.profileNameTier.tierOne {
+.profileNameTier.tierOne,
+.profileNameTier.tierTwo,
+.profileNameTier.tierThree {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -116,7 +118,9 @@
   line-height: clamp(6rem, 8.5vw, 9rem);
   padding-right: 0.5rem;
   font-size: clamp(5.5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
+  font-weight: 700;
+  letter-spacing: -2px;
+  // font-family: "Roboto", sans-serif !important;
   // overflow: hidden;
   // overflow-x: hidden;
   // text-overflow: ellipsis;
@@ -138,43 +142,44 @@
   }
 }
 
-.profileNameTier.tierTwo{
-  display: flex;
-  flex-direction: column;
-  // margin: 0 auto;
-  // justify-content: flex-start;
-  justify-content: center;
-  align-items: center;
-  // text-align: center;
-  width: 100%;
-  max-width: 40rem;
-  // height: 100%;
-  line-height: clamp(6rem, 8.5vw, 9rem);
-  padding-right: 0.5rem;
-  font-size: clamp(4.5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
-  // height: auto;
-  // overflow-x: hidden;
-  // text-overflow: ellipsis;
-  // white-space: nowrap;
-  // overflow: hidden;
-  // background-color: turquoise;
-  // position: relative;
+// .profileNameTier.tierTwo{
+//   display: flex;
+//   flex-direction: column;
+//   // margin: 0 auto;
+//   // justify-content: flex-start;
+//   justify-content: center;
+//   align-items: center;
+//   // text-align: center;
+//   width: 100%;
+//   max-width: 40rem;
+//   // height: 100%;
+//   line-height: clamp(6rem, 8.5vw, 9rem);
+//   padding-right: 0.5rem;
+//   font-size: clamp(4.5rem, 7.5vw, 7.5rem);
+//   font-weight: 700;
+//   letter-spacing: -2px;
+//   // height: auto;
+//   // overflow-x: hidden;
+//   // text-overflow: ellipsis;
+//   // white-space: nowrap;
+//   // overflow: hidden;
+//   // background-color: turquoise;
+//   // position: relative;
 
-  /* Adding the fade-in class for the fade-in effect */
-  &.firstTimeAnimation {
-    animation: fadeIn 0.5s ease-in-out 0.5s both;
-  }
-}
+//   /* Adding the fade-in class for the fade-in effect */
+//   &.firstTimeAnimation {
+//     animation: fadeIn 0.5s ease-in-out 0.5s both;
+//   }
+// }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
 
 .mobileTierTwo{
   font-size: inherit;
@@ -184,40 +189,42 @@
   // margin-right: 50rem;
 }
 
-.profileNameTier.tierThree {
-  display: flex;
-  flex-direction: column;
-  // text-align: center;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  // min-width: 20rem;
-  max-width: 40rem;
-  // max-width: fit-content;
-  line-height: clamp(6rem, 8.5vw, 9rem);
-  padding-right: 0.5rem;
-  font-size: clamp(5rem, 7.5vw, 7.5rem);
-  font-weight: 1000;
-  // background-color: lavender;
-  // overflow: hidden;
-  // position: relative;
+// .profileNameTier.tierThree {
+//   display: flex;
+//   flex-direction: column;
+//   // text-align: center;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+//   // min-width: 20rem;
+//   max-width: 40rem;
+//   // max-width: fit-content;
+//   line-height: clamp(6rem, 8.5vw, 9rem);
+//   padding-right: 0.5rem;
+//   font-size: clamp(5rem, 7.5vw, 7.5rem);
+//   font-weight: 700;
+//   letter-spacing: -2px;
+//   // letter-spacing: -15px;
+//   // background-color: lavender;
+//   // overflow: hidden;
+//   // position: relative;
  
-  // padding-right: 2.5rem;
+//   // padding-right: 2.5rem;
 
-  /* Adding the fade-in class for the fade-in effect */
-  &.firstTimeAnimation {
-    animation: fadeIn 1s ease-in-out 0.5s both;
-  }
-}
+//   /* Adding the fade-in class for the fade-in effect */
+//   &.firstTimeAnimation {
+//     animation: fadeIn 1s ease-in-out 0.5s both;
+//   }
+// }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+// @keyframes fadeIn {
+//   from {
+//     opacity: 0;
+//   }
+//   to {
+//     opacity: 1;
+//   }
+// }
 
 // .nameTierOne, .nameTierTwo, .nameTierThree {
 //   display: inline-block;
@@ -250,6 +257,7 @@
   font-weight: inherit;
   font-family: inherit;
   position: relative;
+  // font-family: "Roboto", sans-serif !important;
   // background-color: lawngreen;
 }
 
@@ -686,19 +694,27 @@ fieldset {
   z-index: 5;
 }
 
-.zoomIn, .zoomOut{
+.zoomIn, 
+.zoomOut{
   // font-size: ;
   font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   color: white;
   text-shadow: 0 0 7px #000000;
-  opacity: 0.7;
+  opacity: 0.8;
   // line-height: clamp(2rem, 3vw, 3rem);
   // padding-bottom: 1rem;
   cursor: pointer;
 
   &.clicked{
     opacity: 1;
-    color: rgb(0, 0, 0);
+    color: rgb(191, 191, 191);
+  }
+
+  &.disabled{
+    // cursor: not-allowed;
+    pointer-events: none;
+    // color: rgb(0, 0, 0);
+    opacity: 0.4;
   }
 }
 
@@ -709,8 +725,6 @@ fieldset {
 ::ng-deep .zoomOut svg, ::ng-deep .zoomIn svg{
   filter: drop-shadow(0 0 4px #000000);
 }
-
-
 
 .profilePictureContainerForDragging{
   position: relative;
@@ -728,8 +742,9 @@ fieldset {
       cursor: grabbing;
     }
   }
-
 }
+
+
 
 .dragToCenter {
   position: absolute;
@@ -756,7 +771,7 @@ fieldset {
 
 .reset{
   position: absolute;
-  top: 80%;
+  top: 78%;
   left: 50%;
   transform: translate(-50%, -50%); 
   z-index: 5;
@@ -765,7 +780,7 @@ fieldset {
   text-shadow: 0 0 7px #000000;
   opacity: 0.7;
   // line-height: clamp(2rem, 3vw, 3rem);
-  padding-bottom: 1rem;
+  // padding-bottom: 1rem;
   cursor: pointer;
   font-weight: 530;
   // border: white 1.5px solid;
@@ -778,8 +793,789 @@ fieldset {
 
   &.clicked{
     opacity: 1;
-    color: rgb(0, 0, 0);
+    color: rgb(191, 191, 191);
     // border-color: rgb(0, 0, 0);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    // pointer-events: none;
+    opacity: 0.4;
+  }
+}
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+    
+//     &.fadeOut {
+//       opacity: 0;
+//     }
+    
+//     &.fadeIn {
+//       opacity: 0.8;
+//     }
+//   }
+
+//   // When hovering over minus button
+//   .zoomOut:hover ~ .zoomIn,
+//   .zoomOut:hover ~ .dragToCenter,
+//   .zoomOut:hover ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over plus button
+//   .zoomIn:hover ~ .zoomOut,
+//   .zoomIn:hover ~ .dragToCenter,
+//   .zoomIn:hover ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over reset button
+//   .reset:hover ~ .zoomIn,
+//   .reset:hover ~ .zoomOut,
+//   .reset:hover ~ .dragToCenter {
+//     opacity: 0;
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     cursor: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fade-transition {
+//   transition: opacity 0.3s ease;
+// }
+
+// .hidden {
+//   opacity: 0;
+// }
+
+// .visible {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // Hover states for minus button
+//   .zoomOut:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomIn,
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Hover states for plus button
+//   .zoomIn:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomOut,
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Hover states for reset button
+//   .reset:hover {
+//     opacity: 1; // Keep hovered button fully visible
+    
+//     & ~ .zoomIn,
+//     & ~ .zoomOut,
+//     & ~ .dragToCenter {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     cursor: not-allowed;
+    
+//     &:hover {
+//       opacity: 0.4; // Maintain disabled opacity even on hover
+//     }
+//   }
+// }
+
+// // Fade transitions
+// .fadeOut {
+//   opacity: 0 !important;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any font awesome icon
+//   .zoomOut:hover:not(.disabled) ~ .dragToCenter,
+//   .zoomOut:hover:not(.disabled) ~ .reset,
+//   .zoomIn:hover:not(.disabled) ~ .dragToCenter,
+//   .zoomIn:hover:not(.disabled) ~ .reset {
+//     opacity: 0;
+//   }
+
+//   // When hovering over reset button
+//   .reset:hover:not(.disabled) {
+//     opacity: 0.8;
+    
+//     & ~ .dragToCenter,
+//     & ~ .zoomButtons {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Special handling for zoomButtons container to keep both icons visible
+//   .zoomButtons {
+//     .zoomIn, .zoomOut {
+//       &:hover:not(.disabled) {
+//         opacity: 1;
+//       }
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// // Fade transitions
+// .fadeOut {
+//   opacity: 0 !important;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any font awesome icon in zoom buttons
+//   .zoomButtons:hover {
+//     .zoomIn:not(.disabled), 
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+    
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button, hide other elements
+//   &:has(.reset:hover:not(.disabled)) {
+//     .zoomButtons,
+//     .dragToCenter {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over any zoom button
+//   .zoomOut:hover:not(.disabled),
+//   .zoomIn:hover:not(.disabled) {
+//     opacity: 1;
+    
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When hovering over zoom buttons container
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over individual zoom buttons
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Existing hover states...
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: none;
+//   }
+// }
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // Existing hover states...
+//   .zoomButtons:hover {
+//     & ~ .dragToCenter,
+//     & ~ .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over zoom buttons container or individual icons
+//   .zoomButtons:hover,
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+
+
+// .profilePictureContainerForDragging {
+//   .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//     transition: opacity 0.3s ease;
+//   }
+  
+//   // Default state - all elements visible
+//   .zoomIn, .zoomOut, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//     opacity: 0.8;
+//   }
+
+//   // When dragging, hide all controls
+//   &.is-dragging {
+//     .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+//       opacity: 0;
+//     }
+//   }
+
+//   // When hovering over zoom buttons container or individual icons
+//   .zoomButtons:hover,
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .reset {
+//       opacity: 0;
+//     }
+
+//     .zoomIn:not(.disabled),
+//     .zoomOut:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over reset button
+//   &:has(.reset:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons {
+//       opacity: 0;
+//     }
+    
+//     .reset:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over chevron-left button
+//   &:has(.chevronLeft:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons,
+//     .reset {
+//       opacity: 0;
+//     }
+    
+//     .chevronLeft:not(.disabled),
+//     .chevronRight:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // When hovering over chevron-right button
+//   &:has(.chevronRight:hover:not(.disabled)) {
+//     .dragToCenter,
+//     .zoomButtons,
+//     .reset {
+//       opacity: 0;
+//     }
+    
+//     .chevronLeft:not(.disabled),
+//     .chevronRight:not(.disabled) {
+//       opacity: 1;
+//     }
+//   }
+
+//   // Handle disabled state for all controls
+//   .zoomIn.disabled,
+//   .zoomOut.disabled,
+//   .reset.disabled,
+//   .chevronLeft.disabled,
+//   .chevronRight.disabled {
+//     opacity: 0.4;
+//     pointer-events: not-allowed;
+//   }
+// }
+
+// // Additional helper classes
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 0.8;
+//   transition: opacity 0.3s ease;
+// }
+
+.profilePictureContainerForDragging {
+  .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+    transition: opacity 0.3s ease;
+  }
+  
+  // Default state - all elements visible
+  .zoomIn, .zoomOut, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+    opacity: 0.8;
+  }
+
+  // When dragging, hide all controls
+  &.is-dragging {
+    .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+      opacity: 0;
+    }
+  }
+
+  // When hovering over zoom buttons container or individual icons
+  .zoomButtons:hover,
+  &:has(.zoomButtons .zoomIn:hover:not(.disabled)),
+  &:has(.zoomButtons .zoomOut:hover:not(.disabled)) {
+    .dragToCenter,
+    .reset,
+    .chevronLeft,
+    .chevronRight {
+      opacity: 0;
+    }
+
+    .zoomIn:not(.disabled),
+    .zoomOut:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over reset button
+  &:has(.reset:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .chevronLeft,
+    .chevronRight {
+      opacity: 0;
+    }
+    
+    .reset:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over chevron-left button
+  &:has(.chevronLeft:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .reset {
+      opacity: 0;
+    }
+    
+    .chevronLeft:not(.disabled),
+    .chevronRight:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // When hovering over chevron-right button
+  &:has(.chevronRight:hover:not(.disabled)) {
+    .dragToCenter,
+    .zoomButtons,
+    .reset {
+      opacity: 0;
+    }
+    
+    .chevronLeft:not(.disabled),
+    .chevronRight:not(.disabled) {
+      opacity: 1;
+    }
+  }
+
+  // Handle disabled state for all controls
+  .zoomIn.disabled,
+  .zoomOut.disabled,
+  .reset.disabled,
+  .chevronLeft.disabled,
+  .chevronRight.disabled {
+    opacity: 0.4;
+    // pointer-events: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Additional helper classes
+.fadeOut {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.fadeIn {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+// Upload image button 
+.imageInputContainer {
+  position: relative;
+  width: 100%;
+  
+  .imgUrl {
+    width: 100%;
+    // max-width: 17rem;
+    // padding-right: 100px; // Make room for upload button
+  }
+  
+  .uploadButton {
+    position: absolute;
+    right: 0.15rem;
+    top: 40.5%;
+    transform: translateY(-49%);
+    min-width: 90px;
+    background-color: white;
+    
+    .uploadingState {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      mat-spinner {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.uploadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  .uploadingContent {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    mat-spinner {
+      margin-bottom: 1rem;
+      stroke: black;
+    }
   }
 }
 
@@ -831,21 +1627,41 @@ h3.profileDetails {
   font-weight: 500;
   font-size: 1.9rem;
   margin-bottom: 1.8rem;
+  // line-height: 1.4rem;
 }
 
 h3.profileDetailsInput {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 h3.profileDetailsInput.email {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.1rem;
 }
+
+h3.profileDetailsInputDOB,
+h3.profileDetailsInputWeight,
+h3.profileDetailsInputHeight,
+h3.profileDetailsInputObjective,
+h3.profileDetailsInputGender{
+  color: white;
+  font-weight: 500;
+  font-size: 1.9rem;
+  margin-bottom: 0.9rem;
+}
+
+// h3.profileDetailsInput.email {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   // margin-bottom: 1.5rem;
+//   // margin-bottom: 0.9rem;
+// }
 
 .email:disabled {
   background-color: rgb(50, 50, 50);
@@ -859,49 +1675,72 @@ h3.profileDetailsInput.email {
 //     margin-bottom: 1.1rem;
 // }
 
-h3.profileDetails.name {
+h3.profileDetails.name{
   width: 100%;
   max-width: 18rem;
-  height: max-content;
-  // width: 18rem;
-  min-width: 5rem;
-  height: 3.73rem;
-  // max-width: 25rem;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  // min-width: 5rem;
+  // overflow-x: hidden;
+  // overflow-y: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+}
+
+// h3.profileDetails.email {
+// //   // width: 18rem;
+// //   width: 100%;
+// //   max-width: 18rem;
+//   width: 100%;
+//   max-width: 18rem;
+//   overflow-x: hidden;
+//   overflow-y: visible !important;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
+
+// h3.profileDetails.email {
+//   // display: flex;
+//   width: 100%;
+//   max-width: 18rem;     
+// }
+
+/* Ensure the h3 element doesn't constrain the content */
+h3.profileDetails.email {
+  width: 100%;
+  max-width: 18rem;
+  overflow: visible; /* Allow content to expand vertically */
+  /* Remove any height constraints if present */
+  /* height: auto; */ /* Uncomment if necessary */
+}
+
+/* Style the email text to handle overflow */
+.emailSpan {
+  display: block;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  //   overflow: visible;
-  /* background-color: #C7FF20; */
+  font-size: inherit; /* Or specify a size, e.g., 1rem */
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  margin-top: -0.3rem;
 }
 
-h3.profileDetails.email {
-  // width: 18rem;
+// h3.profileDetails.email span:last-child {
+//   overflow-x: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+//   width: 100%;
+//   max-width: 18rem;
+// }
 
-  width: 100%;
-  max-width: 18rem;
-  // overflow: visible;
-  overflow-x: hidden;
-  text-overflow:ellipsis;
-  white-space: nowrap;
-  height: 4rem;
-  // margin-bottom: 1.5rem;
-  // overflow-y: visible;
-  //   box-sizing: border-box;
-  //   background-color: #C7FF20;
-  // padding-bottom: 0.2rem;
-  //   height: auto;
-  //   background-color: #c7ff20;
-}
-
-h3.profileDetailsInputDOB {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  // margin-bottom: 2rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.9rem;
-}
+// h3.profileDetailsInputDOB {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   // margin-bottom: 2rem;
+//   // margin-top: 0.5rem;
+//   // margin-bottom: 0.9rem;
+// }
 
 .dateOfBirthSpanAndErrorContainer {
   display: flex;
@@ -911,10 +1750,6 @@ h3.profileDetailsInputDOB {
   margin: 0;
 }
 
-.spanProfileCategoryDOB {
-  font-size: 1.4rem;
-  width: 100%;
-}
 
 // .errorTwentyOne {
 //   color: red;
@@ -926,12 +1761,12 @@ h3.profileDetailsInputDOB {
 //   // line-height: 1rem;
 // }
 
-h3.profileDetailsInputGender {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 1rem;
-}
+// h3.profileDetailsInputGender {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
 
 // h3.profileDetailsInputPhoto {
 //   color: white;
@@ -961,29 +1796,29 @@ h3.profileDetailsChangePassword {
   margin-bottom: 0.5rem;
 }
 
-h3.profileDetailsInputWeight {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 1rem;
-}
 
-h3.profileDetailsInputHeight {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 0.9rem;
-}
 
-h3.profileDetailsInputObjective {
-  color: white;
-  font-weight: 500;
-  font-size: 1.9rem;
-  margin-bottom: 0.9rem;
-}
+// h3.profileDetailsInputHeight {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
+
+// h3.profileDetailsInputObjective {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 1.9rem;
+//   margin-bottom: 1.1rem;
+// }
 
 h3.profileDetails.plan{
   font-size: clamp(1.6rem, 1.5vw, 1.9rem);
+}
+
+.planPricing{
+  font-family: "Roboto Mono", monospace !important;
+  letter-spacing: -2px;
 }
 
 .profileDataContainer {
@@ -1000,20 +1835,62 @@ h3.profileDetails.plan{
 
 .spanProfileCategory {
   font-size: 1.4rem;
-  margin-bottom: 0.5rem;
   width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 1.4rem;
+}
+
+.imageNotFound{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 75%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgb(0, 0, 0);
+  z-index: 2;
+  // text-shadow: 0 0 7px #000000;
+  // font-size: 1.2rem;
+}
+
+.spanProfileCategoryDOB {
+  font-size: 1.4rem;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .spanProfileCategory.email{
-  width: 10rem;
+  // width: 10rem;
+  width: 100%;
+  // margin-bottom: 0.5rem;
 }
+
+// .spanProfileCategory.name {
+//   display: inline-flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   // height: auto;
+// }
+
+
 
 .buttons {
   display: flex;
   flex-wrap: wrap;
 }
 
-.editProfilePictureButtonsContainer {
+.editProfileButtonsContainerIncludingPicture {
   /* display: flex;
     flex-direction: column; */
   justify-content: center;
@@ -1203,6 +2080,11 @@ h3.profileDetails.plan{
   color: black !important;
 }
 
+// .btn-savePhotoButton:disabled{
+//   background-color: rgb(62, 61, 61);
+//   color: rgb(116, 115, 115) !important;
+// }
+
 .btn-cancelSubscriptionButtonFinal {
   height: 3rem;
   padding-left: 0.6rem;
@@ -1224,10 +2106,12 @@ h3.profileDetails.plan{
   cursor: pointer;
   user-select: none;
   color: white;
+  color: var(--eye-icon-color, white) !important;
 }
 
 .eye-icon:hover {
-  color: #c7ff20;
+  color: var(--eye-icon-hover-color, #c7ff20) !important;
+
 }
 
 .popup {
@@ -1300,13 +2184,18 @@ input:disabled:-moz-placeholder {
   color: rgb(49, 49, 49) !important;
 }
 
+// .error{
+
+// }
+
 .error-alert {
   color: red;
   font-weight: bold;
   text-align: right;
   font-size: 0.875rem;
-  line-height: 1.2rem;
-  // line-height: 1rem;
+  // margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  line-height: 1.2rem
 }
 
 .error-alert-input{
@@ -1412,6 +2301,96 @@ input:disabled:-moz-placeholder {
   // overflow: hidden;
 }
 
+// .profile-image-navigation {
+//   position: relative;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100%;
+// }
+
+.profile-image-navigation {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 98%;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  padding: 0 8px;
+}
+
+.chevronLeft,
+.chevronRight {
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  color: white;
+  text-shadow: 0 0 7px #000000;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 8px;
+  border-radius: 50%;
+  // background: rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &.clicked{
+    opacity: 1;
+    color: rgb(191, 191, 191);
+  }
+
+  &.disabled {
+    opacity: 0.4;
+    // cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Style for the chevron icons specifically
+::ng-deep .chevronLeft svg,
+::ng-deep .chevronRight svg {
+  filter: drop-shadow(0 0 4px #000000);
+}
+
+// .nav-button {
+//   position: absolute;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   background: rgba(0, 0, 0, 0.5);
+//   border: none;
+//   border-radius: 50%;
+//   width: 32px;
+//   height: 32px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: opacity 0.3s;
+//   background-color: red;
+// }
+
+// .nav-button.prev {
+//   left: -16px;
+// }
+
+// .nav-button.next {
+//   right: -16px;
+// }
+
+// .nav-button.disabled {
+//   opacity: 0.5;
+//   cursor: not-allowed;
+// }
+
+// .nav-button fa-icon {
+//   color: white;
+//   font-size: 16px;
+// }
+
 .cancelSubscription {
   display: flex;
   flex-direction: column;
@@ -1474,6 +2453,16 @@ img.warningImg {
   margin-bottom: 5rem;
 }
 
+// .fadeOut {
+//   opacity: 0;
+//   transition: opacity 0.3s ease;
+// }
+
+// .fadeIn {
+//   opacity: 1;
+//   transition: opacity 0.3s ease;
+// }
+
 .avatar {
   position: absolute;
   z-index: 1;
@@ -1524,6 +2513,8 @@ select {
 }
 
 select {
+    width: 17.7rem;
+    height: 2.7rem;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -1532,6 +2523,61 @@ select {
     background-position: right 0.5rem center;
 }
 
+// .currentState{
+//   width: 100%
+// }
+
+input.imgUrl {
+  box-sizing: border-box;
+  padding-left: 0.5rem;
+  width: calc(17rem - 0.5rem); /* Subtract the padding from the original width */
+}
+
+input.imgUrl::placeholder {
+  font-size: 1rem
+ }
+
+.btn-savePhotoButton {
+  &:disabled {
+    background-color: rgb(62, 61, 61);
+    color: rgb(116, 115, 115) !important;
+
+    .savingState {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+.savingState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+/* Remove these as they're no longer needed */
+// input.imgUrl::placeholder {
+//   padding-left: 0.5rem; 
+// }
+
+// input.imgUrl{
+//   padding-left: 0; 
+// }
+
+// // input.imgUrl::content{
+// //   padding-left: 0.5rem;
+// // }
+
+// input.imgUrl::placeholder{
+//   padding-left: 0.5rem; 
+// }
 // /* Style for the placeholder option */
 // select option[value=""] {
 //   color: gray;
@@ -1633,11 +2679,11 @@ input#weight,
 
 .profilePictureFormContainer {
   width: 100%;
-  max-width: 21rem;
+  max-width: 17.5rem;
   height: 100%;
   padding-left: 1rem;
   margin-top: 0.2rem;
-  width: fit-content;
+  // width: fit-content;
 }
 
 .savePictureButtonContainer {
@@ -1658,7 +2704,7 @@ input#weight,
   justify-content: space-between;
   align-items: center;
   margin: auto;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
   // margin-top: 2rem;
 }
 
@@ -1692,7 +2738,7 @@ input#weight,
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 1);
+  background-color: rgb(255, 255, 255);
   z-index: 9;
 }
 
@@ -1703,13 +2749,13 @@ input#weight,
 }
 
 .spinner .path {
-  stroke: #ffffff;
+  stroke: #000000;
   stroke-linecap: round;
   animation: dash 1.5s ease-in-out infinite;
 }
 
 .spinner-text {
-  color: #ffffff;
+  color: #000000;
   font-size: 1.5rem;
   margin-top: 1rem;
 }
@@ -1742,9 +2788,47 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
+  input[type="password"]::placeholder,
+  input[type="text"]::placeholder,
+  input[type="email"]::placeholder,
+  input[type="decimal"]::placeholder {
+    color: var(--placeholder-color, red);
+    transition: color 0.1s ease;
+  }
+  
+  /* input[type="text"]::placeholder {
+    color: var(--placeholder-color, black);
+    transition: color 0.1s ease;
+  } */
+
+  input[type="text"].password-visible {
+    color: inherit;
+  }
+
+  input[type="password"].error-input::placeholder,
+  input[type="text"].error-input::placeholder {
+  color: var(--placeholder-color, red);
+  transition: color 0.1s ease;
+}
+
+
+  input:focus.error-input {
+    border-color: red !important;
+    box-shadow: 0 0 0 1px red !important;
+    color: red !important;
+  }
+
+  input[matInput]:focus.error-input::placeholder {
+    color: red !important;
+  }
+
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */
   outline: none; /* Remove the default outline */
+}
+
+::ng-deep .mat-spinner circle {
+  stroke: black !important;
 }
 
 @media screen and (min-width: 2400px) {
@@ -1764,29 +2848,25 @@ input[matInput]:focus {
     text-align: center;
     width: 100%;
     min-width: 300px;
-    // max-width: 530px;
-    // min-width: 20rem;
     line-height: clamp(4rem, 8.5vw, 9rem);
-    // padding-right: 0.5rem;
     font-size: clamp(5rem, 8vw, 9rem);
-    // font-weight: 1000;
   }
+
+  input.imgUrl::placeholder {
+    font-size: 0.7rem
+   }
 
  .profileNameTier.tierTwo{
     display: flex;
     flex-direction: column;
-    // flex-direction: column;
     justify-content: center;
     align-items: center;
-    // font-size: clamp(4rem, 8vw, 9rem);
   }
 
   .profileContainer {
     width: auto;
     min-width: 550px;
     max-width: 600px;
-
-    // min-width: 550px;
   }
 
   .flexAllProfileData {
@@ -1801,14 +2881,6 @@ input[matInput]:focus {
     margin-left: 1rem;
   }
 
-  // .profilePictureAndButtonsContainer {
-  //   width: 40%;
-  //   min-width: 200px;
-  //   max-width: 300px;
-  //   box-sizing: border-box;
-  //   margin-left: 1rem;
-  // }
-
   .profilePictureAndButtons {
     width: 80%;
     min-width: auto;
@@ -1817,15 +2889,9 @@ input[matInput]:focus {
   .profileInfo {
     padding-right: 2rem;
     margin-left: 3rem;
-    // padding-left: 1rem;
   }
 
   .profilePicture {
-    // width: auto;
-    // min-width: 200px;
-    // height: auto;
-    // aspect-ratio: 1 / 1;
-    // margin-bottom: 1rem;
     width: 20vw;
     min-width: 200px;
     max-width: 300px;
@@ -1841,7 +2907,6 @@ input[matInput]:focus {
     flex-direction: row;
     justify-content: space-between;
     width: 100%;
-    // max-width: 14rem;
   }
 
   .updateProfileButtonContainer {
@@ -1852,64 +2917,35 @@ input[matInput]:focus {
     min-width: 14rem;
     margin-left: auto;
     margin-right: auto;
-    // margin: 0 auto;
-    // max-width: 25rem;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
   }
 
   h3.profileDetails.name {
     width: 100%;
     max-width: 15rem;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    //   overflow: visible;
-    /* background-color: #C7FF20; */
   }
 
   h3.profileDetails.email {
     width: 100%;
     max-width: 13rem;
-    // width: 18rem;
-    // min-width: 5rem;
-    // max-width: 25rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  // .updateOnlyPicture{
-  //   width: 15vw;
-  //   max-width: 14rem;
-  //   min-width: 12rem;
-  // }
-
   input {
-    // width: 100%;
-    // max-width: 18rem;
-    // min-width: 13rem;
-    // font-size: 1rem;
     width: 25vw;
     max-width: 220px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
-    // width: 10vw;
-    // min-width: 250px;
-    // font-size: 1rem;
   }
 
   select {
-    // width: 100%;
-    //   max-width: 18rem;
-    //   min-width: 13rem;
-    //   font-size: 1rem;
     width: 25vw;
-    max-width: 220px;
+    max-width: 230px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
@@ -1918,20 +2954,12 @@ input[matInput]:focus {
   #password,
   #oldPassword,
   #confirmPassword {
-    // width: 100%;
-    // max-width: 18rem;
-    // min-width: 13rem;
-    // font-size: 1rem;
     width: 25vw;
     max-width: 220px;
     min-width: 200px;
     height: 2.5rem;
     font-size: 1rem;
   }
-
-  // .updateProfileButtonContainer{
-  //   width: auto;
-  // }
 
   .btn-cancelProfileButton,
   .btn-updateProfileButton,
@@ -1940,10 +2968,6 @@ input[matInput]:focus {
     width: 6.5rem;
     height: 2.4rem;
   }
-
-  // {
-  //   width: 6.5rem;
-  // }
 
   .btn-updatePasswordButton,
   .btn-cancelPasswordButton {
@@ -1986,7 +3010,6 @@ input[matInput]:focus {
     z-index: 1;
     background-size: cover;
     background-position: center center;
-    // transform: scale(0.1); /* Scaling down by 10% */
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) scale(0.1);
@@ -2155,7 +3178,7 @@ input[matInput]:focus {
     // transform: translateX(-50%);
   }
 
-  .updateOnlyPicture {
+  .updateProfile {
     padding: 0;
     margin: 0;
     // width: 100%;
@@ -2234,6 +3257,12 @@ input[matInput]:focus {
     // margin: auto;
   }
 
+  .profileNameTier.tierOne, 
+  .profileNameTier.tierTwo, 
+  .profileNameTier.tierThree {
+    letter-spacing: -3px;
+  }
+
   // .profilePicture{
   //   width: 200px;
   //   height: 200px;
@@ -2283,7 +3312,7 @@ input[matInput]:focus {
     font-size: 4.2rem; 
   }
 
-  .editProfilePictureButtonsContainer {
+  .editProfileButtonsContainerIncludingPicture {
     // position: absolute;
     // top: 0;
     // left: 75%;
@@ -2768,12 +3797,12 @@ input[matInput]:focus {
   //   margin-bottom: 0.2rem;
   // }
 
-  // h3.profileDetailsInputPhoto {
-  //   color: white;
-  //   font-weight: 500;
-  //   font-size: 1.9rem;
-  //   margin-bottom: 0rem;
-  // }
+  h3.profileDetailsInputPhoto {
+    color: white;
+    font-weight: 500;
+    font-size: 1.9rem;
+    margin-bottom: 0rem;
+  }
 
   .btn-changePasswordButton,
   .btn-billingDetailsButton {
@@ -2871,7 +3900,6 @@ input[matInput]:focus {
       }
     }
   }
-
     /* Both fade-in and bounce animations combined */
 
     .arrows{
@@ -2924,7 +3952,7 @@ input[matInput]:focus {
   }
   
   .spinner-text {
-    color: #ffffff;
+    color: #000000;
     font-size: 1rem;
     margin-top: 1rem;
   }

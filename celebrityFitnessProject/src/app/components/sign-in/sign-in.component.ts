@@ -168,8 +168,6 @@ export class SignInComponent implements OnInit {
     // this.oauthService.getAuthComplete().subscribe(() => {
     //   this.isLoadingGoogle = false;
     // });
-
-    this.cdr.detectChanges();
   }
 
   signIn() {
@@ -183,7 +181,10 @@ export class SignInComponent implements OnInit {
         this.authService.login(response.token);
         
         // Navigate to the content page
-        this.router.navigateByUrl(`/content/${userId}`);
+      this.router.navigateByUrl(`/content/${userId}`).then(() => {
+        // After navigation, authenticate with Firebase
+        this.userService.authenticateWithFirebase(response.token);
+      });
       },
       (error) => {
         console.log('Error: ', error);

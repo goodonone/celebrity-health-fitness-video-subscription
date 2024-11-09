@@ -148,7 +148,7 @@ a.disabled {
     /* width: 23rem; */
     width: 70%;
     position: absolute;
-    bottom: 4.5rem;
+    bottom: 5rem;
     /* left: 10%; */
     left: auto;
     right: 2rem;
@@ -176,7 +176,9 @@ a.disabled {
     position: absolute;
     top: 70%;
     /* bottom: -20rem; */
-    left: 0;
+    /* left: 1rem;
+     */
+    right: 0;
     padding: 0.2rem;
     width: 100%;
   }

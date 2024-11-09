@@ -1,6 +1,6 @@
-* {
-    font-family: 'Outfit', sans-serif;
-}
+// * {
+//     font-family: 'Outfit', sans-serif !important;
+// }
 
 .pageContainer {
     position: relative;
@@ -30,6 +30,7 @@
 }
 
 .pageName{
+    font-family: "Outfit", sans-serif !important;
     color: Black;
     font-weight: 500;
     text-align: left;
@@ -125,9 +126,57 @@ div.quantity{
     z-index: 10;
 }
 
-select{
-    cursor: pointer;
-}
+.quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; 
+    
+    .minus, .plus {
+        cursor: pointer;
+        padding: 0.25rem;
+        transition: all 0.2s ease;
+        font-size: 0.875rem; 
+        line-height: 1; 
+        display: flex;
+        align-items: center;
+    //   &:hover:not(.disabled) {
+    //     color: grey;
+    //   }
+      
+      &.clicked:not(.disabled) {
+        // transform: scale(0.9);
+        color: rgb(191, 191, 191);
+      }
+      
+      &.disabled {
+        opacity: 1;
+        pointer-events: none;
+        color:  rgb(198, 197, 197);
+      }
+    }
+    
+    // .quantity-value {
+    //   min-width: 2rem;
+    //   text-align: center;
+    //   font-weight: 500;
+    // }
+
+    .quantity-value {
+        min-width: 1.5rem;
+        text-align: center;
+        font-weight: 500;
+        margin: 0; 
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+  }
+
+// select{
+//     cursor: pointer;
+// }
 
 div.removeButton{
     position: absolute;
@@ -148,7 +197,12 @@ div.priceContainer{
 
 p.price{
     font-size: 2rem;
-    font-weight: 600;
+    // font-weight: 600;
+    font-family: "Roboto Mono", monospace !important;
+    // font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
 }
 
 h1.totalText{
@@ -158,6 +212,7 @@ h1.totalText{
     font-size: 3rem;
     font-weight: 500;
     margin-top: 1rem;
+    font-family: "Outfit", sans-serif !important;
 }
 
 /* .totalButton{
@@ -184,17 +239,28 @@ p.totalCount{
 p.totalPrice{
     font-size: 3rem;
     font-weight: 500;
+    font-family: "Roboto Mono", monospace !important;
+    // font-style:normal;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
 }
 
 .totalPriceContainer{
-    margin-top: 3.9rem;
+    margin-top: 4.1rem;
 }
 
 .totalPrice sup {
     font-size: 0.7em; /* Reduce the font size */
     vertical-align: top; /* Align it closer to the top */
     line-height: 0; /* Reduce extra space */
-    margin-left: -0.4em; /* Move it closer to the decimal point */
+    margin-left: -1em; /* Move it closer to the decimal point */
+    font-family: "Roboto Mono", monospace !important;
+    // font-style:normal;
+    // font-style:italic;
+    font-weight: bold;
+    font-optical-sizing: auto;
+    letter-spacing: -2px;
   }
 
 button.buttonCheckOut{
@@ -283,7 +349,11 @@ p.payment{
     // box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
     pointer-events: none;
-
+    // padding: 1rem 1rem 0.8rem 1rem;
+    // background-color: rgb(236, 236, 236);
+    // border-radius: 1rem;
+    // box-shadow: 0 0 10px rgb(120, 120, 120);
+    
     // animation: fadeIn 0.5s ease-in-out; 
     // // animation-duration: 0.5s;
 
@@ -329,7 +399,7 @@ p.payment{
 
 
 
-@media screen and (min-width: 500px) and (max-width: 1286px){
+@media screen and (min-width: 937px) and (max-width: 1286px){
 
 // .cartContainer{
 //     height: fit-content;
@@ -397,6 +467,14 @@ p.payment{
 //     width: 12rem;
 //     margin-left: 24rem;
 // }
+
+}
+
+@media screen and (min-width: 300px) and (max-width: 937px){
+
+.largeImagePreview{
+    display: none;
+}
 
 }
 

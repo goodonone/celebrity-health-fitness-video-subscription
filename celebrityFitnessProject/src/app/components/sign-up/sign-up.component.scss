@@ -2,6 +2,10 @@
 //   background-color: black;
 // }
 
+* {
+  user-select: none;
+}
+
 .background {
   opacity: 0;
   height: 100%;
@@ -51,6 +55,7 @@
   background-attachment: fixed;
   background-position: center 10rem;
   z-index: 0;
+  // padding-right: 10rem;
 }
 
 .overlay {
@@ -167,7 +172,7 @@
   bottom: 2rem;
   right: 0;
   height: fit-content;
-  max-height: 550px;
+  max-height: 600px;
   width: fit-content;
   max-width: 800px;
   background-color: transparent !important;
@@ -175,9 +180,10 @@
   opacity: 100%;
 }
 
-.alreadyMemberText {
+.alreadyMemberText, .loggedInText {
   position: absolute;
-  bottom: 0.5rem;
+  // bottom: 0.5rem;
+  bottom: 0;
   right: 20%;
   cursor: pointer;
   padding: 0;
@@ -187,9 +193,10 @@
   cursor: default !important;
 }
 
-// .alreadyMemberText p {
-  
-// }
+.loggedInText{
+  right: 25%;
+  // transform: translateX(-50%);
+}
 
 .alreadyMemberText .highlight {
   font-weight: bold;
@@ -198,10 +205,11 @@
   cursor: pointer;
 }
 
+
 .alreadyMemberText .highlight:hover {
   // color: #000000;
   // outline: black solid 1px;
-  text-shadow: 0 0 7px #71bbf5;
+  text-shadow: 0 0 7px #3c8cc9;
   // text-decoration: underline;
 }
 
@@ -253,18 +261,18 @@
     }
 } */
 
-.disabled-text{
-  color: grey;
-  pointer-events: none;
-  opacity: 0.7;
-}
+// .disabled-text{
+//   color: grey;
+//   pointer-events: none;
+//   opacity: 0.7;
+// }
 
-.highlight.disabled-text{
-  color: grey;
-  pointer-events: none;
-  opacity: 0.7;
-  filter: grayscale(100%);
-}
+// .highlight.disabled-text{
+//   color: grey;
+//   pointer-events: none;
+//   opacity: 0.7;
+//   filter: grayscale(100%);
+// }
 
 
 .spinner-overlay {
@@ -343,6 +351,10 @@
 }
 
 @media screen and (min-width: 300px) and (max-width: 937px) {
+
+  // app-progression-button{
+  //   margin-top: -10rem;
+  // }
   
   .narrow {
     display: block;
@@ -410,6 +422,7 @@
     width: 90%;
     margin: 1rem auto;
     box-sizing: border-box;
+    // height: 100%;
     // height: 100vh
     /* left: 0;
         right: 0; */
@@ -427,7 +440,7 @@
   }
 
   .innerCardTwo {
-    height: 46rem;
+    height: 47rem;
     max-height: 800px;
     width: 100%;
     min-width: 20rem;
@@ -443,7 +456,7 @@
     box-sizing: border-box;
   }
 
-  .alreadyMemberText {
+  .alreadyMemberText, .loggedInText {
     position: absolute;
     top: auto;
     right: auto;
@@ -453,6 +466,15 @@
     cursor: pointer;
     padding: 0;
     z-index: 100;
+    // margin-top: 10rem;
+  }
+
+  .loggedInText {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    // margin-top: 0;
+    // margin-bottom: 0;
   }
 
   .spinner {

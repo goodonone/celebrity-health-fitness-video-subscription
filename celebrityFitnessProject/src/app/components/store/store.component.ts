@@ -120,17 +120,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
 import { CartService } from 'src/app/services/cart.service';
 import { CartItem } from 'src/app/models/cart-items';
 import { ProductStatusService } from 'src/app/services/productstatus.service';
 
+
 @Component({
   selector: 'app-store',
   templateUrl: './store.component.html',
-  styleUrls: ['./store.component.css']
+  styleUrls: ['./store.component.scss']
 })
 export class StoreComponent implements OnInit {
   productList$: Observable<Product[]>;
@@ -140,6 +141,9 @@ export class StoreComponent implements OnInit {
   buttonTexts: { [productId: string]: string } = {};
   private cartSubscription?: Subscription;
   private cartChangedSubscription?: Subscription;
+  isLoading = true;
+  loadingImages: { [productId: string]: boolean } = {}; // Track loading status per product
+  initialLoad = true;
   
   constructor(
     private productService: ProductService,
@@ -152,7 +156,7 @@ export class StoreComponent implements OnInit {
         console.error('Error loading products:', error);
         this.error = 'Failed to load products. Please try again later.';
         return of([]);
-      })
+      }),
     );
   }
 
@@ -164,6 +168,17 @@ export class StoreComponent implements OnInit {
      
   //   });
   // }
+
+  const hasVisited = localStorage.getItem('imagesLoaded');
+    if (!hasVisited) {
+      // Trigger animations
+      this.initialLoad = true;
+      // Store the flag in localStorage
+      localStorage.setItem('imagesLoaded', 'true');
+    } else {
+      // Skip animations
+      this.initialLoad = false;
+    }
 
   this.cartSubscription = this.cartService.getCartObservable().subscribe(cart => {
     this.cartItems = cart.CartProducts;
@@ -179,6 +194,16 @@ export class StoreComponent implements OnInit {
       }
     }
   });
+
+  this.productList$ = this.productService.getAllProducts().pipe(
+    catchError(error => {
+      console.error('Error loading products:', error);
+      this.error = 'Failed to load products. Please try again later.';
+      return of([]);
+    }),
+    tap(productList => this.preloadProductImages(productList)) // Preload images after getting product list
+  );
+
 }
 
 ngOnDestroy(): void {
@@ -321,6 +346,41 @@ ngOnDestroy(): void {
   // onMouseLeave(product: Product): void {
   //     this.buttonTexts[product.productId] = '+Cart';
   // }
+
+  preloadProductImages(products: Product[]): void {
+    const imagePromises = products.map(product => this.preloadImage(product.productUrl, product.productId));
+    
+    // Check all promises
+    Promise.all(imagePromises).then(() => {
+      if(this.initialLoad) {
+      this.isLoading = false;
+      }
+      else{
+        setTimeout(() => {
+          this.isLoading = false; 
+        }, 400)
+      }
+    }).catch(error => {
+      console.error('Error preloading images:', error);
+      this.isLoading = true; // Consider loading complete even if some images fail
+    });
+  }
+  
+  preloadImage(imgUrl: string, productId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        this.loadingImages[productId] = true;
+        resolve();
+      };
+      img.onerror = () => {
+        console.error(`Error loading image for product ${productId}`);
+        this.loadingImages[productId] = true;
+        resolve(); // Resolve on error to avoid blocking
+      };
+      img.src = imgUrl;
+    });
+  }
 
   getButtonText(product: Product): string {
     return this.productStatusService.getButtonText(product.productId);

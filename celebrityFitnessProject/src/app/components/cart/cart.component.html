@@ -297,18 +297,66 @@
                                 </div>
                             </div>
                             <p class="name">{{cartItem.Product.productName}}</p>
-                            <div class="quantity">
+                            <!-- <div class="quantity">
                                 <select matNativeControl [(ngModel)]="cartItem.quantity" (change)="changeQuantity(cartItem, $event)">
                                     <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]">{{i}}</option>
                                 </select>
+                                <div class="profile-image-navigation"> -->
+                                    <!-- <fa-icon [icon]="['fas', 'minus']" 
+                                             class="minus" 
+                                             (click)="decrease()"
+                                             (mousedown)="onMouseDown('minus')"
+                                             (mouseenter)="!isDisabled('minus') && onMouseHover('minus')"
+                                             (mouseup)="onMouseUp('minus')" 
+                                             (mouseleave)="onMouseOff('minus')"
+                                             [ngClass]="{'clicked': minusClicked}">
+                                    </fa-icon> 
+                                    <p>{{cartItem.quantity}}</p>                                  
+                                    <fa-icon [icon]="['fas', 'plus']" 
+                                             class="plus"
+                                             (click)="increase()"
+                                             (mousedown)="onMouseDown('plus')"
+                                             (mouseenter)="!isDisabled('plus') && onMouseHover('plus')"
+                                             (mouseup)="onMouseUp('plus')" 
+                                             (mouseleave)="onMouseOff('plus')"
+                                             [ngClass]="{'clicked': plusClicked}">
+                                    </fa-icon> -->
+                                <!-- </div> -->
+                            <!-- </div> --> 
+                            <div class="quantity">
+                                <fa-icon [icon]="['fas', 'minus']" 
+                                         class="minus" 
+                                         (click)="decrease(cartItem)"
+                                         (mousedown)="onMouseDown('minus')"
+                                         (mouseenter)="!isDisabled('minus', cartItem.quantity) && onMouseHover('minus')"
+                                         (mouseup)="onMouseUp('minus')" 
+                                         (mouseleave)="onMouseOff('minus')"
+                                         [ngClass]="{
+                                            'clicked': minusClicked,
+                                            'disabled': isDisabled('minus', cartItem.quantity)
+                                         }">
+                                </fa-icon> 
+                                <p class="quantity-value">{{cartItem.quantity}}</p>                                  
+                                <fa-icon [icon]="['fas', 'plus']" 
+                                         class="plus"
+                                         (click)="increase(cartItem)"
+                                         (mousedown)="onMouseDown('plus')"
+                                         (mouseenter)="!isDisabled('plus', cartItem.quantity) && onMouseHover('plus')"
+                                         (mouseup)="onMouseUp('plus')" 
+                                         (mouseleave)="onMouseOff('plus')"
+                                         [ngClass]="{
+                                            'clicked': plusClicked,
+                                            'disabled': isDisabled('plus', cartItem.quantity)
+                                         }">
+                                </fa-icon>
+                            </div>
+                            <div class="priceContainer">
+                                <p class="price">${{(cartItem.Product.productPrice)*(cartItem.quantity) | priceFormat}}</p>
                             </div>
                             <div class="removeButton">
                                 <button mat-button (click)="removeFromCart(cartItem)">
                                     Remove
                                 </button>
-                            </div>
-                            <div class="priceContainer">
-                                <p class="price">${{cartItem.Product.productPrice | priceFormat}}</p>
                             </div>
                         </mat-card>
                     </div>

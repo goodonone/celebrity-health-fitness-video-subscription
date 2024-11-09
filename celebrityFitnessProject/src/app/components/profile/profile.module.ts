@@ -8,7 +8,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
-    ProfileComponent
+    ProfileComponent,
+
   ],
   imports: [
     CommonModule,

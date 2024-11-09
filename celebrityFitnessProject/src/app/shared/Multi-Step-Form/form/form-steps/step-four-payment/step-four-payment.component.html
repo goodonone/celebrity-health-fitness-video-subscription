@@ -15,27 +15,31 @@
         <!-- name on card input -->
         <div>
           <div class="input-details-name">
-            <label for="name">Name on Card</label>
+            <label for="name" [ngStyle]="getLabelStyle('nameOnCard')">Name on Card</label>
             <label for="error"
                    id="error"
-                   *ngIf="this.stepForm.controls['nameOnCard'].invalid && this.stepForm.controls['nameOnCard'].touched"
-                   class="error-alert">Invalid</label>
+                   *ngIf="shouldShowError('nameOnCard')"
+                   class="error-alert">{{getErrorMessage('nameOnCard')}}</label>
           </div>
           <input type="text"
                  matInput
                  name="nameOnCard"
                  id="nameOnCard"
+                 [ngStyle]="getInputStyle('nameOnCard')"
+                 [ngClass]="{'error-input': shouldShowError('nameOnCard')}"
                  placeholder="Aye Wantobejacked" 
                  formControlName="nameOnCard"
+                 trimOnBlur
+                 (blur)="onInputBlur('nameOnCard')"
                  required>
         </div>
         <!-- credit card number input -->
         <div>
         <div class="input-details-cc">
-          <label for="ccNumber">Card Number</label>
+          <label for="ccNumber" [ngStyle]="getLabelStyle('ccNumber')">Card Number</label>
           <label for="error"
-                 *ngIf="this.stepForm.controls['ccNumber'].invalid && this.stepForm.controls['ccNumber'].touched"
-                 class="error-alert">Invalid</label>
+                 *ngIf="shouldShowError('ccNumber')"
+                 class="error-alert">{{getErrorMessage('ccNumber')}}</label>
         </div>
         <input type="tel"
                matInput
@@ -45,6 +49,8 @@
                pattern="[0-9\s]{13,19}"
                inputmode="numeric"
                placeholder="xxxx xxxx xxxx xxxx"
+               [ngStyle]="getInputStyle('ccNumber')"
+               [ngClass]="{'error-input': shouldShowError('ccNumber')}"
                formControlName="ccNumber"
                (blur)="hideCreditCardNumber()"
                (focus)="showCreditCardNumber()"
@@ -55,16 +61,16 @@
       <!-- expiration date input -->
         <div>
         <div class="input-details-exp">
-          <label for="expiration">Exp.</label>
+          <label for="expiration" [ngStyle]="getLabelStyle('expDate')">Exp.</label>
           <!-- <label for="error"
                  *ngIf="this.stepForm.controls['expDate'].invalid && this.stepForm.controls['expDate'].touched"
                  class="error-alert">Invalid</label> -->
-          <label for="error" 
+          <!-- <label for="error" 
                   *ngIf="stepForm.get('expDate')!.invalid && stepForm.get('expDate')?.touched && !stepForm.get('expDate')?.hasError('expiredDate')" class="error-alert">
-                  Invalid</label>   
+                  Invalid</label>    -->
           <label for="error" 
-                  *ngIf="stepForm.get('expDate')?.hasError('expiredDate') && stepForm.get('expDate')?.touched" class="error-alert">
-                  Expired</label>       
+                  *ngIf="shouldShowError('expDate')"
+                  class="error-alert">{{getErrorMessage('expDate')}}</label>    
         </div>
         <input type="tel"
               matInput
@@ -73,17 +79,19 @@
               id="expDate"
               placeholder="01/25" 
               formControlName="expDate"
+              [ngStyle]="getInputStyle('expDate')"
+              [ngClass]="{'error-input': shouldShowError('expDate')}"
               (input)="formatExpirationDate($event)"
-              (blur)="checkExpirationDate()"
+              (blur)="onInputBlur('expDate'); checkExpirationDate()"
               required>
        </div>
        <!-- cvv number input -->
        <div>
         <div class="input-details-cvv">
-          <label for="cvv">CVV</label>
+          <label for="cvv" [ngStyle]="getLabelStyle('cvv')">CVV</label>
           <label for="error"
-                 *ngIf="this.stepForm.controls['cvv'].invalid && this.stepForm.controls['cvv'].touched"
-                 class="error-alert">Invalid</label>
+                   *ngIf="shouldShowError('cvv')"
+                   class="error-alert">{{getErrorMessage('cvv')}}</label>
         </div>
         <input type="tel"
                matInput
@@ -91,26 +99,30 @@
                id="cvv"
                maxlength="3"
                placeholder="000"
+               [ngStyle]="getInputStyle('cvv')"
+               [ngClass]="{'error-input': shouldShowError('cvv')}"
                formControlName="cvv"
                required>
         </div>
       <!-- zipcode input -->
       <div>
         <div class="input-details-zip">
-          <label 
+        <label 
           for="zipcode"  
+          [ngStyle]="getLabelStyle('zipCode')"
           [ngClass]="{'label-zipcode': true}">
           Zipcode
         </label>
         
         <label 
           for="zipcode" 
+          [ngStyle]="getLabelStyle('zipCode')"
           [ngClass]="{'label-zip': true}">
           Zip
         </label>
         <label for="error"
-                 *ngIf="this.stepForm.controls['zipCode'].invalid && this.stepForm.controls['zipCode'].touched"
-                 class="error-alert">Invalid</label>
+          *ngIf="shouldShowError('zipCode')"
+          class="error-alert">{{getErrorMessage('zipCode')}}</label>
         </div>
         <input type="tel"
                matInput
@@ -118,6 +130,8 @@
                id="zipCode"
                maxlength="5"
                placeholder="12345"
+               [ngStyle]="getInputStyle('zipCode')"
+               [ngClass]="{'error-input': shouldShowError('zipCode')}"
                formControlName="zipCode"
                required>
       </div>
@@ -126,17 +140,21 @@
     <div class="billingZip">
       <div>
       <div class="input-details-billing">
-        <label for="billingAddress">Billing Address</label>
+        <label for="billingAddress" [ngStyle]="getLabelStyle('billingAddress')">Billing Address</label>
         <label for="error"
-               *ngIf="this.stepForm.controls['billingAddress'].invalid && this.stepForm.controls['billingAddress'].touched"
-               class="error-alert">Invalid</label>
+          *ngIf="shouldShowError('billingAddress')"
+          class="error-alert">{{getErrorMessage('billingAddress')}}</label>
       </div>
-      <input type="tel"
+      <input type="text"
              matInput
              name="billingAddress"
              id="billingAddress"
              maxlength="30"
              placeholder="1221 Mount Bicepius Street, Minnesota"
+             [ngStyle]="getInputStyle('billingAddress')"
+             [ngClass]="{'error-input': shouldShowError('billingAddress')}"
+             trimOnBlur
+             (blur)="onInputBlur('billingAddress')"
              formControlName="billingAddress"
              required>
       </div>
@@ -145,18 +163,20 @@
         <div class="input-details-billing-zip">
           <label 
           for="zipcodeBilling"  
+          [ngStyle]="getLabelStyle('billingZip')"
           [ngClass]="{'label-zipcode': true}">
           Zipcode
         </label>
         
         <label 
           for="zipcodeBilling" 
+          [ngStyle]="getLabelStyle('billingZip')"
           [ngClass]="{'label-zip': true}">
           Zip
         </label>
-          <label for="error"
-                 *ngIf="this.stepForm.controls['billingZip'].invalid && this.stepForm.controls['billingZip'].touched"
-                 class="error-alert">Invalid</label>
+        <label for="error"
+                   *ngIf="shouldShowError('billingZip')"
+                   class="error-alert">{{getErrorMessage('billingZip')}}</label>
         </div>
         <input type="tel"
                matInput
@@ -164,6 +184,9 @@
                id="zipCodeBilling"
                maxlength="5"
                placeholder="12345"
+               [ngStyle]="getInputStyle('billingZip')"
+               [ngClass]="{'error-input': shouldShowError('billingZip')}"
+               (blur)="onInputBlur('billingZip')"
                formControlName="billingZip"
                required>
       </div>  
@@ -174,16 +197,19 @@
     <div class="shippingZip" *ngIf="showShipping">
       <div>
       <div class="input-details-shipping">
-        <label for="billingAddress">Shipping Address</label>
+        <label for="billingAddress" [ngStyle]="getLabelStyle('billingAddress')">Shipping Address</label>
         <label for="error"
-               *ngIf="this.stepForm.controls['shippingAddress'].invalid && this.stepForm.controls['shippingAddress'].touched"
-               class="error-alert">Invalid</label>
+               *ngIf="shouldShowError('billingAddress')"
+               class="error-alert">{{getErrorMessage('shippingAddress')}}</label>
       </div>
-      <input type="tel"
+      <input type="text"
              name="shippingAddress"
              id="shippingAddress"
              maxlength="30"
              placeholder="777 Lattismus Dorsi Blvd, Wyoming"
+             [ngStyle]="getInputStyle('shippingAddress')"
+             [ngClass]="{'error-input': shouldShowError('shippingAddress')}"
+             trimOnBlur
              formControlName="shippingAddress"
              required>
       </div>
@@ -192,17 +218,19 @@
         <div class="input-details-zip-shipping">
         <label 
           for="zipcodeShipping"  
+          [ngStyle]="getLabelStyle('shippingZip')"
           [ngClass]="{'label-zipcode': true}">
           Zipcode
         </label>
         <label 
           for="zipcodeShipping" 
+          [ngStyle]="getLabelStyle('shippingZip')"
           [ngClass]="{'label-zip': true}">
           Zip
         </label>
         <label for="error"
-                 *ngIf="this.stepForm.controls['shippingZip'].invalid && this.stepForm.controls['shippingZip'].touched"
-                 class="error-alert">Invalid</label>
+                   *ngIf="shouldShowError('shippingZip')"
+                   class="error-alert">{{getErrorMessage('shippingZip')}}</label>
         </div>
         <input type="tel"
                matInput
@@ -210,6 +238,8 @@
                id="zipCodeShipping"
                maxlength="5"
                placeholder="12345"
+               [ngStyle]="getInputStyle('shippingZip')"
+               [ngClass]="{'error-input': shouldShowError('shippingZip')}"
                formControlName="shippingZip"
                required>
       </div>   

@@ -1,5 +1,6 @@
 * {
-  font-family: "Outfit", sans-serif;
+  /* font-family: "Outfit", sans-serif; */
+  user-select: none;
 }
 
 /* .background {
@@ -74,7 +75,11 @@ mat-card {
   border-radius: 1rem;
   padding: 1rem;
   box-sizing: border-box;
-  /* aspect-ratio: 1/1; */
+  aspect-ratio: 1/1;
+}
+
+mat-card-header{
+  padding-top: 0;
 }
 
 form{
@@ -97,8 +102,14 @@ input {
   color: black;
   background-color: white;
   font-size: clamp(1rem, 1.5vw, 1.2rem);
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
+  outline: none;
 }
+
+/* ::ng-deep input[matInput]:focus {
+  outline: none;
+  box-shadow: 0 0 10px #c7ff20;
+} */
 
 input#password {
   margin-bottom: 0.4rem;
@@ -194,7 +205,7 @@ input:valid {
 }
 
 .eye-icon:hover {
-  color: rgb(0, 0, 0);
+  color: black;
 }
 
 .forgotPassword{
@@ -228,7 +239,7 @@ p {
 
 .absoluteContainer{
   position: absolute;
-  bottom:clamp(14%, 2vw, 15%); 
+  bottom:clamp(14%, 5vw, 10%); 
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -245,6 +256,7 @@ p {
   text-align: center;
   width: 100%;
   margin: 10px 0 5px 0;
+  padding-bottom: 0.7rem;
 }
 
 .divider::before,
@@ -394,15 +406,16 @@ p {
   }
 }
 
-.buttonSpan {
-  display: flex;
-  justify-content: flex-end; /* Right justify the button */
-  padding-right: 1rem; /* Add some padding to the right to ensure it's not too close to the edge */
-}
+/* .buttonSpan {
+
+} */
 
 span.buttonSpan {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 1rem;
   position: absolute;
-  top: 107%; 
+  top: 110%; 
   left: 50%;
   transform: translate(-50%);
   /* width: 100%; 
@@ -432,6 +445,16 @@ input[matInput]:focus {
 
 input[matInput]:focus::placeholder {
   color: #000000 !important; 
+}
+
+input[type="password"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
+}
+
+input[type="text"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
 }
 
 
@@ -471,15 +494,22 @@ input[matInput]:focus::placeholder {
     padding: 0 0px; 
     width: 100%;
     margin-left: 0.1rem;
+    top: 108%
   }
 
   button.btn-submit {
     width: 100%;
     max-width: 500px;
+    height: 2.4rem
   }
 
   .absoluteContainer{
     bottom: 11.5%;
+  }
+
+  .divider{
+    /* padding-top: 0; */
+    padding-bottom: 0.2rem;
   }
 
   /* .socialContainer{

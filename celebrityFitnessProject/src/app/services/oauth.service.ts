@@ -93,7 +93,7 @@ export class CustomOAuthService {
             // this.isLoadingSubjectSignup.next(false);
           });
         }
-      }, 60000); // 1 minute timeout
+      }, 120000); // 1 minute timeout
 
       window.addEventListener('focus', () => {
         setTimeout(() => {

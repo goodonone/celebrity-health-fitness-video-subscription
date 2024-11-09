@@ -65,6 +65,8 @@ export class ContentComponent implements OnInit{
   isSearchClicked: boolean = false;
   private searchTimeout: any;
   isSearching: boolean = false;
+  isLoading: boolean = true;
+  initialLoad: boolean = true;
   // timerValThree: string = '';
 
   private upgradeTimerSubject = new BehaviorSubject<boolean>(false);
@@ -84,6 +86,27 @@ export class ContentComponent implements OnInit{
     this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
+
+    const hasVisited = localStorage.getItem('contentLoaded');
+    if (!hasVisited) {
+      // Trigger animations
+      this.initialLoad = true;
+      // Store the flag in localStorage
+      localStorage.setItem('contentLoaded', 'true');
+    } else {
+      // Skip animations
+      this.initialLoad = false;
+    }
+
+    if(this.initialLoad) {
+      setTimeout(() => {
+        this.isLoading = false; 
+      }, 3000)
+      } else {
+        this.isLoading = false;
+      }
+
+
       // if(this.currentUser.tier === "Just Looking"){
       //   this.toggleHeading();
       //   const background = document.querySelector('.cardContainerTwo');
@@ -127,9 +150,14 @@ export class ContentComponent implements OnInit{
     this.addTolivestreamVideo();
 
     this.initScrollHandler();
+
+    // document.body.style.backgroundColor = 'black';
   }
   
   ngAfterViewInit() {
+    
+    
+
     this.checkScrollPosition();
   }
 
@@ -137,6 +165,7 @@ export class ContentComponent implements OnInit{
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
+    // document.body.style.backgroundColor = 'white';
   }
 
   @HostListener('window:scroll', ['$event'])

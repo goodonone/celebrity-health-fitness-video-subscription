@@ -47,43 +47,68 @@
                     <!-- <div class="flexPictureAndButtons"> -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag()}" >
+                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
                                 <!-- <p style="color: red; font-weight: bold">Position: {{ position.x }}, {{ position.y }}</p> -->
-                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()">DRAG <br> TO <br> POSITION</p>
+                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
                                 <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
-                                    <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked}" 
+                                    <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
+                                    (mouseenter)="!isDisabled('minus') && onMouseEnter('minus')"
                                     (mousedown)="onMouseDown('minus')" 
                                     (mouseup)="onMouseUp('minus')" 
                                     (mouseleave)="onMouseLeave('minus')"
                                     (click)="zoomOut()"></fa-icon>
-                                    <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked}" 
+                                    <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
+                                    (mouseenter)="!isDisabled('plus') && onMouseEnter('plus')"
                                     (mousedown)="onMouseDown('plus')" 
                                     (mouseup)="onMouseUp('plus')" 
                                     (mouseleave)="onMouseLeave('plus')"
                                     (click)="zoomIn()"></fa-icon>
                                 </div>
                                 <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (mousedown)="onMouseDown('reset')" 
+                                (mouseenter)="!isDisabled('reset') && onMouseEnter('reset')"
                                 (mouseup)="onMouseUp('reset')" 
                                 (mouseleave)="onMouseLeave('reset')"
-                                [ngClass]="{'clicked': isResetClicked}"
+                                [ngClass]="{'clicked': isResetClicked, 
+                                'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
+                                <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
+                                    <fa-icon [icon]="['fas', 'chevron-left']" 
+                                             class="chevronLeft" 
+                                             (click)="previousImage()"
+                                             (mousedown)="onMouseDown('left')"
+                                             (mouseenter)="!isDisabled('left') && onMouseEnter('left')"
+                                             (mouseup)="onMouseUp('left')" 
+                                             (mouseleave)="onMouseLeave('left')"
+                                             [ngClass]="{'clicked': leftClicked}">
+                                    </fa-icon>                                   
+                                    <fa-icon [icon]="['fas', 'chevron-right']" 
+                                             class="chevronRight"
+                                             (click)="nextImage()"
+                                             (mousedown)="onMouseDown('right')"
+                                             (mouseenter)="!isDisabled('right') && onMouseEnter('right')"
+                                             (mouseup)="onMouseUp('right')" 
+                                             (mouseleave)="onMouseLeave('right')"
+                                             [ngClass]="{'clicked': rightClicked}">
+                                    </fa-icon>
+                                </div>
                                 <mat-card class="profilePicture" id="profilePicture" 
-                                [ngStyle]="getProfileImageStyles()" 
-                                [ngClass]="{'default-position': !isDragged, 
-                                'firstTimeAnimation': firstTimeAnimation && tierThree, 
-                                'tierThreeStyle': tierThree, 
-                                'draggable': canDrag()}" 
-                                (mousedown)="startDrag($event)"
-                                (touchstart)="startDrag($event)" 
-                                #profileImg>
-
-                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl">
+                                    [ngStyle]="imageStyles" 
+                                    [ngClass]="{'default-position': !isDragged, 
+                                    'firstTimeAnimation': firstTimeAnimation && tierThree, 
+                                    'tierThreeStyle': tierThree, 
+                                    'draggable': canDrag()}" 
+                                    (mousedown)="startDrag($event)"
+                                    (touchstart)="startDrag($event)" 
+                                    #profileImg>
+                                <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
+                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && !imageNotFound">
                                 </mat-card>
                             </div>
-                            <div class="editProfilePictureButtonsContainer">
+                            <div class="editProfileButtonsContainerIncludingPicture">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()">Delete Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -94,10 +119,11 @@
                         <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
-                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}" matTooltip="For Stripe">Billing Details</button>
+                                <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}" matTooltip="For Stripe Integration">Billing Details</button>
                                 <button mat-button style="color:white" class="btn btn-cancelSubscriptionButton" (click)="deleteProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Cancel Subscription</button>
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Sign Out</button>
                         </div>
+
                      </div>
                     <!-- </div> -->
                     <!-- [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}" -->
@@ -107,17 +133,18 @@
                   <ng-container *ngSwitchCase="ProfileState.Viewing">
                     <div class="profileDataContainer">
                         <h3 class="profileDetails name"><span class="spanProfileCategory">Name</span> <br> {{currentUser.name}}</h3>
-                        <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br> {{currentUser.email}}</h3>
+                        <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br> <span class="emailSpan">{{currentUser.email}}</span></h3>
                         <h3 class="profileDetails DOB" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
                         <h3 class="profileDetails gender" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
                         <h3 class="profileDetails weight" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
                         <h3 class="profileDetails height" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{displayHeight}}</h3>
                         <h3 class="profileDetails objective" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
                         <div class="planContainer">
-                            <h3 class="profileDetails plan" *ngIf="currentUser.tier"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <h3 class="profileDetails plan" *ngIf="currentUser.tier === 'Just Looking'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
+                            <h3 class="profileDetails" *ngIf="currentUser.tier === 'All In' || currentUser.tier === 'Motivated'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
-                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> ${{currentUser.price}}/{{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> <span class="planPricing">${{currentUser.price}}</span>/{{monthOrYear}}</h3>
                         <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> Free</h3>
                     </div>
                 </ng-container>
@@ -156,118 +183,138 @@
                             </div>
                         </form>  -->
                         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" id="profileForm">
-                            <div class="updateOnlyPicture">
+                            <div class="updateProfile">
+
                                 <h3 class="profileDetailsInput name">
-                                    <!-- <div class="titleError"> -->
-                                        <span class="spanProfileCategory">Name</span><br>
-                                        <!-- <label for="error" *ngIf="profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched)" class="error-alert-input">Invalid</label> -->
-                                    <!-- </div> -->
-                                    <input class="name" matInput placeholder="Enter Full Name" name="name" 
-                                    formControlName="name"
-                                    trimOnBlur
-                                    [value]="currentUser.name" required [ngStyle]="{'border-color': profileForm.get('name')?.invalid && (profileForm.get('name')?.dirty || profileForm.get('name')?.touched) ? 'red' : 'white'}">
-                                    <!-- <mat-error *ngIf="name.invalid && (name.dirty || name.touched)">
-                                        Name is required
-                                    </mat-error> -->
+                                        <span class="spanProfileCategory name" [ngStyle]="getLabelStyle('name')">
+                                            <span>Name</span>
+                                            <label for="error"
+                                                id="error"
+                                                *ngIf="shouldShowError('name')"
+                                                class="error-alert">{{getErrorMessage('name')}}</label>
+                                        </span><br>
+                                        <input class="name" matInput placeholder="Enter Full Name" name="name" 
+                                        formControlName="name"
+                                        type="text"
+                                        name="name"
+                                        trimOnBlur
+                                        required 
+                                        [ngStyle]="getInputStyle('name')"
+                                        [ngClass]="{'error-input': shouldShowError('name')}">
                                 </h3>
+
                                 <h3 class="profileDetailsInput email">
-                                    <span class="spanProfileCategory email">Email Address</span><br>
-                                        <!-- <label for="error"
-                                        *ngIf="this.stepForm.get('email')?.hasError('emailExists')"
-                                        class="error-alert">Email exists</label>    -->
-                   
-                                    
-                                    <!-- <input class="email" matInput placeholder="Enter Email" name="email" formControlName="email"
-                                           [(ngModel)]="currentUser.email" required email [ngStyle]="{'border-color': email.invalid && (email.dirty || email.touched) ? 'red' : 'white'}" (blur)="checkEmail()"> -->
+                                    <span class="spanProfileCategory email" [ngStyle]="getLabelStyle('email')">Email Address
+                                        <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('email')" 
+                                            class="error-alert">{{getErrorMessage('email')}}</label>
+                                    </span><br>
                                     <input class="email" matInput placeholder="Enter Email" 
+                                           name="email"
+                                           type="email"
                                            formControlName="email"
-                                           [value]="currentUser.email"
                                            [attr.disabled]="profileForm.get('email')?.disabled ? '' : null"
                                            (blur)="checkEmail($event)"
                                            trimOnBlur
-                                           [ngStyle]="{'border-color': profileForm.get('email')?.invalid && (profileForm.get('email')?.dirty || profileForm.get('email')?.touched) || this.profileForm.get('email')?.hasError('emailExists') ? 'red' : 'white'}" required>
+                                           [ngStyle]="getInputStyle('email')"
+                                           [ngClass]="{'error-input': shouldShowError('email')}"
+                                           required>
                                 </h3>
-                                <!-- <h3 class="profileDetailsInput">
-                                    <span class="spanProfileCategory">Date Of Birth</span><br> -->
-                                    <!-- <input placeholder="mm/dd/yyyy" matInput name="dateOfBirth" 
-                                           [(ngModel)]="currentUser.dateOfBirth" (blur)="validateAge()" pattern="^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/([0-9]{4})$"  maxlength="10" #dob="ngModel" [ngStyle]="{'border-color': dob.invalid && (dob.dirty || dob.touched) ? 'red' : 'white'}"> -->
-                                     <!-- <input placeholder="mm/dd/yyyy" matInput name="dateOfBirth" 
-                                           [(ngModel)]="currentUser.dateOfBirth" (blur)="validateAge()" 
-                                           pattern="^\d{2}/\d{2}/\d{4}$" maxlength="10" #dob="ngModel" 
-                                           [ngStyle]="{'border-color': dob.invalid && (dob.dirty || dob.touched) ? 'red' : 'white'}"> -->
+
                                 <h3 class="profileDetailsInputDOB">
                                     <div class="dateOfBirthSpanAndErrorContainer">
-                                        <span class="spanProfileCategoryDOB">Date Of Birth</span><br>
-                                        <!-- <label for="error" *ngIf="twentyOneError" class="errorTwentyOne">21+ Only</label> -->
+                                        <span class="spanProfileCategoryDOB" [ngStyle]="getLabelStyle('dateOfBirth')">Date Of Birth
+                                            <label for="error" 
+                                                id="error" 
+                                                *ngIf="shouldShowError('dateOfBirth')" 
+                                                class="error-alert">{{getErrorMessage('dateOfBirth')}}</label>
+                                        </span><br>
                                     </div>
                                     <input placeholder="mm/dd/yyyy" matInput name="dateOfBirth"
+                                            type="text"
                                             formControlName="dateOfBirth"
-                                            [value]="currentUser.dateOfBirth"
                                             (blur)="validateAge()"
                                             pattern="^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/([0-9]{4})$"
                                             maxlength="10" 
-                                            [ngStyle]="{'border-color': (!isValidAge || profileForm.get('dateOfBirth')?.invalid) && (profileForm.get('dateOfBirth')?.dirty || profileForm.get('dateOfBirth')?.touched) ? 'red' : 'white'}">
+                                            [ngStyle]="getInputStyle('dateOfBirth')"
+                                            [ngClass]="{'error-input': shouldShowError('dateOfBirth')}">
                                 </h3>
-                                
+                                 
                                 <h3 class="profileDetailsInputGender">
                                     <span class="spanProfileCategory">Gender</span><br>
-                                    <select matNativeControl name="gender"[value]="currentUser.gender" formControlName="gender">
+                                    <select matNativeControl name="gender" formControlName="gender">
                                         <option value="" disabled selected>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
                                     </select>
                                 </h3>
+
                                 <h3 class="profileDetailsInputWeight">
-                                    <span class="spanProfileCategory">Weight</span><br>
+                                    <span class="spanProfileCategory" [ngStyle]="getLabelStyle('weight')">Weight
+                                        <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('weight')" 
+                                            class="error-alert">{{getErrorMessage('weight')}}</label>
+                                    </span><br>
                                     <input matInput placeholder="Enter Weight in lbs (e.g., 245)" min="50" 
+                                            type="decimal"
                                             formControlName="weight"
                                             max="600"  name="weight" type="text"
-                                            [value]="currentUser.weight" pattern="^\d+(\.\d{1,2})?$" 
+                                            pattern="^\d+(\.\d{1,2})?$" 
                                             step="0.01" 
                                             (blur)="isWeightValid()"
-                                            [ngStyle]="{'border-color': !isWeightValid() && (profileForm.get('weight')?.dirty || profileForm.get('weight')?.touched) ? 'red' : 'white'}">
-                                    <!-- <mat-error *ngIf="weight.invalid && (weight.dirty || weight.touched)">
-                                        Please enter a valid weight (numbers only)
-                                    </mat-error> -->
+                                            [ngStyle]="getInputStyle('weight')"
+                                            [ngClass]="{'error-input': shouldShowError('weight')}">
                                 </h3>
                                 
                                 <h3 class="profileDetailsInputHeight">
-                                    <span class="spanProfileCategory">Height</span><br>
+                                    <span class="spanProfileCategory" [ngStyle]="getLabelStyle('height')">Height
+                                        <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('height')" 
+                                            class="error-alert">{{getErrorMessage('height')}}</label>
+                                    </span><br>
                                     <input matInput 
                                            placeholder="Enter Height (e.g., 6.5 or 6'6&quot;)" 
                                            name="height"
                                            formControlName="height"
-                                           [value]="currentUser.height" 
-                                           (input)="onHeightInput($event)" 
-                                           [ngStyle]="{'border-color': profileForm.get('height')?.invalid && (profileForm.get('height')?.dirty || profileForm.get('height')?.touched) ? 'red' : 'white'}">
-                                    <!-- <span *ngIf="!isHeightValid() && heightTouched" style="color: red;">Invalid height format</span> -->
+                                           (input)="onHeightInput($event)"
+                                           [ngStyle]="getInputStyle('height')"
+                                           [ngClass]="{'error-input': shouldShowError('height')}">
                                 </h3>
+
                                 <h3 class="profileDetailsInputObjective">
                                     <span class="spanProfileCategory">Objective</span><br>
-                                    <select matNativeControl name="goals" [value]="currentUser.goals" formControlName="goals">
+                                    <select matNativeControl name="goals" formControlName="goals">
                                         <option value="" disabled selected>Select Objective</option>
                                         <option value="Lose Fat">Lose Fat</option>
                                         <option value="Maintain Weight">Maintain Weight</option>
                                         <option value="Build Muscle">Build Muscle</option>
                                     </select>
                                 </h3>
+
                             </div>
-                            <div class="profilePictureLinkContainer">
+
+                            <!-- <div class="profilePictureLinkContainer">
+
                                 <h3 class="profileDetailsInputPhoto">
-                                    <span class="spanProfileCategory">Profile Picture Link</span><br>
+                                    <span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture Link
+                                        <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('imgUrl')" 
+                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
+                                    </span><br>
                                 </h3>
                                 <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" name="imgUrl" 
                                        formControlName="imgUrl"
                                        (input)="onImageUrlInput($event)"
-                                       pattern="https?://.+" [ngStyle]="{'border-color': profileForm.get('imgUrl')?.invalid && (profileForm.get('imgUrl')?.dirty || profileForm.get('imgUrl')?.touched) ? 'red' : 'white'}">
-                                <!-- <mat-error *ngIf="imgUrl.invalid && (imgUrl.dirty || imgUrl.touched)">
-                                    Please enter a valid URL
-                                </mat-error> -->
-                            </div>
+                                       [ngStyle]="getInputStyle('imgUrl')"
+                                       [ngClass]="{'error-input': shouldShowError('imgUrl')}"
+                                       pattern="https?://.+">
+                            </div> -->
                             <div class="updateProfileButtonContainer" [ngClass]="{'wide': true}">
                                 <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
-                                <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
-                                        type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
                                 <button mat-button style="color:white" class="btn btn-updateProfileButton" 
                                 type="submit" [disabled]="!isFormValid('profile')" (click)="saveProfile()">Update</button>
                             </div>
@@ -310,12 +357,58 @@
                     <div class="profilePictureFormContainer">
                     <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
                       <div class="profilePictureLinkContainer">
-                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Links</span></h3>
-                        <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" formControlName="imgUrl" (input)="onImageUrlInput($event)">
+                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture
+                            <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('imgUrl')" 
+                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
+                        </span></h3>
+
+                        <div class="imageInputContainer">
+                            <input matInput 
+                                class="imgUrl" 
+                                placeholder="Paste Link/File Upload"
+                                type="text" 
+                                [ngStyle]="getInputStyle('imgUrl')"
+                                [ngClass]="{'error-input': shouldShowError('imgUrl')}"
+                                formControlName="imgUrl" 
+                                (input)="onImageUrlInput($event)"
+                                pattern="https?://.+">
+
+                            <!-- Hidden File Input -->
+                            <input
+                                #fileInput
+                                type="file"
+                                accept="image/*"
+                                (change)="onFileSelected($event)"
+                                style="display: none">
+                                
+                            
+                            <!-- Upload Button -->
+                            <button mat-button 
+                                class="uploadButton"
+                                (click)="fileInput.click()"
+                                [disabled]="isUploading"
+                                type="button">
+                            <span *ngIf="!isUploading">Upload</span>
+                            <div *ngIf="isUploading" class="uploadingState">
+                            <mat-spinner diameter="20" style="--mdc-circular-progress-active-indicator-color: black"></mat-spinner>
+                            <span>{{uploadProgress | number:'1.0-0'}}%</span>
+                            </div>
+                            </button>
+                        </div>
+
                       </div>
                       <div class="savePictureButtonContainer">
                         <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit">Save</button>
+                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
+                            <ng-container *ngIf="!isSavingPicture">Save</ng-container>
+                                <div *ngIf="isSavingPicture" class="savingState">
+                                <mat-spinner diameter="16" 
+                                            style="--mdc-circular-progress-active-indicator-color: white">
+                                </mat-spinner>
+                                </div>
+                        </button>
                       </div>
                     </form>
                 </div> 
@@ -328,9 +421,13 @@
                             <form [formGroup]="passwordForm" (ngSubmit)="updateUserPassword()" id="passwordForm">
                                 <div class="oldPassword">
                                     <div class="input-details">
-                                        <label class="label" for="oldPassword">Current Password</label>
+                                        <label class="label" for="oldPassword" [ngStyle]="getLabelStyle('oldPassword')">Current Password</label>
                                         <label for="error" *ngIf="authenticating" class="authenticating">Authenticating</label>
-                                        <label for="error" *ngIf="isOldPasswordError() && !authenticating" class="error-alert">{{oldPasswordError}}</label>
+                                        <!-- <label for="error" *ngIf="isOldPasswordError() && !authenticating" class="error-alert">{{oldPasswordError}}</label> -->
+                                        <label for="error" 
+                                        id="error" 
+                                        *ngIf="shouldShowError('oldPassword')" 
+                                        class="error-alert">{{getErrorMessage('oldPassword')}}</label>
                                     </div>
                                     <div class="passwordInput">
                                         <input type="password"
@@ -340,16 +437,21 @@
                                             (blur)="checkOldPassword()"
                                             placeholder="Enter Current Password"
                                             required
-                                            [ngStyle]="{'border-color': isOldPasswordError() ? 'red' : 'white'}">
-                                        <fa-icon [icon]="oldPasswordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="toggleOldPasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#oldPassword']"></fa-icon>        
+                                            [ngStyle]="getInputStyle('password')"
+                                            [ngClass]="{'error-input': shouldShowError('password')}">
+                                        <fa-icon [icon]="oldPasswordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('oldPassword')" (click)="toggleOldPasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#oldPassword']"></fa-icon>        
                                     </div>
                                 </div>        
                                 <div formGroupName="passwordGroup">
                                     <div>
                                         <div class="input-details passwordRelative">
-                                            <label class="label" for="password">New Password</label>
-                                            <label for="error" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched && !this.passwordMismatch" class="error-alert">{{getPasswordErrorMessage()}}</label>
-                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label>
+                                            <label class="label" for="password" [ngStyle]="getLabelStyle('password')">New Password</label>
+                                            <!-- <label for="error" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched && !this.passwordMismatch" class="error-alert">{{getPasswordErrorMessage()}}</label>
+                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label> -->
+                                            <label for="error" 
+                                                id="error" 
+                                                *ngIf="shouldShowError('password')" 
+                                                class="error-alert">{{getErrorMessage('password')}}</label>
                                             <div class="popup" *ngIf="isPopupVisible">
                                                 <p>Password must:</p>
                                                 <ul>
@@ -370,15 +472,19 @@
                                                 placeholder="Enter New Password"
                                                 formControlName="password"
                                                 required
-                                                [ngStyle]="{'border-color': passwordGroup.get('password')?.invalid && (passwordGroup.get('password')?.dirty || passwordGroup.get('password')?.touched) ? 'red' : 'white'}">
-                                            <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+                                                >
+                                            <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('password')" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
                                     <div>
                                         <div class="input-details focusedInput">
-                                            <label class="label" for="confirmPassword">Confirm New Password</label>
-                                            <label for="error" *ngIf="passwordGroup.get('confirmPassword')?.invalid && passwordGroup.get('confirmPassword')?.touched && !this.passwordMismatch" class="error-alert">{{getConfirmPasswordErrorMessage()}}</label>
-                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label>
+                                            <label class="label" for="confirmPassword" [ngStyle]="getLabelStyle('confirmPassword')">Confirm New Password</label>
+                                            <!-- <label for="error" *ngIf="passwordGroup.get('confirmPassword')?.invalid && passwordGroup.get('confirmPassword')?.touched && !this.passwordMismatch" class="error-alert">{{getConfirmPasswordErrorMessage()}}</label>
+                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label> -->
+                                            <label for="error" 
+                                                id="error" 
+                                                *ngIf="shouldShowError('confirmPassword')" 
+                                                class="error-alert">{{getErrorMessage('confirmPassword')}}</label>
                                         </div>
                                         <div class="passwordInput">
                                             <input type="password"
@@ -391,9 +497,11 @@
                                                 (copy)="preventCopyPaste($event)"
                                                 (cut)="preventCopyPaste($event)" 
                                                 (paste)="preventCopyPaste($event)"
+                                                [ngStyle]="getInputStyle('confirmPassword')"
+                                                [ngClass]="{'error-input': shouldShowError('confirmPassword')}"
                                                 required
                                                 [ngStyle]="{'border-color': passwordGroup.get('confirmPassword')?.invalid && (passwordGroup.get('confirmPassword')?.dirty || passwordGroup.get('confirmPassword')?.touched) ? 'red' : 'white'}">
-                                            <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
+                                            <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('confirmPassword')" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
                                     <!-- <div *ngIf="passwordGroup.errors?.['passwordMismatch'] && (passwordGroup.touched || passwordGroup.dirty)" class="error-alert">
@@ -427,5 +535,4 @@
     </div>
 
 </div>
-
-
+<!-- <app-upload-test></app-upload-test> -->
