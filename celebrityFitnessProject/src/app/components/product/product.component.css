@@ -154,6 +154,7 @@ p.price {
 .backButton {
   width: 8rem;
   line-height: 1;
+  border-radius: 0.4rem;
   /* text-wrap: wrap; */
   /* line-height: 1; */
 }

@@ -47,8 +47,21 @@
   min-height: 100vh;
   align-items: center;
   box-sizing: border-box;
+  // opacity: 1;
   // justify-content: center;
-  // max-width: 1400px;
+  // max-width: 1400px; 
+
+  // &[style*="visibility: hidden"] {
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  // }
+}
+
+.hidden{
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .nameTier {
@@ -557,6 +570,13 @@ fieldset {
   // background-size: cover;
   // background-repeat: no-repeat;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  transition: background-size 0.1s ease-out, background-position 0.1s ease-out;
+  transform: translate3d(0,0,0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  // background-size: cover !important;
 
   &.tierThreeStyle {
     box-shadow: 0 0 40px #C7FF20;
@@ -578,6 +598,43 @@ fieldset {
     cursor: grabbing;
   }
 
+  &.loaded {
+    opacity: 1;
+  }
+
+  &.loading {
+    opacity: 0.8;
+  }
+  
+  &.dragging {
+    transition: none; // Disable transitions while dragging for responsiveness
+  }
+  
+  &.zooming {
+    transition: background-size 0.2s ease-out;
+  }
+
+   &.is-dragging {
+    transition: none !important; // Disable transitions during drag
+  }
+  
+  // &:not(.is-dragging) {
+  //   transition: transform 0.3s ease-out; // Smooth transitions when not dragging
+  // }
+
+  &:not(.is-dragging) {
+    transition: background-position 0.1s linear,
+                background-size 0.1s linear;
+  }
+
+  &.smooth-transform {
+    will-change: transform, background-position, background-size;
+  }
+
+  &[style*="background-image"] {
+    background-repeat: no-repeat !important;
+    background-color: #c7ff20 !important;
+  }
 }
 
 @keyframes boxShadowExpand {
@@ -2788,39 +2845,38 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
-  input[type="password"]::placeholder,
-  input[type="text"]::placeholder,
-  input[type="email"]::placeholder,
-  input[type="decimal"]::placeholder {
-    color: var(--placeholder-color, red);
-    transition: color 0.1s ease;
-  }
-  
-  /* input[type="text"]::placeholder {
-    color: var(--placeholder-color, black);
-    transition: color 0.1s ease;
-  } */
-
-  input[type="text"].password-visible {
-    color: inherit;
-  }
-
-  input[type="password"].error-input::placeholder,
-  input[type="text"].error-input::placeholder {
+input[type="password"]::placeholder,
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="decimal"]::placeholder {
   color: var(--placeholder-color, red);
   transition: color 0.1s ease;
 }
 
+/* input[type="text"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
+} */
 
-  input:focus.error-input {
-    border-color: red !important;
-    box-shadow: 0 0 0 1px red !important;
-    color: red !important;
-  }
+input[type="text"].password-visible {
+  color: inherit;
+}
 
-  input[matInput]:focus.error-input::placeholder {
-    color: red !important;
-  }
+input[type="password"].error-input::placeholder,
+input[type="text"].error-input::placeholder {
+color: var(--placeholder-color, red);
+transition: color 0.1s ease;
+}
+
+input:focus.error-input {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
+  color: red !important;
+}
+
+input[matInput]:focus.error-input::placeholder {
+  color: red !important;
+}
 
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */

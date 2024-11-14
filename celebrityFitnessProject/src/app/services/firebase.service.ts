@@ -655,15 +655,137 @@ export class FirebaseService {
   }
 
   // File Upload Methods
+  // async uploadFile(file: File, userId: string): Promise<string> {
+  //   try {
+  //     // Validate file
+  //     this.validateFile(file);
+
+  //     // Compress image if needed
+  //     const processedFile = file.type.startsWith('image/') ? 
+  //       await this.compressImage(file) : file;
+
+  //     const storage = getStorage();
+  //     const timestamp = Date.now();
+  //     const filename = `${timestamp}-${file.name}`;
+  //     const storagePath = `staging/profileImages/${userId}/${filename}`;
+  //     const storageRef = ref(storage, storagePath);
+      
+  //     const metadata = this.createUploadMetadata(userId, processedFile);
+  //     const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
+
+  //     return new Promise((resolve, reject) => {
+  //       // Track if we've emitted 100% progress
+  //       let hasEmitted100 = false;
+
+  //       uploadTask.on(
+  //         'state_changed',
+  //         (snapshot) => {
+  //           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //           if (progress === 100 && !hasEmitted100) {
+  //             hasEmitted100 = true;
+  //           }
+  //           this.uploadProgress.next({
+  //             progress: Math.round(progress),
+  //             snapshot
+  //           });
+  //         },
+  //         (error) => {
+  //           console.error('Upload error:', {
+  //             code: error.code,
+  //             message: error.message,
+  //             path: storagePath
+  //           });
+  //           reject(error);
+  //         },
+  //         async () => {
+  //           try {
+  //             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+  //             this.stagedFiles.set(userId, storagePath);
+  //             // Only resolve after progress reaches 100%
+  //             setTimeout(() => {
+  //               resolve(downloadURL);
+  //             }, 500); // Add small delay after upload completes
+  //           } catch (error) {
+  //             console.error('Error getting download URL:', error);
+  //             reject(error);
+  //           }
+  //         }
+  //       );
+  //     });
+  //   } catch (error) {
+  //     console.error('Error uploading file:', error);
+  //     throw error;
+  //   }
+  // }
+
+  // async uploadFile(file: File, userId: string): Promise<string> {
+  //   try {
+  //     this.validateFile(file);
+  //     const processedFile = file.type.startsWith('image/') ? 
+  //       await this.compressImage(file) : file;
+  
+  //     const storage = getStorage();
+  //     const timestamp = Date.now();
+  //     const filename = `${timestamp}-${file.name}`;
+  //     const storagePath = `staging/profileImages/${userId}/${filename}`;
+  //     const storageRef = ref(storage, storagePath);
+      
+  //     const metadata = this.createUploadMetadata(userId, processedFile);
+  //     const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
+  
+  //     return new Promise((resolve, reject) => {
+  //       let lastProgress = 0;
+        
+  //       uploadTask.on(
+  //         'state_changed',
+  //         (snapshot) => {
+  //           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //           lastProgress = progress;
+  //           this.uploadProgress.next({
+  //             progress: Math.round(progress),
+  //             snapshot
+  //           });
+  //         },
+  //         (error) => {
+  //           console.error('Upload error:', error);
+  //           reject(error);
+  //         },
+  //         async () => {
+  //           try {
+  //             // Ensure we emit 100% if we haven't already
+  //             if (lastProgress < 100) {
+  //               this.uploadProgress.next({
+  //                 progress: 100,
+  //                 snapshot: uploadTask.snapshot
+  //               });
+  //             }
+  
+  //             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+  //             this.stagedFiles.set(userId, storagePath);
+              
+  //             // Small delay to ensure progress is visible
+  //             await new Promise(resolve => setTimeout(resolve, 300));
+  //             resolve(downloadURL);
+  //           } catch (error) {
+  //             console.error('Error getting download URL:', error);
+  //             reject(error);
+  //           }
+  //         }
+  //       );
+  //     });
+  //   } catch (error) {
+  //     console.error('Error uploading file:', error);
+  //     throw error;
+  //   }
+  // }
+
+
   async uploadFile(file: File, userId: string): Promise<string> {
     try {
-      // Validate file
       this.validateFile(file);
-
-      // Compress image if needed
       const processedFile = file.type.startsWith('image/') ? 
         await this.compressImage(file) : file;
-
+  
       const storage = getStorage();
       const timestamp = Date.now();
       const filename = `${timestamp}-${file.name}`;
@@ -672,30 +794,42 @@ export class FirebaseService {
       
       const metadata = this.createUploadMetadata(userId, processedFile);
       const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
-
+  
       return new Promise((resolve, reject) => {
+        let hasCompleted = false;
+        let url: string | null = null;
+        
         uploadTask.on(
           'state_changed',
           (snapshot) => {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            
+            // Only emit progress up to 99% until upload is fully complete
             this.uploadProgress.next({
-              progress: Math.round(progress),
+              progress: hasCompleted ? 100 : Math.min(progress, 99),
               snapshot
             });
           },
           (error) => {
-            console.error('Upload error:', {
-              code: error.code,
-              message: error.message,
-              path: storagePath
-            });
+            console.error('Upload error:', error);
             reject(error);
           },
           async () => {
             try {
-              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              url = await getDownloadURL(uploadTask.snapshot.ref);
               this.stagedFiles.set(userId, storagePath);
-              resolve(downloadURL);
+              
+              // Mark as completed and emit 100%
+              hasCompleted = true;
+              this.uploadProgress.next({
+                progress: 100,
+                snapshot: uploadTask.snapshot
+              });
+              
+              // Add delay before resolving
+              setTimeout(() => {
+                resolve(url!);
+              }, 500);
             } catch (error) {
               console.error('Error getting download URL:', error);
               reject(error);
@@ -707,163 +841,8 @@ export class FirebaseService {
       console.error('Error uploading file:', error);
       throw error;
     }
-  }
-
-  // async moveToPermStorage(userId: string, fileName: string): Promise<string> {
-  //   try {
-  //     const response = await firstValueFrom(
-  //       this.http.post<{ success: boolean; url: string }>(
-  //         `${this.baseUrl}/api/storage/move/${userId}`,
-  //         { fileName },
-  //         this.getAuthHeadersWithContentType()
-  //       )
-  //     ).catch(async (error) => {
-  //       if (error instanceof HttpErrorResponse && error.status === 401) {
-  //         await this.authService.refreshToken();
-  //         return firstValueFrom(
-  //           this.http.post<{ success: boolean; url: string }>(
-  //             `${this.baseUrl}/api/storage/move/${userId}`,
-  //             { fileName },
-  //             this.getAuthHeadersWithContentType()
-  //           )
-  //         );
-  //       }
-  //       throw error;
-  //     });
-
-  //     if (!response.success || !response.url) {
-  //       throw new Error('Failed to move file to permanent storage');
-  //     }
-
-  //     // Clear staged file tracking
-  //     this.stagedFiles.delete(userId);
-      
-  //     return response.url;
-  //   } catch (error) {
-  //     console.error('Error moving to permanent storage:', error);
-  //     throw error;
-  //   }
-  // }
-
-  // async moveToPermStorage(userId: string, fileName: string): Promise<string> {
-  //   try {
-  //     if (!fileName) {
-  //       throw new Error('Filename is required');
-  //     }
+  }  
   
-  //     const response = await firstValueFrom(
-  //       this.http.post<{ success: boolean; url: string }>(
-  //         `${this.baseUrl}/api/storage/move/${userId}`,
-  //         { fileName },
-  //         this.getAuthHeadersWithContentType()
-  //       ).pipe(
-  //         catchError(async (error) => {
-  //           if (error.status === 401) {
-  //             await this.authService.refreshToken();
-  //             return this.http.post<{ success: boolean; url: string }>(
-  //               `${this.baseUrl}/api/storage/move/${userId}`,
-  //               { fileName },
-  //               this.getAuthHeadersWithContentType()
-  //             );
-  //           }
-  //           throw error;
-  //         })
-  //       )
-  //     );
-  
-  //     if (!response || !response.success || !response.url) {
-  //       throw new Error('Failed to move file to permanent storage');
-  //     }
-  
-  //     return response.url;
-  //   } catch (error) {
-  //     console.error('Error moving to permanent storage:', error);
-  //     throw error;
-  //   }
-  // }  
-
-  // async moveToPermStorage(userId: string, fileName: string): Promise<string> {
-  //   try {
-  //     if (!fileName) {
-  //       throw new Error('Filename is required');
-  //     }
-  
-  //     const response = await firstValueFrom(
-  //       this.http.post<{ success: boolean; url: string }>(
-  //         `${this.baseUrl}/api/storage/move/${userId}`,
-  //         { fileName },
-  //         this.getAuthHeadersWithContentType()
-  //       ).pipe(
-  //         catchError(async (error) => {
-  //           if (error.status === 401) {
-  //             await this.authService.refreshToken();
-  //             return this.http.post<{ success: boolean; url: string }>(
-  //               `${this.baseUrl}/api/storage/move/${userId}`,
-  //               { fileName },
-  //               this.getAuthHeadersWithContentType()
-  //             );
-  //           }
-  //           throw error;
-  //         })
-  //       )
-  //     );
-  
-  //     if (!response || !response.success || !response.url) {
-  //       throw new Error('Failed to move file to permanent storage');
-  //     }
-  
-  //     // Clear staged file tracking after successful move
-  //     this.stagedFiles.delete(userId);
-  
-  //     return response.url;
-  //   } catch (error) {
-  //     console.error('Error moving to permanent storage:', error);
-  //     throw error;
-  //   }
-  // }  
-  
-// async moveToPermStorage(userId: string, fileName: string): Promise<string> {
-//     try {
-//       if (!fileName) {
-//         throw new Error('Filename is required');
-//       }
-  
-//       const response = await firstValueFrom(
-//         this.http.post<{ success: boolean; url: string }>(
-//           `${this.baseUrl}/api/storage/move/${userId}`,
-//           { fileName },
-//           this.getAuthHeadersWithContentType()
-//         ).pipe(
-//           catchError((error) => {
-//             if (error.status === 401) {
-//               return from(this.authService.refreshToken()).pipe(
-//                 switchMap(() =>
-//                   this.http.post<{ success: boolean; url: string }>(
-//                     `${this.baseUrl}/api/storage/move/${userId}`,
-//                     { fileName },
-//                     this.getAuthHeadersWithContentType()
-//                   )
-//                 )
-//               );
-//             }
-//             return throwError(() => error);
-//           })
-//         )
-//       );
-  
-//       if (!response || !response.success || !response.url) {
-//         throw new Error('Failed to move file to permanent storage');
-//       }
-  
-//       // Clear staged file tracking after successful move
-//       this.stagedFiles.delete(userId);
-  
-//       return response.url;
-//     } catch (error) {
-//       console.error('Error moving to permanent storage:', error);
-//       throw error;
-//     }
-//   }  
 
 async moveToPermStorage(userId: string, fileName: string): Promise<string> {
   try {
@@ -1034,61 +1013,6 @@ async moveToPermStorage(userId: string, fileName: string): Promise<string> {
       }
     };
   }
-
-  // private async compressImage(file: File, maxWidthOrHeight = 1200, quality = 0.8): Promise<File> {
-  //   return new Promise((resolve, reject) => {
-  //     const img = new Image();
-  //     const objectUrl = URL.createObjectURL(file);
-      
-  //     img.onload = () => {
-  //       URL.revokeObjectURL(objectUrl);
-  //       const canvas = document.createElement('canvas');
-  //       let width = img.width;
-  //       let height = img.height;
-        
-  //       if (width > height && width > maxWidthOrHeight) {
-  //         height = Math.round((height * maxWidthOrHeight) / width);
-  //         width = maxWidthOrHeight;
-  //       } else if (height > maxWidthOrHeight) {
-  //         width = Math.round((width * maxWidthOrHeight) / height);
-  //         height = maxWidthOrHeight;
-  //       }
-        
-  //       canvas.width = width;
-  //       canvas.height = height;
-        
-  //       const ctx = canvas.getContext('2d');
-  //       if (!ctx) {
-  //         reject(new Error('Failed to get canvas context'));
-  //         return;
-  //       }
-
-  //       ctx.drawImage(img, 0, 0, width, height);
-        
-  //       canvas.toBlob(
-  //         (blob) => {
-  //           if (blob) {
-  //             resolve(new File([blob], file.name, {
-  //               type: file.type,
-  //               lastModified: Date.now()
-  //             }));
-  //           } else {
-  //             reject(new Error('Failed to compress image'));
-  //           }
-  //         },
-  //         file.type,
-  //         quality
-  //       );
-  //     };
-      
-  //     img.onerror = () => {
-  //       URL.revokeObjectURL(objectUrl);
-  //       reject(new Error('Failed to load image'));
-  //     };
-      
-  //     img.src = objectUrl;
-  //   });
-  // }
  
 private async compressImage(file: File, maxWidthOrHeight = 1200, quality = 0.8): Promise<File> {
   if (!file.type.startsWith('image/')) {

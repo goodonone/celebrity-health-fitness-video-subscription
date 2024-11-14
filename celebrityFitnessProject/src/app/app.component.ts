@@ -46,6 +46,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMenuOpen: boolean = false;
   isMenuHovered: boolean = false;
   closeTimeout: any;
+  // isMobile: boolean = window.innerWidth <= 900;
+  isTouchDevice: boolean = false;
+  // Define a custom breakpoint
+  // CUSTOM_MOBILE_BREAKPOINT = '(max-width: 500px)';
 
   private cartSubscription: Subscription | null = null;
   // private authSubscription: Subscription | null = null;
@@ -65,7 +69,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private oauthService: CustomOAuthService,
     private authStateService: AuthStateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    // private breakpointObserver: ReportingObserver,
   ) {
     // this.router.events.subscribe((event) => {
     //   if (event instanceof NavigationEnd) {
@@ -81,8 +86,14 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     
-   
-
+    // For touch devices, disable hover events
+    this.detectTouchDevice();
+    // Observe screen size changes 
+    // this.breakpointObserver
+    // .observe([this.CUSTOM_MOBILE_BREAKPOINT])
+    // .subscribe((result) => {
+    //   this.isMobile = result.matches;
+    // });
 
     // this.oauthService.handleRedirectResult();
     // this.oauthService.checkForRedirectResult();
@@ -308,34 +319,39 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // @HostListener('window:resize', [])
+  // onWindowResize() {
+  //   this.isMobile = window.innerWidth <= 500;
+  // }
+
   onNavbarChangeColor(isVisibleNavbar: boolean) {
     this.isVisibleNavbar = isVisibleNavbar;
   }
 
   // Toggles the visiblity of the search input field
 
-  toggleSearch() {
-    if (this.viewSearchBar) {
-      this.viewSearchBar = false;
-    } else {
-      this.viewSearchBar = true;
-    }
-    setTimeout(() => {
-      this.viewSearchBar = false;
-    }, 10000);
-  }
+  // toggleSearch() {
+  //   if (this.viewSearchBar) {
+  //     this.viewSearchBar = false;
+  //   } else {
+  //     this.viewSearchBar = true;
+  //   }
+  //   setTimeout(() => {
+  //     this.viewSearchBar = false;
+  //   }, 10000);
+  // }
 
-  // Search Function(INCOMPLETE)
-  search(searchString: string) {
-    var search = (<HTMLInputElement>document.getElementById('mySearch') ?? '')
-      .value;
-    if (search !== '') {
-      var input = search.charAt(0).toUpperCase() + search.slice(1);
-      this.router.navigate(['/search', input]);
-    } else {
-      this.viewSearchBar = false;
-    }
-  }
+  // // Search Function(INCOMPLETE)
+  // search(searchString: string) {
+  //   var search = (<HTMLInputElement>document.getElementById('mySearch') ?? '')
+  //     .value;
+  //   if (search !== '') {
+  //     var input = search.charAt(0).toUpperCase() + search.slice(1);
+  //     this.router.navigate(['/search', input]);
+  //   } else {
+  //     this.viewSearchBar = false;
+  //   }
+  // }
 
   // UpdateStatus() {
   //   this.userService.getUserId().subscribe(
@@ -459,27 +475,50 @@ export class AppComponent implements OnInit, AfterViewInit {
   // Hamburger Menu Functions
   menuToggle() {
     this.isMenuOpen = !this.isMenuOpen;
-    // console.log(`Menu toggled. IsMenuOpen: ${this.isMenuOpen}`);
     const toggle = document.querySelector('#toggle') as HTMLInputElement;
     const hamburger = document.getElementById('hamburger');
-
+  
     if (this.isMenuOpen) {
-      // Set a timer to auto-close the menu if the mouse doesn't enter
-      this.closeMenuTimer = setTimeout(() => {
-        if (!this.isMenuHovered) {
-          toggle.checked = false;
-          this.isMenuOpen = false;
-          hamburger!.classList.remove('active');
-          // console.log('Menu auto-closed due to inactivity.');
-        }
-      }, 2000);
+      if (!this.isTouchDevice) {  // Only set the timer if not on mobile
+        // Set a timer to auto-close the menu if the mouse doesn't enter
+        this.closeMenuTimer = setTimeout(() => {
+          if (!this.isMenuHovered) {
+            toggle.checked = false;
+            this.isMenuOpen = false;
+            hamburger!.classList.remove('active');
+            // console.log('Menu auto-closed due to inactivity.');
+          }
+        }, 2000);
+      }
     } else {
       // Clear any existing timers if the menu is closed
       this.clearTimers();
     }
   }
+  // menuToggle() {
+  //   this.isMenuOpen = !this.isMenuOpen;
+  //   // console.log(`Menu toggled. IsMenuOpen: ${this.isMenuOpen}`);
+  //   const toggle = document.querySelector('#toggle') as HTMLInputElement;
+  //   const hamburger = document.getElementById('hamburger');
+
+  //   if (this.isMenuOpen) {
+  //     // Set a timer to auto-close the menu if the mouse doesn't enter
+  //     this.closeMenuTimer = setTimeout(() => {
+  //       if (!this.isMenuHovered) {
+  //         toggle.checked = false;
+  //         this.isMenuOpen = false;
+  //         hamburger!.classList.remove('active');
+  //         // console.log('Menu auto-closed due to inactivity.');
+  //       }
+  //     }, 2000);
+  //   } else {
+  //     // Clear any existing timers if the menu is closed
+  //     this.clearTimers();
+  //   }
+  // }
 
   onMenuMouseEnter() {
+    if (this.isTouchDevice) return;
     this.isMenuHovered = true;
     // console.log('Menu hovered.');
 
@@ -488,6 +527,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onMenuMouseLeave() {
+    if (this.isTouchDevice) return;
     this.isMenuHovered = false;
     // console.log('Menu hover exited.');
     const toggle = document.querySelector('#toggle') as HTMLInputElement;
@@ -504,6 +544,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onMenuMouseLeaveHamburger() {
+    if (this.isTouchDevice) return;
     this.isMenuHovered = false;
     // console.log('Menu hover exited.');
     const toggle = document.querySelector('#toggle') as HTMLInputElement;
@@ -539,5 +580,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.hoverTimer = null;
       // console.log('Hover exit timer cleared.');
     }
+  }
+
+  detectTouchDevice() {
+    this.isTouchDevice =
+      ('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0);
   }
 }

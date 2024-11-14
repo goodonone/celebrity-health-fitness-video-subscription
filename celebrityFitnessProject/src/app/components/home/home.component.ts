@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   images: carouselImage[] = [
     {
-      imageSrc: '/assets/Images/1.jpg',
+      imageSrc: '/assets/Images/1.jpeg',
       imageAlt: 'man 1',
       manNameBefore: 'Patrick 33,',
       manNameHighlighted: 'Motivated',
@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       imageText: '"I needed some desperate help and I got it and so much more!"'
     },
     {
-      imageSrc: '/assets/Images/2.jpg',
+      imageSrc: '/assets/Images/2.jpeg',
       imageAlt: 'man 2',
       manNameBefore: 'Steven 28,',
       manNameHighlighted: 'Motivated',
@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       imageText: '"What can I say, this program was a godsend 🙌!!!"'
     },
     {
-      imageSrc: '/assets/Images/3.jpg',
+      imageSrc: '/assets/Images/3.jpeg',
       imageAlt: 'man 3',
       manNameBefore: 'Alvin 40,',
       manNameHighlighted: 'All In',
@@ -74,7 +74,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       imageText: '"The best money I have spent in a long time. PERIOD."'
     },
     { 
-      imageSrc: '/assets/Images/5.jpg', 
+      imageSrc: '/assets/Images/5.png', 
       imageAlt: 'man 5', 
       manNameBefore: 'Jorge 38,', 
       manNameHighlighted: 'All In', 

@@ -73,216 +73,7 @@ export class ImageUrlManagerService {
   ) {}
 
 // async handleImageUpload(file: File, userId: string): Promise<string> {
-//   console.log('Starting image upload process...', { userId });
 //   try {
-
-//     // Wait for token initialization before proceeding
-//     const token = await this.authService.waitForToken();
-//     if (!token) {
-//       throw new Error('Failed to initialize authentication token');
-//     }
-
-//     const firebaseUrl = await this.firebaseService.uploadFile(file, userId);
-//     console.log('Firebase upload complete:', { firebaseUrl });
-    
-//     this.stagedUrl = firebaseUrl;
-//     this.stagedFileName = this.getFileNameFromUrl(firebaseUrl);
-
-//     console.log('Staging info set:', { 
-//       stagedUrl: this.stagedUrl,
-//       stagedFileName: this.stagedFileName 
-//     });
-    
-//     const displayUrl = await this.storageService.convertFirebaseUrl(firebaseUrl);
-//     // Properly append token
-//     // const separator = displayUrl.includes('?') ? '&' : '?';
-//     // displayUrl = `${displayUrl}${separator}token=${token}`;
-//     console.log('Converted to proxied URL:', { displayUrl });
-    
-//     // const token = await this.authService.getToken();
-//     // console.log('Got auth token:', { hasToken: !!token });
-
-//     // const finalUrl = `${displayUrl}?token=${token}`;
-//     // console.log('Final URL generated:', { 
-//     //   finalUrl: finalUrl.substring(0, 50) + '...' 
-//     // });
-//     // Convert to display URL without appending token
-    
-//     return displayUrl;
-//   } catch (error: any) {
-//     console.error('Error in handleImageUpload:', error);
-//     if (error.message === 'Authentication required') {
-//       // Handle auth error (e.g., redirect to login)
-//       throw new Error('Please log in to upload images');
-//     }
-//     throw error;
-//   }
-// }
-
-// async handleImageUpload(file: File, userId: string): Promise<string> {
-//   try {
-//     const token = await this.authService.waitForToken();
-//     if (!token) throw new Error('Authentication required');
-
-//     // Upload file
-//     const firebaseUrl = await this.firebaseService.uploadFile(file, userId);
-    
-//     // Store staging info
-//     this.stagedUrl = firebaseUrl;
-//     this.stagedFileName = this.getFileNameFromUrl(firebaseUrl);
-
-//     // Convert to display URL
-//     return await this.storageService.convertFirebaseUrl(firebaseUrl);
-//   } catch (error) {
-//     console.error('Error in handleImageUpload:', error);
-//     if ((error as any)?.status === 401) {
-//       this.authService.logout();
-//     }
-//     throw error;
-//   }
-// }
-
-// async handleImageUpload(file: File, userId: string): Promise<string> {
-//   try {
-//     // 1. Validate file
-//     await this.validateFile(file);
-
-//     // 2. Get and verify auth token
-//     const token = await this.authService.waitForToken();
-//     if (!token) {
-//       throw new Error('Authentication required');
-//     }
-
-//     // 3. Prepare upload
-//     const formData = new FormData();
-//     formData.append('file', file);
-
-//     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-//     // 4. Upload file to staging
-//     const response = await firstValueFrom(
-//       this.http.post<{
-//         success: boolean;
-//         fileName: string;
-//         filePath: string;
-//         contentType: string;
-//       }>(
-//         `${environment.apiUrl}/api/upload/${userId}`,
-//         formData,
-//         { headers }
-//       ).pipe(
-//         catchError(async (error) => {
-//           if (error.status === 401) {
-//             await this.authService.refreshToken();
-//             // Retry with new token
-//             const newToken = await this.authService.getToken();
-//             const newHeaders = new HttpHeaders().set('Authorization', `Bearer ${newToken}`);
-//             return this.http.post<any>(
-//               `${environment.apiUrl}/api/upload/${userId}`,
-//               formData,
-//               { headers: newHeaders }
-//             );
-//           }
-//           throw this.handleUploadError(error);
-//         })
-//       )
-//     );
-
-//     // 5. Validate response
-//     if (!response.success || !response.fileName || !response.filePath) {
-//       throw new Error('Upload response invalid');
-//     }
-
-//     // 6. Store staging info
-//     this.stagedFiles.set(userId, {
-//       fileName: response.fileName,
-//       url: response.filePath
-//     });
-
-//     // 7. Generate display URL
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       userId,
-//       response.fileName,
-//       true // isStaged = true
-//     );
-
-//     return displayUrl;
-
-//   } catch (error) {
-//     console.error('Image upload error:', error);
-//     this.handleUploadError(error);
-//     throw error;
-//   }
-// }
-
-// async handleImageUpload(file: File, userId: string): Promise<string> {
-//   try {
-//     // Get and verify auth token
-//     const token = await this.authService.waitForToken();
-//     if (!token) {
-//       throw new Error('Authentication required');
-//     }
-
-//     // Prepare upload
-//     const formData = new FormData();
-//     formData.append('file', file);
-
-//     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-//     // Upload file
-//     const response = await firstValueFrom(
-//       this.http.post<{
-//         success: boolean;
-//         fileName: string;
-//         filePath: string;
-//       }>(
-//         `${this.baseUrl}/api/images/upload/${userId}`,
-//         formData,
-//         { headers }
-//       ).pipe(
-//         catchError(async (error) => {
-//           console.error('Upload request failed:', error);
-//           if (error.status === 401) {
-//             this.authService.refreshToken();
-//           }
-//           throw error;
-//       })
-//      )
-//     );
-
-//     // Validate response
-//     if (!response.success || !response.fileName || !response.filePath) {
-//       throw new Error('Upload response invalid');
-//     }
-
-//     // Store staging info
-//     this.stagedFiles.set(userId, {
-//       fileName: response.fileName,
-//       url: response.filePath
-//     });
-
-//     // Generate display URL - pass all required parameters
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       userId,
-//       response.fileName,
-//       true  // isStaged
-//     );
-
-//     return displayUrl;
-
-//   } catch (error) {
-//     console.error('Image upload error:', error);
-//     // if ((error as any)?.status === 401) {
-//       // this.authService.logout();
-//       // this.authService.refreshToken();
-//     // }
-//     throw error;
-//   }
-// }
-
-// async handleImageUpload(file: File, userId: string): Promise<string> {
-//   try {
-//     // Validate file first
 //     if (!file) throw new Error('No file provided');
 
 //     const formData = new FormData();
@@ -294,46 +85,27 @@ export class ImageUrlManagerService {
 //     const headers = new HttpHeaders()
 //       .set('Authorization', `Bearer ${token}`);
 
-//     console.log('SENDING upload request:', { 
-//       url: `${this.baseUrl}/api/images/upload/${userId}`,
-//       fileType: file.type,
-//       fileSize: file.size
-//     });  
-
-//     // Make request and handle response
+//     // Upload file
 //     const response = await firstValueFrom(
 //       this.http.post<{
 //         success: boolean;
 //         fileName: string;
 //         filePath: string;
 //         contentType: string;
-//         message?: string;
-//         error?: string;
 //       }>(
 //         `${this.baseUrl}/api/images/upload/${userId}`,
 //         formData,
 //         { headers }
 //       ).pipe(
 //         catchError(error => {
-//           console.error('HTTP Error:', error);
-//           if (error.status === 401) {
-//             this.authService.refreshToken();
-//           }
+//           console.error('Upload error:', error);
 //           throw new Error(error.error?.message || 'Upload failed');
 //         })
 //       )
 //     );
 
-//     console.log('Upload response received:', response);
-
-//     // Validate response
 //     if (!response.success) {
-//       throw new Error(response.message || 'Upload failed');
-//     }
-
-//     if (!response.fileName || !response.filePath) {
-//       console.error('Invalid response structure:', response);
-//       throw new Error('Invalid server response');
+//       throw new Error('Upload failed');
 //     }
 
 //     // Store staging info
@@ -342,28 +114,15 @@ export class ImageUrlManagerService {
 //       url: response.filePath
 //     });
 
-//     console.log('Staged file info stored:', {
-//       userId,
-//       fileName: response.fileName,
-//       filePath: response.filePath
-//     });
-
-//     // // Generate display URL
-//     // return await this.storageService.generateImageUrl(
-//     //   userId,
-//     //   response.fileName,
-//     //   true // isStaged
-//     // );
 //     // Generate display URL
 //     const displayUrl = await this.storageService.generateImageUrl(
 //       userId,
 //       response.fileName,
-//       true // isStaged
+//       true
 //     );
 
-//     console.log('Generated display URL:', displayUrl);
-
 //     return displayUrl;
+
 //   } catch (error) {
 //     console.error('Image upload error:', error);
 //     throw error;
@@ -372,8 +131,6 @@ export class ImageUrlManagerService {
 
 // async handleImageUpload(file: File, userId: string): Promise<string> {
 //   try {
-//     if (!file) throw new Error('No file provided');
-
 //     const formData = new FormData();
 //     formData.append('file', file);
 
@@ -383,37 +140,27 @@ export class ImageUrlManagerService {
 //     const headers = new HttpHeaders()
 //       .set('Authorization', `Bearer ${token}`);
 
-//     console.log('Sending upload request:', { 
-//       url: `${this.baseUrl}/api/images/upload/${userId}`,
-//       fileType: file.type,
-//       fileSize: file.size
-//     });
-
-//     // Make request and handle response
+//     // Upload file
 //     const response = await firstValueFrom(
-//       this.http.post<UploadResponse>(
+//       this.http.post<{
+//         success: boolean;
+//         fileName: string;
+//         filePath: string;
+//         contentType: string;
+//       }>(
 //         `${this.baseUrl}/api/images/upload/${userId}`,
 //         formData,
 //         { headers }
 //       ).pipe(
 //         catchError(error => {
-//           console.error('HTTP Error:', error);
-//           const message = error.error?.message || 'Upload failed';
-//           throw new Error(message);
+//           console.error('Upload error:', error);
+//           throw new Error(error.error?.message || 'Upload failed');
 //         })
 //       )
 //     );
 
-//     console.log('Upload response received:', response);
-
-//     // Validate response fields
 //     if (!response.success) {
-//       throw new Error(response.message || 'Upload failed');
-//     }
-
-//     if (!response.fileName || !response.filePath) {
-//       console.error('Invalid response structure:', response);
-//       throw new Error('Server response missing required fields');
+//       throw new Error('Upload failed');
 //     }
 
 //     // Store staging info
@@ -422,38 +169,33 @@ export class ImageUrlManagerService {
 //       url: response.filePath
 //     });
 
-//     console.log('Staged file info stored:', {
-//       userId,
-//       fileName: response.fileName,
-//       filePath: response.filePath
-//     });
-
-//     // Generate display URL
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       userId,
-//       response.fileName,
-//       true // isStaged
-//     );
-
-//     console.log('Generated display URL:', displayUrl);
-
-//     return displayUrl;
+//     // Return the file path (will be converted to proxied URL later)
+//     return response.filePath;
 
 //   } catch (error) {
 //     console.error('Image upload error:', error);
 //     throw error;
 //   }
 // }
+
 async handleImageUpload(file: File, userId: string): Promise<string> {
   try {
-    if (!file) throw new Error('No file provided');
+    // Validate inputs
+    if (!file || !userId) {
+      throw new Error('File and userId are required');
+    }
 
+    // Create form data
     const formData = new FormData();
     formData.append('file', file);
 
+    // Get auth token
     const token = await this.authService.waitForToken();
-    if (!token) throw new Error('Authentication required');
+    if (!token) {
+      throw new Error('Authentication required');
+    }
 
+    // Set headers
     const headers = new HttpHeaders()
       .set('Authorization', `Bearer ${token}`);
 
@@ -480,20 +222,39 @@ async handleImageUpload(file: File, userId: string): Promise<string> {
       throw new Error('Upload failed');
     }
 
+    console.log('Upload response:', {
+      fileName: response.fileName,
+      filePath: response.filePath
+    });
+
     // Store staging info
     this.stagedFiles.set(userId, {
       fileName: response.fileName,
       url: response.filePath
     });
 
-    // Generate display URL
-    const displayUrl = await this.storageService.generateImageUrl(
-      userId,
-      response.fileName,
-      true
-    );
+    // Generate proxied URL immediately
+    try {
+      const displayUrl = await this.storageService.convertFirebaseUrl(response.filePath);
+      console.log('Generated display URL:', displayUrl);
+      
+      // Verify the URL is accessible
+      const verifyHeaders = await this.storageService.getAuthHeaders();
+      const verifyResponse = await fetch(displayUrl, {
+        method: 'HEAD',
+        headers: verifyHeaders
+      });
 
-    return displayUrl;
+      if (!verifyResponse.ok) {
+        throw new Error('Generated URL not accessible');
+      }
+
+      return displayUrl;
+    } catch (urlError) {
+      console.error('Error generating display URL:', urlError);
+      // Fallback to returning the file path if URL generation fails
+      return response.filePath;
+    }
 
   } catch (error) {
     console.error('Image upload error:', error);
@@ -584,138 +345,6 @@ clearStagedFile(userId: string): void {
   this.stagedFileName = null;
 }
 
-// clearStagedFile() {
-//   this.stagedUrl = null;
-//   this.stagedFileName = null;
-// }
-
-// // Get filename from URL or path
-// getFileNameFromUrl(url: string): string {
-//   if (!url) throw new Error('URL is required');
-
-//   try {
-//     // Handle different URL formats
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       const matches = url.match(/\/o\/(.+?)\?/);
-//       if (matches && matches[1]) {
-//         const fullPath = decodeURIComponent(matches[1]);
-//         return fullPath.split('/').pop() || '';
-//       }
-//     }
-
-//     if (url.includes('/api/storage/')) {
-//       return url.split('/').pop()?.split('?')[0] || '';
-//     }
-
-//     // Handle storage paths
-//     if (url.includes('profileImages/')) {
-//       return url.split('/').pop() || '';
-//     }
-
-//     throw new Error('Invalid URL format');
-//   } catch (error) {
-//     console.error('Error extracting filename:', error);
-//     throw new Error('Could not extract filename from URL');
-//   }
-// }
-
-
-// async saveProfileImage(userId: string, imageUrl: string): Promise<string> {
-//   try {
-//     if (!this.stagedFileName) {
-//       throw new Error('No staged file to move');
-//     }
-
-//    // Wait for token initialization
-//    const token = await this.authService.waitForToken();
-//    if (!token) {
-//      throw new Error('No authentication token available');
-//    }
-
-//     const response = await firstValueFrom(
-//       this.http.post<any>(
-//         `${environment.apiUrl}/api/storage/move/${userId}`,
-//         { fileName: this.stagedFileName },
-//         {
-//           headers: new HttpHeaders()
-//             .set('Authorization', `Bearer ${token}`)
-//             .set('Content-Type', 'application/json')
-//         }
-//       )
-//     ).catch((error) => {
-//       console.error('Error saving profile image:', error);
-//       throw new Error('Failed to save profile image');
-//     });
-
-//     if (!response.success) {
-//       throw new Error('Failed to move file to permanent storage');
-//     }
-
-//     // Store the base URL without query parameters
-//     const baseUrl = response.url;
-//     this.clearStagedFile();
-    
-//     return baseUrl;
-//   } catch (error) {
-//     console.error('Error saving profile image:', error);
-//     throw error;
-//   }
-// // }
-// async saveProfileImage(userId: string, imageUrl: string): Promise<string> {
-//   try {
-//     if (!this.stagedFileName) {
-//       throw new Error('No staged file to move');
-//     }
-
-//     const token = await this.authService.waitForToken();
-//     if (!token) {
-//       throw new Error('No authentication token available');
-//     }
-
-//     const headers = new HttpHeaders()
-//       .set('Authorization', `Bearer ${token}`)
-//       .set('Content-Type', 'application/json');
-
-//     const response = await firstValueFrom(
-//       this.http.post<{success: boolean; url: string}>(
-//         `${this.baseUrl}/api/storage/move/${userId}`,
-//         { fileName: this.stagedFile.fileName },
-//         { headers }
-//       )
-//     ).catch((error) => {
-//       if (error.status === 401) {
-//         throw error; // Let the component handle token expiration
-//       }
-//         throw new Error('Failed to save profile image');
-//     });
-
-//     if (!response.success || !response.url) {
-//       throw new Error('Failed to move file to permanent storage');
-//     }
-
-//     // Convert the Firebase URL to a proxied URL for display
-//     // const displayUrl = await this.storageService.convertFirebaseUrl(response.url);
-//     // const displayUrl = this.storageService.generateImageUrl(userId, this.stagedFileName);
-
-//     // Clear staging info
-//     // this.clearStagedFile();
-
-//     // Generate display URL with all required parameters
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       userId,
-//       response.fileName,
-//       false  // Not staged anymore
-//     );
-
-//     // Clear staging info
-//     this.stagedFiles.delete(userId);
-    
-//     return displayUrl;
-//   } catch (error) {
-//     console.error('Error saving profile image:', error);
-//     throw error;
-//   }
-// }
 
 async saveProfileImage(userId: string, imageUrl: string): Promise<string> {
   try {
@@ -790,55 +419,6 @@ getImageUrl(userId: string, fileName: string, isStaged: boolean = false): string
   return `${base}/profileImages/${userId}/${fileName}`;
 }
 
-// private getFileNameFromUrl(url: string): string {
-//   try {
-//     if (!url) {
-//       throw new Error('URL is required');
-//     }
-
-//     console.log('Processing URL:', url);
-//     const decodedUrl = decodeURIComponent(url);
-
-//     // Handle different URL types
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       // Firebase Storage URLs: Extract from /o/ path
-//       const matches = decodedUrl.match(/\/o\/(.+?)\?/);
-//       if (matches && matches[1]) {
-//         const fullPath = matches[1];
-//         return fullPath.split('/').pop() || '';
-//       }
-//     } else if (url.includes('/api/storage/')) {
-//       // Local API storage URLs
-//       const segments = decodedUrl.split('/');
-//       return segments[segments.length - 1];
-//     } else if (url.includes('unsplash.com')) {
-//       // Unsplash URLs: Extract photo ID and add extension
-//       const photoId = url.match(/\/photos\/([a-zA-Z0-9-_]+)/)?.[1];
-//       if (photoId) {
-//         return `unsplash-${photoId}.jpg`;
-//       }
-//     } else {
-//       // Generic URLs: Get last segment and remove query parameters
-//       const lastSlashIndex = url.lastIndexOf('/');
-//       if (lastSlashIndex !== -1) {
-//         const fileName = url.substring(lastSlashIndex + 1).split('?')[0];
-//         // Ensure we have a valid filename
-//         if (fileName && !fileName.includes('/')) {
-//           return fileName;
-//         }
-//       }
-//     }
-
-//     // Generate a fallback filename if nothing else works
-//     const timestamp = Date.now();
-//     const randomString = Math.random().toString(36).substring(2, 8);
-//     return `image-${timestamp}-${randomString}.jpg`;
-
-//   } catch (error) {
-//     console.error('Error extracting filename from URL:', error);
-//     throw new Error(`Failed to extract filename from URL: ${error as any}.message}`);
-//   }
-// }
 
 getFileNameFromUrl(url: string): string {
   try {
@@ -910,112 +490,6 @@ private isValidUrl(url: string): boolean {
     return false;
   }
 }
-
-// async handleImageUrl(url: string): Promise<string> {
-//   try {
-//     if (!this.isValidUrl(url)) {
-//       throw new Error('Invalid URL format');
-//     }
-    
-
-//     if (!this.isImageUrl(url)) {
-//       throw new Error('URL does not point to a supported image format');
-//     }
-
-//     const fileName = this.getFileNameFromUrl(url);
-//     console.log('Extracted filename:', fileName);
-    
-//     return fileName;
-//   } catch (error) {
-//     console.error('Error handling image URL:', error);
-//     throw error;
-//   }
-// }
-
-// async handleImageUrl(url: string): Promise<string> {
-//   try {
-//     // Validate URL format
-//     if (!this.isValidUrl(url)) {
-//       throw new Error('Invalid URL format');
-//     }
-
-//     // Check if it's a direct image URL
-//     if (this.isDirectImageUrl(url)) {
-//       return this.processDirectImageUrl(url);
-//     }
-
-//     // Check for supported image providers
-//     const provider = this.detectImageProvider(url);
-//     if (provider) {
-//       const imageUrl = provider.extractImageUrl(url);
-//       if (imageUrl) {
-//         return this.processDirectImageUrl(imageUrl);
-//       }
-//     }
-
-//     throw new Error('Unsupported image URL format');
-//   } catch (error) {
-//     console.error('Error handling image URL:', error);
-//     throw error;
-//   }
-// }
-
-// async handleImageUrl(url: string): Promise<string> {
-//   try {
-//     if (!url) return '';
-
-//     // Check if it's a Firebase URL first
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       return this.storageService.convertFirebaseUrl(url);
-//     }
-
-//     // Try to validate and process the URL
-//     const processedUrl = await this.processUrl(url);
-//     if (!processedUrl) {
-//       throw new Error('Invalid or unsupported image URL');
-//     }
-
-//     // Verify the image is accessible
-//     await this.verifyImageAccess(processedUrl);
-
-//     return processedUrl;
-//   } catch (error) {
-//     console.error('Error handling image URL:', error);
-//     throw error;
-//   }
-// }
-
-// async handleImageUrl(url: string): Promise<string> {
-//   try {
-//     if (!url) return '';
-
-//     // Check if it's a Firebase URL first
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       return this.storageService.convertFirebaseUrl(url);
-//     }
-
-//     // Check for provider-specific URLs first
-//     const provider = this.detectImageProvider(url);
-//     if (provider) {
-//       const imageUrl = provider.extractImageUrl(url);
-//       if (imageUrl) {
-//         await this.verifyImageAccess(imageUrl);
-//         return imageUrl;
-//       }
-//     }
-
-//     // If not a provider URL, validate as direct image URL
-//     if (this.isDirectImageUrl(url)) {
-//       await this.verifyImageAccess(url);
-//       return url;
-//     }
-
-//     throw new Error('Invalid or unsupported image URL');
-//   } catch (error) {
-//     console.error('Error handling image URL:', error);
-//     throw error;
-//   }
-// }
 
 async handleImageUrl(url: string): Promise<string> {
   try {
@@ -1158,48 +632,6 @@ private isDirectImageUrl(url: string): boolean {
     }
   }
 
-  // private async verifyImageAccess(url: string): Promise<void> {
-  //   try {
-  //     const response = await fetch(url, { method: 'HEAD' });
-  //     if (!response.ok) {
-  //       throw new Error('Image not accessible');
-  //     }
-      
-  //     const contentType = response.headers.get('content-type');
-  //     if (!contentType?.startsWith('image/')) {
-  //       throw new Error('URL does not point to an image');
-  //     }
-  //   } catch (error) {
-  //     throw new Error(`Failed to verify image: ${(error as Error).message}`);
-  //   }
-  // }
-  // private async verifyImageAccess(url: string): Promise<void> {
-  //   try {
-  //     const controller = new AbortController();
-  //     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-  
-  //     const response = await fetch(url, { 
-  //       method: 'HEAD',
-  //       signal: controller.signal
-  //     });
-  
-  //     clearTimeout(timeoutId);
-  
-  //     if (!response.ok) {
-  //       throw new Error('Image not accessible');
-  //     }
-      
-  //     const contentType = response.headers.get('content-type');
-  //     if (!contentType?.startsWith('image/')) {
-  //       throw new Error('URL does not point to an image');
-  //     }
-  //   } catch (error: any) {
-  //     if (error.name === 'AbortError') {
-  //       throw new Error('Request timed out while verifying image');
-  //     }
-  //     throw new Error(`Failed to verify image: ${(error as Error).message}`);
-  //   }
-  // }  
   
   private async verifyImageAccess(url: string): Promise<void> {
     try {

@@ -9,8 +9,9 @@
         </div>
     </ng-container>
     
+    <!-- [ngStyle]="{'opacity': loadingComplete ? '1' : '0'}" -->
 
-    <div class="flexContainer" *ngIf="loadingComplete">
+    <div class="flexContainer" *ngIf="loadingComplete" [@fadeInOut]="loadingComplete">
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> You're {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
@@ -95,6 +96,8 @@
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="imageStyles" 
                                     [ngClass]="{'default-position': !isDragged, 
+                                    'loaded': imageLoadedSuccessfully,
+                                    'loading': !imageLoadedSuccessfully,
                                     'firstTimeAnimation': firstTimeAnimation && tierThree, 
                                     'tierThreeStyle': tierThree, 
                                     'draggable': canDrag()}" 
