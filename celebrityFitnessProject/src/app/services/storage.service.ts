@@ -14,69 +14,40 @@ export class StorageService {
   constructor(private authService: AuthService) {
   }
 
-// async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
-//   try {
-//     // If a full URL is passed, extract the path
-//     let path: string;
-//     if (fileName.startsWith('http')) {
-//       const url = new URL(fileName);
-//       path = url.pathname.replace('/api/storage/', '');
-//     } else if (fileName.includes('/')) {
-//       // If it's already a path, use it directly
-//       path = fileName;
-//     } else {
-//       // If it's just a filename, construct the full path
-//       path = `${isStaged ? 'staging/' : ''}profileImages/${userId}/${fileName}`;
-//     }
+private async getCachedUrl(key: string): Promise<string | null> {
+  const cached = this.urlCache.get(key);
+  if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+    console.log('Using cached URL:', cached.url);
+    return cached.url;
+  }
+  return null;
+}
 
-//     // Ensure the path is properly formatted
-//     path = path.replace(/^\/+/, '');
-
-//     // Return base URL without token or timestamp
-//     const url = `${this.baseUrl}/api/storage/${path}`;
-//     console.log('Generated URL:', url);
-    
-//     return url;
-//   } catch (error) {
-//     console.error('Error generating image URL:', error);
-//     throw error;
-//   }
-// }
-
-// async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
-//   try {
-//     // Check cache first
-//     const cacheKey = `${userId}-${fileName}-${isStaged}`;
-//     if (this.urlCache.has(cacheKey)) {
-//       return this.urlCache.get(cacheKey)!;
-//     }
-
-//     const path = isStaged ? 
-//       `staging/profileImages/${userId}/${fileName}` :
-//       `profileImages/${userId}/${fileName}`;
-
-//     // Generate URL
-//     const url = `${this.baseUrl}/api/storage/${path}`;
-    
-//     // Cache URL
-//     this.urlCache.set(cacheKey, url);
-    
-//     console.log('Generated URL:', url);
-//     return url;
-//   } catch (error) {
-//     console.error('Error generating URL:', error);
-//     throw error;
-//   }
-// }
+private setCachedUrl(key: string, url: string): void {
+  this.urlCache.set(key, {
+    url,
+    timestamp: Date.now()
+  });
+}  
 
 async generateImageUrl(userId: string, fileName: string, isStaged = false): Promise<string> {
   try {
-    // Check cache first
-    const cacheKey = `${userId}-${fileName}-${isStaged}`;
-    const cached = this.urlCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-      return cached.url;
+    if (!fileName) return '';
+    
+    // Check if it's already a full URL
+    if (fileName.startsWith('http')) {
+      return fileName;
     }
+
+    // Check cache first
+    // const cacheKey = `${userId}-${fileName}-${isStaged}`;
+    // const cached = this.urlCache.get(cacheKey);
+    // if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+    //   return cached.url;
+    // }
+    const cacheKey = `${userId}-${fileName}-${isStaged}`;
+      const cachedUrl = await this.getCachedUrl(cacheKey);
+      if (cachedUrl) return cachedUrl;
 
     const path = isStaged ? 
       `staging/profileImages/${userId}/${fileName}` :
@@ -86,10 +57,7 @@ async generateImageUrl(userId: string, fileName: string, isStaged = false): Prom
     const url = `${this.baseUrl}/api/storage/${path}`;
     
     // Cache URL
-    this.urlCache.set(cacheKey, {
-      url,
-      timestamp: Date.now()
-    });
+    this.setCachedUrl(cacheKey, url);
     
     console.log('Generated URL:', url);
     return url;
@@ -109,251 +77,18 @@ async getAuthHeaders(): Promise<{ [key: string]: string }> {
   };
 }
 
-// Add this method to get auth headers
-// getAuthHeaders(): { [key: string]: string } {
-//   const token = this.authService.getToken();
-//   if (!token) {
-//     throw new Error('No auth token available');
-//   }
-//   return {
-//     'Authorization': `Bearer ${token}`
-//   };
-// }
-// storage.service.ts
-// async getAuthHeaders(): Promise<{ [key: string]: string }> {
-//   try {
-//     const token = await this.authService.getToken();
-//     if (!token) {
-//       throw new Error('No auth token available');
-//     }
-//     return {
-//       'Authorization': `Bearer ${token}`
-//     };
-//   } catch (error) {
-//     console.error('Error getting auth headers:', error);
-//     throw error;
-//   }
-// }
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   try {
-//     let path: string;
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       // Extract path from Firebase URL
-//       const urlObj = new URL(url);
-//       path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       console.log('Extracted path from Firebase URL:', path);
-//     } else if (!url.startsWith('http')) {
-//       // Treat as relative path
-//       path = url.startsWith('/') ? url.substring(1) : url;
-//       console.log('Using relative path:', path);
-//     } else {
-//       console.log('Using direct URL:', url);
-//       return url; // Return as-is if it's already a valid HTTP URL
-//     }
-
-//     // Return URL without token
-//     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
-//     console.log('Converted URL:', convertedUrl);
-    
-//     return convertedUrl;
-
-//   } catch (error) {
-//     console.error('Error converting Firebase URL:', {
-//       originalUrl: url,
-//       error: error instanceof Error ? error.message : 'Unknown error'
-//     });
-//     return url;
-//   }
-// }
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   // Check cache first
-//   const cached = this.urlCache.get(url);
-//   if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-//     return cached.url;
-//   }
-  
-//   try {
-//     let path: string;
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       const urlObj = new URL(url);
-//       path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//     } else if (!url.startsWith('http')) {
-//       path = url.startsWith('/') ? url.substring(1) : url;
-//     } else {
-//       return url;
-//     }
-
-//     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
-    
-//     // Cache the result
-//     this.urlCache.set(url, { 
-//       url: convertedUrl, 
-//       timestamp: Date.now() 
-//     });
-    
-//     return convertedUrl;
-//   } catch (error) {
-//     console.error('Error converting Firebase URL:', error);
-//     return url;
-//   }
-// }
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   // Check cache first
-//   const cached = this.urlCache.get(url);
-//   if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-//     return cached.url;
-//   }
-  
-//   try {
-//     let path: string;
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       const urlObj = new URL(url);
-//       path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       console.log('Extracted path from Firebase URL:', path);
-//     } else if (!url.startsWith('http')) {
-//       path = url.startsWith('/') ? url.substring(1) : url;
-//       console.log('Using relative path:', path);
-//     } else {
-//       console.log('Using direct URL:', url);
-//       return url;
-//     }
-
-//     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
-    
-//     // Cache the result
-//     this.urlCache.set(url, {
-//       url: convertedUrl,
-//       timestamp: Date.now()
-//     });
-    
-//     console.log('Converted URL:', convertedUrl);
-//     return convertedUrl;
-
-//   } catch (error) {
-//     console.error('Error converting Firebase URL:', error);
-//     return url;
-//   }
-// }
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   // Check cache first
-//   const cached = this.urlCache.get(url);
-//   if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-//     return cached.url;
-//   }
-  
-//   try {
-//     let path: string;
-    
-//     // Handle different URL formats
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       const urlObj = new URL(url);
-//       path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//     } else if (!url.startsWith('http')) {
-//       // Already a path - just clean it up
-//       path = url.startsWith('/') ? url.substring(1) : url;
-//     } else {
-//       // Already a converted URL
-//       return url;
-//     }
-
-//     // Generate proxied URL
-//     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
-    
-//     // Cache the result
-//     this.urlCache.set(url, {
-//       url: convertedUrl,
-//       timestamp: Date.now()
-//     });
-    
-//     return convertedUrl;
-//   } catch (error) {
-//     console.error('Error converting URL:', error);
-//     throw error;
-//   }
-// }
-
-// In storage.service.ts
-
-// async convertFirebaseUrl(url: string): Promise<string> {
-//   if (!url) return '';
-  
-//   // Check cache first
-//   const cached = this.urlCache.get(url);
-//   if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-//     console.log('Using cached URL:', cached.url);
-//     return cached.url;
-//   }
-  
-//   try {
-//     // If it's already a proxied URL, just return it
-//     if (url.includes(`${this.baseUrl}/api/storage/`)) {
-//       return url;
-//     }
-
-//     let path: string;
-//     let isStaged = false;
-    
-//     // Handle different URL formats
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       const urlObj = new URL(url);
-//       path = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       isStaged = path.includes('staging/');
-//     } else if (!url.startsWith('http')) {
-//       // Already a path - just clean it up
-//       path = url.startsWith('/') ? url.substring(1) : url;
-//       isStaged = path.includes('staging/');
-//     } else {
-//       // Already a converted URL or unknown format
-//       return url;
-//     }
-
-//     // Keep staging prefix if present, don't strip it
-//     // This is key for immediate visibility of staged images
-//     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
-    
-//     console.log('Converting URL:', {
-//       original: url,
-//       path: path,
-//       isStaged: isStaged,
-//       converted: convertedUrl
-//     });
-    
-//     // Cache the result
-//     this.urlCache.set(url, {
-//       url: convertedUrl,
-//       timestamp: Date.now()
-//     });
-    
-//     return convertedUrl;
-//   } catch (error) {
-//     console.error('Error converting URL:', error, {
-//       originalUrl: url
-//     });
-//     throw error;
-//   }
-// }
-
 async convertFirebaseUrl(url: string): Promise<string> {
   if (!url) return '';
   
+  // // Check cache first
+  // const cached = this.urlCache.get(url);
+  // if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+  //   console.log('Using cached URL:', cached.url);
+  //   return cached.url;
+  // }
   // Check cache first
-  const cached = this.urlCache.get(url);
-  if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-    console.log('Using cached URL:', cached.url);
-    return cached.url;
-  }
+  const cachedUrl = await this.getCachedUrl(url);
+  if (cachedUrl) return cachedUrl;
   
   try {
     // If it's already a proxied URL, need to clean it up in case it's doubled
@@ -371,6 +106,7 @@ async convertFirebaseUrl(url: string): Promise<string> {
             original: url,
             cleaned: cleanUrl
           });
+          this.setCachedUrl(url, cleanUrl);
           return cleanUrl;
         }
       }
@@ -378,10 +114,7 @@ async convertFirebaseUrl(url: string): Promise<string> {
       const cleanUrl = `${this.baseUrl}/api/storage/${path}`;
       
       // Cache the cleaned URL
-      this.urlCache.set(url, {
-        url: cleanUrl,
-        timestamp: Date.now()
-      });
+      this.setCachedUrl(url, cleanUrl);
       
       return cleanUrl;
     }
@@ -414,10 +147,7 @@ async convertFirebaseUrl(url: string): Promise<string> {
     });
     
     // Cache the result
-    this.urlCache.set(url, {
-      url: convertedUrl,
-      timestamp: Date.now()
-    });
+    this.setCachedUrl(url, convertedUrl);
     
     return convertedUrl;
   } catch (error) {
@@ -528,9 +258,19 @@ clearUrlCache() {
   this.urlCache.clear();
 }
 
-clearStagedUrlCache(userId: string) {
-  for (const [key] of this.urlCache) {
-    if (key.startsWith('staged:') && key.includes(userId)) {
+// clearStagedUrlCache(userId: string) {
+//   for (const [key] of this.urlCache) {
+//     if (key.startsWith('staged:') && key.includes(userId)) {
+//       this.urlCache.delete(key);
+//     }
+//   }
+// }
+
+clearStagedUrlCache(userId: string): void {
+  // Clear all cached URLs related to staged files for this user
+  const stagedPrefix = `staging/profileImages/${userId}`;
+  for (const [key] of this.urlCache.entries()) {
+    if (key.includes(stagedPrefix)) {
       this.urlCache.delete(key);
     }
   }
@@ -545,48 +285,23 @@ clearUserUrlCache(userId: string) {
 }
 
 // Helper to clean expired cache entries
-private cleanCache() {
+// private cleanCache() {
+//   const now = Date.now();
+//   for (const [key, value] of this.urlCache.entries()) {
+//     if (now - value.timestamp > this.CACHE_DURATION) {
+//       this.urlCache.delete(key);
+//     }
+//   }
+// }
+
+private cleanCache(): void {
   const now = Date.now();
-  for (const [key, value] of this.urlCache.entries()) {
-    if (now - value.timestamp > this.CACHE_DURATION) {
+  for (const [key, data] of this.urlCache.entries()) {
+    if (now - data.timestamp > this.CACHE_DURATION) {
       this.urlCache.delete(key);
     }
-  }
+    }
 }
-
-  // async getProxiedUrl(firebaseUrl: string): Promise<string> {
-  //   // Check cache first
-  //   if (this.urlCache.has(firebaseUrl)) {
-  //     return this.urlCache.get(firebaseUrl)!;
-  //   }
-
-  //   // Generate new proxied URL
-  //   const proxiedUrl = await this.convertFirebaseUrl(firebaseUrl);
-    
-  //   // Cache the result
-  //   this.urlCache.set(firebaseUrl, proxiedUrl);
-    
-  //   return proxiedUrl;
-  // }
-
-  // async getProxiedUrl(firebaseUrl: string): Promise<string> {
-  //   // Check cache first
-  //   const cached = this.urlCache.get(firebaseUrl);
-  //   if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
-  //     return cached.url;
-  //   }
-
-  //   // Generate new proxied URL
-  //   const proxiedUrl = await this.convertFirebaseUrl(firebaseUrl);
-    
-  //   // Cache the result
-  //   this.urlCache.set(firebaseUrl, {
-  //     url: proxiedUrl,
-  //     timestamp: Date.now()
-  //   });
-    
-  //   return proxiedUrl;
-  // }
 
 async getProxiedUrl(path: string, isStaged: boolean = false): Promise<string> {
   try {

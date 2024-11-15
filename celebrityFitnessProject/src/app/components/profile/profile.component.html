@@ -403,8 +403,8 @@
 
                       </div>
                       <div class="savePictureButtonContainer">
-                        <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
+                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
                             <ng-container *ngIf="!isSavingPicture">Save</ng-container>
                                 <div *ngIf="isSavingPicture" class="savingState">
                                 <mat-spinner diameter="16" 

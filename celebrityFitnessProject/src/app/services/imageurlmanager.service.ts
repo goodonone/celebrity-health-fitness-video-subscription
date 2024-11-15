@@ -22,6 +22,11 @@ interface UploadResponse {
   error?: string;
 }
 
+interface StagedFile {
+  fileName: string;
+  filePath: string; 
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,9 +34,10 @@ export class ImageUrlManagerService {
     private stagedUrl: string | null = null;
     private stagedFileName: string | null = null;
     private readonly baseUrl = environment.apiUrl;
-    private stagedFiles = new Map<string, { url: string; fileName: string }>();
+    // private stagedFiles = new Map<string, { url: string; fileName: string }>();
+    private stagedFiles: Map<string, StagedFile> = new Map();
     private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-  private readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    private readonly ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
   // Define supported image providers
   private readonly imageProviders: ImageProvider[] = [
@@ -178,84 +184,120 @@ export class ImageUrlManagerService {
 //   }
 // }
 
+// async handleImageUpload(file: File, userId: string): Promise<string> {
+//   try {
+//     // Validate inputs
+//     if (!file || !userId) {
+//       throw new Error('File and userId are required');
+//     }
+
+//     // Create form data
+//     const formData = new FormData();
+//     formData.append('file', file);
+
+//     // Get auth token
+//     const token = await this.authService.waitForToken();
+//     if (!token) {
+//       throw new Error('Authentication required');
+//     }
+
+//     // Set headers
+//     const headers = new HttpHeaders()
+//       .set('Authorization', `Bearer ${token}`);
+
+//     // Upload file
+//     const response = await firstValueFrom(
+//       this.http.post<{
+//         success: boolean;
+//         fileName: string;
+//         filePath: string;
+//         contentType: string;
+//       }>(
+//         `${this.baseUrl}/api/images/upload/${userId}`,
+//         formData,
+//         { headers }
+//       ).pipe(
+//         catchError(error => {
+//           console.error('Upload error:', error);
+//           throw new Error(error.error?.message || 'Upload failed');
+//         })
+//       )
+//     );
+
+//     if (!response.success) {
+//       throw new Error('Upload failed');
+//     }
+
+//     console.log('Upload response:', {
+//       fileName: response.fileName,
+//       filePath: response.filePath
+//     });
+
+//     // Store staging info
+//     this.stagedFiles.set(userId, {
+//       fileName: response.fileName,
+//       url: response.filePath
+//     });
+
+//     console.log('Staged file stored:', {
+//       userId,
+//       fileName: response.fileName,
+//       url: response.filePath
+//     });
+
+//     // Generate proxied URL immediately
+//     try {
+//       const displayUrl = await this.storageService.convertFirebaseUrl(response.filePath);
+//       console.log('Generated display URL:', displayUrl);
+      
+//       // Verify the URL is accessible
+//       const verifyHeaders = await this.storageService.getAuthHeaders();
+//       const verifyResponse = await fetch(displayUrl, {
+//         method: 'HEAD',
+//         headers: verifyHeaders
+//       });
+
+//       if (!verifyResponse.ok) {
+//         throw new Error('Generated URL not accessible');
+//       }
+
+//       return displayUrl;
+//     } catch (urlError) {
+//       console.error('Error generating display URL:', urlError);
+//       // Fallback to returning the file path if URL generation fails
+//       return response.filePath;
+//     }
+
+//   } catch (error) {
+//     console.error('Image upload error:', error);
+//     throw error;
+//   }
+// }
+
+
 async handleImageUpload(file: File, userId: string): Promise<string> {
   try {
-    // Validate inputs
-    if (!file || !userId) {
-      throw new Error('File and userId are required');
-    }
-
-    // Create form data
-    const formData = new FormData();
-    formData.append('file', file);
-
-    // Get auth token
-    const token = await this.authService.waitForToken();
-    if (!token) {
-      throw new Error('Authentication required');
-    }
-
-    // Set headers
-    const headers = new HttpHeaders()
-      .set('Authorization', `Bearer ${token}`);
-
-    // Upload file
-    const response = await firstValueFrom(
-      this.http.post<{
-        success: boolean;
-        fileName: string;
-        filePath: string;
-        contentType: string;
-      }>(
-        `${this.baseUrl}/api/images/upload/${userId}`,
-        formData,
-        { headers }
-      ).pipe(
-        catchError(error => {
-          console.error('Upload error:', error);
-          throw new Error(error.error?.message || 'Upload failed');
-        })
-      )
-    );
-
-    if (!response.success) {
-      throw new Error('Upload failed');
-    }
-
-    console.log('Upload response:', {
-      fileName: response.fileName,
-      filePath: response.filePath
-    });
-
-    // Store staging info
-    this.stagedFiles.set(userId, {
-      fileName: response.fileName,
-      url: response.filePath
-    });
-
-    // Generate proxied URL immediately
-    try {
-      const displayUrl = await this.storageService.convertFirebaseUrl(response.filePath);
-      console.log('Generated display URL:', displayUrl);
-      
-      // Verify the URL is accessible
-      const verifyHeaders = await this.storageService.getAuthHeaders();
-      const verifyResponse = await fetch(displayUrl, {
-        method: 'HEAD',
-        headers: verifyHeaders
+    // Upload using FirebaseService
+    const downloadUrl = await this.firebaseService.uploadFile(file, userId);
+    
+    // Get staged file info from FirebaseService
+    const stagedFile = this.firebaseService.getStagedFile(userId);
+    if (stagedFile) {
+      // Track the staged file in this service
+      this.stagedFiles.set(userId, {
+        fileName: stagedFile.fileName,
+        filePath: stagedFile.filePath
       });
-
-      if (!verifyResponse.ok) {
-        throw new Error('Generated URL not accessible');
-      }
-
-      return displayUrl;
-    } catch (urlError) {
-      console.error('Error generating display URL:', urlError);
-      // Fallback to returning the file path if URL generation fails
-      return response.filePath;
+      console.log('Staged file stored:', {
+        userId,
+        fileName: stagedFile.fileName,
+        filePath: stagedFile.filePath
+      });
     }
 
+    // Convert to display URL
+    const displayUrl = await this.storageService.convertFirebaseUrl(downloadUrl);
+    return displayUrl;
   } catch (error) {
     console.error('Image upload error:', error);
     throw error;
@@ -332,19 +374,56 @@ private async validateImage(file: File): Promise<void> {
 
 // Helper methods for staged files
 hasStagedFile(userId: string): boolean {
-  return this.stagedFiles.has(userId);
+  const hasFile = this.stagedFiles.has(userId);
+  console.log('Checking staged file:', { userId, hasFile });
+  return hasFile;
 }
 
 // getStagedFile(userId: string): { fileName: string; url: string } | null {
 //   return this.stagedFiles.get(userId) || null;
 // }
 
+// clearStagedFile(userId: string): void {
+//   console.log('Clearing staged file for:', userId);
+//   this.stagedFiles.delete(userId);
+//   this.stagedUrl = null;
+//   this.stagedFileName = null;
+// }
+
+// clearStagedFile(userId: string): void {
+//   console.log('Clearing staged file for:', userId);
+//   this.stagedFiles.delete(userId);
+//   // Also clear in FirebaseService
+//   this.firebaseService.cleanupStagedFile(userId).catch(error => {
+//     console.error('Error cleaning up Firebase staged file:', error);
+//   });
+//   this.stagedUrl = null;
+//   this.stagedFileName = null;
+// }
+
 clearStagedFile(userId: string): void {
+  console.log('Clearing staged file tracking for:', userId);
   this.stagedFiles.delete(userId);
   this.stagedUrl = null;
   this.stagedFileName = null;
 }
 
+async moveToPermStorage(userId: string, fileName: string): Promise<void> {
+  try {
+    const stagedFile = this.stagedFiles.get(userId);
+    if (!stagedFile) {
+      console.log('No staged file to move');
+      return;
+    }
+
+    await this.firebaseService.moveToPermStorage(userId, fileName);
+    this.clearStagedFile(userId);
+    console.log('Successfully moved staged file to permanent storage');
+  } catch (error) {
+    console.error('Error moving staged file:', error);
+    throw error;
+  }
+}
 
 async saveProfileImage(userId: string, imageUrl: string): Promise<string> {
   try {
@@ -401,8 +480,16 @@ async saveProfileImage(userId: string, imageUrl: string): Promise<string> {
 //   return this.stagedFiles.has(userId);
 // }
 
-getStagedFile(userId: string): { fileName: string; url: string } | null {
-  return this.stagedFiles.get(userId) || null;
+// getStagedFile(userId: string): { fileName: string; url: string } | null {
+//     const file = this.stagedFiles.get(userId);
+//     console.log('Getting staged file:', { userId, file });
+//     return file || null;
+//   }
+
+getStagedFile(userId: string): StagedFile | null {
+  const file = this.stagedFiles.get(userId);
+  console.log('Getting staged file:', { userId, file });
+  return file || null;
 }
 
 // clearStagedFile(userId: string): void {

@@ -1608,6 +1608,10 @@ fieldset {
   }
 }
 
+// .uploadButton:hover {
+  
+// }
+
 .uploadingOverlay {
   position: fixed;
   top: 0;
@@ -2317,9 +2321,14 @@ input:disabled:-moz-placeholder {
   cursor: pointer;
   font-weight: 600;
   background-color: rgb(25, 25, 25);
+  color: white !important;
   width: 8.5rem;
   margin-top: 0.5rem;
   // margin-left: 1rem;
+}
+
+.btn-savePhotoButton:hover .savingState mat-spinner {
+  --mdc-circular-progress-active-indicator-color: black !important;
 }
 
 .btn-updatePasswordButton {
