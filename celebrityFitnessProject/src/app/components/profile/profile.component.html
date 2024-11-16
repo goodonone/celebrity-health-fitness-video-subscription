@@ -73,6 +73,7 @@
                                 'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
+                                <!-- <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation "> -->
                                 <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
                                     <fa-icon [icon]="['fas', 'chevron-left']" 
                                              class="chevronLeft" 

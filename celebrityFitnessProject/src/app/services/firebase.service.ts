@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, firstValueFrom, from, Observable, of, Subject, switchMap, tap, throwError } from 'rxjs';
 import { storage, auth } from '../firebase.config';
-import { ref, uploadBytesResumable, getDownloadURL,  UploadTaskSnapshot, deleteObject, getStorage, getMetadata } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL,  UploadTaskSnapshot, deleteObject, getStorage, getMetadata, listAll } from 'firebase/storage';
 import { environment } from 'src/environments/environment';
 // import { storage } from '../firebase.config'; // Make sure this is the Firebase Admin SDK import
 // import { getStorage, ref, deleteObject } from 'firebase/storage';
@@ -117,44 +117,238 @@ export class FirebaseService {
   }
 
 
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     this.validateFile(file);
+//     const processedFile = file.type.startsWith('image/') ? 
+//       await this.compressImage(file) : file;
+
+//     const storage = getStorage();
+//     const timestamp = Date.now();
+//     const filename = `${timestamp}-${file.name}`;
+//     const storagePath = `staging/profileImages/${userId}/${filename}`;
+
+//     // Track the staged file
+//     this.stagedFiles.set(userId, {
+//       fileName: filename,
+//       filePath: storagePath
+//     });
+    
+//     console.log('Tracking new staged file:', {
+//       userId,
+//       fileName: filename,
+//       path: storagePath
+//     });
+
+//     const storageRef = ref(storage, storagePath);
+    
+//     const metadata = this.createUploadMetadata(userId, processedFile);
+//     const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
+
+//     return new Promise((resolve, reject) => {
+//       let hasCompleted = false;
+//       let url: string | null = null;
+      
+//       uploadTask.on(
+//         'state_changed',
+//         (snapshot) => {
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          
+//           // Only emit progress up to 99% until upload is fully complete
+//           this.uploadProgress.next({
+//             progress: hasCompleted ? 100 : Math.min(progress, 99),
+//             snapshot
+//           });
+//         },
+//         (error) => {
+//           console.error('Upload error:', error);
+//           reject(error);
+//         },
+//         async () => {
+//           try {
+//             url = await getDownloadURL(uploadTask.snapshot.ref);
+//             this.stagedFiles.set(userId, {
+//               fileName: filename,
+//               filePath: storagePath
+//             });
+            
+//             // Mark as completed and emit 100%
+//             hasCompleted = true;
+//             this.uploadProgress.next({
+//               progress: 100,
+//               snapshot: uploadTask.snapshot
+//             });
+            
+//             // Add delay before resolving
+//             setTimeout(() => {
+//               resolve(url!);
+//             }, 100);
+//           } catch (error) {
+//             console.error('Error getting download URL:', error);
+//             reject(error);
+//           }
+//         }
+//       );
+//     });
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }  
+
+// In FirebaseService class
+
+// async uploadFile(file: File, userId: string): Promise<string> {
+//   try {
+//     this.validateFile(file);
+//     const processedFile = file.type.startsWith('image/') ? 
+//       await this.compressImage(file) : file;
+
+//     // Generate filename
+//     const timestamp = Date.now();
+//     const fileName = `${timestamp}-${file.name}`;
+
+//     // First check permanent storage
+//     try {
+//       const permanentRef = ref(storage, `profileImages/${userId}/${fileName}`);
+//       const metadata = await getMetadata(permanentRef);
+//       const existingUrl = await getDownloadURL(permanentRef);
+//       console.log('File exists in permanent storage, returning existing URL');
+//       return existingUrl;
+//     } catch (error: any) {
+//       // If file not found in permanent storage, continue with upload
+//       if (error.code !== 'storage/object-not-found') {
+//         throw error;
+//       }
+//     }
+
+//     // File not found in permanent storage, proceed with upload to staging
+//     const storagePath = `staging/profileImages/${userId}/${fileName}`;
+    
+//     // Track the staged file
+//     this.stagedFiles.set(userId, {
+//       fileName: fileName,
+//       filePath: storagePath
+//     });
+    
+//     console.log('Tracking new staged file:', {
+//       userId,
+//       fileName: fileName,
+//       path: storagePath
+//     });
+
+//     const storageRef = ref(storage, storagePath);
+//     const metadata = this.createUploadMetadata(userId, processedFile);
+//     const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
+
+//     return new Promise((resolve, reject) => {
+//       let hasCompleted = false;
+      
+//       uploadTask.on(
+//         'state_changed',
+//         (snapshot) => {
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           this.uploadProgress.next({
+//             progress: hasCompleted ? 100 : Math.min(progress, 99),
+//             snapshot
+//           });
+//         },
+//         (error) => {
+//           console.error('Upload error:', error);
+//           reject(error);
+//         },
+//         async () => {
+//           try {
+//             const url = await getDownloadURL(uploadTask.snapshot.ref);
+            
+//             // Mark as completed and emit 100%
+//             hasCompleted = true;
+//             this.uploadProgress.next({
+//               progress: 100,
+//               snapshot: uploadTask.snapshot
+//             });
+            
+//             // Add delay before resolving
+//             setTimeout(() => resolve(url), 100);
+//           } catch (error) {
+//             console.error('Error getting download URL:', error);
+//             reject(error);
+//           }
+//         }
+//       );
+//     });
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//     throw error;
+//   }
+// }
+
+// In FirebaseService
+
+private async checkFileExists(userId: string, originalFileName: string): Promise<string | null> {
+  try {
+    // List all files in permanent storage
+    const permanentRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(permanentRef);
+
+    // Look for a file with the same name (ignoring timestamp prefix)
+    for (const item of result.items) {
+      // Extract original filename by removing timestamp prefix
+      const existingFileName = item.name.split('-').slice(1).join('-');
+      
+      if (existingFileName === originalFileName) {
+        console.log('Found matching file in permanent storage:', item.name);
+        return await getDownloadURL(item);
+      }
+    }
+
+    console.log('No matching file found, proceeding with upload');
+    return null;
+  } catch (error) {
+    console.error('Error checking for existing file:', error);
+    return null;
+  }
+}
+
 async uploadFile(file: File, userId: string): Promise<string> {
   try {
     this.validateFile(file);
-    const processedFile = file.type.startsWith('image/') ? 
-      await this.compressImage(file) : file;
 
-    const storage = getStorage();
+    // Check if file exists in permanent storage first
+    const existingUrl = await this.checkFileExists(userId, file.name);
+    if (existingUrl) {
+      console.log('Using existing file from permanent storage');
+      return existingUrl;
+    }
+
+    // No matching file found, proceed with normal upload process
     const timestamp = Date.now();
-    const filename = `${timestamp}-${file.name}`;
-    const storagePath = `staging/profileImages/${userId}/${filename}`;
+    const fileName = `${timestamp}-${file.name}`;
+    const storagePath = `staging/profileImages/${userId}/${fileName}`;
 
     // Track the staged file
     this.stagedFiles.set(userId, {
-      fileName: filename,
+      fileName,
       filePath: storagePath
     });
-    
+
     console.log('Tracking new staged file:', {
       userId,
-      fileName: filename,
+      fileName,
       path: storagePath
     });
 
     const storageRef = ref(storage, storagePath);
-    
-    const metadata = this.createUploadMetadata(userId, processedFile);
-    const uploadTask = uploadBytesResumable(storageRef, processedFile, metadata);
+    const metadata = this.createUploadMetadata(userId, file);
+    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       let hasCompleted = false;
-      let url: string | null = null;
       
       uploadTask.on(
         'state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          
-          // Only emit progress up to 99% until upload is fully complete
           this.uploadProgress.next({
             progress: hasCompleted ? 100 : Math.min(progress, 99),
             snapshot
@@ -166,23 +360,13 @@ async uploadFile(file: File, userId: string): Promise<string> {
         },
         async () => {
           try {
-            url = await getDownloadURL(uploadTask.snapshot.ref);
-            this.stagedFiles.set(userId, {
-              fileName: filename,
-              filePath: storagePath
-            });
-            
-            // Mark as completed and emit 100%
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
             hasCompleted = true;
             this.uploadProgress.next({
               progress: 100,
               snapshot: uploadTask.snapshot
             });
-            
-            // Add delay before resolving
-            setTimeout(() => {
-              resolve(url!);
-            }, 100);
+            setTimeout(() => resolve(url), 100);
           } catch (error) {
             console.error('Error getting download URL:', error);
             reject(error);
@@ -194,7 +378,19 @@ async uploadFile(file: File, userId: string): Promise<string> {
     console.error('Error uploading file:', error);
     throw error;
   }
-}  
+}
+
+// Helper method to generate filename hash
+private generateFileHash(file: File): string {
+  const str = `${file.name}-${file.size}-${file.lastModified}`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash).toString(16);
+}
 
 async moveToPermStorage(userId: string, fileName: string): Promise<string> {
   try {
@@ -237,21 +433,21 @@ async moveToPermStorage(userId: string, fileName: string): Promise<string> {
   }
 }
 
-private async checkFileExists(filePath: string): Promise<boolean> {
-  try {
-    const firebaseStorage = getStorage();
-    const fileRef = ref(firebaseStorage, filePath);
+// private async checkFileExists(filePath: string): Promise<boolean> {
+//   try {
+//     const firebaseStorage = getStorage();
+//     const fileRef = ref(firebaseStorage, filePath);
     
-    // Try to get metadata - this will fail if file doesn't exist
-    await getMetadata(fileRef);
-    return true;
-  } catch (error: any) {
-    if (error.code === 'storage/object-not-found') {
-      return false;
-    }
-    throw error;
-  }
-}
+//     // Try to get metadata - this will fail if file doesn't exist
+//     await getMetadata(fileRef);
+//     return true;
+//   } catch (error: any) {
+//     if (error.code === 'storage/object-not-found') {
+//       return false;
+//     }
+//     throw error;
+//   }
+// }
 
   // async cleanupStagedFile(userId: string): Promise<void> {
   //   if (!userId) return;
