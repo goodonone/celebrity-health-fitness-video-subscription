@@ -606,9 +606,9 @@ p.liveVideoLoadingText {
   /* margin-top: 8rem; */
 /* } */
 
-.flexCards.contentCardOne {
-  margin-top: 3rem;
-}
+// .flexCards.contentCardOne {
+//   // margin-top: 3rem;
+// }
 
 .flexCards {
   display: flex;
@@ -690,7 +690,7 @@ iframe {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  width: 20rem; /* Set a fixed width */
+  width: 20rem; 
   min-width: 20rem;
 }
 
@@ -822,8 +822,9 @@ div.upgradeContainer {
   background-color: rgb(18, 17, 17);
   width: 27rem;
   margin: auto;
-  margin-top: 3rem;
+  // margin-top: 3rem;
   padding: 1rem;
+  margin-top: 2rem;
 
   &.upgradeToggleArea{
     background-color: white
@@ -1208,9 +1209,100 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
-@media screen and (min-width: 300px) and (max-width: 500px) {
-  h1.tierOneHeader {
-    font-size: 3rem;
-    line-height: 3rem;
+@media screen and (min-width: 741px) and (max-width: 1211px) {
+
+  // .tierPage{
+  //   position: relative;
+  // }
+
+  .toggle-area {
+    margin-top: 2rem;
+    padding: 0;
+    // position: absolute;
+    // top: 60%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+    // z-index: 4;
   }
+  // .yearAndRecipes{
+  //   display: flex;
+  //   flex-direction: column;
+  //   align-items: center;
+  //   justify-content: center;
+  //   left: auto;
+  //   top: 1rem;
+  //   // margin-top: 2rem;
+  //   // margin-bottom: 2rem;
+  // }
+
+//   .cardHeaderYear,
+//   .cardHeadertype {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 4rem;
+//   padding-left: auto;
+//   padding-top: 4rem;
+//   width: 100%;
+//   margin-left: auto;
+//   margin-right: auto;
+// }
+}
+
+// @media screen and (min-width: 730px) and (max-width: 740px) {
+
+//   .toggle-area {
+//     margin-top: 3rem;
+//     padding: 0;
+//     // position: absolute;
+//     // top: 60%;
+//     // left: 50%;
+//     // transform: translate(-50%, -50%);
+//     // z-index: 4;
+//   }
+
+
+
+// h1.tierOneHeader {
+//   font-size: 3rem;
+//   line-height: 3rem;
+// }
+
+// }
+
+
+@media screen and (min-width: 300px) and (max-width: 729px) {
+
+  .searchFormAndButton {
+    position: relative;
+    // top: 6rem;
+    // right: 4%; 
+    top: auto;
+    right: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: right;
+    min-width: 100%;
+    max-width: 100%;
+    padding-top: 3rem;
+    // padding-right: 5rem;
+    // max-width: 20rem;
+    height: 2rem
+  }
+
+  // input {
+  //   // width: 100%;
+  //   // width: 100%;
+  //   // max-width: 30rem;
+  // }
+
+  .flexCards.contentCardOne{
+    margin-top: 0;
+  }
+
+  .toggle-area{
+    margin-top: 0;
+    width: fit-content;
+  }
+  
 }

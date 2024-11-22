@@ -139,12 +139,12 @@ async convertFirebaseUrl(url: string): Promise<string> {
     // Keep staging prefix if present, don't strip it
     const convertedUrl = `${this.baseUrl}/api/storage/${path}`;
     
-    console.log('Converting URL:', {
-      original: url,
-      path: path,
-      isStaged: isStaged,
-      converted: convertedUrl
-    });
+    // console.log('Converting URL:', {
+    //   original: url,
+    //   path: path,
+    //   isStaged: isStaged,
+    //   converted: convertedUrl
+    // });
     
     // Cache the result
     this.setCachedUrl(url, convertedUrl);

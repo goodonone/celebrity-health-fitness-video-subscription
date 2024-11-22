@@ -12,6 +12,7 @@ import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../firebase.config';
 import { ImageUrlManagerService } from './imageurlmanager.service';
 import { StorageService } from './storage.service';
+import { SharedStateService } from './sharedstate.service';
 
 
 @Injectable({
@@ -34,7 +35,8 @@ export class UserService {
     private authStateService: AuthStateService, 
     private injector: Injector,
     private imageUrlManager: ImageUrlManagerService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private sharedState: SharedStateService
   ) {
     // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
     //   this.isLoggedInSubject.next(isAuthenticated);
@@ -666,4 +668,12 @@ uploadImage(userId: string, file: File): Observable<string> {
     })
   );
 }
+
+// setUserId(userId: string) {
+//   this.sharedState.setCurrentUserId(userId);
+// }
+
+// getUserId(): string | null {
+//   return this.sharedState.getCurrentUserId();
+// }
 }

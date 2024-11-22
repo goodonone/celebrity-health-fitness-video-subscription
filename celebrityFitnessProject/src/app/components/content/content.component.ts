@@ -617,10 +617,10 @@ export class ContentComponent implements OnInit{
       }
 
       addToNewest() {
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel23Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel22Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel21Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "8", this.channel20Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2024', "8", this.channel23Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel22Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel21Videos)
+        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel20Videos)
       }
 
     
