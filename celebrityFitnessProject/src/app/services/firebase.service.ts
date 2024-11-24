@@ -321,6 +321,9 @@ async uploadFile(file: File, userId: string): Promise<string> {
       return existingUrl;
     }
 
+    // Clean staging folder before new upload
+    await this.cleanStagedFolder(userId);
+
     // No matching file found, proceed with normal upload process
     const timestamp = Date.now();
     const fileName = `${timestamp}-${file.name}`;
@@ -432,204 +435,6 @@ async moveToPermStorage(userId: string, fileName: string): Promise<string> {
     throw error;
   }
 }
-
-// private async checkFileExists(filePath: string): Promise<boolean> {
-//   try {
-//     const firebaseStorage = getStorage();
-//     const fileRef = ref(firebaseStorage, filePath);
-    
-//     // Try to get metadata - this will fail if file doesn't exist
-//     await getMetadata(fileRef);
-//     return true;
-//   } catch (error: any) {
-//     if (error.code === 'storage/object-not-found') {
-//       return false;
-//     }
-//     throw error;
-//   }
-// }
-
-  // async cleanupStagedFile(userId: string): Promise<void> {
-  //   if (!userId) return;
-    
-  //   try {
-  //     await firstValueFrom(
-  //       this.http.delete(
-  //         `${this.baseUrl}/api/images/profile-picture/${userId}`,
-  //         this.getAuthHeaders()
-  //       )
-  //     ).catch(async (error) => {
-  //       if (error instanceof HttpErrorResponse && error.status === 401) {
-  //         await this.authService.refreshToken();
-  //         return firstValueFrom(
-  //           this.http.delete(
-  //             `${this.baseUrl}/api/images/profile-picture/${userId}`,
-  //             this.getAuthHeaders()
-  //           )
-  //         );
-  //       }
-  //       throw error;
-  //     });
-
-  //     // Clear staged file tracking
-  //     this.stagedFiles.delete(userId);
-  //   } catch (error) {
-  //     console.error('Error cleaning up staged file:', error);
-  //     throw error;
-  //   }
-  // }
-
-  // async cleanupStagedFile(userId: string): Promise<void> {
-  //   if (!userId || !this.stagedFiles.has(userId)) return;
-    
-  //   try {
-  //     const stagedPath = this.stagedFiles.get(userId);
-  //     if (!stagedPath) return;
-
-  //     // Get auth headers for the request
-  //     const token = await this.authService.waitForToken();
-  //     if (!token) throw new Error('No auth token available');
-
-  //     const headers = new HttpHeaders()
-  //     .set('Authorization', `Bearer ${token}`);
-  
-  //     await firstValueFrom(
-  //       this.http.delete(
-  //         `${this.baseUrl}/api/images/profile-picture/${userId}`,
-  //         this.getAuthHeaders()
-  //       ).pipe(
-  //         catchError(error => {
-  //           // Ignore 404 errors since they just mean the file is already gone
-  //           if (error.status === 404) {
-  //             return [];
-  //           }
-  //           // Handle auth errors
-  //           if (error.status === 401) {
-  //             return this.authService.refreshToken().then(() => 
-  //               this.http.delete(
-  //                 `${this.baseUrl}/api/images/profile-picture/${userId}`,
-  //                 this.getAuthHeaders()
-  //               )
-  //             );
-  //           }
-  //           throw error;
-  //         })
-  //       )
-  //     );
-  
-  //     // Clear staged file tracking
-  //     this.stagedFiles.delete(userId);
-  //   } catch (error) {
-  //     console.error('Error cleaning up staged file:', error);
-  //     // Don't throw the error - just log it and clear the tracking
-  //     this.stagedFiles.delete(userId);
-  //   }
-  // }
-
-  // async cleanupStagedFile(userId: string): Promise<void> {
-  //   if (!userId || !this.stagedFiles.has(userId)) return;
-    
-  //   try {
-  //     const stagedFile = this.stagedFiles.get(userId);
-  //     if (!stagedFile) return;
-  
-  //     // Get auth headers for the request
-  //     const token = await this.authService.waitForToken();
-  //     if (!token) throw new Error('No auth token available');
-  
-  //     const headers = new HttpHeaders()
-  //       .set('Authorization', `Bearer ${token}`);
-  
-  //     // Delete staged file
-  //     await firstValueFrom(
-  //       this.http.delete(
-  //         `${this.baseUrl}/api/storage/cleanup/${userId}`,
-  //         { headers }
-  //       ).pipe(
-  //         catchError(async error => {
-  //           // Handle auth errors
-  //           if (error.status === 401) {
-  //             await this.authService.refreshToken();
-  //             const newToken = await this.authService.getToken();
-  //             const newHeaders = new HttpHeaders()
-  //               .set('Authorization', `Bearer ${newToken}`);
-              
-  //             return this.http.delete(
-  //               `${this.baseUrl}/api/storage/cleanup/${userId}`,
-  //               { headers: newHeaders }
-  //             );
-  //           }
-  //           // Log but don't throw for 404 errors (file already gone)
-  //           if (error.status === 404) {
-  //             console.log('Staged file already removed');
-  //             return of(null);
-  //           }
-  //           throw error;
-  //         })
-  //       )
-  //     );
-  
-  //     // Clear tracked staged file
-  //     this.stagedFiles.delete(userId);
-  //     console.log('Successfully cleaned up staged file');
-      
-  //   } catch (error) {
-  //     console.error('Error cleaning up staged file:', error);
-  //     // Still clear local tracking even if delete fails
-  //     this.stagedFiles.delete(userId);
-  //     throw error;
-  //   }
-  // }
-
-  // firebase.service.ts
-
-// firebase.service.ts
-
-// async cleanupStagedFile(userId: string): Promise<void> {
-//   if (!userId) {
-//     console.log('No userId provided for cleanup');
-//     return;
-//   }
-
-//   console.log('Starting cleanup for userId:', userId);
-
-//   try {
-//     const token = await this.authService.waitForToken();
-//     if (!token) throw new Error('No auth token available');
-
-//     const headers = new HttpHeaders()
-//       .set('Authorization', `Bearer ${token}`);
-
-//     console.log('Making cleanup request');
-
-//     await firstValueFrom(
-//       this.http.delete<{ success: boolean; deletedFiles: string[] }>(
-//         `${this.baseUrl}/api/storage/cleanup/${userId}`,
-//         { headers }
-//       ).pipe(
-//         tap(response => {
-//           console.log('Cleanup response:', response);
-//         }),
-//         catchError(error => {
-//           console.error('Cleanup request failed:', error);
-//           throw error;
-//         })
-//       )
-//     );
-
-//     // Clear tracking
-//     this.stagedFiles.delete(userId);
-//     console.log('Cleanup completed');
-
-//   } catch (error) {
-//     console.error('Cleanup failed:', error);
-//     // Still clear tracking
-//     this.stagedFiles.delete(userId);
-//     throw error;
-//   }
-// }
-
-// imageurlmanager.service.ts
 
 async cleanupStagedFile(userId: string): Promise<void> {
   console.log('Starting cleanup for userId:', userId);
@@ -776,7 +581,36 @@ async cleanupStagedFile(userId: string): Promise<void> {
       }
     };
   }
+
  
+private async cleanStagedFolder(userId: string): Promise<void> {
+  try {
+    const stagingRef = ref(storage, `staging/profileImages/${userId}`);
+    
+    // List all files in staging folder
+    const result = await listAll(stagingRef);
+    
+    // Delete all files found
+    const deletePromises = result.items.map(async (item) => {
+      try {
+        await deleteObject(item);
+        console.log('Deleted staged file:', item.fullPath);
+      } catch (error: any) {
+        if (error.code !== 'storage/object-not-found') {
+          console.error('Error deleting staged file:', error);
+        }
+      }
+    });
+
+    await Promise.all(deletePromises);
+    console.log('Staging folder cleaned');
+    
+  } catch (error) {
+    console.error('Error cleaning staging folder:', error);
+  }
+}
+
+
 private async compressImage(file: File, maxWidthOrHeight = 1200, quality = 0.8): Promise<File> {
   if (!file.type.startsWith('image/')) {
     return file; // Return original file if not an image

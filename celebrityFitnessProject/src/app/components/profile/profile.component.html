@@ -9,9 +9,7 @@
         </div>
     </ng-container>
     
-    <!-- [ngStyle]="{'opacity': loadingComplete ? '1' : '0'}" -->
-
-    <div class="flexContainer" *ngIf="loadingComplete" [@fadeInOut]="loadingComplete">
+    <div class="flexContainer" [style.opacity]="loadingComplete ? '1' : '0'" [@fadeInOut]="loadingComplete">
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> You're {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
@@ -109,6 +107,8 @@
                                 </div>    
 
                                 <p class="imageNotFound" *ngIf="imageNotFound && !shouldShowAvatar()">Image Not Found. <br> Please Contact Support!</p>
+
+                                
                                 <img class="avatar" 
                                 src="assets/Images/avatar.png" 
                                 *ngIf="shouldShowAvatar()"
@@ -123,22 +123,22 @@
                                 <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
                                 <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
                                     <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
-                                    (mouseenter)="!isDisabled('minus') && onMouseEnter('minus')"
-                                    (mousedown)="onMouseDown('minus')" 
-                                    (mouseup)="onMouseUp('minus')" 
-                                    (mouseleave)="onMouseLeave('minus')"
+                                    (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
+                                    (pointerdown)="onMouseDown('minus')" 
+                                    (pointerup)="onMouseUp('minus')" 
+                                    (pointerleave)="onMouseLeave('minus')"
                                     (click)="zoomOut()"></fa-icon>
                                     <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
-                                    (mouseenter)="!isDisabled('plus') && onMouseEnter('plus')"
-                                    (mousedown)="onMouseDown('plus')" 
-                                    (mouseup)="onMouseUp('plus')" 
-                                    (mouseleave)="onMouseLeave('plus')"
+                                    (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
+                                    (pointerdown)="onMouseDown('plus')" 
+                                    (pointerup)="onMouseUp('plus')" 
+                                    (pointerleave)="onMouseLeave('plus')"
                                     (click)="zoomIn()"></fa-icon>
                                 </div>
-                                <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (mousedown)="onMouseDown('reset')" 
-                                (mouseenter)="!isDisabled('reset') && onMouseEnter('reset')"
-                                (mouseup)="onMouseUp('reset')" 
-                                (mouseleave)="onMouseLeave('reset')"
+                                <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (pointerdown)="onMouseDown('reset')" 
+                                (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
+                                (pointerup)="onMouseUp('reset')" 
+                                (pointerleave)="onMouseLeave('reset')"
                                 [ngClass]="{'clicked': isResetClicked, 
                                 'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
@@ -148,19 +148,19 @@
                                     <fa-icon [icon]="['fas', 'chevron-left']" 
                                                 class="chevronLeft" 
                                                 (click)="previousImage()"
-                                                (mousedown)="onMouseDown('left')"
-                                                (mouseenter)="!isDisabled('left') && onMouseEnter('left')"
-                                                (mouseup)="onMouseUp('left')" 
-                                                (mouseleave)="onMouseLeave('left')"
+                                                (pointerdown)="onMouseDown('left')"
+                                                (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
+                                                (pointerup)="onMouseUp('left')" 
+                                                (pointerleave)="onMouseLeave('left')"
                                                 [ngClass]="{'clicked': leftClicked}">
                                     </fa-icon>                                   
                                     <fa-icon [icon]="['fas', 'chevron-right']" 
                                                 class="chevronRight"
                                                 (click)="nextImage()"
-                                                (mousedown)="onMouseDown('right')"
-                                                (mouseenter)="!isDisabled('right') && onMouseEnter('right')"
-                                                (mouseup)="onMouseUp('right')" 
-                                                (mouseleave)="onMouseLeave('right')"
+                                                (pointerdown)="onMouseDown('right')"
+                                                (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
+                                                (pointerup)="onMouseUp('right')" 
+                                                (pointerleave)="onMouseLeave('right')"
                                                 [ngClass]="{'clicked': rightClicked}">
                                     </fa-icon>
                                 </div>
@@ -182,7 +182,7 @@
                             <div class="editProfileButtonsContainerIncludingPicture">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()">Delete Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()" [class.can-hover]="canHoverDelete" (pointerenter)="handleMouseEnter()">Delete Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -553,8 +553,8 @@
                       </div>
                     </form>
                     <div class="uploadInstructionsAndSuccess">
-                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max</p>
-                        <p class="uploadSuccess">Uploaded! <strong>Save</strong> to keep,<br><strong>Cancel</strong> or <strong><></strong> to discard.</p>
+                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max.</p>
+                        <p class="uploadSuccess" *ngIf="showUploadSuccess">Uploaded! <strong>Save</strong> to keep,<br><strong>Cancel</strong> or <strong><></strong> to discard.</p>
                     </div>
                 </div> 
                 </ng-container>

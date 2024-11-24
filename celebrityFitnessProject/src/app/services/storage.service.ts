@@ -240,6 +240,30 @@ getOriginalPath(url: string): string {
   }
 }
 
+private extractPath(url: string): string {
+  if (!url) return '';
+
+  try {
+    if (url.startsWith('profileImages/')) {
+      return url;
+    }
+
+    if (url.includes('/api/storage/')) {
+      return url.split('/api/storage/')[1];
+    }
+
+    if (url.includes('firebasestorage.googleapis.com')) {
+      const urlObj = new URL(url);
+      return decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+    }
+
+    return url;
+  } catch (error) {
+    console.error('Error extracting path:', error);
+    return url;
+  }
+}
+
 // Helper method to extract filename from URL
 getFileName(url: string): string {
   try {

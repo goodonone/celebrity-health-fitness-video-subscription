@@ -57,6 +57,12 @@
   //   left: 0;
   //   width: 100%;
   // }
+
+  &[style*="opacity: 0"] {
+    pointer-events: none;
+    position: absolute;  
+    visibility: hidden;   
+  }
 }
 
 .hidden{
@@ -542,20 +548,6 @@ fieldset {
 }
 
 .profilePicture {
-  // position: absolute;
-  // top: 50rem;
-  // left: 0;
-  // width: 100%;
-  // min-width: 300px;
-  // max-width: 400px;
-  // height: 100%;
-  // min-height: 300px;
-  // max-height: 350px;
-  // border-radius: 100rem;
-  // margin-bottom: 1.2rem;
-  // background-color: #c7ff20;
-  // cursor: move;
-
   position: relative;
   width: 100%;
   min-width: 300px;
@@ -566,13 +558,14 @@ fieldset {
   aspect-ratio: 1/1;
   background-color: #c7ff20;
   border-radius: 100rem;
-  margin-bottom: 1.2rem;
+  // margin-bottom: 1.2rem;
   // background-size: cover;
   // background-repeat: no-repeat;
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease-in;
-  transition: background-size 0.1s ease-out, background-position 0.1s ease-out;
+  // transition: background-size 0.1s ease-out, background-position 0.1s ease-out;
+
   // transform: translate3d(0,0,0);
   // backface-visibility: hidden;
   // -webkit-backface-visibility: hidden;
@@ -640,10 +633,10 @@ fieldset {
   //   transition: transform 0.3s ease-out; // Smooth transitions when not dragging
   // }
 
-  &:not(.is-dragging) {
-    transition: background-position 0.1s linear,
-                background-size 0.1s linear;
-  }
+  // &:not(.is-dragging) {
+  //   transition: background-position 0.1s linear,
+  //               background-size 0.1s linear;
+  // }
 
   &.smooth-transform {
     will-change: transform, background-position, background-size;
@@ -877,11 +870,18 @@ fieldset {
 
 .profilePictureContainerForDragging{
   position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+  aspect-ratio: 1;
   // width: 100%;
   // height: 100%;
   // overflow: visible;
-  height: fit-content;
-  width: fit-content;
+  // height: fit-content;
+  // width: fit-content;
+  // margin: auto;
+  margin-bottom: 1rem;
   // cursor: pointer;
 
   &.draggable {
@@ -1571,6 +1571,8 @@ fieldset {
 // }
 
 .profilePictureContainerForDragging {
+  aspect-ratio: auto;
+
   .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
     transition: opacity 0.3s ease;
   }
@@ -2118,17 +2120,29 @@ h3.profileDetails.plan{
   background-color: rgb(25, 25, 25);
   border-color: rgb(73, 73, 73);
   width: 10rem;
-  /* margin-top: 22rem; */
-  /* margin-left: 1rem; */
+  // transition: all 0.3s ease;
 }
 
-.deletePicture{
+// .deletePicture{
+//   color: red !important;
+// }
+
+/* Normal Change Picture button */
+.btn-editPhotoButton:hover {
+  background-color: white;
+  color: black !important;
+}
+
+/* Delete Picture button default state */
+.btn-editPhotoButton.deletePicture {
+  background-color: rgb(25, 25, 25);
   color: red !important;
 }
 
-.btn-editPhotoButton.deletePicture:hover{
+/* Delete Picture button hover - only works when can-hover class is present */
+.btn-editPhotoButton.deletePicture.can-hover:hover {
   background-color: red;
-  color: rgb(0, 0, 0) !important;
+  color: black !important;
 }
 
 // .btn-savePhotoButton {
@@ -3059,14 +3073,14 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   .profilePicture {
-    width: 20vw;
+    width: 100%;
     min-width: 200px;
     max-width: 300px;
     height: auto;
     min-height: 200px;
     max-height: 300px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
 
   .savePictureButtonContainer,
@@ -3446,6 +3460,7 @@ input[matInput]:focus.error-input::placeholder {
     // margin-left: -0.5rem;
     // gap: 1.5rem;
     gap: clamp(0rem, 2vw, 1rem);
+    margin-left: -0.7rem;
   }
 
   .updatePasswordButtonContainer{
@@ -3480,20 +3495,16 @@ input[matInput]:focus.error-input::placeholder {
   // }
 
   .profilePicture {
-    // width: auto;
-    // min-width: 200px;
-    // height: auto;
-    // aspect-ratio: 1 / 1;
-    // margin-bottom: 1rem;
-    width: 50vw;
+    // width: 50vw;
+    width: 100%;
     min-width: 130px;
     max-width: 230px;
     height: auto;
     min-height: 130px;
     max-height: 280px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 1rem;
-    padding-left: 2rem;
+    // margin-bottom: 1rem;
+    // padding-left: 2rem;
     // flex: 1;
     // margin: auto;
   }
