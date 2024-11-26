@@ -369,13 +369,19 @@ a {
   padding-bottom: 1rem;
   z-index: 3;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
+  &.hidden {
+    opacity: 0;
+    transform: translate(-50%, -100%); // Maintain horizontal centering while moving up
+    pointer-events: none;
+  }
 }
 
-.bannerFirstAndSecondTiers.hidden {
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
-}
+// .bannerFirstAndSecondTiers.hidden {
+//   opacity: 0;
+//   transform: translateY(-100%);
+//   pointer-events: none;
+// }
 
 .bannerThirdTier {
   position: fixed;
@@ -523,13 +529,19 @@ mat-card.cardVideosFirst {
   background-color: white;
   border: 1.5px solid rgb(0, 0, 0) !important;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
+  &.hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
 }
 
-.btn-upgrade.hidden {
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
-}
+// .btn-upgrade.hidden {
+//   opacity: 0;
+//   transform: translateY(-100%);
+//   pointer-events: none;
+// }
 
 .btn:hover {
   background-color: #c7ff20;
@@ -537,7 +549,7 @@ mat-card.cardVideosFirst {
 }
 
 .btn-upgrade:hover {
-  border: none !important;
+  border: 1.5px solid transparent !important;
 }
 
 /* For tier Two and Three content */

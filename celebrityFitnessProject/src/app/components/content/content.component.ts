@@ -20,12 +20,25 @@ export class ContentComponent implements OnInit{
   @ViewChild('cardSecondAndThirdTiers') cardSecondAndThirdTiers!: ElementRef;
   @ViewChild('searchInput') searchInput!: ElementRef;
 
+  @ViewChild('searchInput') 
+  set searchInputSetter(element: ElementRef) {
+    if (element) {
+      this.searchInput = element;
+      element.nativeElement.addEventListener('input', () => {
+        this.resetSearchTimeout();
+      });
+    }
+  }
+
   private scrollSubject = new Subject<void>();
   private bufferZone = 100;
   private scrollSubscription!: Subscription;
   private ticking = false;
   private lastKnownScrollPosition = 0;
   windowWidth: number = window.innerWidth;
+  timerInitialized: boolean = false;
+  private readonly EMPTY_INPUT_TIMEOUT = 10000; // 10 seconds
+  private readonly FILLED_INPUT_TIMEOUT = 15000; // 15 seconds
 
   iaVideos: any[] = [];
   ifbVideos: any[] = [];
@@ -88,6 +101,8 @@ export class ContentComponent implements OnInit{
     this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
+      this.timerInitialized = true;
+      this.startCountDown();
 
     const hasVisited = localStorage.getItem('contentLoaded');
     if (!hasVisited) {
@@ -144,23 +159,19 @@ export class ContentComponent implements OnInit{
         this.removeJustLookingStyles();
       }
     });
-    this.startCountDown();
+   
     // this.startCountDownTierThree();
     this.checked = false;
     this.addToNewest();
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
-
     this.initScrollHandler();
 
     // document.body.style.backgroundColor = 'black';
   }
   
   ngAfterViewInit() {
-    
-    
-
     this.checkScrollPosition();
   }
 
@@ -168,12 +179,29 @@ export class ContentComponent implements OnInit{
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
+
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.removeEventListener('input', () => {
+        this.resetSearchTimeout();
+      });
+    }
     // document.body.style.backgroundColor = 'white';
   }
 
+  // @HostListener('window:scroll', ['$event'])
+  // onWindowScroll() {
+  //   this.scrollSubject.next();
+  // }
+
   @HostListener('window:scroll', ['$event'])
-  onWindowScroll() {
-    this.scrollSubject.next();
+  onWindowScroll(): void {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        this.checkScrollPosition();
+        this.ticking = false;
+      });
+      this.ticking = true;
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -203,110 +231,113 @@ export class ContentComponent implements OnInit{
   set upgradeTimer(value: boolean) {
     this.upgradeTimerSubject.next(value);
   }
- 
-  // checkScrollPosition() {
-  //   const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-  //   if (!banner) return;
 
-  //   const bannerRect = banner.getBoundingClientRect();
-  //   const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
 
-  //   if (bannerRect.bottom >= cardRect.top) {
-  //     this.upgradeTimer = true;
-  //     // this.updateTimerValue();
-  //   } else {
-  //     this.upgradeTimer = false;
-  //     // this.updateTimerValue();
-  //   }
-  // }
+  // private checkScrollPosition(): void {
+  //   if (this.currentUser.tier === "Just Looking") {
+  //     const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
+  //     const card = this.cardSecondAndThirdTiers.nativeElement;
 
-  // checkScrollPosition() {
-  //   if(this.currentUser.tier === "Just Looking") {
-  //   const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-  //   if (!banner) return;
+  //     if (!banner || !card) return;
 
-  //   const bannerRect = banner.getBoundingClientRect();
-  //   const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
+  //     const bannerRect = banner.getBoundingClientRect();
+  //     const cardRect = card.getBoundingClientRect();
 
-  //   if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
-  //     if (!this.upgradeTimer) {
-  //       this.upgradeTimer = true;
-  //       this.showUpgradeContainer();
+  //     if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
+  //       if (!this.upgradeTimer) {
+  //         this.upgradeTimer = true;
+  //         this.showUpgradeContainer();
+  //       }
+  //     } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
+  //       if (this.upgradeTimer) {
+  //         this.upgradeTimer = false;
+  //         this.hideUpgradeContainer();
+  //       }
   //     }
-  //   } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
-  //     if (this.upgradeTimer) {
-  //       this.upgradeTimer = false;
-  //       this.hideUpgradeContainer();
-  //     }
-  //   }
   //   }
   // }
 
   private checkScrollPosition(): void {
     if (this.currentUser.tier === "Just Looking") {
       const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-      const card = this.cardSecondAndThirdTiers.nativeElement;
+      const card = this.cardSecondAndThirdTiers?.nativeElement;
+      
       if (!banner || !card) return;
 
       const bannerRect = banner.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
+      const scrollThreshold = cardRect.top - this.bufferZone;
 
-      if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
-        if (!this.upgradeTimer) {
-          this.upgradeTimer = true;
-          this.showUpgradeContainer();
-        }
-      } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
-        if (this.upgradeTimer) {
-          this.upgradeTimer = false;
-          this.hideUpgradeContainer();
-        }
+      // Only update if the state needs to change
+      const shouldHide = bannerRect.bottom >= scrollThreshold;
+      
+      if (shouldHide !== this.upgradeTimer) {
+        this.ngZone.run(() => {
+          this.upgradeTimer = shouldHide;
+          if (shouldHide) {
+            this.showUpgradeContainer();
+          } else {
+            this.hideUpgradeContainer();
+          }
+          this.cdr.detectChanges();
+        });
       }
     }
   }
 
   // showUpgradeContainer() {
   //   this.upgradeContainerVisible = true;
+  //   this.upgradeTimer = true;
+  //   this.cdr.detectChanges();
   //   setTimeout(() => {
   //     const container = document.querySelector('.upgradeContainer') as HTMLElement;
   //     if (container) {
   //       container.style.opacity = '1';
   //     }
-  //   }, 50); // Small delay to ensure the display: block has taken effect
+  //   }, 50);
   // }
 
-  showUpgradeContainer() {
-    this.upgradeContainerVisible = true;
-    this.upgradeTimer = true;
-    this.cdr.detectChanges();
-    setTimeout(() => {
-      const container = document.querySelector('.upgradeContainer') as HTMLElement;
-      if (container) {
-        container.style.opacity = '1';
-      }
-    }, 50);
+  private showUpgradeContainer(): void {
+    if (!this.upgradeContainerVisible) {
+      this.upgradeContainerVisible = true;
+      this.upgradeTimer = true;
+      
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        const container = document.querySelector('.upgradeContainer') as HTMLElement;
+        if (container) {
+          container.style.opacity = '1';
+        }
+      });
+    }
   }
 
+  
+
   // hideUpgradeContainer() {
+  //   this.upgradeTimer = false;
+  //   this.cdr.detectChanges();
   //   const container = document.querySelector('.upgradeContainer') as HTMLElement;
   //   if (container) {
   //     container.style.opacity = '0';
   //     setTimeout(() => {
   //       this.upgradeContainerVisible = false;
-  //     }, 300); // This should match the transition duration in CSS
+  //       this.cdr.detectChanges();
+  //     }, 300);
   //   }
   // }
 
-  hideUpgradeContainer() {
-    this.upgradeTimer = false;
-    this.cdr.detectChanges();
-    const container = document.querySelector('.upgradeContainer') as HTMLElement;
-    if (container) {
-      container.style.opacity = '0';
-      setTimeout(() => {
-        this.upgradeContainerVisible = false;
-        this.cdr.detectChanges();
-      }, 300);
+  private hideUpgradeContainer(): void {
+    if (this.upgradeContainerVisible) {
+      const container = document.querySelector('.upgradeContainer') as HTMLElement;
+      if (container) {
+        container.style.opacity = '0';
+        setTimeout(() => {
+          this.upgradeTimer = false;
+          this.upgradeContainerVisible = false;
+          this.cdr.detectChanges();
+        }, 300); // Match transition duration
+      }
     }
   }
 
@@ -463,7 +494,7 @@ export class ContentComponent implements OnInit{
   // }
 
   startCountDown() {
-    const countDownDate = new Date("October 31, 2024 16:45:25").getTime();
+    const countDownDate = new Date("November 31, 2024 16:45:25").getTime();
   
     const updateTimer = () => {
       const now = new Date().getTime();
@@ -475,6 +506,7 @@ export class ContentComponent implements OnInit{
           this.showLiveVideo = true;
         } else {
           this.timerBase += " Join Me Live!";
+          this.showLiveVideo = true;
         }
         this.cdr.detectChanges();
         return;
@@ -490,11 +522,12 @@ export class ContentComponent implements OnInit{
       this.cdr.detectChanges();
     };
   
-    // Initial update
-    updateTimer();
+    // Only start the timer if we have user data
+    if (this.timerInitialized) {
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
   
-    // Update every second
-    setInterval(updateTimer, 1000);
   }
 
 
@@ -675,37 +708,199 @@ toggleHeading(){
     }
   }
 
+  // handleSearchIconClick() {
+  //   if (this.viewSearchBar) {
+  //     this.search();
+  //   } else {
+  //     this.toggleSearch();
+  //   }
+  // }
+
+  // handleSearchIconClick() {
+  //   const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+    
+  //   if (this.viewSearchBar && inputElement) {
+  //     // If search bar is visible and has content, perform search
+  //     if (inputElement.value.trim()) {
+  //       this.search();
+  //     } else {
+  //       // If search bar is empty, hide it
+  //       this.hideSearchBar();
+  //     }
+  //   } else {
+  //     // Show search bar
+  //     this.showSearchBar();
+  //   }
+  // }
+
   handleSearchIconClick() {
+    const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+    const inputValue = inputElement?.value.trim();
+    
     if (this.viewSearchBar) {
-      this.search();
+      // Search bar is visible
+      if (inputValue) {
+        // If there's content, perform search
+        this.search();
+      } else {
+        // If empty, hide the search bar
+        this.hideSearchBar();
+      }
     } else {
-      this.toggleSearch();
+      // Search bar is not visible, show it
+      this.showSearchBar();
     }
   }
+
+  // private showSearchBar() {
+  //   this.viewSearchBar = true;
+  //   this.cdr.detectChanges();
+    
+  //   // Focus the input after it's visible
+  //   setTimeout(() => {
+  //     if (this.searchInput?.nativeElement) {
+  //       this.searchInput.nativeElement.focus();
+  //     }
+  //   });
+
+  //   this.resetSearchTimeout();
+  // }
+
+  private showSearchBar() {
+    this.viewSearchBar = true;
+    const searchIcon = document.querySelector('.searchIcon');
+    searchIcon?.classList.add('expanded');
+    
+    this.cdr.detectChanges();
+    
+    setTimeout(() => {
+      if (this.searchInput?.nativeElement) {
+        this.searchInput.nativeElement.focus();
+      }
+    });
+
+    this.resetSearchTimeout();
+  }
+
+  // private hideSearchBar() {
+  //   const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //   searchIcon?.classList.remove('expanded');
+  //   this.viewSearchBar = false;
+  //   this.cdr.detectChanges();
+    
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  // }
+
+  private hideSearchBar() {
+    const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+    searchIcon?.classList.remove('expanded');
+    this.viewSearchBar = false;
+    
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    // Clear the input value when hiding
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.value = '';
+    }
+    
+    this.isSearchClicked = false;
+    this.cdr.detectChanges();
+  }
+
+
+  // private resetSearchTimeout() {
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  //   this.searchTimeout = setTimeout(() => {
+  //     const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //     searchIcon?.classList.remove('expanded');
+  //     this.viewSearchBar = false;
+  //   }, 10000);
+  // }
+
+  // private resetSearchTimeout() {
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+    
+  //   this.searchTimeout = setTimeout(() => {
+  //     const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //     if (!inputValue) {
+  //       this.hideSearchBar();
+  //     }
+  //   }, 10000);
+  // }
 
   private resetSearchTimeout() {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
+    
+    const inputValue = this.searchInput?.nativeElement?.value.trim();
+    const timeoutDuration = inputValue ? this.FILLED_INPUT_TIMEOUT : this.EMPTY_INPUT_TIMEOUT;
+    
     this.searchTimeout = setTimeout(() => {
-      const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
-      searchIcon?.classList.remove('expanded');
-      this.viewSearchBar = false;
-    }, 10000);
+      this.hideSearchBar();
+    }, timeoutDuration);
   }
 
+  // onSearchBlur() {
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput.nativeElement) {
+  //       this.viewSearchBar = false;
+  //     }
+  //   }, 100);
+  // }
+
+  // onSearchBlur() {
+  //   // Only hide on blur if the input is empty
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput?.nativeElement) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         this.hideSearchBar();
+  //       }
+  //     }
+  //   }, 100);
+  // }
+
+  // onSearchBlur() {
+  //   // Short timeout to allow click events to process first
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput?.nativeElement) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         // Only hide if the input is empty and we're not clicking the search icon
+  //         if (!this.isSearchClicked) {
+  //           this.hideSearchBar();
+  //         }
+  //       }
+  //     }
+  //   }, 100);
+  // }
+
   onSearchBlur() {
+    // Short timeout to allow click events to process first
     setTimeout(() => {
-      if (document.activeElement !== this.searchInput.nativeElement) {
-        this.viewSearchBar = false;
+      if (document.activeElement !== this.searchInput?.nativeElement) {
+        // Hide if we're not clicking the search icon
+        if (!this.isSearchClicked) {
+          this.hideSearchBar();
+        }
       }
     }, 100);
   }
 
+
+
   goBack() {
     this.foundVideos = false;
   }    
-
     
       // Search Function(INCOMPLETE)
       // search(searchString: string) {
@@ -828,15 +1023,57 @@ toggleHeading(){
       //   this.resetSearchTimeout();
       // }
 
+  // search() {
+  //   if (this.searchString.trim() === '') {
+  //     // If the search string is empty, hide the search input
+  //     const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //     searchIcon?.classList.remove('expanded');
+  //     this.viewSearchBar = false;
+  //     if (this.searchTimeout) {
+  //       clearTimeout(this.searchTimeout);
+  //     }
+  //     return;
+  //   }
+  
+  //   this.foundVideos = true;
+  //   this.isSearching = true;
+  //   this.searchResults = [];
+  
+  //   this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
+  //     (results: any) => {
+  //       this.searchResults = results.items.map((item: any) => {
+  //         const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
+  //         item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+  //         return item;
+  //       });
+  //       this.isSearching = false;
+  //     },
+  //     error => {
+  //       console.error('Error searching videos:', error);
+  //       this.searchResults = [];
+  //       this.isSearching = false;
+  //     }
+  //   );
+  
+  //   // After initiating the search, hide the search input immediately
+  //   const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //   searchIcon?.classList.remove('expanded');
+  //   this.viewSearchBar = false;
+  
+  //   // Clear any existing timeouts
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  
+  //   // Optionally, clear the input value
+  //   this.searchString = '';
+  // }
+
   search() {
-    if (this.searchString.trim() === '') {
-      // If the search string is empty, hide the search input
-      const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
-      searchIcon?.classList.remove('expanded');
-      this.viewSearchBar = false;
-      if (this.searchTimeout) {
-        clearTimeout(this.searchTimeout);
-      }
+    const searchString = this.searchInput?.nativeElement?.value.trim();
+    
+    if (!searchString) {
+      this.hideSearchBar();
       return;
     }
   
@@ -844,7 +1081,7 @@ toggleHeading(){
     this.isSearching = true;
     this.searchResults = [];
   
-    this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
+    this.youTubeService.searchVideosInChannel(searchString).subscribe(
       (results: any) => {
         this.searchResults = results.items.map((item: any) => {
           const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
@@ -852,27 +1089,17 @@ toggleHeading(){
           return item;
         });
         this.isSearching = false;
+        this.hideSearchBar();
       },
       error => {
         console.error('Error searching videos:', error);
         this.searchResults = [];
         this.isSearching = false;
+        this.hideSearchBar();
       }
     );
-  
-    // After initiating the search, hide the search input immediately
-    const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
-    searchIcon?.classList.remove('expanded');
-    this.viewSearchBar = false;
-  
-    // Clear any existing timeouts
-    if (this.searchTimeout) {
-      clearTimeout(this.searchTimeout);
-    }
-  
-    // Optionally, clear the input value
-    this.searchString = '';
   }
+
 
   // onMouseDown(button: string) {
   //   if (button === 'search') {
@@ -923,33 +1150,85 @@ toggleHeading(){
   //   }
   // }  
 
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     const inputElement = document.querySelector('.formSearch') as HTMLInputElement;
+  //     const inputIsEmpty = inputElement?.value.trim() === '';
+  
+  //     if (searchIcon?.classList.contains('expanded') && window.innerWidth <= 729) {
+  //       // The search bar is already visible
+  //       if (inputIsEmpty) {
+  //         // Input is empty, hide the input immediately
+  //         searchIcon.classList.remove('expanded');
+  //         this.viewSearchBar = false;
+  //         if (this.searchTimeout) {
+  //           clearTimeout(this.searchTimeout);
+  //         }
+  //       } else {
+  //         // Input is not empty, perform the search and hide the input
+  //         this.search();
+  //       }
+  //     } else {
+  //       // The search bar is not visible, show it
+  //       searchIcon?.classList.add('clicked');
+  //       searchIcon?.classList.add('expanded');
+  //       this.viewSearchBar = true; // Ensure the search bar is visible
+  //       this.resetSearchTimeout(); // Start the 10-second timeout
+  //     }
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+      
+  //     if (searchIcon?.classList.contains('expanded')) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         this.hideSearchBar();
+  //         return;
+  //       }
+  //     }
+      
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+  //     const inputIsEmpty = !inputElement?.value.trim();
+      
+  //     if (searchIcon?.classList.contains('expanded')) {
+  //       if (inputIsEmpty) {
+  //         // If input is empty and expanded, hide it
+  //         this.hideSearchBar();
+  //         return;
+  //       }
+  //     }
+      
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //   }
+  // }
+
   onMouseDown(button: string) {
     if (button === 'search') {
-      this.isSearchClicked = true;
       const searchIcon = document.querySelector('.searchIcon');
-      const inputElement = document.querySelector('.formSearch') as HTMLInputElement;
-      const inputIsEmpty = inputElement?.value.trim() === '';
-  
-      if (searchIcon?.classList.contains('expanded') && window.innerWidth <= 729) {
-        // The search bar is already visible
-        if (inputIsEmpty) {
-          // Input is empty, hide the input immediately
-          searchIcon.classList.remove('expanded');
-          this.viewSearchBar = false;
-          if (this.searchTimeout) {
-            clearTimeout(this.searchTimeout);
-          }
-        } else {
-          // Input is not empty, perform the search and hide the input
-          this.search();
-        }
-      } else {
-        // The search bar is not visible, show it
-        searchIcon?.classList.add('clicked');
+      searchIcon?.classList.add('clicked');
+      
+      // Only add expanded class if we're showing the search bar
+      if (!this.viewSearchBar) {
         searchIcon?.classList.add('expanded');
-        this.viewSearchBar = true; // Ensure the search bar is visible
-        this.resetSearchTimeout(); // Start the 10-second timeout
       }
+      
+      this.isSearchClicked = true;
     }
   }
 
