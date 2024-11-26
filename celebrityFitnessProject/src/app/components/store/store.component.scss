@@ -22,8 +22,10 @@ a {
 .pageContent {
   padding-top: 10rem;
   width: 100%;
-  max-width: 3000px;
+  max-width: 2700px;
   height: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .pageName {
@@ -47,6 +49,8 @@ div.cardsDiv {
   position: relative;
   padding-left: 2rem;
   padding-right: 2rem;
+  // width: 100%;
+  // height: auto;
 }
 
 mat-card.products {
@@ -352,18 +356,129 @@ mat-card.products {
   }
 }
 
-@media screen and (min-width: 500px) and (max-width: 1028px){
+// @media screen and (min-width: 588px) and (max-width: 1028px){
 
-  h1.pageName{
-      color: Black;
-      text-align: left;
-      font-size: 10rem;
-      padding-left: 0rem;
-      font-weight: 600;
-      margin: auto;
-      display: flex;
-      flex-direction: row;
+//   h1.pageName{
+//       color: Black;
+//       text-align: left;
+//       font-size: 10rem;
+//       // padding-left: 0rem;
+//       font-weight: 600;
+//       margin: auto;
+//       display: flex;
+//       flex-direction: row;
+//   }
+
+// }
+
+
+// @media screen and (min-width: 300px) and (max-width: 945px) {
+
+//   h1.pageName{
+//     text-align: center;
+//     // line-height: 1;
+//     // font-size: 7rem;
+//     font-size: clamp(3rem, 15vw, 10rem);
+//     padding-left: 0;
+//     // padding-top: 4rem;
+//     // padding-top: 8rem;
+//     margin-bottom: 0rem;
+//   }
+
+//   .cardsDiv{
+//     width: 100%;
+//     height: auto;
+//     box-sizing: border-box;
+//     max-width: 23rem;
+//     max-height: 35rem;
+//   }
+
+//   mat-card.products {
+//     position: relative;
+//     background-color: rgb(18, 17, 17);
+//     width: 100%;
+//     // max-width: 23rem;
+//     height: auto;
+//     // max-height: 35rem;
+//     // transform: scale(0.85);
+//     border-radius: 0.9rem;
+//     margin-top: 2rem;
+//     margin-bottom: 10rem;
+//     background-size: 80%;
+//     box-shadow: 0 0 20px rgb(65, 64, 64);
+//     /* padding-bottom: 4rem; */
+//   }
+
+@media screen and (min-width: 300px) and (max-width: 945px) {
+
+  .pageContent{
+    padding-top: 8.5rem;
   }
 
+  h1.pageName {
+    text-align: center;
+    font-size: clamp(6rem, 15vw, 10rem);
+    padding-left: 0;
+    margin-bottom: 0;
+    // padding-top: 5rem;
+  }
 
+  .cardsDiv {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    // padding: 0 1rem;
+    margin: auto;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  div.cardsDiv{
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  mat-card.products {
+    position: relative;
+    background-color: rgb(18, 17, 17);
+    width: 90vw;
+    max-width: 23rem;
+    height: auto;
+    // max-height: 23rem;
+    aspect-ratio: 2/3;
+    // padding-top: 75%; /* Adjust this to set the aspect ratio */
+    border-radius: 0.9rem;
+    margin: 2rem auto 5rem auto;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 0 20px rgb(65, 64, 64);
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .productDetails {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .productsContainer{
+    margin-top: 2rem;
+  }
 }
+
+
+  //   h1.pageName{
+  //     color: Black;
+  //     text-align: left;
+  //     // font-size: 10rem;
+  //     font-size: clamp(3rem, 15vw, 10rem);
+  //     // padding-left: 0rem;
+  //     font-weight: 600;
+  //     margin: auto;
+  //     display: flex;
+  //     flex-direction: row;
+  // }
+

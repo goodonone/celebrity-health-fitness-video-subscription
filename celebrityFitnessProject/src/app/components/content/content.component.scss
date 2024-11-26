@@ -325,12 +325,21 @@ a {
 .searchIcon{
   color: white;
   transition: fill 0.3s ease;
-  cursor: pointer
+  cursor: pointer;
+
+  // &.expanded{
+  //   margin-left: 1rem;
+  //   margin-right: auto;
+  // }
 }
 
 .searchIcon.clicked path:last-child {
   fill: grey;
 }
+
+// .searchIcon.expanded{
+//   display: block;
+// }
 
 .fieldset {
   border: none;
@@ -360,13 +369,19 @@ a {
   padding-bottom: 1rem;
   z-index: 3;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
+  &.hidden {
+    opacity: 0;
+    transform: translate(-50%, -100%); // Maintain horizontal centering while moving up
+    pointer-events: none;
+  }
 }
 
-.bannerFirstAndSecondTiers.hidden {
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
-}
+// .bannerFirstAndSecondTiers.hidden {
+//   opacity: 0;
+//   transform: translateY(-100%);
+//   pointer-events: none;
+// }
 
 .bannerThirdTier {
   position: fixed;
@@ -514,13 +529,19 @@ mat-card.cardVideosFirst {
   background-color: white;
   border: 1.5px solid rgb(0, 0, 0) !important;
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
+  &.hidden {
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
 }
 
-.btn-upgrade.hidden {
-  opacity: 0;
-  transform: translateY(-100%);
-  pointer-events: none;
-}
+// .btn-upgrade.hidden {
+//   opacity: 0;
+//   transform: translateY(-100%);
+//   pointer-events: none;
+// }
 
 .btn:hover {
   background-color: #c7ff20;
@@ -528,7 +549,7 @@ mat-card.cardVideosFirst {
 }
 
 .btn-upgrade:hover {
-  border: none !important;
+  border: 1.5px solid transparent !important;
 }
 
 /* For tier Two and Three content */
@@ -606,9 +627,9 @@ p.liveVideoLoadingText {
   /* margin-top: 8rem; */
 /* } */
 
-.flexCards.contentCardOne {
-  margin-top: 3rem;
-}
+// .flexCards.contentCardOne {
+//   // margin-top: 3rem;
+// }
 
 .flexCards {
   display: flex;
@@ -685,12 +706,12 @@ iframe {
 
 .searchFormAndButton {
   position: absolute;
-  top: 6rem;
+  top: 6.2rem;
   right: 4%; /* Adjust this value to move it more to the left */
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  width: 20rem; /* Set a fixed width */
+  width: 20rem; 
   min-width: 20rem;
 }
 
@@ -822,8 +843,9 @@ div.upgradeContainer {
   background-color: rgb(18, 17, 17);
   width: 27rem;
   margin: auto;
-  margin-top: 3rem;
+  // margin-top: 3rem;
   padding: 1rem;
+  margin-top: 3rem;
 
   &.upgradeToggleArea{
     background-color: white
@@ -1208,9 +1230,180 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
-@media screen and (min-width: 300px) and (max-width: 500px) {
-  h1.tierOneHeader {
-    font-size: 3rem;
-    line-height: 3rem;
+@media screen and (min-width: 741px) and (max-width: 1211px) {
+
+  // .tierPage{
+  //   position: relative;
+  // }
+
+  .toggle-area {
+    margin-top: 3rem;
+    padding: 0;
+    // position: absolute;
+    // top: 60%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+    // z-index: 4;
   }
+  // .yearAndRecipes{
+  //   display: flex;
+  //   flex-direction: column;
+  //   align-items: center;
+  //   justify-content: center;
+  //   left: auto;
+  //   top: 1rem;
+  //   // margin-top: 2rem;
+  //   // margin-bottom: 2rem;
+  // }
+
+//   .cardHeaderYear,
+//   .cardHeadertype {
+//   color: white;
+//   font-weight: 500;
+//   font-size: 4rem;
+//   padding-left: auto;
+//   padding-top: 4rem;
+//   width: 100%;
+//   margin-left: auto;
+//   margin-right: auto;
+// }
+}
+
+// @media screen and (min-width: 730px) and (max-width: 740px) {
+
+//   .toggle-area {
+//     margin-top: 3rem;
+//     padding: 0;
+//     // position: absolute;
+//     // top: 60%;
+//     // left: 50%;
+//     // transform: translate(-50%, -50%);
+//     // z-index: 4;
+//   }
+
+
+
+// h1.tierOneHeader {
+//   font-size: 3rem;
+//   line-height: 3rem;
+// }
+
+// }
+
+
+@media screen and (min-width: 300px) and (max-width: 729px) {
+
+  .searchFormAndButton {
+    position: relative;
+    // top: 6rem;
+    // right: 4%; 
+    top: auto;
+    // right: 10%;
+    right: auto;
+    // left: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    // min-width: 100%;
+    // max-width: 100%;
+    padding-top: 3rem;
+    // padding-right: 5rem;
+    // max-width: 20rem;
+    height: 2rem;
+    // margin-left: auto;
+    // margin-right: auto;
+    padding-left: 0rem;
+    padding-right: 0rem;
+    // margin-left: 0.5rem
+    // margin-left: auto;
+    // margin-right: auto;
+    // z-index: 1;
+    // background-color: rgb(33, 33, 33);
+    // border-radius: 0.2px;
+    margin-bottom: 0.5rem;
+  }
+
+  // input {
+  //   // width: 100%;
+  //   // width: 100%;
+  //   // max-width: 30rem;
+  // }
+
+  // .toggle-area{
+  //   p
+  // }
+
+  label{
+    font-size: 0.8rem;
+  }
+
+  input{
+    width: 65vw;
+  }
+
+  .flexCards.contentCardOne{
+    margin-top: 0;
+  }
+
+  .toggle-area{
+    margin-top: 0;
+    width: fit-content;
+  }
+
+  .toggle{
+    padding-left: 0;
+  }
+
+  .searchIcon{
+    margin: auto;
+    padding-left: 1rem;
+
+    &.expanded{
+      padding-left: 0rem;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  // .searchIcon.expanded{
+  //   margin-left: 1rem;
+  //   margin-right: auto;
+  // }
+
+  // .formSearch{
+  //   // margin-right: -2rem;
+  // }
+
+  // .tierPage{
+  //   padding-right: 2rem;
+  // }
+
+  .yearAndRecipes{
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      left: auto;
+      top: 1rem;
+  }
+
+  .cardHeaderYear{
+    margin: auto;
+  }
+
+  .btn-recipes{
+    // width: 100;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    // margin-left: 0rem !important;
+  }
+
+  .cardHeadertype{
+    padding-left: 0;
+    margin-right: 0;
+  }
+  
 }

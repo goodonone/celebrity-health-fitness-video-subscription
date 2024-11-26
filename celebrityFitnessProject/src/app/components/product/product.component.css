@@ -91,7 +91,7 @@ p.price {
   /* font-family: 'Roboto', sans-serif;
     font-style: italic;
     font-weight: 1000; */
-  font-family: "Roboto Mono", monospace;
+  font-family: "Roboto Mono", monospace !important;
   font-style: italic;
   font-weight: bold;
   font-optical-sizing: auto;
@@ -154,6 +154,7 @@ p.price {
 .backButton {
   width: 8rem;
   line-height: 1;
+  border-radius: 0.4rem;
   /* text-wrap: wrap; */
   /* line-height: 1; */
 }

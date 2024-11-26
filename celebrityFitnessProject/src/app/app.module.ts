@@ -21,6 +21,7 @@ import { AuthStateService } from './services/authstate.service';
 import { AuthService } from './services/auth.service';
 import { ImageUrlManagerService } from './services/imageurlmanager.service';
 import { AuthInterceptor } from './auth.interceptor';
+import { UploadStateService } from './services/uploadstate.service';
 
 @NgModule({
   declarations: [

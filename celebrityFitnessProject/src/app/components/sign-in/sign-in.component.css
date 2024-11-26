@@ -82,13 +82,28 @@ mat-card-header{
   padding-top: 0;
 }
 
+.pageTitleContainer {
+  width: 13rem;
+  height: 4rem;
+  margin-top: 15px;
+  margin-right: 1rem;
+}
+
+.pageTitle{
+  font-size: 2.5rem;
+  font-weight: 600;
+  padding-top: 0.5rem;
+  /* padding-right: 15rem; */
+  /* font-family: Outfit, sans-serif !important; */
+}
+
 form{
     position: relative;
 }
 
-.logo {
+/* .logo {
   font-size: 1.5rem;
-}
+} */
 
 input {
   display: inline-block;
@@ -155,12 +170,6 @@ input:valid {
   background-color: rgb(244, 9, 9);
   /* background-color: rgb(212, 37, 37); */
   color: black;
-}
-
-.logoImage {
-  width: 13rem;
-  height: 4rem;
-  margin-top: 15px;
 }
 
 .showHide {
@@ -478,10 +487,18 @@ input[type="text"]::placeholder {
     margin-top: 1rem;
   }
 
-  .logoImage {
+  .pageTitleContainer {
     width: 60%;
     height: auto;
     /* margin-top: 15px; */
+  }
+
+  .pageTitle{
+    font-size: 2.5rem;
+    font-weight: 600;
+    padding-top: 0.5rem;
+    padding-left: 0.8rem;
+    /* font-family: Outfit, sans-serif !important; */
   }
 
   .buttonSpan {
@@ -504,7 +521,7 @@ input[type="text"]::placeholder {
   }
 
   .absoluteContainer{
-    bottom: 11.5%;
+    bottom: 11%;
   }
 
   .divider{

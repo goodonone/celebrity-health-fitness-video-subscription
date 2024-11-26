@@ -1,6 +1,6 @@
-/* * {
-  /* font-family: 'Outfit', sans-serif !important; */
-/* } */
+* {
+  user-select: none;
+}
 
 .background {
   position: fixed;
@@ -14,42 +14,66 @@
   background-attachment: fixed;
 }
 
+.boundingBox {
+  width: 100%;
+  height: 100%;
+  max-width: 2000px;
+  display:flex;
+  flex-direction: column;
+  margin: auto;
+}
+
 .cardOne{
-  padding-top: 10rem;
+  padding-top: 9.5rem;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 h1.contactUs {
   position: relative;
   color: rgb(255, 255, 255);
   text-align: left;
-  // font-size: clamp(10rem, 2vw, 25rem); 
   font-size: 9rem;
   padding-left: 5rem;
-  // padding-top: 8rem;
-  /* padding-bottom: 1rem; */
   font-weight: 600;
-  user-select: none;
+  // user-select: none;
 }
+
+// .pageName {
+//   color: rgb(255, 255, 255);
+//   font-weight: 600;
+//   text-align: left;
+//   /* font-size: 8vw; */
+//   font-size: 10rem;
+//   padding-left: 5rem;
+//   padding-top: 10rem;
+//   // z-index: 2;
+// }
 
 h1.findUs {
   position: relative;
   color: rgb(255, 255, 255);
   text-align: left;
-  font-size: clamp(10rem, 2vw, 25rem);
-  padding-left: 8rem;
+  // font-size: clamp(10rem, 2vw, 25rem);
+  font-size: 9rem;
+  padding-left: 5rem;
   padding-top: 2rem;
   padding-bottom: 4rem;
   font-weight: 600;
-  user-select: none;
+  // user-select: none;
 }
 
 .contactForm {
   position: relative;
-  width: 35rem;
-  height: 35rem;
-  margin: 4rem auto 7rem auto;
+  width: 100%;
+  max-width: 33rem;
+  // height: auto;
+  aspect-ratio: 1 / 1;
+  // max-height: 33rem;
+  margin: 5rem auto 7rem auto;
   border-radius: 1rem;
-  user-select: none;
+  // user-select: none;
 }
 
 .mapSocialContainer {
@@ -104,7 +128,7 @@ textarea {
   border-radius: 0.25rem;
   border: 0.063rem solid black;
   margin-bottom: 1rem;
-  padding: 0.5rem 0 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   color: black;
   background-color: white;
   font-size: 1rem;
@@ -113,7 +137,8 @@ textarea {
 .formDiv {
   margin: auto;
   padding-top: 1rem;
-  width: 20rem;
+  width: 100%;
+  max-width: 20rem;
   padding-right: 1rem;
 }
 
@@ -129,9 +154,13 @@ input {
   border-radius: 0.25rem;
   border: 0.063rem solid black;
   margin-bottom: 1rem;
-  padding: 0.5rem 0 0.5rem 1rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   color: black;
   background-color: white;
+  font-size: 1rem;
+}
+
+.businessHours{
   font-size: 1rem;
 }
 
@@ -150,10 +179,27 @@ input:valid {
   background-color: rgb(255, 255, 255);
 }
 
+// .input-details {
+//   display: flex;
+//   justify-content: space-between;
+//   // width: 15.437rem;
+//   width: 100%;
+//   max-width: 20rem;
+// }
+
 .input-details {
   display: flex;
   justify-content: space-between;
-  width: 15.437rem;
+  // align-items: center;
+  width: 105%;
+  // max-width: 20rem;
+  // margin-bottom: 5px;
+  
+  span {
+    display: flex;
+    align-items: space-between;
+    // width: 100%;
+  }
 }
 
 .tick {
@@ -163,6 +209,7 @@ input:valid {
 .formToggleOn {
   position: relative;
   width: 100%;
+  // height: 100%;
 }
 
 img.tick {
@@ -179,8 +226,14 @@ img.tick {
 }
 
 .divAlign {
+  // position: absolute;
+  // z-index: 1;
+  // left: 50%;
+  // top: 50%;
+  // transform: translate(-50%, -5%);
   display: block;
-  padding-bottom: 5rem;
+  margin-top: -1rem;
+  // padding-bottom: 5rem;
 }
 
 .mapSocial {
@@ -195,10 +248,10 @@ iframe {
 }
 
 .location {
-  padding-left: 1rem;
+  padding-left: 2rem;
   font-size: 3rem;
   font-weight: 500;
-  user-select: none;
+  // user-select: none;
 }
 
 .mapSocialFlex {
@@ -215,11 +268,12 @@ iframe {
   max-width: 20rem;
   padding-top: 0rem;
   margin: auto;
+  // margin-top: 10rem;
 }
 
 .socialBusinessHeadingTwo {
-  padding-top: 2rem;
-  user-select: none;
+  padding-top: 3rem;
+  // user-select: none;
 }
 
 a {
@@ -236,7 +290,7 @@ a {
 
 .socialMedia {
   padding-right: 2rem;
-  user-select: none;
+  // user-select: none;
 }
 
 iframe {
@@ -244,15 +298,47 @@ iframe {
   height: 450px;
 }
 
+form{
+  width: 100%;
+}
+
+// input[matInput]:focus {
+//   border-color: #000000 !important; /* Change the border color when focused */
+//   outline: none; /* Remove the default outline */
+//   box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
+//   color: #000000 !important; /* Change the text color when focused */
+// }
+
 input[matInput]:focus {
-  border-color: #000000 !important; /* Change the border color when focused */
-  outline: none; /* Remove the default outline */
-  box-shadow: 0 0 0 1px #000000 !important; /* Add a shadow with the focus color */
-  color: #000000 !important; /* Change the text color when focused */
+  border-color: var(--border-color, #000000) !important;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--border-color, #000000) !important;
+  color: var(--text-color, #000000) !important;
 }
 
 input[matInput]:focus::placeholder {
-  color: #000000 !important; 
+  color: var(--placeholder-color, #000000) !important;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder {
+  color: var(--placeholder-color, black);
+  // transition: color 0.1s ease;
+}
+
+textarea::placeholder {
+  color: var(--placeholder-color, black);
+  // transition: color 0.1s ease;
+}
+
+input[matInput]:focus.error-input::placeholder {
+  color: red !important;
+  border-color: red !important;
+}
+
+textarea.error-input::placeholder {
+  color: red !important;
+  border-color: red !important;
 }
 
 textarea:focus {
@@ -262,55 +348,134 @@ textarea:focus {
   color: #000000 !important; 
 }
 
+textarea.error-input:focus {
+  color: red !important;
+  border-color: red !important;
+}
+
 textarea:focus::placeholder {
   color: #000000 !important; 
 }
 
-@media screen and (min-width: 967px) and (max-width: 1135px) {
+input.error-input {
+  border-color: red !important;
+  color: red !important;
+}
 
-  div.heading.findUs {
-    margin: auto;
-    width: 80%;
-  }
+input.error-input:focus {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
+  color: red !important;
+}
+
+input.error-input::placeholder {
+  color: red !important;
+}
+
+// Error states for textarea
+textarea.error-input {
+  border-color: red !important;
+  color: red !important;
+}
+
+textarea.error-input:focus {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
+  color: red !important;
+}
+
+textarea.error-input::placeholder {
+  color: red !important;
+}
+
+// Normal focus states for textarea
+textarea:focus {
+  border-color: var(--border-color, #000000) !important;
+  outline: none;
+  box-shadow: 0 0 0 1px var(--border-color, #000000) !important;
+  color: var(--text-color, #000000) !important;
+}
+
+textarea:focus::placeholder {
+  color: var(--placeholder-color, #000000) !important;
+}
+
+// Error message styling
+// .error-alert {
+//   color: red;
+//   margin-left: 10px;
+//   font-size: 14px;
+// }
+.error-alert {
+  color: red;
+  font-weight: bold;
+  text-align: right;
+  font-size: 0.875rem;
+  // margin-top: 0.5rem;
+  // padding-top: 0.5rem;
+  // line-height: 1rem
+}
+
+// Input container styling
+
+
+.spanCategory{
+    // font-size: 1.4rem;
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.wide{
+  display: flex;
+}
+
+.narrow{
+  display: none;
+}
+
+
+@media screen and (min-width: 945px) and (max-width: 1142px) {
 
   .location {
-    padding-left: 1.8rem;
-  }
-
-  h1.findUs {
-    text-align: center;
-    font-size: 7rem;
-    line-height: 5rem;
+    text-align: left;
     padding-left: 0;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
-    font-weight: 600;
-    width: 25rem;
+    // padding-left: 1.8rem;
   }
 
   .mapSocialContainer {
-    width: 28rem;
+    width: 95%;
+    max-width: 33rem;
     height: fit-content;
     margin: auto;
     margin-bottom: 5rem;
     border-radius: 1rem;
-    padding: 1.5rem 0 1.5rem 0rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
   }
 
   .mapSocialFlex {
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 0.5rem;
+    width: 100%;
+    height: 100%
   }
 
   .mapSocial {
-    width: 25rem;
-    height: 35rem;
+    // width: 25rem;
+    width: 100%;
+    max-width: 30rem;
+    // height: 35rem;
+    height: auto;
   }
 
   iframe {
-    width: 25rem;
-    height: 35rem;
+    width: 100%;
+    // max-width: 33rem;
+    // height: auto;
+    // height: auto;
+    // max-height: 35rem;
   }
 
   .socialMedia {
@@ -319,32 +484,218 @@ textarea:focus::placeholder {
     text-align: center;
   }
 
+  .socialBusinessHeadingOne{
+    padding-right: 0.5rem;
+  }
+
+  .socialBusinessHeadingTwo {
+    padding-top: 1rem;
+    line-height: 1;
+    // user-select: none;
+  }
 
 }
 
-@media screen and (min-width: 300px) and (max-width: 966px) {
+// @media screen and (min-width: 967px) and (max-width: 1135px) {
 
-  div.heading.contactUs {
+//   div.heading.findUs {
+//     margin: auto;
+//     width: 80%;
+//   }
+
+//   .location {
+//     padding-left: 1.8rem;
+//   }
+
+//   h1.findUs {
+//     text-align: center;
+//     font-size: 7rem;
+//     line-height: 5rem;
+//     padding-left: 0;
+//     padding-top: 2rem;
+//     padding-bottom: 4rem;
+//     font-weight: 600;
+//     width: 25rem;
+//   }
+
+//   .mapSocialContainer {
+//     width: 28rem;
+//     height: fit-content;
+//     margin: auto;
+//     margin-bottom: 5rem;
+//     border-radius: 1rem;
+//     padding: 1.5rem 0 1.5rem 0rem;
+//   }
+
+//   .mapSocialFlex {
+//     justify-content: center;
+//     flex-wrap: wrap;
+//     margin-top: 0.5rem;
+//   }
+
+//   .mapSocial {
+//     width: 25rem;
+//     height: 35rem;
+//   }
+
+//   iframe {
+//     width: 25rem;
+//     height: 35rem;
+//   }
+
+//   .socialMedia {
+//     padding-right: 0rem;
+//     margin-top: 2rem;
+//     text-align: center;
+//   }
+
+
+// }
+
+@media screen and (min-width: 300px) and (max-width: 945px) {
+
+  // div.heading.contactUs {
+  //   margin: auto;
+  //   width: 100%;
+  // }
+
+  .wide{
+    display: none;
+  }
+
+  .narrow{
+    display: block;
+  }
+
+  .cardOne{
+    padding-top: 0;
+    // width: 90%;
+  }
+
+  .cardTwo{
     margin: auto;
-    width: 80%;
   }
 
   h1.contactUs {
     text-align: center;
-    line-height: 6rem;
-    font-size: 7rem;
+    // line-height: 1;
+    // font-size: 7rem;
+    font-size: clamp(6rem, 15vw, 10rem);
     padding-left: 0;
-    padding-top: 4rem;
-    padding-bottom: 0rem;
-    font-weight: 600;
-    width: 25rem;
+    // padding-top: 4rem;
+    padding-top: 8.5rem;
+    margin-bottom: 0rem;
+    // font-weight: 600;
+    // width: 25rem;
+  }
+
+  .greeting {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1;
+    // white-space: nowrap;
   }
 
   .contactForm {
-    width: 25rem;
+    width: 95%;
+    min-width: 23rem;
+    margin: auto;
+    max-width: 25rem;
     height: 35rem;
     margin: 4rem auto 5rem auto;
     border-radius: 1rem;
+  }
+
+  .location {
+    text-align: left;
+    padding-left: 0;
+    // padding-left: 1.8rem;
+  }
+
+  h1.findUs {
+    text-align: center;
+    // line-height: 6rem;
+    // font-size: 7rem;
+    font-size: clamp(6rem, 15vw, 10rem);
+    padding-left: 0;
+    // padding-top: 4rem;
+    padding-top: 8rem;
+    margin-bottom: 0rem;
+    // font-weight: 600;
+    // width: 25rem;
+  }
+
+  .mapSocialContainer {
+    width: 95%;
+    max-width: 25rem;
+    height: fit-content;
+    margin: auto;
+    margin-bottom: 5rem;
+    border-radius: 1rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  .mapSocialFlex {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+    width: 100%;
+    height: 100%
+  }
+
+  .mapSocial {
+    // width: 25rem;
+    width: 100%;
+    max-width: 25rem;
+    // height: 35rem;
+    height: auto;
+  }
+
+  iframe {
+    width: 100%;
+    max-width: 27rem;
+    // height: auto;
+    // max-height: 35rem;
+  }
+
+  .socialMedia {
+    padding-right: 0rem;
+    margin-top: 2rem;
+    text-align: center;
+    line-height: 1rem;
+  }
+
+  .socialBusinessHeadingOne{
+    padding-right: 0.5rem;
+  }
+
+  .socialBusinessHeadingTwo {
+    padding-top: 1rem;
+    line-height: 1;
+    // user-select: none;
+  }
+
+  // .formDiv{
+  //   // margin-left: auto;
+  //   // margin-right: auto;
+  //   // padding-right: 0
+  // }
+
+  .input-details{
+    width: 105%;
+  }
+
+  input, textarea{
+    border-radius: 0.4rem;
+    width: 100%;
+  }
+
+  .divAlign {
+    display: block;
+    // padding-bottom: 10rem;
+    margin-bottom: 20rem;
   }
 
 }

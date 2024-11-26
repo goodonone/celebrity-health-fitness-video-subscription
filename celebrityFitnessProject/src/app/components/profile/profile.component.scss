@@ -47,8 +47,27 @@
   min-height: 100vh;
   align-items: center;
   box-sizing: border-box;
+  // opacity: 1;
   // justify-content: center;
-  // max-width: 1400px;
+  // max-width: 1400px; 
+
+  // &[style*="visibility: hidden"] {
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  // }
+
+  &[style*="opacity: 0"] {
+    pointer-events: none;
+    position: absolute;  
+    visibility: hidden;   
+  }
+}
+
+.hidden{
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .nameTier {
@@ -529,34 +548,28 @@ fieldset {
 }
 
 .profilePicture {
-  // position: absolute;
-  // top: 50rem;
-  // left: 0;
-  // width: 100%;
-  // min-width: 300px;
-  // max-width: 400px;
-  // height: 100%;
-  // min-height: 300px;
-  // max-height: 350px;
-  // border-radius: 100rem;
-  // margin-bottom: 1.2rem;
-  // background-color: #c7ff20;
-  // cursor: move;
-
   position: relative;
   width: 100%;
   min-width: 300px;
   max-width: 400px;
   height: auto;
-  min-height: 300px;
-  max-height: 400px;
+  // min-height: 300px;
+  // max-height: 400px;
   aspect-ratio: 1/1;
   background-color: #c7ff20;
   border-radius: 100rem;
-  margin-bottom: 1.2rem;
+  // margin-bottom: 1.2rem;
   // background-size: cover;
   // background-repeat: no-repeat;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  // transition: background-size 0.1s ease-out, background-position 0.1s ease-out;
+
+  // transform: translate3d(0,0,0);
+  // backface-visibility: hidden;
+  // -webkit-backface-visibility: hidden;
+  // background-size: cover !important;
 
   &.tierThreeStyle {
     box-shadow: 0 0 40px #C7FF20;
@@ -578,6 +591,61 @@ fieldset {
     cursor: grabbing;
   }
 
+  &.loaded {
+    opacity: 1;
+    .avatar {
+      display: none;
+    }
+    .loading-indicator {
+      display: none;
+    }
+  }
+
+  // .loading-indicator {
+  //   position: absolute;
+  //   top: 50%;
+  //   left: 50%;
+  //   transform: translate(-50%, -50%);
+  //   z-index: 2;
+  // }
+
+
+  &.loading {
+    opacity: 0.8;
+    // .loading-indicator {
+    //   display: flex;
+    // }
+  }
+  
+  &.dragging {
+    transition: none; // Disable transitions while dragging for responsiveness
+  }
+  
+  &.zooming {
+    transition: background-size 0.2s ease-out;
+  }
+
+   &.is-dragging {
+    transition: none !important; // Disable transitions during drag
+  }
+  
+  // &:not(.is-dragging) {
+  //   transition: transform 0.3s ease-out; // Smooth transitions when not dragging
+  // }
+
+  // &:not(.is-dragging) {
+  //   transition: background-position 0.1s linear,
+  //               background-size 0.1s linear;
+  // }
+
+  &.smooth-transform {
+    will-change: transform, background-position, background-size;
+  }
+
+  &[style*="background-image"] {
+    background-repeat: no-repeat !important;
+    background-color: #c7ff20 !important;
+  }
 }
 
 @keyframes boxShadowExpand {
@@ -676,6 +744,102 @@ fieldset {
 //   cursor: grab;
 // }
 
+// .supportedFileTypes, 
+// .uploadSuccess{
+//   font-family: 'Roboto-mono', monospace !important;
+//   font-size: 0.8rem;
+//   color: rgb(178, 176, 176);
+//   background-color: rgb(35, 35, 35);
+//   padding: 1rem;
+//   border-radius: 0.3rem;
+//   margin-top: 0.8rem;
+//   line-height: 1.1;
+// }
+
+// .uploadInstructionsAndSuccess{
+//   width: 100%;
+//   max-width: 18rem;
+//   height: 100%;
+//   // padding-left: 1rem;
+//   box-sizing: border-box;
+// }
+
+// .supportedFileTypes, 
+// .uploadSuccess {
+//   font-family: 'Roboto-mono', monospace !important;
+//   font-size: 0.8rem;
+//   color: rgb(178, 176, 176);
+//   background-color: rgb(35, 35, 35);
+//   padding: 1rem;
+//   border-radius: 0.3rem;
+//   margin-top: 0.8rem;
+//   line-height: 1.1;
+//   /* Add these properties to handle text wrapping */
+//   width: 100% !important;
+//   box-sizing: border-box;
+//   word-wrap: break-word;
+//   overflow-wrap: break-word;
+// }
+
+// .loading-overlay {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   background: transparent;
+//   z-index: 10;
+//   width: 100%;
+//   height: 100%;
+//   overflow: visible;
+  
+//   p {
+//     color: white;
+//     margin-top: 10px;
+//   }
+// }
+
+.uploadInstructionsAndSuccess {
+  width: 100%;
+  max-width: 17.5rem;
+  height: 100%;
+  // padding-right: 1rem;
+  box-sizing: border-box;
+}
+
+.supportedFileTypes,
+.uploadSuccess {
+  font-family: 'Roboto-mono', monospace !important;
+  font-size: 0.8rem;
+  color: rgb(178, 176, 176);
+  background-color: rgb(35, 35, 35);
+  padding: 1rem;
+  border-radius: 0.3rem;
+  margin-top: 0.8rem;
+  line-height: 1.1;
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box; /* Include padding in width calculation */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal; /* Allow text to wrap */
+}
+
+// .supportedFileTypes {
+//   margin-top: 0.38rem;
+//   margin-bottom: 0.3rem;
+// }
+
+.uploadSuccess{
+  color:#2fc062;
+  text-align: center;
+  // margin-top: 0.9rem;
+}
+
 .zoomButtons{
   display: flex;
   flex-direction: row;
@@ -687,7 +851,7 @@ fieldset {
   // display: flex;
   // flex-direction: column;
   // text-align: center;
-  top: 65%;
+  top: 67%;
   left: 50%;
   transform: translate(-50%, -50%); 
   // text-shadow: 0 0 7px #000000;
@@ -728,11 +892,18 @@ fieldset {
 
 .profilePictureContainerForDragging{
   position: relative;
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+  aspect-ratio: 1;
   // width: 100%;
   // height: 100%;
   // overflow: visible;
-  height: fit-content;
-  width: fit-content;
+  // height: fit-content;
+  // width: fit-content;
+  // margin: auto;
+  margin-bottom: 1rem;
   // cursor: pointer;
 
   &.draggable {
@@ -766,12 +937,12 @@ fieldset {
   padding-bottom: 1rem;
   pointer-events: none;
   // cursor: pointer
-  // transition: opacity 5s ease-in-out;
+  // transition: opacity 1s ease-in-out;
 }
 
 .reset{
   position: absolute;
-  top: 78%;
+  top: 80%;
   left: 50%;
   transform: translate(-50%, -50%); 
   z-index: 5;
@@ -1422,6 +1593,8 @@ fieldset {
 // }
 
 .profilePictureContainerForDragging {
+  aspect-ratio: auto;
+
   .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
     transition: opacity 0.3s ease;
   }
@@ -1550,6 +1723,10 @@ fieldset {
     }
   }
 }
+
+// .uploadButton:hover {
+  
+// }
 
 .uploadingOverlay {
   position: fixed;
@@ -1965,8 +2142,29 @@ h3.profileDetails.plan{
   background-color: rgb(25, 25, 25);
   border-color: rgb(73, 73, 73);
   width: 10rem;
-  /* margin-top: 22rem; */
-  /* margin-left: 1rem; */
+  // transition: all 0.3s ease;
+}
+
+// .deletePicture{
+//   color: red !important;
+// }
+
+/* Normal Change Picture button */
+.btn-editPhotoButton:hover {
+  background-color: white;
+  color: black !important;
+}
+
+/* Delete Picture button default state */
+.btn-editPhotoButton.deletePicture {
+  background-color: rgb(25, 25, 25);
+  color: red !important;
+}
+
+/* Delete Picture button hover - only works when can-hover class is present */
+.btn-editPhotoButton.deletePicture.can-hover:hover {
+  background-color: red;
+  color: black !important;
 }
 
 // .btn-savePhotoButton {
@@ -2260,9 +2458,14 @@ input:disabled:-moz-placeholder {
   cursor: pointer;
   font-weight: 600;
   background-color: rgb(25, 25, 25);
+  color: white !important;
   width: 8.5rem;
   margin-top: 0.5rem;
   // margin-left: 1rem;
+}
+
+.btn-savePhotoButton:hover .savingState mat-spinner {
+  --mdc-circular-progress-active-indicator-color: black !important;
 }
 
 .btn-updatePasswordButton {
@@ -2316,7 +2519,7 @@ input:disabled:-moz-placeholder {
   justify-content: space-between;
   width: 98%;
   left: 50%;
-  top: 47%;
+  top: 50%;
   transform: translate(-50%, -50%);
   z-index: 5;
   padding: 0 8px;
@@ -2530,7 +2733,7 @@ select {
 input.imgUrl {
   box-sizing: border-box;
   padding-left: 0.5rem;
-  width: calc(17rem - 0.5rem); /* Subtract the padding from the original width */
+  width: calc(17rem - 0.5rem); 
 }
 
 input.imgUrl::placeholder {
@@ -2683,6 +2886,7 @@ input#weight,
   height: 100%;
   padding-left: 1rem;
   margin-top: 0.2rem;
+  // box-sizing: border-box;
   // width: fit-content;
 }
 
@@ -2788,39 +2992,38 @@ input[matInput]:focus {
   color: #ffffff !important; /* Change the text color when focused */
 }
 
-  input[type="password"]::placeholder,
-  input[type="text"]::placeholder,
-  input[type="email"]::placeholder,
-  input[type="decimal"]::placeholder {
-    color: var(--placeholder-color, red);
-    transition: color 0.1s ease;
-  }
-  
-  /* input[type="text"]::placeholder {
-    color: var(--placeholder-color, black);
-    transition: color 0.1s ease;
-  } */
-
-  input[type="text"].password-visible {
-    color: inherit;
-  }
-
-  input[type="password"].error-input::placeholder,
-  input[type="text"].error-input::placeholder {
+input[type="password"]::placeholder,
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="decimal"]::placeholder {
   color: var(--placeholder-color, red);
   transition: color 0.1s ease;
 }
 
+/* input[type="text"]::placeholder {
+  color: var(--placeholder-color, black);
+  transition: color 0.1s ease;
+} */
 
-  input:focus.error-input {
-    border-color: red !important;
-    box-shadow: 0 0 0 1px red !important;
-    color: red !important;
-  }
+input[type="text"].password-visible {
+  color: inherit;
+}
 
-  input[matInput]:focus.error-input::placeholder {
-    color: red !important;
-  }
+input[type="password"].error-input::placeholder,
+input[type="text"].error-input::placeholder {
+color: var(--placeholder-color, red);
+transition: color 0.1s ease;
+}
+
+input:focus.error-input {
+  border-color: red !important;
+  box-shadow: 0 0 0 1px red !important;
+  color: red !important;
+}
+
+input[matInput]:focus.error-input::placeholder {
+  color: red !important;
+}
 
 ::ng-deep select[matNativeControl]:focus {
   border-color: #ffffff !important; /* Change the border color when focused */
@@ -2892,14 +3095,14 @@ input[matInput]:focus {
   }
 
   .profilePicture {
-    width: 20vw;
+    width: 100%;
     min-width: 200px;
     max-width: 300px;
     height: auto;
     min-height: 200px;
     max-height: 300px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
 
   .savePictureButtonContainer,
@@ -2993,6 +3196,11 @@ input[matInput]:focus {
     min-width: 14rem;
     margin: auto;
     padding: 0;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    // align-items: stretch;
   }
 
   .eye-icon {
@@ -3015,6 +3223,75 @@ input[matInput]:focus {
     transform: translate(-50%, -50%) scale(0.1);
     width: 120vw;
     height: auto;
+  }
+
+  .imageInputContainer {
+    width: 25vw;
+    max-width:225px;
+    box-sizing: border-box;
+    // margin-bottom: 0.5rem;
+
+    .imgUrl {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .uploadButton {
+      right: 0.4rem;
+    }
+  }
+
+  // .uploadInstructionsAndSuccess{
+  //   width: 100%;
+  //   max-width: 17.5rem;
+  //   height: 100%;
+  //   padding-right: 1rem;
+  //   box-sizing: border-box;
+  // }
+
+  // .supportedFileTypes, 
+  // .uploadSuccess {
+  //   width: 100%;
+  //   max-width: 17rem;
+  //   font-size: 0.8rem;
+  //   background-color: rgb(35, 35, 35);
+  //   padding: 1rem;
+  //   border-radius: 0.3rem;
+  //   margin-top: 0.8rem;
+  //   line-height: 1.1;
+  //   box-sizing: border-box;
+  //   word-wrap: break-word;
+  //   overflow-wrap: break-word;
+  //   white-space: normal;
+  //   overflow: hidden;
+  // }
+
+  // .supportedFileTypes, 
+  // .uploadSuccess {
+  //   /* Maintain the same styling as outside media query */
+  //   width: 100% !important;
+  //   max-width: 18rem;
+  //   font-size: 0.8rem;
+  //   background-color: rgb(35, 35, 35);
+  //   padding: 1rem;
+  //   border-radius: 0.3rem;
+  //   margin-top: 0.8rem;
+  //   line-height: 1.1;
+  //   // box-sizing: border-box;
+  //   word-wrap: break-word;
+  //   // overflow-x: hidden !important;
+  //   // padding:0;
+  // }
+
+  p.supportedFileTypes,
+  p.uploadSuccess {
+    width: 100% !important;
+    max-width: 14rem;
+    word-wrap: wrap-word;
+  }
+
+  .uploadSuccess {
+    color: #2fc062;
   }
 
   input::placeholder {
@@ -3205,6 +3482,7 @@ input[matInput]:focus {
     // margin-left: -0.5rem;
     // gap: 1.5rem;
     gap: clamp(0rem, 2vw, 1rem);
+    margin-left: -0.7rem;
   }
 
   .updatePasswordButtonContainer{
@@ -3239,20 +3517,16 @@ input[matInput]:focus {
   // }
 
   .profilePicture {
-    // width: auto;
-    // min-width: 200px;
-    // height: auto;
-    // aspect-ratio: 1 / 1;
-    // margin-bottom: 1rem;
-    width: 50vw;
+    // width: 50vw;
+    width: 100%;
     min-width: 130px;
     max-width: 230px;
     height: auto;
     min-height: 130px;
     max-height: 280px;
     aspect-ratio: 1 / 1;
-    margin-bottom: 1rem;
-    padding-left: 2rem;
+    // margin-bottom: 1rem;
+    // padding-left: 2rem;
     // flex: 1;
     // margin: auto;
   }
@@ -3438,6 +3712,22 @@ input[matInput]:focus {
     max-width: 800px;
     height: auto;
   }
+
+  // .supportedFileTypes, 
+  // .uploadSuccess {
+  //   /* Adjust for mobile screens */
+  //   width: 100%;
+  //   max-width: 96%;
+  //   margin-left: auto;
+  //   margin-right: auto;
+  //   font-size: 0.75rem; /* Slightly smaller font for mobile */
+  //   padding: 0.8rem;
+  //   white-space: normal;
+  //   overflow-wrap: break-word;
+  //   word-wrap: break-word;
+  //   hyphens: auto;
+  //   overflow-x: hidden;
+  // }
 
   // .currentState {
   //   margin: 0;

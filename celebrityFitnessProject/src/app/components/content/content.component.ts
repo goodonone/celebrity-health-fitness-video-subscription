@@ -20,12 +20,25 @@ export class ContentComponent implements OnInit{
   @ViewChild('cardSecondAndThirdTiers') cardSecondAndThirdTiers!: ElementRef;
   @ViewChild('searchInput') searchInput!: ElementRef;
 
+  @ViewChild('searchInput') 
+  set searchInputSetter(element: ElementRef) {
+    if (element) {
+      this.searchInput = element;
+      element.nativeElement.addEventListener('input', () => {
+        this.resetSearchTimeout();
+      });
+    }
+  }
+
   private scrollSubject = new Subject<void>();
   private bufferZone = 100;
   private scrollSubscription!: Subscription;
   private ticking = false;
   private lastKnownScrollPosition = 0;
-
+  windowWidth: number = window.innerWidth;
+  timerInitialized: boolean = false;
+  private readonly EMPTY_INPUT_TIMEOUT = 10000; // 10 seconds
+  private readonly FILLED_INPUT_TIMEOUT = 15000; // 15 seconds
 
   iaVideos: any[] = [];
   ifbVideos: any[] = [];
@@ -78,7 +91,9 @@ export class ContentComponent implements OnInit{
     debounceTime(50) 
   ).subscribe(() => {
     this.ngZone.run(() => this.checkScrollPosition());
-  }); }
+  });
+  this.windowWidth = window.innerWidth;
+    }
 
   ngOnInit(): void {
     const UserId = this.actRoute.snapshot.paramMap.get("id") ?? "";
@@ -86,6 +101,8 @@ export class ContentComponent implements OnInit{
     this.userId = UserId;
     this.userService.getUser(this.userId).subscribe(user => {
       this.currentUser = user;
+      this.timerInitialized = true;
+      this.startCountDown();
 
     const hasVisited = localStorage.getItem('contentLoaded');
     if (!hasVisited) {
@@ -105,6 +122,7 @@ export class ContentComponent implements OnInit{
       } else {
         this.isLoading = false;
       }
+
 
 
       // if(this.currentUser.tier === "Just Looking"){
@@ -141,23 +159,19 @@ export class ContentComponent implements OnInit{
         this.removeJustLookingStyles();
       }
     });
-    this.startCountDown();
+   
     // this.startCountDownTierThree();
     this.checked = false;
     this.addToNewest();
     this.addToStarterVideos();
     this.addToCategory();
     this.addTolivestreamVideo();
-
     this.initScrollHandler();
 
     // document.body.style.backgroundColor = 'black';
   }
   
   ngAfterViewInit() {
-    
-    
-
     this.checkScrollPosition();
   }
 
@@ -165,12 +179,34 @@ export class ContentComponent implements OnInit{
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
+
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.removeEventListener('input', () => {
+        this.resetSearchTimeout();
+      });
+    }
     // document.body.style.backgroundColor = 'white';
   }
 
+  // @HostListener('window:scroll', ['$event'])
+  // onWindowScroll() {
+  //   this.scrollSubject.next();
+  // }
+
   @HostListener('window:scroll', ['$event'])
-  onWindowScroll() {
-    this.scrollSubject.next();
+  onWindowScroll(): void {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        this.checkScrollPosition();
+        this.ticking = false;
+      });
+      this.ticking = true;
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.windowWidth = window.innerWidth;
   }
 
   private initScrollHandler(): void {
@@ -195,110 +231,113 @@ export class ContentComponent implements OnInit{
   set upgradeTimer(value: boolean) {
     this.upgradeTimerSubject.next(value);
   }
- 
-  // checkScrollPosition() {
-  //   const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-  //   if (!banner) return;
 
-  //   const bannerRect = banner.getBoundingClientRect();
-  //   const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
 
-  //   if (bannerRect.bottom >= cardRect.top) {
-  //     this.upgradeTimer = true;
-  //     // this.updateTimerValue();
-  //   } else {
-  //     this.upgradeTimer = false;
-  //     // this.updateTimerValue();
-  //   }
-  // }
+  // private checkScrollPosition(): void {
+  //   if (this.currentUser.tier === "Just Looking") {
+  //     const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
+  //     const card = this.cardSecondAndThirdTiers.nativeElement;
 
-  // checkScrollPosition() {
-  //   if(this.currentUser.tier === "Just Looking") {
-  //   const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-  //   if (!banner) return;
+  //     if (!banner || !card) return;
 
-  //   const bannerRect = banner.getBoundingClientRect();
-  //   const cardRect = this.cardSecondAndThirdTiers.nativeElement.getBoundingClientRect();
+  //     const bannerRect = banner.getBoundingClientRect();
+  //     const cardRect = card.getBoundingClientRect();
 
-  //   if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
-  //     if (!this.upgradeTimer) {
-  //       this.upgradeTimer = true;
-  //       this.showUpgradeContainer();
+  //     if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
+  //       if (!this.upgradeTimer) {
+  //         this.upgradeTimer = true;
+  //         this.showUpgradeContainer();
+  //       }
+  //     } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
+  //       if (this.upgradeTimer) {
+  //         this.upgradeTimer = false;
+  //         this.hideUpgradeContainer();
+  //       }
   //     }
-  //   } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
-  //     if (this.upgradeTimer) {
-  //       this.upgradeTimer = false;
-  //       this.hideUpgradeContainer();
-  //     }
-  //   }
   //   }
   // }
 
   private checkScrollPosition(): void {
     if (this.currentUser.tier === "Just Looking") {
       const banner = document.querySelector('.bannerFirstAndSecondTiers') as HTMLElement;
-      const card = this.cardSecondAndThirdTiers.nativeElement;
+      const card = this.cardSecondAndThirdTiers?.nativeElement;
+      
       if (!banner || !card) return;
 
       const bannerRect = banner.getBoundingClientRect();
       const cardRect = card.getBoundingClientRect();
+      const scrollThreshold = cardRect.top - this.bufferZone;
 
-      if (bannerRect.bottom >= cardRect.top - this.bufferZone) {
-        if (!this.upgradeTimer) {
-          this.upgradeTimer = true;
-          this.showUpgradeContainer();
-        }
-      } else if (bannerRect.bottom < cardRect.top - this.bufferZone * 2) {
-        if (this.upgradeTimer) {
-          this.upgradeTimer = false;
-          this.hideUpgradeContainer();
-        }
+      // Only update if the state needs to change
+      const shouldHide = bannerRect.bottom >= scrollThreshold;
+      
+      if (shouldHide !== this.upgradeTimer) {
+        this.ngZone.run(() => {
+          this.upgradeTimer = shouldHide;
+          if (shouldHide) {
+            this.showUpgradeContainer();
+          } else {
+            this.hideUpgradeContainer();
+          }
+          this.cdr.detectChanges();
+        });
       }
     }
   }
 
   // showUpgradeContainer() {
   //   this.upgradeContainerVisible = true;
+  //   this.upgradeTimer = true;
+  //   this.cdr.detectChanges();
   //   setTimeout(() => {
   //     const container = document.querySelector('.upgradeContainer') as HTMLElement;
   //     if (container) {
   //       container.style.opacity = '1';
   //     }
-  //   }, 50); // Small delay to ensure the display: block has taken effect
+  //   }, 50);
   // }
 
-  showUpgradeContainer() {
-    this.upgradeContainerVisible = true;
-    this.upgradeTimer = true;
-    this.cdr.detectChanges();
-    setTimeout(() => {
-      const container = document.querySelector('.upgradeContainer') as HTMLElement;
-      if (container) {
-        container.style.opacity = '1';
-      }
-    }, 50);
+  private showUpgradeContainer(): void {
+    if (!this.upgradeContainerVisible) {
+      this.upgradeContainerVisible = true;
+      this.upgradeTimer = true;
+      
+      // Use requestAnimationFrame to ensure DOM has updated
+      requestAnimationFrame(() => {
+        const container = document.querySelector('.upgradeContainer') as HTMLElement;
+        if (container) {
+          container.style.opacity = '1';
+        }
+      });
+    }
   }
 
+  
+
   // hideUpgradeContainer() {
+  //   this.upgradeTimer = false;
+  //   this.cdr.detectChanges();
   //   const container = document.querySelector('.upgradeContainer') as HTMLElement;
   //   if (container) {
   //     container.style.opacity = '0';
   //     setTimeout(() => {
   //       this.upgradeContainerVisible = false;
-  //     }, 300); // This should match the transition duration in CSS
+  //       this.cdr.detectChanges();
+  //     }, 300);
   //   }
   // }
 
-  hideUpgradeContainer() {
-    this.upgradeTimer = false;
-    this.cdr.detectChanges();
-    const container = document.querySelector('.upgradeContainer') as HTMLElement;
-    if (container) {
-      container.style.opacity = '0';
-      setTimeout(() => {
-        this.upgradeContainerVisible = false;
-        this.cdr.detectChanges();
-      }, 300);
+  private hideUpgradeContainer(): void {
+    if (this.upgradeContainerVisible) {
+      const container = document.querySelector('.upgradeContainer') as HTMLElement;
+      if (container) {
+        container.style.opacity = '0';
+        setTimeout(() => {
+          this.upgradeTimer = false;
+          this.upgradeContainerVisible = false;
+          this.cdr.detectChanges();
+        }, 300); // Match transition duration
+      }
     }
   }
 
@@ -455,7 +494,7 @@ export class ContentComponent implements OnInit{
   // }
 
   startCountDown() {
-    const countDownDate = new Date("October 31, 2024 16:45:25").getTime();
+    const countDownDate = new Date("November 31, 2024 16:45:25").getTime();
   
     const updateTimer = () => {
       const now = new Date().getTime();
@@ -467,6 +506,7 @@ export class ContentComponent implements OnInit{
           this.showLiveVideo = true;
         } else {
           this.timerBase += " Join Me Live!";
+          this.showLiveVideo = true;
         }
         this.cdr.detectChanges();
         return;
@@ -482,11 +522,12 @@ export class ContentComponent implements OnInit{
       this.cdr.detectChanges();
     };
   
-    // Initial update
-    updateTimer();
+    // Only start the timer if we have user data
+    if (this.timerInitialized) {
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
   
-    // Update every second
-    setInterval(updateTimer, 1000);
   }
 
 
@@ -558,86 +599,83 @@ export class ContentComponent implements OnInit{
         });
     
       }
-    
-      getVideosFromPlaylist(playlistId: string, maxResults: string, videoArray: any[]): void {
-        videoArray.length = 0;
-    
-        this.youTubeService
-            .getVideosFromPlaylist(playlistId, maxResults)
-            .subscribe(
-                (list: any) => {
-                    for (const element of list.items) {
-                        const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
-                        const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-                        element.sanitizedURL = sanitizedURL;
-                        videoArray.push(element);
-                    }
-                },
-                error => {
-                    console.error('Error: ', error);
-                    if (error.status === 404 || error.status === 402) {
-                        this.router.navigate(['notfound']);
-                    }
-                });
-    }
 
-    getVideosfromChannel(channelId: string, year: string, maxResults: string, videoArray: any[]): void {
-      videoArray.length = 0;
-  
-      this.youTubeService
-          .getVideosFromChannel(channelId, year, maxResults)
-          .subscribe(
-              (list: any) => {
-                  for (const element of list.items) {
-                      const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.id.videoId + '?autohide=1&rel=0';
-                      const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-                      element.sanitizedURL = sanitizedURL;
-                      videoArray.push(element);
-                  }
-              },
-              error => {
-                  console.error('Error: ', error);
-                  if (error.status === 404 || error.status === 402) {
-                      this.router.navigate(['notfound']);
-                  }
-              });
-    }
-    
-      addToStarterVideos() {
-      
-        this.getVideos('Jf5_PJCFs-g', this.starterVideos);
-        this.getVideos('BdhqubW1GJE', this.starterVideos);
-        this.getVideos('zBkujDDdDkY', this.starterVideos);
-        this.getVideos('4NOxBkzneyQ', this.starterVideos);
-        this.getVideos('jIpRlynVMBo', this.starterVideos);
-        this.getVideos('UCkzBmuABQo', this.starterVideos);
-        this.getVideos('snA6ls2kG3U', this.starterVideos);
-        
-    
-      }
+  getVideosFromPlaylist(playlistId: string, maxResults: string, videoArray: any[]): void {
+    videoArray.length = 0;
 
-      addToNewest() {
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel23Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel22Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel21Videos)
-        this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2020', "8", this.channel20Videos)
-      }
+    this.youTubeService
+        .getVideosFromPlaylist(playlistId, maxResults)
+        .subscribe(
+            (list: any) => {
+                for (const element of list.items) {
+                    const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.snippet.resourceId.videoId + '?autohide=1&rel=0';
+                    const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+                    element.sanitizedURL = sanitizedURL;
+                    videoArray.push(element);
+                }
+            },
+            error => {
+                console.error('Error: ', error);
+                if (error.status === 404 || error.status === 402) {
+                    this.router.navigate(['notfound']);
+                }
+            });
+}
 
-    
-      addToCategory() {
-        this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "6" , this.absVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "6" , this.fullBodyVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNan-D0XhNEBRicxI52UsV1D5', "6" , this.upperBodyVideos);
-        this.getVideosFromPlaylist('PL2NpXBzdtNaldC0EzXxxS-WyeadCvx7sg', "6" , this.hiitVideos);
-      }
-    
-      addTolivestreamVideo() {
-        this.getVideos('uBBDMqZKagY', this.livestreamVideos);
-      }
+getVideosfromChannel(channelId: string, year: string, maxResults: string, videoArray: any[]): void {
+  videoArray.length = 0;
 
-      toggleHeading(){
-        this.heading = !this.heading;
-      }
+  this.youTubeService
+      .getVideosFromChannel(channelId, year, maxResults)
+      .subscribe(
+          (list: any) => {
+              for (const element of list.items) {
+                  const videoURL = 'https://www.youtube-nocookie.com/embed/' + element.id.videoId + '?autohide=1&rel=0';
+                  const sanitizedURL: SafeResourceUrl = this._sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+                  element.sanitizedURL = sanitizedURL;
+                  videoArray.push(element);
+              }
+          },
+          error => {
+              console.error('Error: ', error);
+              if (error.status === 404 || error.status === 402) {
+                  this.router.navigate(['notfound']);
+              }
+          });
+}
+
+addToStarterVideos() {
+  this.getVideos('Jf5_PJCFs-g', this.starterVideos);
+  this.getVideos('BdhqubW1GJE', this.starterVideos);
+  this.getVideos('zBkujDDdDkY', this.starterVideos);
+  this.getVideos('4NOxBkzneyQ', this.starterVideos);
+  this.getVideos('jIpRlynVMBo', this.starterVideos);
+  this.getVideos('UCkzBmuABQo', this.starterVideos);
+  this.getVideos('snA6ls2kG3U', this.starterVideos);
+}
+
+addToNewest() {
+  this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2024', "8", this.channel23Videos)
+  this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2023', "8", this.channel22Videos)
+  this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2022', "8", this.channel21Videos)
+  this.getVideosfromChannel('UCXtE168z7GAxYKAIHFOgm8w', '2021', "8", this.channel20Videos)
+}
+
+
+addToCategory() {
+  this.getVideosFromPlaylist('PL2NpXBzdtNalexMUaoH09Yl9Bg5LHqUrs', "6" , this.absVideos);
+  this.getVideosFromPlaylist('PL2NpXBzdtNaknMk_m4_a6Qj7P75ixno1Q', "6" , this.fullBodyVideos);
+  this.getVideosFromPlaylist('PL2NpXBzdtNan-D0XhNEBRicxI52UsV1D5', "6" , this.upperBodyVideos);
+  this.getVideosFromPlaylist('PL2NpXBzdtNaldC0EzXxxS-WyeadCvx7sg', "6" , this.hiitVideos);
+}
+
+addTolivestreamVideo() {
+  this.getVideos('uBBDMqZKagY', this.livestreamVideos);
+}
+
+toggleHeading(){
+  this.heading = !this.heading;
+}
 
       // toggleSearch() {
       //   if (this.viewSearchBar) {
@@ -660,45 +698,209 @@ export class ContentComponent implements OnInit{
       //   }
       // }
 
-      toggleSearch() {
-        this.viewSearchBar = !this.viewSearchBar;
-        if (this.viewSearchBar) {
-          this.resetSearchTimeout();
-          setTimeout(() => {
-            this.searchInput.nativeElement.focus();
-          });
+  toggleSearch() {
+    this.viewSearchBar = !this.viewSearchBar;
+    if (this.viewSearchBar) {
+      this.resetSearchTimeout();
+      setTimeout(() => {
+        this.searchInput.nativeElement.focus();
+      });
+    }
+  }
+
+  // handleSearchIconClick() {
+  //   if (this.viewSearchBar) {
+  //     this.search();
+  //   } else {
+  //     this.toggleSearch();
+  //   }
+  // }
+
+  // handleSearchIconClick() {
+  //   const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+    
+  //   if (this.viewSearchBar && inputElement) {
+  //     // If search bar is visible and has content, perform search
+  //     if (inputElement.value.trim()) {
+  //       this.search();
+  //     } else {
+  //       // If search bar is empty, hide it
+  //       this.hideSearchBar();
+  //     }
+  //   } else {
+  //     // Show search bar
+  //     this.showSearchBar();
+  //   }
+  // }
+
+  handleSearchIconClick() {
+    const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+    const inputValue = inputElement?.value.trim();
+    
+    if (this.viewSearchBar) {
+      // Search bar is visible
+      if (inputValue) {
+        // If there's content, perform search
+        this.search();
+      } else {
+        // If empty, hide the search bar
+        this.hideSearchBar();
+      }
+    } else {
+      // Search bar is not visible, show it
+      this.showSearchBar();
+    }
+  }
+
+  // private showSearchBar() {
+  //   this.viewSearchBar = true;
+  //   this.cdr.detectChanges();
+    
+  //   // Focus the input after it's visible
+  //   setTimeout(() => {
+  //     if (this.searchInput?.nativeElement) {
+  //       this.searchInput.nativeElement.focus();
+  //     }
+  //   });
+
+  //   this.resetSearchTimeout();
+  // }
+
+  private showSearchBar() {
+    this.viewSearchBar = true;
+    const searchIcon = document.querySelector('.searchIcon');
+    searchIcon?.classList.add('expanded');
+    
+    this.cdr.detectChanges();
+    
+    setTimeout(() => {
+      if (this.searchInput?.nativeElement) {
+        this.searchInput.nativeElement.focus();
+      }
+    });
+
+    this.resetSearchTimeout();
+  }
+
+  // private hideSearchBar() {
+  //   const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //   searchIcon?.classList.remove('expanded');
+  //   this.viewSearchBar = false;
+  //   this.cdr.detectChanges();
+    
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  // }
+
+  private hideSearchBar() {
+    const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+    searchIcon?.classList.remove('expanded');
+    this.viewSearchBar = false;
+    
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    // Clear the input value when hiding
+    if (this.searchInput?.nativeElement) {
+      this.searchInput.nativeElement.value = '';
+    }
+    
+    this.isSearchClicked = false;
+    this.cdr.detectChanges();
+  }
+
+
+  // private resetSearchTimeout() {
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  //   this.searchTimeout = setTimeout(() => {
+  //     const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //     searchIcon?.classList.remove('expanded');
+  //     this.viewSearchBar = false;
+  //   }, 10000);
+  // }
+
+  // private resetSearchTimeout() {
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+    
+  //   this.searchTimeout = setTimeout(() => {
+  //     const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //     if (!inputValue) {
+  //       this.hideSearchBar();
+  //     }
+  //   }, 10000);
+  // }
+
+  private resetSearchTimeout() {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    
+    const inputValue = this.searchInput?.nativeElement?.value.trim();
+    const timeoutDuration = inputValue ? this.FILLED_INPUT_TIMEOUT : this.EMPTY_INPUT_TIMEOUT;
+    
+    this.searchTimeout = setTimeout(() => {
+      this.hideSearchBar();
+    }, timeoutDuration);
+  }
+
+  // onSearchBlur() {
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput.nativeElement) {
+  //       this.viewSearchBar = false;
+  //     }
+  //   }, 100);
+  // }
+
+  // onSearchBlur() {
+  //   // Only hide on blur if the input is empty
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput?.nativeElement) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         this.hideSearchBar();
+  //       }
+  //     }
+  //   }, 100);
+  // }
+
+  // onSearchBlur() {
+  //   // Short timeout to allow click events to process first
+  //   setTimeout(() => {
+  //     if (document.activeElement !== this.searchInput?.nativeElement) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         // Only hide if the input is empty and we're not clicking the search icon
+  //         if (!this.isSearchClicked) {
+  //           this.hideSearchBar();
+  //         }
+  //       }
+  //     }
+  //   }, 100);
+  // }
+
+  onSearchBlur() {
+    // Short timeout to allow click events to process first
+    setTimeout(() => {
+      if (document.activeElement !== this.searchInput?.nativeElement) {
+        // Hide if we're not clicking the search icon
+        if (!this.isSearchClicked) {
+          this.hideSearchBar();
         }
       }
+    }, 100);
+  }
 
-      handleSearchIconClick() {
-        if (this.viewSearchBar) {
-          this.search();
-        } else {
-          this.toggleSearch();
-        }
-      }
 
-      private resetSearchTimeout() {
-        if (this.searchTimeout) {
-          clearTimeout(this.searchTimeout);
-        }
-        this.searchTimeout = setTimeout(() => {
-          this.viewSearchBar = false;
-        }, 10000);
-      }
 
-      onSearchBlur() {
-        setTimeout(() => {
-          if (document.activeElement !== this.searchInput.nativeElement) {
-            this.viewSearchBar = false;
-          }
-        }, 100);
-      }
-
-      goBack() {
-        this.foundVideos = false;
-      }    
-
+  goBack() {
+    this.foundVideos = false;
+  }    
     
       // Search Function(INCOMPLETE)
       // search(searchString: string) {
@@ -791,61 +993,279 @@ export class ContentComponent implements OnInit{
       //   this.resetSearchTimeout();
       // }
 
-      search() {
-        if (this.searchString.trim() === '') {
-          this.toggleSearch();
-          return;
-        }
+      // search() {
+      //   if (this.searchString.trim() === '') {
+      //     this.toggleSearch();
+      //     return;
+      //   }
       
-        this.foundVideos = true;
-        this.isSearching = true;
-        this.searchResults = [];
+      //   this.foundVideos = true;
+      //   this.isSearching = true;
+      //   this.searchResults = [];
     
-        this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
-          (results: any) => {
-            this.searchResults = results.items.map((item: any) => {
-              const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
-              item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
-              return item;
-            });
-            this.isSearching = false;
-          },
-          error => {
-            console.error('Error searching videos:', error);
-            this.searchResults = [];
-            this.isSearching = false;
-          }
-        );
-        this.resetSearchTimeout();
-      }
+      //   this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
+      //     (results: any) => {
+      //       this.searchResults = results.items.map((item: any) => {
+      //         const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
+      //         item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+      //         return item;
+      //       });
+      //       this.isSearching = false;
+      //       // const searchIcon = document.querySelector('.searchIcon');
+      //       // searchIcon?.classList.remove('expanded');
+      //     },
+      //     error => {
+      //       console.error('Error searching videos:', error);
+      //       this.searchResults = [];
+      //       this.isSearching = false;
+      //     }
+      //   );
+      //   this.resetSearchTimeout();
+      // }
 
-      onMouseDown(button: string) {
-        if (button === 'search') {
-          this.isSearchClicked = true;
-          const searchIcon = document.querySelector('.searchIcon');
-          searchIcon?.classList.add('clicked');
-        }
-      }
+  // search() {
+  //   if (this.searchString.trim() === '') {
+  //     // If the search string is empty, hide the search input
+  //     const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //     searchIcon?.classList.remove('expanded');
+  //     this.viewSearchBar = false;
+  //     if (this.searchTimeout) {
+  //       clearTimeout(this.searchTimeout);
+  //     }
+  //     return;
+  //   }
+  
+  //   this.foundVideos = true;
+  //   this.isSearching = true;
+  //   this.searchResults = [];
+  
+  //   this.youTubeService.searchVideosInChannel(this.searchString).subscribe(
+  //     (results: any) => {
+  //       this.searchResults = results.items.map((item: any) => {
+  //         const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
+  //         item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+  //         return item;
+  //       });
+  //       this.isSearching = false;
+  //     },
+  //     error => {
+  //       console.error('Error searching videos:', error);
+  //       this.searchResults = [];
+  //       this.isSearching = false;
+  //     }
+  //   );
+  
+  //   // After initiating the search, hide the search input immediately
+  //   const searchIcon = document.querySelector('.searchIcon') as HTMLElement;
+  //   searchIcon?.classList.remove('expanded');
+  //   this.viewSearchBar = false;
+  
+  //   // Clear any existing timeouts
+  //   if (this.searchTimeout) {
+  //     clearTimeout(this.searchTimeout);
+  //   }
+  
+  //   // Optionally, clear the input value
+  //   this.searchString = '';
+  // }
+
+  search() {
+    const searchString = this.searchInput?.nativeElement?.value.trim();
     
-      onMouseUp(button: string) {
-        if (button === 'search') {
-        this.resetButtonState(button);
-        }
+    if (!searchString) {
+      this.hideSearchBar();
+      return;
+    }
+  
+    this.foundVideos = true;
+    this.isSearching = true;
+    this.searchResults = [];
+  
+    this.youTubeService.searchVideosInChannel(searchString).subscribe(
+      (results: any) => {
+        this.searchResults = results.items.map((item: any) => {
+          const videoURL = 'https://www.youtube-nocookie.com/embed/' + item.id.videoId + '?autohide=1&rel=0';
+          item.sanitizedURL = this.sanitizer.bypassSecurityTrustResourceUrl(videoURL);
+          return item;
+        });
+        this.isSearching = false;
+        this.hideSearchBar();
+      },
+      error => {
+        console.error('Error searching videos:', error);
+        this.searchResults = [];
+        this.isSearching = false;
+        this.hideSearchBar();
       }
-    
-      onMouseLeave(button: string) {
-        if (button === 'search') {
-        this.resetButtonState(button);
-        }
+    );
+  }
+
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //     this.viewSearchBar = true; // Make sure the search bar is visible
+  //     this.resetSearchTimeout(); // Start the 10-second timeout
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     const inputElement = document.querySelector('.formSearch') as HTMLInputElement;
+  //     const inputIsEmpty = inputElement?.value.trim() === '';
+  
+  //     if (searchIcon?.classList.contains('expanded')) {
+  //       // The search bar is already visible
+  //       if (inputIsEmpty) {
+  //         // Input is empty, hide the input immediately
+  //         searchIcon.classList.remove('expanded');
+  //         this.viewSearchBar = false;
+  //         if (this.searchTimeout) {
+  //           clearTimeout(this.searchTimeout);
+  //         }
+  //       } else {
+  //         // Input is not empty, proceed with your desired action (e.g., perform a search)
+  //       }
+  //     } else {
+  //       // The search bar is not visible, show it
+  //       searchIcon?.classList.add('clicked');
+  //       searchIcon?.classList.add('expanded');
+  //       this.viewSearchBar = true; // Ensure the search bar is visible
+  //       this.resetSearchTimeout(); // Start the 10-second timeout
+  //     }
+  //   }
+  // }  
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     const inputElement = document.querySelector('.formSearch') as HTMLInputElement;
+  //     const inputIsEmpty = inputElement?.value.trim() === '';
+  
+  //     if (searchIcon?.classList.contains('expanded') && window.innerWidth <= 729) {
+  //       // The search bar is already visible
+  //       if (inputIsEmpty) {
+  //         // Input is empty, hide the input immediately
+  //         searchIcon.classList.remove('expanded');
+  //         this.viewSearchBar = false;
+  //         if (this.searchTimeout) {
+  //           clearTimeout(this.searchTimeout);
+  //         }
+  //       } else {
+  //         // Input is not empty, perform the search and hide the input
+  //         this.search();
+  //       }
+  //     } else {
+  //       // The search bar is not visible, show it
+  //       searchIcon?.classList.add('clicked');
+  //       searchIcon?.classList.add('expanded');
+  //       this.viewSearchBar = true; // Ensure the search bar is visible
+  //       this.resetSearchTimeout(); // Start the 10-second timeout
+  //     }
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+      
+  //     if (searchIcon?.classList.contains('expanded')) {
+  //       const inputValue = this.searchInput?.nativeElement?.value.trim();
+  //       if (!inputValue) {
+  //         this.hideSearchBar();
+  //         return;
+  //       }
+  //     }
+      
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //   }
+  // }
+
+  // onMouseDown(button: string) {
+  //   if (button === 'search') {
+  //     this.isSearchClicked = true;
+  //     const searchIcon = document.querySelector('.searchIcon');
+  //     const inputElement = this.searchInput?.nativeElement as HTMLInputElement;
+  //     const inputIsEmpty = !inputElement?.value.trim();
+      
+  //     if (searchIcon?.classList.contains('expanded')) {
+  //       if (inputIsEmpty) {
+  //         // If input is empty and expanded, hide it
+  //         this.hideSearchBar();
+  //         return;
+  //       }
+  //     }
+      
+  //     searchIcon?.classList.add('clicked');
+  //     searchIcon?.classList.add('expanded');
+  //   }
+  // }
+
+  onMouseDown(button: string) {
+    if (button === 'search') {
+      const searchIcon = document.querySelector('.searchIcon');
+      searchIcon?.classList.add('clicked');
+      
+      // Only add expanded class if we're showing the search bar
+      if (!this.viewSearchBar) {
+        searchIcon?.classList.add('expanded');
       }
-    
-      resetButtonState(button: string) {
-        if (button === 'search') {
-          this.isSearchClicked = false;
-          const searchIcon = document.querySelector('.searchIcon');
-          searchIcon?.classList.remove('clicked');
-        }
-      }
+      
+      this.isSearchClicked = true;
+    }
+  }
+
+  onMouseUp(button: string) {
+    if (button === 'search') {
+    this.resetButtonState(button);
+    }
+  }
+
+  // onSearchIconClick() {
+  //   this.isSearchClicked = true;
+  //   const searchIcon = document.querySelector('.searchIcon');
+  //   searchIcon?.classList.add('clicked');
+  //   searchIcon?.classList.add('expanded');
+  //   this.viewSearchBar = true; // Ensure the search bar is visible
+  //   this.resetSearchTimeout(); // Start the timeout
+  //   // if(this.isSearchClicked){
+  //   //   searchIcon?.classList.remove('expanded');
+  //   // }
+  // }
+
+  onMouseLeave(button: string) {
+    if (button === 'search') {
+    this.resetButtonState(button);
+    }
+  }
+
+  resetButtonState(button: string) {
+    if (button === 'search') {
+      this.isSearchClicked = false;
+      const searchIcon = document.querySelector('.searchIcon');
+      searchIcon?.classList.remove('clicked');
+      // searchIcon?.classList.remove('expanded');
+    }
+  }
+
+ 
 
 }
 

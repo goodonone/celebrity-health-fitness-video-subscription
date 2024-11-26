@@ -1,34 +1,115 @@
 <div class="background"></div>
 
+<div class="boundingBox">
 <div class="cardOne">
   <div class="heading contactUs">
-    <h1 class="contactUs">Contact Us</h1>
+    <h1 class="contactUs" [ngClass]="{'wide': true}">Contact Us</h1>
+    <h1 class="contactUs" [ngClass]="{'narrow': true}">Contact</h1>
   </div>
+
   <mat-card class="contactForm">
     <mat-card-content>
       <div class="formToggleOff" *ngIf="!submitted">
-        <h3 class="greeting">Hi! How can we help you?</h3>
+        <h3 class="greeting">Hi! How can we help?</h3>
         <div class="formDiv">
-          <form (ngSubmit)="contactUs()" #loginForm="ngForm" id="contactForm">
-            <!-- name input -->
+          <form [formGroup]="contactForm" (ngSubmit)="contactUs()" id="contactForm">
+            <!-- name input
             <div class="input-details">
+              <span [ngStyle]="getLabelStyle('name')">
               <label for="name">Name</label>
+              <label for="error"
+                      id="error"
+                      *ngIf="shouldShowError('name')"
+                      class="error-alert">{{getErrorMessage('name')}}</label>
+                </span>
             </div>
+
             <input type="text" matInput name="name" id="name" placeholder="Enter your name" [(ngModel)]="name" required>
-            <!-- email input -->
+
+            email input
             <div class="input-details">
+              <span [ngStyle]="getLabelStyle('email')">
               <label for="email">Email</label>
+              <label for="error"
+                      id="error"
+                      *ngIf="shouldShowError('email')"
+                      class="error-alert">{{getErrorMessage('email')}}</label>
+              </span>
             </div>
             <input type="text" matInput name="email" type="email" id="email" placeholder="Enter your email"
               [(ngModel)]="email" required>
-            <!-- message input -->
+
+            message input
             <div class="input-details">
+              <span [ngStyle]="getLabelStyle('text')">
               <label for="email">Message</label>
+              <label for="error"
+                      id="error"
+                      *ngIf="shouldShowError('text')"
+                      class="error-alert">{{getErrorMessage('text')}}</label>
+              </span>
             </div>
             <textarea type="text" mat-input name="message" id="message" placeholder="Enter your message"
-              [(ngModel)]="message" required></textarea>
-            <button class="btn btn-submit" mat-button [disabled]="loginForm.form.invalid"
-              (click)="contactUs()">Send</button>
+              [(ngModel)]="message" required></textarea> -->
+
+                <!-- name input -->
+                <div class="input-details">
+                  <span class="spanCategory" [ngStyle]="getLabelStyle('name')">
+                    <label for="name">Name</label>
+                    <label for="error"
+                           id="error"
+                           *ngIf="shouldShowError('name')"
+                           class="error-alert">{{getErrorMessage('name')}}</label>
+                  </span>
+                </div>
+                <input type="text" 
+                       matInput 
+                       id="name" 
+                       placeholder="Enter your name"
+                       formControlName="name"
+                       [ngStyle]="getInputStyle('name')"
+                       [ngClass]="{'error-input': shouldShowError('name')}">
+  
+                <!-- email input -->
+                <div class="input-details">
+                  <span class="spanCategory" [ngStyle]="getLabelStyle('email')">
+                    <label for="email">Email</label>
+                    <label for="error"
+                           id="error"
+                           *ngIf="shouldShowError('email')"
+                           class="error-alert">{{getErrorMessage('email')}}</label>
+                  </span>
+                </div>
+                <input type="email" 
+                       matInput 
+                       id="email" 
+                       placeholder="Enter your email"
+                       formControlName="email"
+                       [ngStyle]="getInputStyle('email')"
+                       [ngClass]="{'error-input': shouldShowError('email')}">
+  
+                <!-- message input -->
+                <div class="input-details">
+                  <span class="spanCategory" [ngStyle]="getLabelStyle('message')">
+                    <label for="message">Message</label>
+                    <label for="error"
+                           id="error"
+                           *ngIf="shouldShowError('message')"
+                           class="error-alert">{{getErrorMessage('message')}}</label>
+                  </span>
+                </div>
+                <textarea matInput 
+                          type="text"
+                          id="message" 
+                          placeholder="Enter your message"
+                          formControlName="message"
+                          [ngStyle]="getInputStyle('message')"
+                          [ngClass]="{'error-input': shouldShowError('messsage')}"></textarea>
+
+                <button class="btn btn-submit" 
+                          mat-button 
+                          [disabled]="contactForm.invalid"
+                          type="submit">Send</button>
           </form>
         </div>
       </div>
@@ -38,7 +119,7 @@
           <div class="thankYouMessage">
             <h1 class="sentMessage">Your message has been sent!</h1>
             <h3 class="thankYouMesage">Thank you for your interest. <br>
-              We will do our best to respond to you within 24 business hours. </h3>
+              We will do our best to get back to you within 2 business days. </h3>
           </div>
         </div>
       </div>
@@ -62,13 +143,13 @@
       </mat-card>
       <div class="socialMedia">
         <h2 class="socialBusinessHeadingOne">Business hours</h2>
-        <p> Monday: 8-5pm</p>
-        <p> Tuesday: 8-5pm</p>
-        <p> Wednesday: 8-5pm</p>
-        <p> Thursday: 8-5pm</p>
-        <p> Friday: 8-5pm</p>
-        <p> Saturday: 8-5pm</p>
-        <p> Sunday: Closed</p>
+        <p class="businessHours"> Monday: 8-5pm</p>
+        <p class="businessHours"> Tuesday: 8-5pm</p>
+        <p class="businessHours"> Wednesday: 8-5pm</p>
+        <p class="businessHours"> Thursday: 8-5pm</p>
+        <p class="businessHours"> Friday: 8-5pm</p>
+        <p class="businessHours"> Saturday: 8-5pm</p>
+        <p class="businessHours"> Sunday: Closed</p>
         <h2 class="socialBusinessHeadingTwo">Follow us on social media for updates!</h2>
         <div class="logoFlex">
 
@@ -86,6 +167,7 @@
       </div>
     </div>
   </mat-card>
+</div>
 
 
   

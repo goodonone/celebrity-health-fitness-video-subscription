@@ -1,14 +1,3 @@
-/* .pageContainer {
-  background-color: #ffffff;
-  width: 100vw;
-  /* height: 100vh; */
-  /* max-width: 100%; */
-  /* margin-top: -10rem; */
-  /* overflow-x: hidden; */
-  /* height: fit-content; */
-  /* position: relative; */
-/* } */
-
 .pageContainer {
   background-color: rgb(255, 255, 255);
   width: 100%;
@@ -16,13 +5,30 @@
   min-height: 100vh;
   overflow-y: auto;
   max-width: 3000px;
-  /* max-width: 100%; */
   margin-top: 0rem;
   margin-left: auto;
   margin-right: auto;
   overflow-x: hidden;
-  height: fit-content;
+  // height: fit-content;
   position: relative;
+  margin-bottom: 3rem;
+  // background-color: royalblue;
+}
+
+.boundingBox {
+  width: 100%;
+  height: 100%;
+  // min-height: 100vh;
+  max-width: 2000px;
+  display:flex;
+  flex-direction: column;
+  // justify-content: center;
+  // background-color: white;
+  // position: absolute;
+  // left: 50%;
+  // // top: 50%;
+  // transform: translateX(-50%);
+  margin: auto;
 }
 
 .pageName {
@@ -32,6 +38,37 @@
   /* font-size: 8vw; */
   font-size: 9rem;
   padding-left: 5rem;
+  padding-top: 9.6rem;
+  // z-index: 2;
+}
+
+.pageContent {
+  // padding-top: 9.5rem;
+  // max-width: 3000px;
+
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // align-items: center;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  // padding-top: 5rem;
+  // padding-top: 100px;
+  // padding-left: 3rem;
+  width: 86.5%;
+  height: fit-content;
+  // min-height: 100vh;
+  max-width: 1500px;
+  background-color: rgb(240, 239, 239);
+  // padding: 1rem;
+  // padding-left: 0;
+  border-radius: 1.3rem;
+  // margin: auto;
+  // margin-top: auto;
+  margin-top: 4rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* h1 {
@@ -43,40 +80,83 @@
 } */
 
 .hughJackedManContainer {
-  padding-left: 10rem;
+  // padding-left: 8rem;
+  // padding-top: 5rem;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: center;
+  // align-items: center;
+  width: 100%;
+  // padding-left: 5rem;
+  // padding-right: 5rem;
+  // padding-top: 5rem;
 }
 
 .hughJackedManPhoto {
-  height: 40rem;
-  width: 30rem;
-  background-image: (url('/assets/Images/HughJackmanBeachBod.jpg'));
+  // max-height: 45rem;
+  width: 100%;
+  // max-width: 30rem;
+  height: 37rem;
+  // aspect-ratio: 9/16;
+  // aspect-ratio: 1/2;
+  // max-width: 30rem;
+  // background-image: (url('/assets/Images/HughJackmanBeachBod.jpg'));
+  background-image: url('/assets/Images/hugh-jackedman.jpg');
+
   background-size: cover;
   border-radius: 1rem;
   background-position: center;
   float: left;
-  margin: auto 5rem 1.5rem auto;
+  // padding: 10rem 3rem 3rem auto;
+  // margin: auto 5rem 1.5rem auto;
+  // overflow: hidden;
+  width: 50%;
+  // max-width: 600px;
+  margin: auto;
+  margin-right: 1rem;
+  margin-bottom: 0.4rem;
+  // margin-left: 30rem;
 }
 
-.pageContent {
-  padding-top: 10rem;
-  max-width: 3000px;
+img {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .description {
   margin: auto;
-  width: 100%;
+  // width: 40%;
+  // max-width: 600px;
+  box-sizing: border-box;
+  // padding-right: 3rem;
+  // padding-left: 2rem;
+  // background-color: black;
+  // padding: 1rem;
+  // border-radius: 1rem;
+  // text-align: left;
 }
 
 .customText {
-  font-size: 1.4rem;
-  line-height: 1.8rem;
+  font-size: 1.1rem;
+  line-height: 1.1rem;
   font-weight: 500;
-  padding-right: 12rem;
+  // padding-right: 12rem;
+  // padding-top: 1rem;
+  // color: white;
 }
 
-.ourTeamHeaderContainer {
+.wide{
   display: flex;
 }
+
+.narrow{
+  display: none;
+}
+
+// .ourTeamHeaderContainer {
+//   display: flex;
+// }
 
 // h1.ourTeamHeader {
 //   text-align: center;
@@ -134,62 +214,115 @@
 //   font-weight: 500;
 // }
 
-@media screen and (min-width: 967px) and (max-width: 1497px) {
+// @media screen and (min-width: 967px) and (max-width: 1497px) {
     
-  .ourTeam {
-    margin-top: 4rem;
-  }
+//   .ourTeam {
+//     margin-top: 4rem;
+//   }
 
-  section.picture-bubbles{
-    padding-top: 0;
-  }
+//   section.picture-bubbles{
+//     padding-top: 0;
+//   }
 
-  .flexContainer{
-    width: 80%;
+//   .flexContainer{
+//     width: 80%;
+//   }
+
+// }
+
+@media screen and (min-width: 672px) and (max-width: 945px) {
+
+  .pageName {
+    font-size: clamp(6rem, 15vw, 10rem);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    // text-align: left;
+    padding-top: 8.5rem;
+    // padding-left: 1.5rem;
+    margin-bottom: 0;
+    // letter-spacing: -2px
   }
 
 }
 
-@media screen and (min-width: 300px) and (max-width: 966px) {
 
-  h1.heading{
-    font-size: 5rem;
-    text-align: center;
-    padding-left:0;
-    padding-top: 13rem;
-    padding-bottom: 0;
-    margin-bottom: 0;
+@media screen and (min-width: 300px) and (max-width: 671px) {
+
+  .wide{
+    display: none;
   }
 
-  .hughJackedManContainer {
+  .narrow{
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    padding: 0;
   }
+
+  // h1.heading{
+  //   font-size: 5rem;
+  //   text-align: center;
+  //   padding-left:0;
+  //   padding-top: 13rem;
+  //   padding-bottom: 0;
+  //   margin-bottom: 0;
+  // }
+
+  .pageName {
+    font-size: clamp(6rem, 15vw, 10rem);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0;
+    // text-align: left;
+    padding-top: 8.5rem;
+    // padding-left: 1.5rem;
+    margin-bottom: 0;
+    // letter-spacing: -2px
+  }
+
+  .pageContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 85%
+  }
+
+  // .hughJackedManContainer {
+  //   display: flex;
+  //   justify-content: center;
+  //   flex-wrap: wrap;
+  //   padding: 0;
+  // }
 
   .hughJackedManPhoto {
-    height: 10%vw;
-    width: 20%vw;
+    // height: auto;
+    // width: 80%;
+    // margin: auto;
+    // margin-top: 0;
+    // padding-top: 0;
+    // margin-left: 1rem;
+    // margin-right: 1rem;
+    width: 100%;
+    height:30rem;
+    // max-width: auto;
     margin: auto;
-    margin-top: 0;
-    padding-top: 0;
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin-bottom: 1rem;
+    background-position: inherit center;
+    // background-position: center bottom;
+    // height: auto;
   }
 
-  .description {
-    margin: auto;
-    width: 90vw
-  }
+  // .description {
+  //   margin: auto;
+  //   width: 90vw
+  // }
 
-  p.customText {
-    font-size: 1.3rem;
-    line-height: 1.8rem;
-    font-weight: 500;
-    margin-top: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
+  // p.customText {
+  //   font-size: 1.3rem;
+  //   line-height: 1.8rem;
+  //   font-weight: 500;
+  //   margin-top: 2rem;
+  //   padding-left: 1rem;
+  //   padding-right: 1rem;
+  // }
 
 }

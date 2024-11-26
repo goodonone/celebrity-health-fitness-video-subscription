@@ -9,8 +9,7 @@
         </div>
     </ng-container>
     
-
-    <div class="flexContainer" *ngIf="loadingComplete">
+    <div class="flexContainer" [style.opacity]="loadingComplete ? '1' : '0'" [@fadeInOut]="loadingComplete">
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> You're {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
@@ -44,11 +43,9 @@
                 <!-- [ngClass]="{'firstTimeAnimation': currentUser.tier === 'All In' && 'firstTimeAnimation'} -->
                 <!-- 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' -->
                 <div class="flexAllProfileData">
-                    <!-- <div class="flexPictureAndButtons"> -->
-                    <div class="profilePictureAndButtonsContainer">
+                    <!-- <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
-                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
-                                <!-- <p style="color: red; font-weight: bold">Position: {{ position.x }}, {{ position.y }}</p> -->
+                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}">
                                 <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
                                 <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
                                     <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
@@ -72,7 +69,7 @@
                                 'disabled': isInDefaultPosition()}"
                                 (click)="resetImagePositionAndZoom()">RESET</p>
                                 <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
-                                <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
+                                <div class="profile-image-navigation" *ngIf="shouldShowNavigation()">
                                     <fa-icon [icon]="['fas', 'chevron-left']" 
                                              class="chevronLeft" 
                                              (click)="previousImage()"
@@ -95,6 +92,83 @@
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="imageStyles" 
                                     [ngClass]="{'default-position': !isDragged, 
+                                    'loaded': imageLoadedSuccessfully,
+                                    'loading': !imageLoadedSuccessfully,
+                                    'firstTimeAnimation': firstTimeAnimation && tierThree, 
+                                    'tierThreeStyle': tierThree, 
+                                    'draggable': canDrag()}" 
+                                    (mousedown)="startDrag($event)"
+                                    (touchstart)="startDrag($event)" 
+                                    #profileImg>
+
+                                Show loading indicator -->
+                                <!-- <div class="loading-indicator" *ngIf="!imageLoadedSuccessfully && !imageNotFound">
+                                    <mat-spinner diameter="40"></mat-spinner>
+                                </div>    
+
+                                <p class="imageNotFound" *ngIf="imageNotFound && !shouldShowAvatar()">Image Not Found. <br> Please Contact Support!</p>
+
+                                
+                                <img class="avatar" 
+                                src="assets/Images/avatar.png" 
+                                *ngIf="shouldShowAvatar()"
+                                (error)="handleAvatarError($event)"
+                                alt="Profile Avatar">
+                                </mat-card>
+                            </div> --> 
+                    <div class="profilePictureAndButtonsContainer">
+                        <div class="profilePictureAndButtons">
+                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
+                                <!-- <p style="color: red; font-weight: bold">Position: {{ position.x }}, {{ position.y }}</p> -->
+                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
+                                <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
+                                    <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
+                                    (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
+                                    (pointerdown)="onMouseDown('minus')" 
+                                    (pointerup)="onMouseUp('minus')" 
+                                    (pointerleave)="onMouseLeave('minus')"
+                                    (click)="zoomOut()"></fa-icon>
+                                    <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
+                                    (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
+                                    (pointerdown)="onMouseDown('plus')" 
+                                    (pointerup)="onMouseUp('plus')" 
+                                    (pointerleave)="onMouseLeave('plus')"
+                                    (click)="zoomIn()"></fa-icon>
+                                </div>
+                                <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (pointerdown)="onMouseDown('reset')" 
+                                (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
+                                (pointerup)="onMouseUp('reset')" 
+                                (pointerleave)="onMouseLeave('reset')"
+                                [ngClass]="{'clicked': isResetClicked, 
+                                'disabled': isInDefaultPosition()}"
+                                (click)="resetImagePositionAndZoom()">RESET</p>
+                                <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
+                                <!-- <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation "> -->
+                                <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
+                                    <fa-icon [icon]="['fas', 'chevron-left']" 
+                                                class="chevronLeft" 
+                                                (click)="previousImage()"
+                                                (pointerdown)="onMouseDown('left')"
+                                                (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
+                                                (pointerup)="onMouseUp('left')" 
+                                                (pointerleave)="onMouseLeave('left')"
+                                                [ngClass]="{'clicked': leftClicked}">
+                                    </fa-icon>                                   
+                                    <fa-icon [icon]="['fas', 'chevron-right']" 
+                                                class="chevronRight"
+                                                (click)="nextImage()"
+                                                (pointerdown)="onMouseDown('right')"
+                                                (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
+                                                (pointerup)="onMouseUp('right')" 
+                                                (pointerleave)="onMouseLeave('right')"
+                                                [ngClass]="{'clicked': rightClicked}">
+                                    </fa-icon>
+                                </div>
+                                <mat-card class="profilePicture" id="profilePicture" 
+                                    [ngStyle]="imageStyles" 
+                                    [ngClass]="{'default-position': !isDragged, 
+                                    'loaded': imageLoadedSuccessfully,
+                                    'loading': !imageLoadedSuccessfully,
                                     'firstTimeAnimation': firstTimeAnimation && tierThree, 
                                     'tierThreeStyle': tierThree, 
                                     'draggable': canDrag()}" 
@@ -108,7 +182,7 @@
                             <div class="editProfileButtonsContainerIncludingPicture">
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()">Delete Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()" [class.can-hover]="canHoverDelete" (pointerenter)="handleMouseEnter()">Delete Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -353,6 +427,71 @@
                     </div>
                 </form>
                 </ng-container> -->
+                <!-- <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
+                    <div class="profilePictureFormContainer">
+                    <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
+                      <div class="profilePictureLinkContainer">
+                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture
+                            <label for="error" 
+                                            id="error" 
+                                            *ngIf="shouldShowError('imgUrl')" 
+                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
+                        </span></h3>
+
+                        <div class="imageInputContainer">
+                            <input matInput 
+                                class="imgUrl" 
+                                placeholder="Paste Link/File Upload"
+                                type="text" 
+                                [ngStyle]="getInputStyle('imgUrl')"
+                                [ngClass]="{'error-input': shouldShowError('imgUrl')}"
+                                formControlName="imgUrl" 
+                                (input)="onImageUrlInput($event)"
+                                pattern="https?://.+">
+
+                            Hidden File Input -->
+                            <!-- <input
+                                #fileInput
+                                type="file"
+                                accept="image/*"
+                                (change)="onFileSelected($event)"
+                                style="display: none"> -->
+                                
+                            
+                            <!-- Upload Button -->
+                            <!-- <button mat-button 
+                                class="uploadButton"
+                                (click)="fileInput.click()"
+                                [disabled]="isUploading"
+                                type="button">
+                            <span *ngIf="!isUploading">Upload</span>
+                            <div *ngIf="isUploading" class="uploadingState">
+                            <mat-spinner diameter="20" style="--mdc-circular-progress-active-indicator-color: black"></mat-spinner>
+                            <span>{{uploadProgress | number:'1.0-0'}}%</span>
+                            </div>
+                            </button> -->
+
+<!--                             
+                        </div>
+
+                      </div>
+                      <div class="savePictureButtonContainer">
+                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
+                            <ng-container *ngIf="!isSavingPicture">Save</ng-container>
+                                <div *ngIf="isSavingPicture" class="savingState">
+                                <mat-spinner diameter="16" 
+                                            style="--mdc-circular-progress-active-indicator-color: white">
+                                </mat-spinner>
+                                </div>
+                        </button>
+                        </div>
+                    </form>
+                    <p class="supportedFileTypes">Supported file formats include .jpg, .jpeg, .png, .gif & .webp & 5MB max size. </p>
+                    <p class="uploadSuccess" *ngIf="shouldShowUploadSuccess()">Image Uploaded! <strong>Save</strong> to store or <strong>Cancel</strong> to discard.</p>
+                </div> 
+                </ng-container>  -->
+
                 <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
                     <div class="profilePictureFormContainer">
                     <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
@@ -396,21 +535,27 @@
                             <span>{{uploadProgress | number:'1.0-0'}}%</span>
                             </div>
                             </button>
+
+                           
                         </div>
 
                       </div>
                       <div class="savePictureButtonContainer">
-                        <button mat-button style="color:white" class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
+                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
                             <ng-container *ngIf="!isSavingPicture">Save</ng-container>
                                 <div *ngIf="isSavingPicture" class="savingState">
                                 <mat-spinner diameter="16" 
                                             style="--mdc-circular-progress-active-indicator-color: white">
                                 </mat-spinner>
                                 </div>
-                        </button>
+                            </button>
                       </div>
                     </form>
+                    <div class="uploadInstructionsAndSuccess">
+                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max.</p>
+                        <p class="uploadSuccess" *ngIf="showUploadSuccess">Uploaded! <strong>Save</strong> to keep,<br><strong>Cancel</strong> or <strong><></strong> to discard.</p>
+                    </div>
                 </div> 
                 </ng-container>
 

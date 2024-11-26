@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 
-import { BehaviorSubject, catchError, firstValueFrom, from, lastValueFrom, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, firstValueFrom, from, lastValueFrom, map, Observable, of, switchMap, take, tap, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { AuthService } from './auth.service';
 import { AuthStateService } from './authstate.service';
@@ -11,6 +11,8 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/
 import { signInWithCustomToken } from 'firebase/auth';
 import { auth } from '../firebase.config';
 import { ImageUrlManagerService } from './imageurlmanager.service';
+import { StorageService } from './storage.service';
+import { SharedStateService } from './sharedstate.service';
 
 
 @Injectable({
@@ -28,8 +30,13 @@ export class UserService {
   private isGoogleAuthEnabledSubject = new BehaviorSubject<boolean>(false);
   isGoogleAuthEnabled$ = this.isGoogleAuthEnabledSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthService, private authStateService: AuthStateService, private injector: Injector,
-    private imageUrlManager: ImageUrlManagerService
+  constructor(private http: HttpClient, 
+    private authService: AuthService, 
+    private authStateService: AuthStateService, 
+    private injector: Injector,
+    private imageUrlManager: ImageUrlManagerService,
+    private storageService: StorageService,
+    private sharedState: SharedStateService
   ) {
     // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
     //   this.isLoggedInSubject.next(isAuthenticated);
@@ -284,11 +291,26 @@ logoutUser() {
   localStorage.removeItem("authToken");
   this.updateLoginStatus(false);
   this.setGoogleAuthEnabled(false);
+
+  // this.storageService.clearUrlCache();
+
   // this.authStateService.setAuthenticationState(false);
   this.authService.authStateSubject.next(false);
 
+  // const oauthService = this.getOAuthService();
+  //   oauthService.logout().subscribe(() => {
+  //     oauthService.setAuthenticationState(false);
+  //   });
+
   const oauthService = this.getOAuthService();
-    oauthService.logout().subscribe(() => {
+  oauthService.logout()
+    .pipe(
+      finalize(() => {
+        // Clears the cache after logout observable completes
+        this.storageService.clearUrlCache();
+      })
+    )
+    .subscribe(() => {
       oauthService.setAuthenticationState(false);
     });
 }
@@ -326,190 +348,6 @@ getUserId(): string {
   
   return '';
 }
-
-
-// getUserId(): string | ''{
-//   const currentUser = auth.currentUser;
-//   return currentUser ? currentUser.uid : '';
-// }
-
-// getUser(userId: string): Observable<User> {
-//   console.log('Getting user profile:', {
-//     requestedId: userId,
-//     authUserId: auth.currentUser?.uid,
-//     isOwnProfile: userId === auth.currentUser?.uid
-//   });
-  
-//   return this.http.get<User>(`${this.apiUrl}/users/${userId}`);
-// }
-
-// signUpWithGoogle(userData: any): Observable<User> {
-//   return this.http.post<User>(`${this.baseURL}/signup-google`, userData);
-// }
-
-// updateUser(updatedUser: User): Observable<User> {
-//   let reqHeaders = {
-//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-//   }
-//     return this.http.put<User>(this.baseURL + "/" + updatedUser.userId, updatedUser, {headers: reqHeaders});
-//   }
-
-// updateUser(updatedUser: User): Observable<User> {
-//   let reqHeaders = {
-//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-//   };
-//   // Use the /data/ endpoint for all updates
-//   return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, updatedUser, { headers: reqHeaders })
-//   .pipe(
-//     tap(response => {
-//       // Update the user in localStorage, preserving the imgUrl if it's not being updated
-//       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-//       const updatedStoredUser = {
-//         ...storedUser,
-//         ...response,
-//         imgUrl: updatedUser.imgUrl || storedUser.imgUrl
-//       };
-//       localStorage.setItem('user', JSON.stringify(updatedStoredUser));
-//     })
-//   );
-// // }
-
-// updateUser(updatedUser: User): Observable<User> {
-//   let reqHeaders = {
-//     Authorization: `Bearer ${localStorage.getItem(this.tokenKey)}`
-//   };
-
-//   // Prepare the user data for the API
-//   const userForApi = {
-//     ...updatedUser,
-//     profilePictureSettings: updatedUser.profilePictureSettings 
-//       ? JSON.stringify(updatedUser.profilePictureSettings) 
-//       : null
-//   };
-
-//   // Use the /data/ endpoint for all updates
-//   return this.http.put<User>(`${this.baseURL}/data/${updatedUser.userId}`, userForApi, { headers: reqHeaders })
-//     .pipe(
-//       map(response => {
-//         // Parse the profilePictureSettings if it exists in the response
-//         if (typeof response.profilePictureSettings === 'string') {
-//           response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
-//         }
-//         // If profilePictureSettings come back as null, use the ones we sent
-//         if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
-//           response.profilePictureSettings = updatedUser.profilePictureSettings;
-//         }
-//         return response;
-//       }),
-//       tap(response => {
-//         // Update the user in localStorage, preserving the imgUrl if it's not being updated
-//         console.log('Updated user:', response);
-//         const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-//         const updatedStoredUser = {
-//           ...storedUser,
-//           ...response,
-//           imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
-//           profilePictureSettings: response.profilePictureSettings || storedUser.profilePictureSettings
-//         };
-//         localStorage.setItem('user', JSON.stringify(updatedStoredUser));
-//       })
-//     );
-// }
-
-// async updateUser(updatedUser: User): Promise<User> {
-//   try {
-//     // Wait for and validate token
-//     const token = await this.authService.waitForToken();
-//     if (!token) {
-//       throw new Error('Not authenticated');
-//     }
-
-//     const headers = {
-//       Authorization: `Bearer ${token}`
-//     };
-
-//     // Prepare user data with proper profilePictureSettings handling
-//     const userForApi = {
-//       ...updatedUser,
-//       profilePictureSettings: updatedUser.profilePictureSettings 
-//         ? JSON.stringify(updatedUser.profilePictureSettings) 
-//         : null
-//     };
-
-//     // Make API request with error handling
-//     const response = await firstValueFrom(
-//       this.http.put<User>(
-//         `${this.baseURL}/data/${updatedUser.userId}`, 
-//         userForApi, 
-//         { headers }
-//       ).pipe(
-//         map(response => {
-//           // Parse profilePictureSettings if it exists
-//           if (typeof response.profilePictureSettings === 'string') {
-//             try {
-//               response.profilePictureSettings = JSON.parse(response.profilePictureSettings);
-//             } catch (e) {
-//               console.error('Error parsing profilePictureSettings:', e);
-//               // Fallback to original settings if parsing fails
-//               response.profilePictureSettings = updatedUser.profilePictureSettings;
-//             }
-//           }
-
-//           // Use original settings if response settings are null
-//           if (response.profilePictureSettings === null && updatedUser.profilePictureSettings) {
-//             response.profilePictureSettings = updatedUser.profilePictureSettings;
-//           }
-
-//           return response;
-//         }),
-//         tap(response => {
-//           // Update localStorage with proper merging of existing data
-//           try {
-//             const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-//             const updatedStoredUser = {
-//               ...storedUser,
-//               ...response,
-//               // Preserve existing imgUrl if not being updated
-//               imgUrl: updatedUser.imgUrl || storedUser.imgUrl,
-//               // Preserve existing settings if not in response
-//               profilePictureSettings: response.profilePictureSettings || 
-//                                     updatedUser.profilePictureSettings || 
-//                                     storedUser.profilePictureSettings
-//             };
-//             localStorage.setItem('user', JSON.stringify(updatedStoredUser));
-//             console.log('Updated user in localStorage:', updatedStoredUser);
-//           } catch (e) {
-//             console.error('Error updating localStorage:', e);
-//             // Don't fail the update if localStorage fails
-//           }
-//         })
-//       )
-//     );
-
-//     return response;
-
-//   } catch (error) {
-//     console.error('Error updating user:', error);
-    
-//     // Handle specific error cases
-//     if (error instanceof HttpErrorResponse) {
-//       switch (error.status) {
-//         case 401:
-//           this.authService.logout();
-//           throw new Error('Authentication expired');
-//         case 403:
-//           throw new Error('Not authorized to update user');
-//         case 404:
-//           throw new Error('User not found');
-//         default:
-//           throw new Error('Failed to update user');
-//       }
-//     }
-
-//     // Re-throw original error if not HTTP error
-//     throw error;
-//   }
-// }
 
 updateUser(updatedUser: User): Observable<User> {
   // Create an observable from the token check
@@ -830,4 +668,12 @@ uploadImage(userId: string, file: File): Observable<string> {
     })
   );
 }
+
+// setUserId(userId: string) {
+//   this.sharedState.setCurrentUserId(userId);
+// }
+
+// getUserId(): string | null {
+//   return this.sharedState.getCurrentUserId();
+// }
 }
