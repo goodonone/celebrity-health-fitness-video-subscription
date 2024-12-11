@@ -9,6 +9,7 @@ import { Auth } from 'firebase/auth';
 import { AuthService } from './auth.service';
 import { User } from '../models/user';
 import { UserService } from './user.service';
+import { environment } from 'src/environments/environment';
 
 interface UserImages {
   urls: string[];
@@ -19,17 +20,23 @@ interface UserImages {
   providedIn: 'root'
 })
 export class ImageManagementService {
-  private readonly MAX_IMAGES_PER_USER = 5;
+  
+  private readonly baseUrl = environment.apiUrl;
   private userImagesMap = new Map<string, BehaviorSubject<UserImages>>();
   private imageLoadErrors = new Set<string>();
   private loadingImages = false;
-  private temporaryUrl: string | null = null;
+  public temporaryUrl: string | null = null;
   private currentProfilePath: string | null = null;
   private isProviderProfile: boolean = false; 
   private hasStartedNavigating = false;
+  private preloadedImages = new Map<string, boolean>();
   private currentImageIndex = 0;
   private imageUrls: string[] = [];
   private selectedImagePath: string | null = null;
+  private hasFirebaseImagesSubject = new BehaviorSubject<boolean>(false);
+  hasFirebaseImages$ = this.hasFirebaseImagesSubject.asObservable();
+  private firebaseImageCount = 0;
+  private currentProfileImage: string | null = null;
 
   constructor(
     private firebaseService: FirebaseService,
@@ -47,6 +54,10 @@ getUserImagesSubject(userId: string): BehaviorSubject<UserImages> {
     }));
   }
   return this.userImagesMap.get(userId)!;
+}
+
+isLoading(): boolean {
+  return this.loadingImages;
 }
 
 setCurrentProfileImage(path: string) {
@@ -83,6 +94,239 @@ clearTemporaryUrl() {
   this.temporaryUrl = null;
 }
 
+// Working
+// async loadUserImages(userId: string): Promise<void> {
+//   console.log('Loading user images for:', userId);
+//   if (this.loadingImages) return;
+
+//   this.loadingImages = true;
+//   const subject = this.getUserImagesSubject(userId);
+
+//   try {
+//     // Get all images from Firebase
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+//     const validItems = await this.getValidItemsWithMetadata(result.items);
+//     let urls = await this.getValidUrls(validItems);
+
+//     console.log('Initial URLs array:', urls);
+
+//     // Build final URL array as before
+//     let finalUrls: string[] = [];
+//     let currentIndex = 0;
+
+//     if (this.temporaryUrl && !this.isProviderProfile) {
+//       finalUrls = [this.temporaryUrl, ...urls];
+//       currentIndex = 0;
+//     } else if (this.currentProfilePath) {
+//       if (this.isProviderProfile) {
+//         finalUrls = [this.currentProfilePath, ...urls];
+//         currentIndex = 0;
+//       } else {
+//         finalUrls = [...urls];
+//         const foundIndex = urls.findIndex(url => 
+//           this.getImagePath(url) === this.currentProfilePath
+//         );
+//         if (foundIndex !== -1) {
+//           currentIndex = foundIndex;
+//         }
+//       }
+//     } else {
+//       finalUrls = urls;
+//     }
+
+//     // Preload images with converted URLs and blob caching
+//     const preloadedUrls = await Promise.all(
+//       finalUrls.map(async (url) => {
+//         try {
+//           // Convert URL if needed
+//           const displayUrl = url.includes('firebasestorage.googleapis.com') ?
+//             await this.storageService.convertFirebaseUrl(url) : url;
+
+//           // Get headers if needed
+//           const headers = displayUrl.includes('/api/storage/') ?
+//             await this.storageService.getAuthHeaders() : undefined;
+
+//           // Create a cached blob
+//           if (headers) {
+//             const response = await fetch(displayUrl, { headers });
+//             if (!response.ok) throw new Error('Failed to fetch image');
+//             const blob = await response.blob();
+//             const objectUrl = URL.createObjectURL(blob);
+
+//             // Wait for image to load completely
+//             await new Promise<void>((resolve, reject) => {
+//               const img = new Image();
+//               img.onload = () => {
+//                 this.preloadedImages.set(url, true);
+//                 resolve();
+//               };
+//               img.onerror = reject;
+//               img.src = objectUrl;
+//             });
+
+//             return { originalUrl: url, displayUrl: objectUrl };
+//           } else {
+//             // For external URLs, still wait for load but don't create blob
+//             await new Promise<void>((resolve, reject) => {
+//               const img = new Image();
+//               img.onload = () => {
+//                 this.preloadedImages.set(url, true);
+//                 resolve();
+//               };
+//               img.onerror = reject;
+//               img.src = displayUrl;
+//             });
+
+//             return { originalUrl: url, displayUrl };
+//           }
+//         } catch (error) {
+//           console.error('Error preloading image:', url, error);
+//           return { originalUrl: url, displayUrl: url };
+//         }
+//       })
+//     );
+
+//     // Create map of preloaded URLs
+//     const urlMap = new Map(preloadedUrls.map(({ originalUrl, displayUrl }) => [originalUrl, displayUrl]));
+
+//     // Update state with preloaded URLs
+//     subject.next({
+//       urls: finalUrls.map(url => urlMap.get(url) || url),
+//       currentIndex
+//     });
+
+//     console.log('All images preloaded successfully');
+
+//   } catch (error) {
+//     console.error('Error loading user images:', error);
+//   } finally {
+//     this.loadingImages = false;
+//   }
+// }
+
+// Last Working
+// async loadUserImages(userId: string): Promise<void> {
+//   console.log('Loading user images for:', userId);
+//   if (this.loadingImages) return;
+
+//   this.loadingImages = true;
+//   const subject = this.getUserImagesSubject(userId);
+
+//   try {
+//     // List files from Firebase
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+//     const validItems = await this.getValidItemsWithMetadata(result.items);
+//     let urls = await this.getValidUrls(validItems);
+    
+//     console.log('Initial URLs array:', urls);
+
+//     // Update hasFirebaseImages state
+//     this.firebaseImageCount = urls.length;
+//     this.hasFirebaseImagesSubject.next(urls.length > 0);
+//     console.log('Firebase images found:', urls.length > 0);
+
+//     // First ensure all URLs are in the correct format
+//     urls = await Promise.all(urls.map(async (url) => {
+//       if (url.includes('firebasestorage.googleapis.com')) {
+//         return this.storageService.convertFirebaseUrl(url);
+//       }
+//       return url;
+//     }));
+
+//     // Build final URL array
+//     let finalUrls: string[] = [];
+//     let currentIndex = 0;
+
+//     if (this.temporaryUrl && !this.isProviderProfile) {
+//       finalUrls = [this.temporaryUrl, ...urls];
+//       currentIndex = 0;
+//     } else if (this.currentProfilePath) {
+//       if (this.isProviderProfile) {
+//         finalUrls = [this.currentProfilePath, ...urls];
+//         currentIndex = 0;
+//       } else {
+//         finalUrls = [...urls];
+//         const normalizedProfilePath = this.normalizeUrl(this.currentProfilePath);
+//         const foundIndex = urls.findIndex(url =>
+//           this.normalizeUrl(this.getImagePath(url)) === normalizedProfilePath
+//         );
+//         if (foundIndex !== -1) {
+//           currentIndex = foundIndex;
+//         }
+//       }
+//     } else {
+//       finalUrls = urls;
+//     }
+
+//     // Preload images with converted URLs and blob caching
+//     const preloadedUrls = await Promise.all(
+//       finalUrls.map(async (url) => {
+//         try {
+//           const displayUrl = url.includes('firebasestorage.googleapis.com') ?
+//             await this.storageService.convertFirebaseUrl(url) : url;
+
+//           const headers = displayUrl.includes('/api/storage/') ?
+//             await this.storageService.getAuthHeaders() : undefined;
+
+//           if (headers) {
+//             const response = await fetch(displayUrl, { headers });
+//             if (!response.ok) throw new Error('Failed to fetch image');
+//             const blob = await response.blob();
+//             const objectUrl = URL.createObjectURL(blob);
+
+//             await new Promise<void>((resolve, reject) => {
+//               const img = new Image();
+//               img.onload = () => {
+//                 this.preloadedImages.set(url, true);
+//                 resolve();
+//               };
+//               img.onerror = reject;
+//               img.src = objectUrl;
+//             });
+
+//             return { originalUrl: url, displayUrl: objectUrl };
+//           } else {
+//             await new Promise<void>((resolve, reject) => {
+//               const img = new Image();
+//               img.onload = () => {
+//                 this.preloadedImages.set(url, true);
+//                 resolve();
+//               };
+//               img.onerror = reject;
+//               img.src = displayUrl;
+//             });
+
+//             return { originalUrl: url, displayUrl };
+//           }
+//         } catch (error) {
+//           console.error('Error preloading image:', url, error);
+//           return { originalUrl: url, displayUrl: url };
+//         }
+//       })
+//     );
+
+//     // Create map of preloaded URLs
+//     const urlMap = new Map(preloadedUrls.map(({ originalUrl, displayUrl }) => [originalUrl, displayUrl]));
+
+//     // Update state with preloaded URLs
+//     subject.next({
+//       urls: finalUrls.map(url => urlMap.get(url) || url),
+//       currentIndex
+//     });
+
+//     console.log('All images preloaded successfully');
+
+//   } catch (error) {
+//     console.error('Error loading user images:', error);
+//     this.firebaseImageCount = 0;
+//     this.hasFirebaseImagesSubject.next(false);
+//   } finally {
+//     this.loadingImages = false;
+//   }
+// }
+
 async loadUserImages(userId: string): Promise<void> {
   console.log('Loading user images for:', userId);
   if (this.loadingImages) return;
@@ -99,57 +343,186 @@ async loadUserImages(userId: string): Promise<void> {
     
     console.log('Initial URLs array:', urls);
 
-    // Handle temporary URL first (for when pasting new URLs)
+    // Update hasFirebaseImages state
+    this.firebaseImageCount = urls.length;
+    this.hasFirebaseImagesSubject.next(urls.length > 0);
+    console.log('Firebase images found:', urls.length > 0);
+
+    // First ensure all URLs are in the correct format
+    urls = await Promise.all(urls.map(async (url) => {
+      if (url.includes('firebasestorage.googleapis.com')) {
+        return this.storageService.convertFirebaseUrl(url);
+      }
+      return url;
+    }));
+
+    // Build final URL array
+    let finalUrls: string[] = [];
+    let currentIndex = 0;
+
     if (this.temporaryUrl && !this.isProviderProfile) {
-      urls = [this.temporaryUrl, ...urls];
-      console.log('Added temporary URL at index 0');
-      subject.next({
-        urls,
-        currentIndex: 0
-      });
-      return;
-    }
-
-    // Handle current profile image
-    if (this.currentProfilePath) {
+      finalUrls = [this.temporaryUrl, ...urls];
+      currentIndex = 0;
+    } else if (this.currentProfilePath) {
       if (this.isProviderProfile) {
-        // If current profile is a provider URL, add it to the list
-        urls = [this.currentProfilePath, ...urls];
-        console.log('Added provider profile URL at index 0');
-        subject.next({
-          urls,
-          currentIndex: 0
-        });
+        finalUrls = [this.currentProfilePath, ...urls];
+        currentIndex = 0;
       } else {
-        // Find Firebase profile image in list
-        const currentIndex = urls.findIndex(url => 
-          this.getImagePath(url) === this.currentProfilePath
+        finalUrls = [...urls];
+        const normalizedProfilePath = this.normalizeUrl(this.currentProfilePath);
+        const foundIndex = urls.findIndex(url =>
+          this.normalizeUrl(this.getImagePath(url)) === normalizedProfilePath
         );
-
-        if (currentIndex !== -1) {
-          console.log('Found current profile image at index:', currentIndex);
-          subject.next({
-            urls,
-            currentIndex
-          });
+        if (foundIndex !== -1) {
+          currentIndex = foundIndex;
         }
       }
-      return;
+    } else {
+      finalUrls = urls;
     }
 
-    // Default case
-    console.log('Using default ordering');
+    // Preload images with converted URLs and blob caching
+    const preloadedUrls = await Promise.all(
+      finalUrls.map(async (url, index) => {
+        try {
+          // Check if this is the current profile image
+          const isCurrentProfile = index === currentIndex && !this.isProviderProfile;
+          
+          const displayUrl = url.includes('firebasestorage.googleapis.com') ?
+            await this.storageService.convertFirebaseUrl(url) : url;
+
+          // Skip blob creation for profile image
+          if (isCurrentProfile) {
+            return { originalUrl: url, displayUrl };
+          }
+
+          const headers = displayUrl.includes('/api/storage/') ?
+            await this.storageService.getAuthHeaders() : undefined;
+
+          if (headers) {
+            const response = await fetch(displayUrl, { headers });
+            if (!response.ok) throw new Error('Failed to fetch image');
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+
+            await new Promise<void>((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => {
+                this.preloadedImages.set(url, true);
+                resolve();
+              };
+              img.onerror = reject;
+              img.src = objectUrl;
+            });
+
+            return { originalUrl: url, displayUrl: objectUrl };
+          } else {
+            await new Promise<void>((resolve, reject) => {
+              const img = new Image();
+              img.onload = () => {
+                this.preloadedImages.set(url, true);
+                resolve();
+              };
+              img.onerror = reject;
+              img.src = displayUrl;
+            });
+
+            return { originalUrl: url, displayUrl };
+          }
+        } catch (error) {
+          console.error('Error preloading image:', url, error);
+          return { originalUrl: url, displayUrl: url };
+        }
+      })
+    );
+
+    // Create map of preloaded URLs
+    const urlMap = new Map(preloadedUrls.map(({ originalUrl, displayUrl }) => [originalUrl, displayUrl]));
+
+    // Update state with preloaded URLs
     subject.next({
-      urls,
-      currentIndex: 0
+      urls: finalUrls.map(url => urlMap.get(url) || url),
+      currentIndex
     });
+
+    console.log('All images preloaded successfully');
 
   } catch (error) {
     console.error('Error loading user images:', error);
+    this.firebaseImageCount = 0;
+    this.hasFirebaseImagesSubject.next(false);
   } finally {
     this.loadingImages = false;
   }
 }
+
+hasAnyFirebaseImages(): boolean {
+  return this.firebaseImageCount > 0;
+}
+
+private async preloadAllImages(urls: string[]): Promise<void> {
+  try {
+    const preloadPromises = urls.map(url => this.preloadSingleImage(url));
+    await Promise.all(preloadPromises);
+    console.log('All images preloaded successfully');
+  } catch (error) {
+    console.error('Error preloading images:', error);
+  }
+}
+
+private async preloadSingleImage(url: string): Promise<void> {
+  if (this.preloadedImages.has(url)) return;
+
+  try {
+    let displayUrl = url;
+    
+    // Convert URL if needed
+    if (url.includes('firebasestorage.googleapis.com')) {
+      displayUrl = await this.storageService.convertFirebaseUrl(url);
+    }
+
+    // Get auth headers if needed
+    const headers = displayUrl.includes('/api/storage/') ?
+      await this.storageService.getAuthHeaders() : undefined;
+
+    await new Promise<void>(async (resolve, reject) => {
+      try {
+        if (headers) {
+          const response = await fetch(displayUrl, { headers });
+          if (!response.ok) throw new Error('Failed to fetch image');
+          const blob = await response.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = () => {
+            URL.revokeObjectURL(objectUrl);
+            this.preloadedImages.set(url, true);
+            resolve();
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(objectUrl);
+            reject(new Error('Image load failed'));
+          };
+          img.src = objectUrl;
+        } else {
+          const img = new Image();
+          img.onload = () => {
+            this.preloadedImages.set(url, true);
+            resolve();
+          };
+          img.onerror = () => reject(new Error('Image load failed'));
+          img.src = displayUrl;
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+
+  } catch (error) {
+    console.error('Error preloading image:', error);
+    throw error;
+  }
+}
+
 
 
 // Method to extract just the path portion
@@ -219,28 +592,138 @@ private async getValidItemsWithMetadata(items: StorageReference[]) {
     .sort((a, b) => a.timeCreated - b.timeCreated); // Changed from b - a to a - b
 }
 
-  private getValidUrls(validItems: Array<{ ref: StorageReference; path: string }>) {
-    console.log('Getting URLs for items:', validItems.map(item => item.path));
+// async getOriginalPath(userId: string, index: number): Promise<string | null> {
+//   try {
+//     // Get original URLs (before blob conversion)
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+//     const validItems = await this.getValidItemsWithMetadata(result.items);
+//     const urls = await this.getValidUrls(validItems);
+
+//     if (index >= 0 && index < urls.length) {
+//       return urls[index];
+//     }
+//     return null;
+//   } catch (error) {
+//     console.error('Error getting original path:', error);
+//     return null;
+//   }
+// }
+
+
+
+  // private getValidUrls(validItems: Array<{ ref: StorageReference; path: string }>) {
+  //   console.log('Getting URLs for items:', validItems.map(item => item.path));
     
-    return Promise.all(
-      validItems.map(async (item) => {
-        try {
-          const url = await getDownloadURL(item.ref);
-          const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
-          const exists = await this.verifyImageExists(proxiedUrl);
-          if (!exists) {
-            console.log('File not accessible:', item.path);
-            return null;
-          }
-          return proxiedUrl;
-        } catch (error) {
-          console.error('Error getting download URL for:', item.path, error);
+  //   return Promise.all(
+  //     validItems.map(async (item) => {
+  //       try {
+  //         const url = await getDownloadURL(item.ref);
+  //         const proxiedUrl = await this.storageService.convertFirebaseUrl(url);
+  //         const exists = await this.verifyImageExists(proxiedUrl);
+  //         if (!exists) {
+  //           console.log('File not accessible:', item.path);
+  //           return null;
+  //         }
+  //         return proxiedUrl;
+  //       } catch (error) {
+  //         console.error('Error getting download URL for:', item.path, error);
+  //         return null;
+  //       }
+  //     })
+  //   ).then(urls => urls.filter((url): url is string => url !== null));
+  // }
+
+// private async getValidUrls(validItems: Array<{ ref: StorageReference; path: string }>) {
+//   console.log('Getting URLs for items:', validItems.map(item => item.path));
+  
+//   return Promise.all(
+//     validItems.map(async (item) => {
+//       try {
+//         // Get Firebase URL
+//         const firebaseUrl = await getDownloadURL(item.ref);
+        
+//         // Convert to proxied URL
+//         const proxiedUrl = await this.storageService.convertFirebaseUrl(firebaseUrl);
+        
+//         // Verify image exists
+//         const exists = await this.verifyImageExists(proxiedUrl);
+//         if (!exists) {
+//           console.log('File not accessible:', item.path);
+//           return null;
+//         }
+        
+//         // Return the proxied URL directly
+//         return proxiedUrl;
+//       } catch (error) {
+//         console.error('Error getting download URL for:', item.path, error);
+//         return null;
+//       }
+//     })
+//   ).then(urls => urls.filter((url): url is string => url !== null));
+// }
+
+private async getValidUrls(validItems: Array<{ ref: StorageReference; path: string }>) {
+  console.log('Getting URLs for items:', validItems.map(item => item.path));
+  
+  return Promise.all(
+    validItems.map(async (item) => {
+      try {
+        // Get Firebase URL
+        const firebaseUrl = await getDownloadURL(item.ref);
+        
+        // Convert to proxied URL
+        const proxiedUrl = await this.storageService.convertFirebaseUrl(firebaseUrl);
+        
+        // Verify image exists
+        const exists = await this.verifyImageExists(proxiedUrl);
+        if (!exists) {
+          console.log('File not accessible:', item.path);
           return null;
         }
-      })
-    ).then(urls => urls.filter((url): url is string => url !== null));
-  }
+        
+        // Return the proxied URL directly
+        return proxiedUrl;
+      } catch (error) {
+        console.error('Error getting download URL for:', item.path, error);
+        return null;
+      }
+    })
+  ).then(urls => urls.filter((url): url is string => url !== null));
+}
   
+async getOriginalPath(userId: string, index: number): Promise<string | null> {
+  try {
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    const validItems = await this.getValidItemsWithMetadata(result.items);
+    const paths = await this.getOriginalPaths(validItems);
+
+    if (index >= 0 && index < paths.length) {
+      return paths[index];
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting original path:', error);
+    return null;
+  }
+}
+  
+private async getOriginalPaths(validItems: Array<{ ref: StorageReference; path: string }>) {
+  console.log('Getting original paths for items:', validItems.map(item => item.path));
+  
+  return Promise.all(
+    validItems.map(async (item) => {
+      try {
+        return item.path; // Return the Firebase path directly
+      } catch (error) {
+        console.error('Error getting path for:', item.path, error);
+        return null;
+      }
+    })
+  ).then(paths => paths.filter((path): path is string => path !== null));
+}
+
 private updateUserImagesState(userId: string, urls: string[], currentImage: string | null) {
   const subject = this.getUserImagesSubject(userId);
   
@@ -267,6 +750,7 @@ isFirstImage(userId: string): boolean {
   const subject = this.getUserImagesSubject(userId);
   return subject.value.currentIndex === 0;
 }
+
 async verifyImageExists(url: string): Promise<boolean> {
   try {
     let fetchUrl = url;
@@ -391,45 +875,56 @@ async verifyImageExists(url: string): Promise<boolean> {
 //       throw error;
 //     }
 //   }
-async uploadImage(userId: string, file: File): Promise<string> {
-    try {
-      if (!auth.currentUser) {
-        await this.firebaseService.refreshAuth();
-        if (!auth.currentUser) {
-          throw new Error('User not authenticated');
-        }
-      }
-  
-      // Check current image count
-      const subject = this.getUserImagesSubject(userId);
-      if (subject.value.urls.length >= this.MAX_IMAGES_PER_USER) {
-        throw new Error(`Maximum of ${this.MAX_IMAGES_PER_USER} images allowed`);
-      }
-  
-      // Don't pass fileName to uploadFile, let FirebaseService handle it
-      const downloadURL = await this.firebaseService.uploadFile(file, userId);
-  
-      // Add a slight delay to ensure Firebase propagation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-  
-      // Refresh the images list
-      await this.loadUserImages(userId);
-  
-      return downloadURL;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
-    }
-  }
 
-  private async ensureAuthenticated() {
+// async uploadImage(userId: string, file: File): Promise<string> {
+//     try {
+//       if (!auth.currentUser) {
+//         await this.firebaseService.refreshAuth();
+//         if (!auth.currentUser) {
+//           throw new Error('User not authenticated');
+//         }
+//       }
+  
+//       // Check current image count
+//       const subject = this.getUserImagesSubject(userId);
+//       if (subject.value.urls.length >= this.MAX_IMAGES_PER_USER) {
+//         throw new Error(`Maximum of ${this.MAX_IMAGES_PER_USER} images allowed`);
+//       }
+  
+//       // Don't pass fileName to uploadFile, let FirebaseService handle it
+//       const downloadURL = await this.firebaseService.uploadFile(file, userId);
+  
+//       // Add a slight delay to ensure Firebase propagation
+//       await new Promise(resolve => setTimeout(resolve, 1000));
+  
+//       // Refresh the images list
+//       await this.loadUserImages(userId);
+  
+//       return downloadURL;
+//     } catch (error) {
+//       console.error('Error uploading image:', error);
+//       throw error;
+//     }
+//   }
+
+private async ensureAuthenticated() {
+  if (!auth.currentUser) {
+    await this.firebaseService.refreshAuth();
     if (!auth.currentUser) {
-      await this.firebaseService.refreshAuth();
-      if (!auth.currentUser) {
-        throw new Error('User not authenticated');
-      }
+      throw new Error('User not authenticated');
     }
   }
+}
+
+private ensureProxiedUrl(url: string, userId: string): string {
+  if (url.startsWith('blob:')) {
+    const pathMatch = url.match(/\/([^/]+)$/);
+    if (pathMatch) {
+      return `${this.baseUrl}/api/storage/profileImages/${userId}/${pathMatch[1]}`;
+    }
+  }
+  return url;
+}
 
 // async initializeImages(userId: string): Promise<void> {
 //   // Load all images from Firebase
@@ -491,6 +986,71 @@ setInitialImage(userId: string, currentImageUrl: string) {
 //   }
 // }
 
+// async getInitialImageCount(userId: string): Promise<number> {
+//   try {
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+//     return result.items.length;
+//   } catch (error) {
+//     console.error('Error getting initial image count:', error);
+//     return 0;
+//   }
+// }
+
+// async getInitialImageCount(userId: string): Promise<{count: number}> {
+//   try {
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+//     return { count: result.items.length };
+//   } catch (error) {
+//     console.error('Error getting initial image count:', error);
+//     return { count: 0 };
+//   }
+// }
+
+async getInitialImageCount(userId: string): Promise<{count: number}> {
+  try {
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    
+    // Get base count from Firebase storage
+    let totalCount = result.items.length;
+    
+    // Add 1 to count if current profile is a provider URL
+    if (this.currentProfilePath && this.isProviderProfile) {
+      totalCount += 1;
+    }
+
+    return { count: totalCount };
+  } catch (error) {
+    console.error('Error getting initial image count:', error);
+    return { count: 0 };
+  }
+}
+
+// async getInitialImageCount(userId: string): Promise<{count: number, profileUrl: string | null}> {
+//   try {
+//     const imagesRef = ref(storage, `profileImages/${userId}`);
+//     const result = await listAll(imagesRef);
+    
+//     // If there are images, get the URL of the first one
+//     let profileUrl: string | null = null;
+//     if (result.items.length > 0) {
+//       const firstItem = result.items[0];
+//       const path = firstItem.fullPath;
+//       profileUrl = `${environment.apiUrl}/api/storage/${path}`;
+//     }
+
+//     return {
+//       count: result.items.length,
+//       profileUrl
+//     };
+//   } catch (error) {
+//     console.error('Error getting initial image count:', error);
+//     return { count: 0, profileUrl: null };
+//   }
+// }
+
 private generateUniqueFileName(originalName: string): string {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(7);
@@ -503,6 +1063,63 @@ private async waitForFirebaseUpdate(delay: number = 1000) {
 }
 
 // Image Deletion
+// async deleteCurrentImage(userId: string): Promise<void> {
+//   const subject = this.getUserImagesSubject(userId);
+//   const current = subject.value;
+  
+//   if (current.urls.length === 0) return;
+
+//   try {
+//     const urlToDelete = current.urls[current.currentIndex];
+//     await this.deleteImageByUrl(urlToDelete);
+//     await this.waitForFirebaseUpdate();
+//     await this.loadUserImages(userId);
+
+//     // Update firebaseImageCount and hasFirebaseImages state
+//     this.firebaseImageCount--;
+//     this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+//   } catch (error) {
+//     console.error('Error deleting image:', error);
+//     throw error;
+//   }
+// }
+
+// Image Deletion
+// async deleteCurrentImage(userId: string): Promise<void> {
+//   const subject = this.getUserImagesSubject(userId);
+//   const current = subject.value;
+  
+//   if (current.urls.length === 0) return;
+
+//   try {
+//     const urlToDelete = current.urls[current.currentIndex];
+//     await this.deleteImageByUrl(urlToDelete);
+//     await this.waitForFirebaseUpdate();
+
+//     // Immediately update the count
+//     this.firebaseImageCount = Math.max(0, this.firebaseImageCount - 1);
+//     this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+
+//     // Remove the deleted URL from the current state
+//     const updatedUrls = current.urls.filter((_, index) => index !== current.currentIndex);
+//     const newIndex = Math.min(current.currentIndex, updatedUrls.length - 1);
+    
+//     // Update the state immediately
+//     subject.next({
+//       urls: updatedUrls,
+//       currentIndex: Math.max(0, newIndex)
+//     });
+
+//     // Then reload all images to ensure everything is in sync
+//     await this.loadUserImages(userId);
+
+//   } catch (error) {
+//     console.error('Error deleting image:', error);
+//     throw error;
+//   }
+// }
+
+// Image Deletion
 async deleteCurrentImage(userId: string): Promise<void> {
   const subject = this.getUserImagesSubject(userId);
   const current = subject.value;
@@ -510,10 +1127,44 @@ async deleteCurrentImage(userId: string): Promise<void> {
   if (current.urls.length === 0) return;
 
   try {
-    const urlToDelete = current.urls[current.currentIndex];
-    await this.deleteImageByUrl(urlToDelete);
-    await this.waitForFirebaseUpdate();
-    await this.loadUserImages(userId);
+    const currentUrl = current.urls[current.currentIndex];
+    const isProvider = this.isProviderUrl(currentUrl);
+    let previousImageCount = current.urls.length;
+
+    // Remove the URL first to enable immediate UI update
+    const updatedUrls = current.urls.filter((_, index) => index !== current.currentIndex);
+    const newIndex = Math.min(current.currentIndex, updatedUrls.length - 1);
+
+    // If it's a Firebase image, delete from storage
+    if (!isProvider) {
+      await this.deleteImageByUrl(currentUrl);
+      this.firebaseImageCount = Math.max(0, this.firebaseImageCount - 1);
+      this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+    } else {
+      // If it's a provider URL, just clear it
+      this.temporaryUrl = null;
+    }
+
+    // Update the state immediately to show next image
+    subject.next({
+      urls: updatedUrls,
+      currentIndex: Math.max(0, newIndex)
+    });
+
+    // Update image count state
+    // this.imageCount = updatedUrls.length;
+    // this.showImageNavigation = this.imageCount > 1;
+
+    // If we deleted the last image, clear current profile image
+    if (updatedUrls.length === 0) {
+      // Notify that there are no images left
+      this.hasFirebaseImagesSubject.next(false);
+      this.currentProfileImage = null;
+    } else {
+      // Set the next image as current
+      this.currentProfileImage = updatedUrls[newIndex];
+    }
+
   } catch (error) {
     console.error('Error deleting image:', error);
     throw error;
@@ -546,11 +1197,29 @@ async checkAndUpdateImageUrl(userId: string, url: string): Promise<string | null
   }
 }
   
+// getCurrentImageUrl(userId: string): Observable<string> {
+//   return this.getUserImagesSubject(userId).pipe(
+//     map(state => {
+//       if (state.urls.length === 0) return '';
+//       return state.urls[state.currentIndex] || '';
+//     })
+//   );
+// }
+
 getCurrentImageUrl(userId: string): Observable<string> {
   return this.getUserImagesSubject(userId).pipe(
     map(state => {
       if (state.urls.length === 0) return '';
-      return state.urls[state.currentIndex] || '';
+      
+      const currentUrl = state.urls[state.currentIndex] || '';
+      // Always ensure we're returning a proxied URL, not a blob URL
+      if (currentUrl.startsWith('blob:')) {
+        const pathMatch = currentUrl.match(/\/([^/]+)$/);
+        if (pathMatch) {
+          return `${this.baseUrl}/api/storage/profileImages/${userId}/${pathMatch[1]}`;
+        }
+      }
+      return currentUrl;
     })
   );
 }
@@ -573,6 +1242,38 @@ getCurrentImageUrl(userId: string): Observable<string> {
 //   );
 // }
 
+// Latest Working
+// getCurrentImage(userId: string): Observable<string | null> {
+//   return this.getUserImagesSubject(userId).pipe(
+//     map(state => {
+//       if (state.urls.length === 0) return null;
+//       const validIndex = Math.min(state.currentIndex, state.urls.length - 1);
+//       return state.urls[validIndex] || null;
+//     }),
+//     switchMap(async (url) => {
+//       if (!url) return null;
+      
+//       // If it's already a Firebase path, return as is
+//       if (url.startsWith('profileImages/')) {
+//         return url;
+//       }
+      
+//       // If it's a Firebase URL, extract the path
+//       if (url.includes('firebasestorage.googleapis.com')) {
+//         const urlObj = new URL(url);
+//         return decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
+//       }
+      
+//       // If it's a proxied URL, extract the path
+//       if (url.includes('/api/storage/')) {
+//         return url.split('/api/storage/')[1];
+//       }
+      
+//       return url;
+//     })
+//   );
+// }
+
 getCurrentImage(userId: string): Observable<string | null> {
   return this.getUserImagesSubject(userId).pipe(
     map(state => {
@@ -580,25 +1281,22 @@ getCurrentImage(userId: string): Observable<string | null> {
       const validIndex = Math.min(state.currentIndex, state.urls.length - 1);
       return state.urls[validIndex] || null;
     }),
+    // Add switchMap to resolve any promises
     switchMap(async (url) => {
       if (!url) return null;
-      
-      // If it's already a Firebase path, return as is
-      if (url.startsWith('profileImages/')) {
+
+      // If it's already a proxied URL, return it directly
+      if (url.includes('/api/storage/')) {
         return url;
       }
       
-      // If it's a Firebase URL, extract the path
-      if (url.includes('firebasestorage.googleapis.com')) {
-        const urlObj = new URL(url);
-        return decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-      }
+      // If it's a Firebase URL, convert it synchronously
+      // if (url.includes('firebasestorage.googleapis.com')) {
+      //   const displayUrl = await this.storageService.convertFirebaseUrl(url);
+      //   return displayUrl;
+      // }
       
-      // If it's a proxied URL, extract the path
-      if (url.includes('/api/storage/')) {
-        return url.split('/api/storage/')[1];
-      }
-      
+      // For provider URLs or other URLs, return as is
       return url;
     })
   );

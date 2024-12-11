@@ -119,56 +119,65 @@
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
                             <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
-                                <!-- <p style="color: red; font-weight: bold">Position: {{ position.x }}, {{ position.y }}</p> -->
-                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
-                                <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
-                                    <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
-                                    (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
-                                    (pointerdown)="onMouseDown('minus')" 
-                                    (pointerup)="onMouseUp('minus')" 
-                                    (pointerleave)="onMouseLeave('minus')"
-                                    (click)="zoomOut()"></fa-icon>
-                                    <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
-                                    (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
-                                    (pointerdown)="onMouseDown('plus')" 
-                                    (pointerup)="onMouseUp('plus')" 
-                                    (pointerleave)="onMouseLeave('plus')"
-                                    (click)="zoomIn()"></fa-icon>
+                                
+                                <!-- Loading Spinner Overlay -->
+                                <div class="loading-overlay" *ngIf="shouldShowLoadingOverlay">
+                                    <mat-spinner class="loadingImagesSpinner" diameter="40" style="--mdc-circular-progress-active-indicator-color: white;"></mat-spinner>
+                                    <p class="loadingImagesText">{{ loadingText }}</p>
                                 </div>
-                                <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (pointerdown)="onMouseDown('reset')" 
-                                (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
-                                (pointerup)="onMouseUp('reset')" 
-                                (pointerleave)="onMouseLeave('reset')"
-                                [ngClass]="{'clicked': isResetClicked, 
-                                'disabled': isInDefaultPosition()}"
-                                (click)="resetImagePositionAndZoom()">RESET</p>
-                                <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
-                                <!-- <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation "> -->
-                                <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation">
-                                    <fa-icon [icon]="['fas', 'chevron-left']" 
-                                                class="chevronLeft" 
-                                                (click)="previousImage()"
-                                                (pointerdown)="onMouseDown('left')"
-                                                (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
-                                                (pointerup)="onMouseUp('left')" 
-                                                (pointerleave)="onMouseLeave('left')"
-                                                [ngClass]="{'clicked': leftClicked}">
-                                    </fa-icon>                                   
-                                    <fa-icon [icon]="['fas', 'chevron-right']" 
-                                                class="chevronRight"
-                                                (click)="nextImage()"
-                                                (pointerdown)="onMouseDown('right')"
-                                                (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
-                                                (pointerup)="onMouseUp('right')" 
-                                                (pointerleave)="onMouseLeave('right')"
-                                                [ngClass]="{'clicked': rightClicked}">
-                                    </fa-icon>
-                                </div>
+
+                                <ng-container *ngIf="!isLoadingImages && currentState === ProfileState.ChangingPicture">
+                                    <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
+                                    <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
+                                        <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
+                                        (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
+                                        (pointerdown)="onMouseDown('minus')" 
+                                        (pointerup)="onMouseUp('minus')" 
+                                        (pointerleave)="onMouseLeave('minus')"
+                                        (click)="zoomOut()"></fa-icon>
+                                        <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
+                                        (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
+                                        (pointerdown)="onMouseDown('plus')" 
+                                        (pointerup)="onMouseUp('plus')" 
+                                        (pointerleave)="onMouseLeave('plus')"
+                                        (click)="zoomIn()"></fa-icon>
+                                    </div>
+                                    <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (pointerdown)="onMouseDown('reset')" 
+                                    (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
+                                    (pointerup)="onMouseUp('reset')" 
+                                    (pointerleave)="onMouseLeave('reset')"
+                                    [ngClass]="{'clicked': isResetClicked, 
+                                    'disabled': isInDefaultPosition(), 
+                                    'draggingOver': isDragging}"
+                                    (click)="resetImagePositionAndZoom()">RESET</p>
+                                    <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
+                                    <!-- <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation "> -->
+                                    <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && imageCount > 1">
+                                        <fa-icon [icon]="['fas', 'chevron-left']" 
+                                                    class="chevronLeft" 
+                                                    (click)="previousImage()"
+                                                    (pointerdown)="onMouseDown('left')"
+                                                    (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
+                                                    (pointerup)="onMouseUp('left')" 
+                                                    (pointerleave)="onMouseLeave('left')"
+                                                    [ngClass]="{'clicked': leftClicked}">
+                                        </fa-icon>                                   
+                                        <fa-icon [icon]="['fas', 'chevron-right']" 
+                                                    class="chevronRight"
+                                                    (click)="nextImage()"
+                                                    (pointerdown)="onMouseDown('right')"
+                                                    (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
+                                                    (pointerup)="onMouseUp('right')" 
+                                                    (pointerleave)="onMouseLeave('right')"
+                                                    [ngClass]="{'clicked': rightClicked}">
+                                        </fa-icon>
+                                    </div>
+                                </ng-container>
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="imageStyles" 
                                     [ngClass]="{'default-position': !isDragged, 
                                     'loaded': imageLoadedSuccessfully,
-                                    'loading': !imageLoadedSuccessfully,
+                                    'loading': !imageLoadedSuccessfully || isLoadingImages,
                                     'firstTimeAnimation': firstTimeAnimation && tierThree, 
                                     'tierThreeStyle': tierThree, 
                                     'draggable': canDrag()}" 
@@ -218,7 +227,7 @@
                             <h3 class="profileDetails" *ngIf="currentUser.tier === 'All In' || currentUser.tier === 'Motivated'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <button mat-button style="color:white" class="btn-change" [routerLink]="['/change-plan/', currentUser.userId]">Change</button>
                         </div>
-                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> <span class="planPricing">${{currentUser.price}}</span>/{{monthOrYear}}</h3>
+                        <h3 class="profileDetails" *ngIf="!freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> $<span class="planPricing">{{currentUser.price}}</span>/{{monthOrYear}}</h3>
                         <h3 class="profileDetails" *ngIf="freeTier"><span class="spanProfileCategory">Plan Pricing</span> <br> Free</h3>
                     </div>
                 </ng-container>
@@ -521,7 +530,7 @@
                                 accept="image/*"
                                 (change)="onFileSelected($event)"
                                 style="display: none">
-                                
+                        
                             
                             <!-- Upload Button -->
                             <button mat-button 
@@ -532,7 +541,7 @@
                             <span *ngIf="!isUploading">Upload</span>
                             <div *ngIf="isUploading" class="uploadingState">
                             <mat-spinner diameter="20" style="--mdc-circular-progress-active-indicator-color: black"></mat-spinner>
-                            <span>{{uploadProgress | number:'1.0-0'}}%</span>
+                            <span class="uploadProgress">{{uploadProgress | number:'1.0-0'}}%</span>
                             </div>
                             </button>
 
@@ -553,8 +562,8 @@
                       </div>
                     </form>
                     <div class="uploadInstructionsAndSuccess">
-                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max.</p>
-                        <p class="uploadSuccess" *ngIf="showUploadSuccess">Uploaded! <strong>Save</strong> to keep,<br><strong>Cancel</strong> or <strong><></strong> to discard.</p>
+                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max. <br> <strong>Or</strong>, Paste an Image URL from Unsplash, Pexels or Pixabay. (Note: These Image URLs are only retained as long as they are set as your Profile Picture)</p>
+                        <p class="uploadSuccess" *ngIf="showUploadSuccess"><span class="uploadedSuccessSpan"><strong>Image Uploaded!</strong> &nbsp;</span> <strong>Save</strong> to keep,<br><strong>Cancel</strong> <span class="arrowSpan" *ngIf="onlyFirebaseImageCount > 1">&nbsp; or &nbsp; <strong><></strong></span> to discard.</p>
                     </div>
                 </div> 
                 </ng-container>
