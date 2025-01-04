@@ -49,6 +49,7 @@ p{
     width: 55rem;
     border-radius: 1.4rem;
     opacity: 100%;
+    box-shadow: 0 0 20px rgb(62, 62, 62) !important;
 }
 
 .innerCardTwo {

@@ -512,6 +512,8 @@ fieldset {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  // background-color: transparent !important;
+  box-shadow: 0 0 20px rgb(62, 62, 62) !important;
   // overflow: visible;
   // padding-right: 2rem;
 }
@@ -553,26 +555,336 @@ fieldset {
   min-width: 300px;
   max-width: 400px;
   height: auto;
-  // min-height: 300px;
-  // max-height: 400px;
   aspect-ratio: 1/1;
   background-color: #c7ff20;
   border-radius: 100rem;
-  // margin-bottom: 1.2rem;
-  // background-size: cover;
-  // background-repeat: no-repeat;
   overflow: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease-in;
-  // transition: background-size 0.1s ease-out, background-position 0.1s ease-out;
+  // background-position: 0 0; 
+  // background-size: 100%;
 
-  // transform: translate3d(0,0,0);
-  // backface-visibility: hidden;
-  // -webkit-backface-visibility: hidden;
-  // background-size: cover !important;
+  // &.sliding {
+  //   // Prevent interaction during slide
+  //   pointer-events: none;
+  // }
+
+  // /* OLD image pseudo-element */
+  // [style*="--old-image"]::before,
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   inset: 0;
+  //   background-image: var(--old-image);
+  //   background-size: cover;
+  //   transition: transform 0.1s ease;
+  //   // transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  //   // transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  //   z-index: 1;
+  //   transform: translateX(0);
+  //   will-change: transform;
+  // }
+
+  // /* NEW image pseudo-element */
+  // [style*="--new-image"]::after,
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   inset: 0;
+  //   background-image: var(--new-image);
+  //   background-size: cover;
+  //   transition: transform 0.1s ease;
+  //   // transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  //   // transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  //   z-index: 2;
+  //   /* By default, let's say it starts offscreen to the RIGHT 
+  //      unless we add a start-slide-left class */
+  //   transform: translateX((var(--x-direction, 0)));
+  //   will-change: transform;
+  // }
+
+  // /* Force new image to start offscreen LEFT if we set .start-slide-left */
+  // &.start-slide-left::after {
+  //   transform: translateX(-100%);
+  // }
+  // /* Force new image to start offscreen RIGHT if we set .start-slide-right */
+  // &.start-slide-right::after {
+  //   transform: translateX(100%);
+  // }
+
+  // /* Slide-left => old image out to the RIGHT, new image in to center from LEFT */
+  // &.slide-left {
+  //   &::before {
+  //     transform: translateX(100%);
+  //   }
+  //   &::after {
+  //     transform: translateX(0);
+  //   }
+  // }
+
+  // /* Slide-right => old image out to the LEFT, new image in to center from RIGHT */
+  // &.slide-right {
+  //   &::before {
+  //     transform: translateX(-100%);
+  //   }
+  //   &::after {
+  //     transform: translateX(0);
+  //   }
+  // }
+
+  // &.slide-left,
+  // &.slide-right {
+  //   &::before,
+  //   &::after {
+  //     transition-property: transform;
+  //     transition-duration: 0.1s;
+  //     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  //   }
+  // }
+
+
+  // Image container wrapper
+  // .image-wrapper {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   transition: transform 0.4s ease-in-out;
+  //   will-change: transform;
+  //   backface-visibility: hidden; 
+  //   background-size: cover;
+
+  //   &.current {
+  //     z-index: 1;
+  //     transform: translateX(0);
+  //   }
+
+  //   &.next {
+  //     z-index: 2;
+  //     transform: translateX(100%);
+  //   }
+
+  //   &.prev {
+  //     z-index: 2;
+  //     transform: translateX(-100%);
+  //   }
+
+  //   &.slide-in {
+  //     transform: translateX(0);
+  //   }
+
+  //   &.slide-out-left {
+  //     transform: translateX(-100%);
+  //   }
+
+  //   &.slide-out-right {
+  //     transform: translateX(100%);
+  //   }
+  // }
+
+  // .image-wrapper {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   transition: transform 0.4s ease-in-out;
+  //   will-change: transform;
+  //   backface-visibility: hidden;
+  //   background-size: cover;
+  //   background-position: center;
+
+  //   &.current {
+  //       z-index: 1;
+  //       transform: translateX(0);
+  //   }
+
+  //   &.incoming {
+  //       z-index: 2;
+  //   }
+
+  //   // Current image sliding out
+  //   &.sliding-left {
+  //       transform: translateX(-100%);
+  //   }
+
+  //   &.sliding-right {
+  //       transform: translateX(100%);
+  //   }
+
+  //   // Next image sliding in
+  //   &.sliding-in-from-right {
+  //       transform: translateX(0);
+  //       &:not(.sliding-complete) {
+  //           transform: translateX(100%);
+  //       }
+  //   }
+
+  //   &.sliding-in-from-left {
+  //       transform: translateX(0);
+  //       &:not(.sliding-complete) {
+  //           transform: translateX(-100%);
+  //       }
+  //   }
+  // }
+
+  // only next works with glitches
+  //   .image-wrapper {
+  //     position: absolute;
+  //     inset: 0;
+  //     width: 100%;
+  //     height: 100%;
+  //     transition: transform 0.4s ease-in-out;
+  //     will-change: transform;
+  //     backface-visibility: hidden;
+  //     background-size: cover;
+  //     background-position: center;
+  //     // transform: translateX(0);
+
+  //     &.current {
+  //         z-index: 1;
+  //         transform: translateX(0);
+          
+  //         &.sliding-left {
+  //             transform: translateX(-100%);
+  //         }
+  //     }
+
+  //     &.next {
+  //         z-index: 2;
+  //         transform: translateX(100%);
+          
+  //         &.sliding-in {
+  //             transform: translateX(0);
+  //         }
+  //     }
+  // }
+  // //////
+
+  // .image-wrapper {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   transition: transform 0.4s ease-in-out;
+  //   will-change: transform;
+  //   backface-visibility: hidden;
+  //   background-size: cover;
+  //   background-position: center;
+  
+  //   // We'll apply the "resting" transforms via :not(...) pseudo-classes
+  //   &.current {
+  //     z-index: 1;
+  
+  //     &.sliding-left {
+  //       transform: translateX(-100%);
+  //     }
+  
+  //     // When NOT sliding, stay at 0
+  //     &:not(.sliding-left) {
+  //       transform: translateX(0);
+  //     }
+  //   }
+  
+  //   &.next {
+  //     z-index: 2;
+  
+  //     &.sliding-in {
+  //       transform: translateX(0);
+  //     }
+  
+  //     // When NOT sliding-in, stay offscreen to the right
+  //     &:not(.sliding-in) {
+  //       transform: translateX(100%);
+  //     }
+  //   }
+
+  // .image-wrapper {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   transition: transform 0.4s ease-in-out;
+  //   will-change: transform;
+  //   backface-visibility: hidden;
+  //   background-size: cover;
+  //   background-position: center;
+  //   pointer-events: none; // Prevent interaction during transition
+  
+  //     &.current {
+  //       z-index: 1;
+  //       transform: translateX(0);
+        
+  //       &.sliding-left {
+  //         transform: translateX(-100%);
+  //       }
+  //     }
+    
+  //     // &.next {
+  //     //   z-index: 2;
+  //     //   transform: translateX(100%);
+        
+  //     //   &.sliding-in {
+  //     //     transform: translateX(0);
+  //     //   }
+  //     // }
+  //   }
+
+
+    // &.current {
+    //     z-index: 1;
+    //     transform: translateX(0);
+        
+    //     &.sliding-left {
+    //         transform: translateX(-100%);
+    //     }
+    // }
+
+    // &.next {
+    //     z-index: 2;
+    //     transform: translateX(100%);
+        
+    //     &.sliding-in {
+    //         transform: translateX(0);
+    //     }
+    // }
+
+
+  
+  // Image itself
+  // .carousel-image {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   background-size: cover;
+  //   background-position: center;
+  //   background-repeat: no-repeat;
+  // }
+
+  // .image-wrapper {
+  //   position: absolute;
+  //   inset: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   transition: transform 0.4s ease-in-out;
+  //   will-change: transform;
+  //   backface-visibility: hidden;
+
+  //   &.current {
+  //     transform: translateX(0);
+  //   }
+
+  //   &.slide-out-left {
+  //     transform: translateX(-100%);
+  //   }
+
+  //   &.slide-out-right {
+  //     transform: translateX(100%);
+  //   }
+  // }
+  
 
   &.tierThreeStyle {
-    box-shadow: 0 0 40px #C7FF20;
+    box-shadow: 0 0 30px 10px #C7FF20;
+    // box-shadow: 0px 0px 0 10px #C7FF20;
   }
 
   &.firstTimeAnimation {
@@ -592,14 +904,33 @@ fieldset {
   }
 
   &.loaded {
-    opacity: 1;
-    .avatar {
-      display: none;
-    }
+    // opacity: 1;
+
+    // .avatar {
+    //   display: none;
+    // }
+    // &[style*="background-image:none"] {
+    //       .avatar {
+    //         display: block;
+    //       }
+    // }
     .loading-overlay {
       display: none;
     }
   }
+
+  // &.loaded {
+  //   opacity: 1;
+  //   // Only hide avatar when there's an actual background image
+  //   &[style*="background-image:url"] {
+  //     .avatar {
+  //       display: none;
+  //     }
+  //   }
+  //   .loading-overlay {
+  //     display: none;
+  //   }
+  // }
 
   // .loading-indicator {
   //   position: absolute;
@@ -608,7 +939,6 @@ fieldset {
   //   transform: translate(-50%, -50%);
   //   z-index: 2;
   // }
-
 
   &.loading {
     opacity: 0.8;
@@ -625,14 +955,14 @@ fieldset {
     transition: background-size 0.2s ease-out;
   }
 
-   &.is-dragging {
+  &.is-dragging {
     transition: none !important; // Disable transitions during drag
-
+  }
     // .reset{
     //   pointer-events: none;
     //   // cursor: none;
     // }
-  }
+  // }
   
   // &:not(.is-dragging) {
   //   transition: transform 0.3s ease-out; // Smooth transitions when not dragging
@@ -651,6 +981,162 @@ fieldset {
     background-repeat: no-repeat !important;
     background-color: #c7ff20 !important;
   }
+
+  &:not([style*="background-image"]), 
+    &[style*="background-image: none"] {
+      background-color: #c7ff20 !important;
+      opacity: 1 !important;
+  }
+
+  &[style*="background-image"]:not([style*="background-image: none"]) {
+    .avatar {
+      display: none !important;
+    }
+  }
+
+  &.changing-picture {
+    &[style*="background-image:url"] {
+          .avatar {
+            display: none;
+          }
+        }
+    &[style*="background-image:none"] {
+      .avatar {
+        display: block !important;
+      }
+    }        
+  }
+
+  // &.changing-picture {
+  //   // Add this for first load cases
+  //   &.from-avatar[style*="background-image:url"] {
+  //     animation: fadeInImage 3s ease-in forwards;
+  //   }
+
+  //   &[style*="background-image:url"] {
+  //     .avatar {
+  //       opacity: 0;
+  //       transition: opacity 0.3s ease;
+  //       &.hidden {
+  //         display: none;
+  //       }
+  //     }
+  //   }
+    
+  //   &[style*="background-image:none"] {
+  //     .avatar {
+  //       opacity: 1;
+  //       transition: opacity 0.3s ease;
+  //       display: block !important;
+  //     }
+  //   }
+  // }
+
+  // &.changing-picture {
+  //   &.fade-in-image {
+  //     // Start with opacity 0
+  //     opacity: 0;
+  //     // Use animation instead of transition
+  //     animation: fadeInImage 0.3s ease-in forwards;
+  //   }
+
+  //   &[style*="background-image:url"] {
+  //     .avatar {
+  //       opacity: 0;
+  //       transition: opacity 0.3s ease;
+  //     }
+  //   }
+    
+  //   &[style*="background-image:none"] {
+  //     .avatar {
+  //       opacity: 1;
+  //       transition: opacity 0.3s ease;
+  //       display: block !important;
+  //     }
+  //   }
+  // }
+
+  // &.changing-picture {
+  //   // Add this for first load cases
+  //   &.from-avatar[style*="background-image:url"] {
+  //     animation: fadeInImage 0.3s ease forwards;
+  //   }
+
+  //   &[style*="background-image:url"] {
+  //     .avatar {
+  //       opacity: 0;
+  //       transition: opacity 0.3s ease;
+  //       &.hidden {
+  //         display: none;
+  //       }
+  //     }
+  //   }
+  //     // // Only apply fade-in animation when entering changing-picture state
+  //     // // and there was no previous background image
+  //     // &.from-avatar {
+  //     //   animation: fadeInImage 0.3s ease forwards;
+  //     // }
+  //   }
+
+
+// }
+  // // If there's ANY background image set (whether url or none)
+  //  &[style*="background-image"] {
+  //   // &[style*="background-image"] {
+  //       .avatar {
+  //         display: block !important;
+  //       }
+  //   // }
+  //   // Only hide avatar if it's NOT 'none'
+  //   &:not([style*="background-image:none"]) {
+  //     .avatar {
+  //       display: none !important;
+  //     }
+  //   }
+  // }
+
+   // If there's ANY background image set (whether url or none)
+  //  &[style*="background-image"] {
+  //   // Only hide avatar if it's NOT 'none'
+  //   &:not([style*="background-image:none"]) {
+  //     .avatar {
+  //       display: none;
+  //     }
+  //   }
+  // }
+
+  &[style*="background-image:none"] {
+    .avatar {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      display: block !important;
+    }
+  }
+}
+
+@keyframes slideOut {
+  from {
+      transform: translateX(0);
+  }
+  to {
+      transform: translateX(-100%);
+  }
+  }
+
+  @keyframes slideIn {
+  from {
+      transform: translateX(100%);
+  }
+  to {
+      transform: translateX(0);
+  }
+}
+
+
+.controls-animation-complete {
+  animation: none !important;
+  transition: none !important;
+  pointer-events: auto !important;
 }
 
 @keyframes boxShadowExpand {
@@ -658,12 +1144,108 @@ fieldset {
     box-shadow: 0 0 0 #c7ff20;
   }
   50% {
-    box-shadow: 0 0 60px #c7ff20;
+    box-shadow: 0 0 50px 10px #c7ff20;
   }
   100% {
-    box-shadow: 0 0 40px #c7ff20;
+    box-shadow: 0 0 30px 10px #c7ff20;
   }
 }
+
+@keyframes fadeInImage {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// .image-wrapper {
+//   position: absolute;
+//   inset: 0;
+//   width: 100%;
+//   height: 100%;
+//   transition: transform 0.4s ease-in-out;
+//   will-change: transform;
+//   backface-visibility: hidden;
+//   background: {
+//       size: cover;
+//       position: center;
+//       repeat: no-repeat;
+//   }
+
+//   &.current {
+//       z-index: 1;
+//       transform: translateX(0);
+      
+//       &.sliding-left {
+//           transform: translateX(-100%);
+//       }
+//   }
+
+//   &.next {
+//       z-index: 2;
+//       transform: translateX(100%);
+      
+//       &.sliding-in {
+//           transform: translateX(0);
+//       }
+//   }
+// }
+
+.image-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s ease-in-out;
+  will-change: transform;
+  backface-visibility: hidden;
+  background: {
+    size: cover;
+    position: center;
+    repeat: no-repeat;
+  }
+
+  &.current {
+    z-index: 1;
+    transform: translateX(0);
+    
+    &.sliding-left { transform: translateX(-100%); }
+  }
+
+  &.next {
+    z-index: 2;
+    transform: translateX(100%);
+    
+    &.sliding-in { transform: translateX(0); }
+  }
+}
+
+// .dragToCenter, 
+// .zoomButtons, 
+// .reset, 
+// .profile-image-navigation {
+//   opacity: 0; // Start hidden
+//   pointer-events: none;
+  
+//   &.controls-animation-complete {
+//     // opacity: 0.8; // Final opacity
+//     pointer-events: auto;
+//   }
+
+//   &.fadeOut {
+//     opacity: 0;
+//     transition: opacity 0.3s ease;
+//   }
+
+//   &.fadeIn {
+//     opacity: 0.8;
+//     transition: opacity 0.3s ease;
+//   }
+// }
+
+
 //   @keyframes boxShadowExpand {
 //     0% {
 //       box-shadow: 0 0 0 #c7ff20;
@@ -845,6 +1427,10 @@ fieldset {
   line-height: inherit
 }
 
+// .providerUrlReminder{
+//   color: red
+// }
+
 // .orSpan{
 //   display: flex;
 //   flex-direction: row;
@@ -1012,7 +1598,8 @@ fieldset {
   }
 
   &.disabled {
-    cursor: not-allowed;
+    cursor: default;
+    pointer-events: none;
     // pointer-events: none;
     opacity: 0.4;
   }
@@ -2063,7 +2650,7 @@ input:disabled:-moz-placeholder {
   background-color: rgb(25, 25, 25);
   color: white !important;
   width: 8.5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
   // margin-left: 1rem;
 }
 
@@ -2902,10 +3489,13 @@ input[matInput]:focus.error-input::placeholder {
   // }
 
   p.supportedFileTypes,
-  p.uploadSuccess {
+  p.uploadSuccess,
+  p.providerUrlReminder {
     width: 100% !important;
     max-width: 14rem;
     word-wrap: wrap-word;
+    line-height: 1;
+    font-size: 0.75rem;
   }
 
   .uploadSuccess {
@@ -2990,6 +3580,7 @@ input[matInput]:focus.error-input::placeholder {
 
   .profileInfo {
     position: relative;
+    // flex: 1;
     height: auto;
     min-height: auto;
     max-height: 44rem;
@@ -3012,7 +3603,6 @@ input[matInput]:focus.error-input::placeholder {
     // overflow-x: hidden;
     // scrollbar-color: #ffffff #000000;
     aspect-ratio: 2/5;
-    
   }
 
   .flexAllProfileData {
@@ -3100,7 +3690,7 @@ input[matInput]:focus.error-input::placeholder {
     // margin-left: -0.5rem;
     // gap: 1.5rem;
     gap: clamp(0rem, 2vw, 1rem);
-    margin-left: -0.7rem;
+    // margin-left: -0.7rem;
   }
 
   .updatePasswordButtonContainer{
@@ -3195,9 +3785,10 @@ input[matInput]:focus.error-input::placeholder {
 
   .profileNameTier {
     height: auto;
-    width: 100%;
+    // width: 100%;
     width: 400px;
     margin: auto;
+    padding-bottom: 4rem;
     padding-right: 0;
   }
 
@@ -3331,7 +3922,8 @@ input[matInput]:focus.error-input::placeholder {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%) scale(0.2);
-    width: 150vw;
+    width: 70vw;
+    min-width: 600px;
     max-width: 800px;
     height: auto;
   }
@@ -3897,6 +4489,11 @@ input[matInput]:focus.error-input::placeholder {
   .loading-overlay{
     top: 55%;
     transform: translateY(-50%);
+  }
+
+  fieldset {
+    border-color: none !important;
+    border-style: none !important;
   }
 
 

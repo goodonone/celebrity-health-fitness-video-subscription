@@ -605,7 +605,6 @@ input[matInput]:focus::placeholder {
     justify-content: space-between;
     /* justify-content: flex-start; */
     flex-direction: row !important;
-
     height: auto;
     /* border: none;
     width: 30rem;
@@ -614,8 +613,11 @@ input[matInput]:focus::placeholder {
   }
   
   mat-button-toggle{
-    width: 100%;
-    max-width: 31%;
+    width: 30%;
+    /* width: 30%; */
+    /* width: auto; */
+    /* min-width: 30%; */
+    max-width: 32%;
     padding-right: 0.3rem;
     padding-bottom: 1.5rem;
     height: auto;

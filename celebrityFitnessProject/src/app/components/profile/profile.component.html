@@ -43,79 +43,6 @@
                 <!-- [ngClass]="{'firstTimeAnimation': currentUser.tier === 'All In' && 'firstTimeAnimation'} -->
                 <!-- 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' -->
                 <div class="flexAllProfileData">
-                    <!-- <div class="profilePictureAndButtonsContainer">
-                        <div class="profilePictureAndButtons">
-                            <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}">
-                                <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{ 'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
-                                <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
-                                    <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
-                                    (mouseenter)="!isDisabled('minus') && onMouseEnter('minus')"
-                                    (mousedown)="onMouseDown('minus')" 
-                                    (mouseup)="onMouseUp('minus')" 
-                                    (mouseleave)="onMouseLeave('minus')"
-                                    (click)="zoomOut()"></fa-icon>
-                                    <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
-                                    (mouseenter)="!isDisabled('plus') && onMouseEnter('plus')"
-                                    (mousedown)="onMouseDown('plus')" 
-                                    (mouseup)="onMouseUp('plus')" 
-                                    (mouseleave)="onMouseLeave('plus')"
-                                    (click)="zoomIn()"></fa-icon>
-                                </div>
-                                <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (mousedown)="onMouseDown('reset')" 
-                                (mouseenter)="!isDisabled('reset') && onMouseEnter('reset')"
-                                (mouseup)="onMouseUp('reset')" 
-                                (mouseleave)="onMouseLeave('reset')"
-                                [ngClass]="{'clicked': isResetClicked, 
-                                'disabled': isInDefaultPosition()}"
-                                (click)="resetImagePositionAndZoom()">RESET</p>
-                                <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
-                                <div class="profile-image-navigation" *ngIf="shouldShowNavigation()">
-                                    <fa-icon [icon]="['fas', 'chevron-left']" 
-                                             class="chevronLeft" 
-                                             (click)="previousImage()"
-                                             (mousedown)="onMouseDown('left')"
-                                             (mouseenter)="!isDisabled('left') && onMouseEnter('left')"
-                                             (mouseup)="onMouseUp('left')" 
-                                             (mouseleave)="onMouseLeave('left')"
-                                             [ngClass]="{'clicked': leftClicked}">
-                                    </fa-icon>                                   
-                                    <fa-icon [icon]="['fas', 'chevron-right']" 
-                                             class="chevronRight"
-                                             (click)="nextImage()"
-                                             (mousedown)="onMouseDown('right')"
-                                             (mouseenter)="!isDisabled('right') && onMouseEnter('right')"
-                                             (mouseup)="onMouseUp('right')" 
-                                             (mouseleave)="onMouseLeave('right')"
-                                             [ngClass]="{'clicked': rightClicked}">
-                                    </fa-icon>
-                                </div>
-                                <mat-card class="profilePicture" id="profilePicture" 
-                                    [ngStyle]="imageStyles" 
-                                    [ngClass]="{'default-position': !isDragged, 
-                                    'loaded': imageLoadedSuccessfully,
-                                    'loading': !imageLoadedSuccessfully,
-                                    'firstTimeAnimation': firstTimeAnimation && tierThree, 
-                                    'tierThreeStyle': tierThree, 
-                                    'draggable': canDrag()}" 
-                                    (mousedown)="startDrag($event)"
-                                    (touchstart)="startDrag($event)" 
-                                    #profileImg>
-
-                                Show loading indicator -->
-                                <!-- <div class="loading-indicator" *ngIf="!imageLoadedSuccessfully && !imageNotFound">
-                                    <mat-spinner diameter="40"></mat-spinner>
-                                </div>    
-
-                                <p class="imageNotFound" *ngIf="imageNotFound && !shouldShowAvatar()">Image Not Found. <br> Please Contact Support!</p>
-
-                                
-                                <img class="avatar" 
-                                src="assets/Images/avatar.png" 
-                                *ngIf="shouldShowAvatar()"
-                                (error)="handleAvatarError($event)"
-                                alt="Profile Avatar">
-                                </mat-card>
-                            </div> --> 
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
                             <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging}" >
@@ -126,9 +53,9 @@
                                     <p class="loadingImagesText">{{ loadingText }}</p>
                                 </div>
 
-                                <ng-container *ngIf="!isLoadingImages && currentState === ProfileState.ChangingPicture">
-                                    <p class="dragToCenter wide" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
-                                    <div class="zoomButtons" *ngIf="canDrag() && isImageUrlFilled()">
+                                <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded))">
+                                    <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
+                                    <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()">
                                         <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
                                         (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
                                         (pointerdown)="onMouseDown('minus')" 
@@ -142,7 +69,7 @@
                                         (pointerleave)="onMouseLeave('plus')"
                                         (click)="zoomIn()"></fa-icon>
                                     </div>
-                                    <p class="reset" *ngIf="canDrag() && isImageUrlFilled()" (pointerdown)="onMouseDown('reset')" 
+                                    <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" (pointerdown)="onMouseDown('reset')" 
                                     (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
                                     (pointerup)="onMouseUp('reset')" 
                                     (pointerleave)="onMouseLeave('reset')"
@@ -150,9 +77,8 @@
                                     'disabled': isInDefaultPosition(), 
                                     'draggingOver': isDragging}"
                                     (click)="resetImagePositionAndZoom()">RESET</p>
-                                    <p class="dragToCenter narrow" *ngIf="canDrag() && isImageUrlFilled()" [ngClass]="{'narrow': true}">DRAG</p>
-                                    <!-- <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && showImageNavigation "> -->
-                                    <div class="profile-image-navigation" *ngIf="canDrag() && isImageUrlFilled() && imageCount > 1">
+                                    <p class="dragToCenter narrow" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'narrow': true}">DRAG</p>
+                                    <div class="profile-image-navigation" *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()) && shouldShowNavigation()">
                                         <fa-icon [icon]="['fas', 'chevron-left']" 
                                                     class="chevronLeft" 
                                                     (click)="previousImage()"
@@ -175,6 +101,7 @@
                                 </ng-container>
                                 <mat-card class="profilePicture" id="profilePicture" 
                                     [ngStyle]="imageStyles" 
+                                    [class.changing-picture]="currentState === ProfileState.ChangingPicture"
                                     [ngClass]="{'default-position': !isDragged, 
                                     'loaded': imageLoadedSuccessfully,
                                     'loading': !imageLoadedSuccessfully || isLoadingImages,
@@ -185,13 +112,125 @@
                                     (touchstart)="startDrag($event)" 
                                     #profileImg>
                                 <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
-                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && !imageNotFound">
-                                </mat-card>
+                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && (currentState !== ProfileState.ChangingPicture || !imageManagementService.hasAnyFirebaseImages())">
+                                </mat-card>  -->
+
+                                <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded))"> -->
+                                <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded) || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully))">
+                                    <!-- <div style="width: 100%; height: 100%;"> -->
+                                    <!-- <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }" [@fadeInControls]>DRAG <br> TO <br> POSITION</p> -->
+                                    <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }" [@fadeInControls]>DRAG <br> TO <br> POSITION</p>
+                                    <!-- <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [@fadeInControls]> -->
+                                    <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [@fadeInControls]>
+                                        <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
+                                        (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
+                                        (pointerdown)="onMouseDown('minus')" 
+                                        (pointerup)="onMouseUp('minus')" 
+                                        (pointerleave)="onMouseLeave('minus')"
+                                        (click)="zoomOut()"></fa-icon>
+                                        <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
+                                        (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
+                                        (pointerdown)="onMouseDown('plus')" 
+                                        (pointerup)="onMouseUp('plus')" 
+                                        (pointerleave)="onMouseLeave('plus')"
+                                        (click)="zoomIn()"></fa-icon>
+                                    </div>
+                                    <!-- <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" (pointerdown)="onMouseDown('reset')"  -->
+                                    <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)"
+                                    (pointerdown)="onMouseDown('reset')"
+                                    (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
+                                    (pointerup)="onMouseUp('reset')" 
+                                    (pointerleave)="onMouseLeave('reset')"
+                                    [ngClass]="{'clicked': isResetClicked, 
+                                    'disabled': isInDefaultPosition(), 
+                                    'draggingOver': isDragging}"
+                                    (click)="resetImagePositionAndZoom()"
+                                    [@fadeInReset]="{value: 'enter', params: { finalOpacity: getResetControlOpacity() }}">RESET</p>
+                                    <!-- <p class="dragToCenter narrow" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'narrow': true}" [@fadeInControls]>DRAG</p> -->
+                                    <p class="dragToCenter narrow"  *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [ngClass]="{'narrow': true}" [@fadeInControls]>DRAG</p>
+                                    <!-- <div class="profile-image-navigation" *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()) && shouldShowNavigation()" [@fadeInControls]> -->
+                                    <div class="profile-image-navigation"  *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)) && shouldShowNavigation()" [@fadeInControls]>    
+                                        <fa-icon [icon]="['fas', 'chevron-left']" 
+                                                    class="chevronLeft" 
+                                                    (click)="previousImage()"
+                                                    (pointerdown)="onMouseDown('left')"
+                                                    (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
+                                                    (pointerup)="onMouseUp('left')" 
+                                                    (pointerleave)="onMouseLeave('left')"
+                                                    [ngClass]="{'clicked': leftClicked}">
+                                        </fa-icon>                                   
+                                        <fa-icon [icon]="['fas', 'chevron-right']" 
+                                                    class="chevronRight"
+                                                    (click)="nextImage()"
+                                                    (pointerdown)="onMouseDown('right')"
+                                                    (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
+                                                    (pointerup)="onMouseUp('right')" 
+                                                    (pointerleave)="onMouseLeave('right')"
+                                                    [ngClass]="{'clicked': rightClicked}">
+                                        </fa-icon>
+                                    </div>
+                                <!-- </div> -->
+                                </ng-container>
+                                    <!-- <mat-card class="profilePicture" id="profilePicture" 
+                                        [ngStyle]="imageStyles" 
+                                        [style.--old-image]="oldBackgroundUrl ? 'url(' + oldBackgroundUrl + ')' : ''"
+                                        [style.--new-image]="newBackgroundUrl ? 'url(' + newBackgroundUrl + ')' : ''"
+                                        [style.--x-direction]="xDirection"
+                                        [class.changing-picture]="currentState === ProfileState.ChangingPicture"
+                                        [ngClass]="[
+                                            newImageStartingClass,
+                                            isSlidingLeft ? 'slide-left' : '',
+                                            isSlidingRight ? 'slide-right' : '',
+                                            currentState === ProfileState.ChangingPicture ? 'changing-picture' : '',
+                                            !isDragged ? 'default-position' : '',
+                                            imageLoadedSuccessfully ? 'loaded' : '',
+                                            (!imageLoadedSuccessfully || isLoadingImages) ? 'loading' : '',
+                                            (firstTimeAnimation && tierThree) ? 'firstTimeAnimation' : '',
+                                            tierThree ? 'tierThreeStyle' : '',
+                                            canDrag() ? 'draggable' : ''
+                                        ]"
+                                        (mousedown)="startDrag($event)"
+                                        (touchstart)="startDrag($event)"
+                                        (transitionend)="onSlideAnimationEnd($event)"  
+                                        #profileImg>
+                                    <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
+                                    <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && (currentState !== ProfileState.ChangingPicture || !imageManagementService.hasAnyFirebaseImages())">
+                                    </mat-card>  -->
+
+                                    <mat-card class="profilePicture" id="profilePicture"
+                                                [class.changing-picture]="currentState === ProfileState.ChangingPicture"
+                                                [ngClass]="getProfileClasses()"
+                                                (mousedown)="startDrag($event)"
+                                                (touchstart)="startDrag($event)"
+                                                (transitionend)="onSlideAnimationEnd($event)"
+                                                #profileImg>
+                                                
+                                                <!-- Current Image -->
+                                                <div class="image-wrapper"
+                                                    [ngStyle]="imageStyles"
+                                                    [@slideAnimation]="currentImageState"
+                                                    *ngIf="isTransitioning">
+                                                </div>
+
+                                                <!-- Next Image -->
+                                                <div class="image-wrapper"
+                                                    [ngStyle]="nextImageStyles"
+                                                    [@slideAnimation]="nextImageState">
+                                                </div>
+
+                                                <!-- Error and Avatar States -->
+                                                <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
+                                                <img class="avatar" 
+                                                    src="assets/Images/avatar.png" 
+                                                    *ngIf="!currentUser.imgUrl && (currentState !== ProfileState.ChangingPicture || !imageManagementService.hasAnyFirebaseImages())">
+                                    </mat-card>
                             </div>
                             <div class="editProfileButtonsContainerIncludingPicture">
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="currentUser.imgUrl && currentState === ProfileState.ChangingPicture" (click)="deleteCurrentImage()" [class.can-hover]="canHoverDelete" (pointerenter)="handleMouseEnter()">Delete Picture</button>
+                                <!-- <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="(currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile))" (click)="changePicture()">Change Picture</button> -->
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && !imageManagementService.hasAnyFirebaseImages() && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="(currentUser.imgUrl || imageManagementService.hasAnyFirebaseImages()) && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
+                                <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="((currentUser.imgUrl || imageManagementService.hasAnyFirebaseImages()) && currentState === ProfileState.ChangingPicture) && !showUploadSuccess" (click)="deleteCurrentImage()" [class.can-hover]="canHoverDelete" (pointerenter)="handleMouseEnter()" (pointerleave)="handleMouseLeave()">Delete Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -499,7 +538,7 @@
                     <p class="supportedFileTypes">Supported file formats include .jpg, .jpeg, .png, .gif & .webp & 5MB max size. </p>
                     <p class="uploadSuccess" *ngIf="shouldShowUploadSuccess()">Image Uploaded! <strong>Save</strong> to store or <strong>Cancel</strong> to discard.</p>
                 </div> 
-                </ng-container>  -->
+                </ng-container> -->
 
                 <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
                     <div class="profilePictureFormContainer">
@@ -514,6 +553,7 @@
 
                         <div class="imageInputContainer">
                             <input matInput 
+                                #urlInput
                                 class="imgUrl" 
                                 placeholder="Paste Link/File Upload"
                                 type="text" 
@@ -521,8 +561,13 @@
                                 [ngClass]="{'error-input': shouldShowError('imgUrl')}"
                                 formControlName="imgUrl" 
                                 (input)="onImageUrlInput($event)"
-                                pattern="https?://.+">
-
+                                (paste)="onUrlPaste($event)"
+                                pattern="https?://.+"
+                                matTooltip="Paste an image URL from Unsplash, Pexels or Pixabay here. (Note: These image urls are only retained as long as they are set as your Profile Picture)"
+                                [matTooltipDisabled]="tooltipDisabled"
+                                (pointerenter)="enableTooltip()"
+                                (pointerleave)="disableTooltip()">  
+                                
                             <!-- Hidden File Input -->
                             <input
                                 #fileInput
@@ -531,7 +576,6 @@
                                 (change)="onFileSelected($event)"
                                 style="display: none">
                         
-                            
                             <!-- Upload Button -->
                             <button mat-button 
                                 class="uploadButton"
@@ -550,7 +594,7 @@
 
                       </div>
                       <div class="savePictureButtonContainer">
-                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
+                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">{{ getCancelButtonText() }}</button>
                         <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
                             <ng-container *ngIf="!isSavingPicture">Save</ng-container>
                                 <div *ngIf="isSavingPicture" class="savingState">
@@ -562,8 +606,9 @@
                       </div>
                     </form>
                     <div class="uploadInstructionsAndSuccess">
-                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max. <br> <strong>Or</strong>, Paste an Image URL from Unsplash, Pexels or Pixabay. (Note: These Image URLs are only retained as long as they are set as your Profile Picture)</p>
-                        <p class="uploadSuccess" *ngIf="showUploadSuccess"><span class="uploadedSuccessSpan"><strong>Image Uploaded!</strong> &nbsp;</span> <strong>Save</strong> to keep,<br><strong>Cancel</strong> <span class="arrowSpan" *ngIf="onlyFirebaseImageCount > 1">&nbsp; or &nbsp; <strong><></strong></span> to discard.</p>
+                        <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max. <br><br> Or, paste urls from Unsplash, Pexels or Pixabay into the input field above.</p>
+                        <p class="uploadSuccess" *ngIf="showUploadSuccess"><span class="uploadedSuccessSpan"><strong>Image Uploaded!</strong> &nbsp;</span> <strong>Save</strong> to store,<br><strong>Cancel</strong> to discard.</p>
+                        <!-- <p class="providerUrlReminder" *ngIf="providerUrlPasted"><sup>*</sup>These image urls are only retained as long as they are set as your Profile Picture.</p> -->
                     </div>
                 </div> 
                 </ng-container>

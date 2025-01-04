@@ -281,7 +281,7 @@
         <mat-card class="cartContainer">
             <ng-container *ngIf="cart$ | async as cart">
                 <h1 *ngIf="(!cart.items.length && !tierTwoThree) || cartStatic" class="pageName">Cart</h1>
-                <h1 *ngIf="cart.items.length === 0 && tierTwoThree" class="pageName">Checkout</h1>
+                <!-- <h1 *ngIf="cart.items.length === 0 && tierTwoThree" class="pageName">Checkout</h1> -->
         
                 <mat-card-content class="cardFlex">
                     <ng-container *ngIf="cart.items.length; else emptyCart">
@@ -370,18 +370,19 @@
                         </div>
                     
                         <div class="buttonContainer">
-                            <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
-                            <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button>
+                            <button mat-button class="buttonCheckOut" routerLink="/checkout">Checkout</button>
+                            <!-- <button mat-button class="buttonCheckOut" (click)="checkoutCart()" *ngIf="tierTwoThree">Checkout</button>
+                            <button mat-button class="buttonCheckOut" routerLink="/checkout" *ngIf="!tierTwoThree">Proceed to Checkout</button> -->
                         </div>
                     </ng-container>
                     
                     <ng-template #emptyCart>
                         <div class="emptyMessageContainer">
-                            <p *ngIf="!tierTwoThree" class="emptyMessage">Your cart is empty</p>
-                            <div *ngIf="tierTwoThree" class="thankYouMessage">
+                            <p *ngIf="cart.items.length === 0" class="emptyMessage">Your cart is empty</p>
+                            <!-- <div *ngIf="tierTwoThree" class="thankYouMessage">
                                 <h1 class="thankYou">Thank You for your Purchase!</h1>
                                 <p class="payment">Payment has been processed with Card on file. You will receive a Confirmation Email shortly. If you do not, please feel free to reach out to our Support Team at support&#64;hughjackedman.com.</p>
-                            </div>
+                            </div> -->
                         </div>
                     </ng-template>
                 </mat-card-content>

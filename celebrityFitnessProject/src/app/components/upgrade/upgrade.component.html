@@ -1,21 +1,26 @@
 <div class="background">
     <div class="containerFlex">
         <div class="textContainer">
-            <h1 class="changeTierText" *ngIf="showOrHide">Change Plan</h1>
-            <h1 class="changeTierTextTwo" *ngIf="!showOrHide"> Upgrade Plan</h1>
+            <h1 class="changeTierText" *ngIf="showOrHide">Change <br> Plan</h1>
+            <h1 class="changeTierTextTwo" *ngIf="!showOrHide"> Upgrade <br> Plan</h1>
+            <div class="arrowContainer" [ngClass]="{'narrow': true}">
+                <div class="arrows">
+                    <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+                    <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
+                </div>
+            </div>
         </div>
         <div class="cardContainer">
-            <mat-card class="card">
-                <mat-card-content class="cardContent">
-                    <!-- <div class="innerCardContainer"> -->
-                        <mat-card class="innerCardTwo">
+            <!-- <mat-card class="card"> -->
+                <!-- <mat-card-content class="cardContent"> -->
+
+                        <mat-card class="card">
                             <app-form [loggedIn]="userLoggedIn" [payment]="payment" [tierTwoThree]="tierTwoThree"></app-form>
                             <app-progression-buttons [loggedIn]="userLoggedIn" [payment]="payment"></app-progression-buttons>
                         </mat-card>
-                    <!-- </div> -->
-                </mat-card-content>
-            </mat-card>
+
+                <!-- </mat-card-content> -->
+            <!-- </mat-card> -->
         </div>
     </div>
-
 </div>
