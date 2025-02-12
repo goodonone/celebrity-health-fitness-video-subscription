@@ -1,137 +1,3 @@
-
-
-import { Injectable } from '@angular/core';
-import { storage, auth } from '../firebase.config';
-import { ref, listAll, getDownloadURL, deleteObject, StorageReference, uploadBytesResumable, getMetadata } from 'firebase/storage';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { FirebaseService } from './firebase.service';
-import { StorageService } from './storage.service';
-import { Auth } from 'firebase/auth';
-import { AuthService } from './auth.service';
-import { User } from '../models/user';
-import { UserService } from './user.service';
-import { environment } from 'src/environments/environment';
-
-interface UserImages {
-  urls: string[];
-  currentIndex: number;
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class ImageManagementService {
-  
-  private readonly baseUrl = environment.apiUrl;
-  private userImagesMap = new Map<string, BehaviorSubject<UserImages>>();
-  private imageLoadErrors = new Set<string>();
-  private loadingImages = false;
-  public temporaryUrl: string | null = null;
-  private currentProfilePath: string | null = null;
-  private isProviderProfile: boolean = false; 
-  private hasStartedNavigating = false;
-  private preloadedImages = new Map<string, boolean>();
-  private currentImageIndex = 0;
-  private imageUrls: string[] = [];
-  private selectedImagePath: string | null = null;
-  private hasFirebaseImagesSubject = new BehaviorSubject<boolean>(false);
-  hasFirebaseImages$ = this.hasFirebaseImagesSubject.asObservable();
-  private firebaseImageCount = 0;
-  private currentProfileImage: string | null = null;
-  private convertedUrlCache = new Map<string, string>();
-
-  constructor(
-    private firebaseService: FirebaseService,
-    private storageService: StorageService,
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
-
-private cacheUrl(originalUrl: string, convertedUrl: string): void {
-this.convertedUrlCache.set(originalUrl, convertedUrl);
-}
-
-private getCachedUrl(originalUrl: string): string | undefined {
-return this.convertedUrlCache.get(originalUrl);
-}
-
-private clearUrlCache(): void {
-this.convertedUrlCache.clear();
-}
-
-// Subject Management
-getUserImagesSubject(userId: string): BehaviorSubject<UserImages> {
-  if (!this.userImagesMap.has(userId)) {
-    this.userImagesMap.set(userId, new BehaviorSubject<UserImages>({
-      urls: [],
-      currentIndex: 0
-    }));
-  }
-  return this.userImagesMap.get(userId)!;
-}
-
-isLoading(): boolean {
-  return this.loadingImages;
-}
-
-// setCurrentProfileImage(path: string) {
-//   // If it's a provider URL, store it as is
-//   if (this.isProviderUrl(path)) {
-//     this.currentProfilePath = path;
-//     this.isProviderProfile = true;
-//   } else {
-//     this.currentProfilePath = this.getImagePath(path);
-//     this.isProviderProfile = false;
-//   }
-//   console.log('Set current profile path:', this.currentProfilePath, 'isProvider:', this.isProviderProfile);
-// }
-
-setCurrentProfileImage(path: string) {
-  console.log('Setting current profile image:', path);
-  
-  // Clear any temporary URL when setting profile image
-  this.temporaryUrl = null;
-  
-  if (this.isProviderUrl(path)) {
-    this.currentProfilePath = path;
-    this.isProviderProfile = true;
-    console.log('Set provider URL as profile:', {
-      path: this.currentProfilePath,
-      isProvider: this.isProviderProfile
-    });
-  } else {
-    this.currentProfilePath = this.getImagePath(path);
-    this.isProviderProfile = false;
-    console.log('Set storage URL as profile:', {
-      path: this.currentProfilePath,
-      isProvider: this.isProviderProfile
-    });
-  }
-}
-
-setTemporaryUrl(url: string | null) {
-  this.temporaryUrl = url;
-  // Don't clear current profile path here anymore
-  
-  if (url) {
-    const subject = this.getUserImagesSubject(this.userService.getUserId());
-    const currentUrls = subject.value.urls;
-    const firebaseUrls = currentUrls.filter(u => !this.isProviderUrl(u));
-    const newUrls = [url, ...firebaseUrls];
-    
-    subject.next({
-      urls: newUrls,
-      currentIndex: 0
-    });
-  }
-  console.log('Temporary URL set and navigation updated:', url);
-}
-  
-clearTemporaryUrl() {
-  this.temporaryUrl = null;
-}
-
 // Working
 // async loadUserImages(userId: string): Promise<void> {
 //   console.log('Loading user images for:', userId);
@@ -2200,6 +2066,139 @@ clearTemporaryUrl() {
 //     this.loadingImages = false;
 //   }
 // }
+
+
+import { Injectable } from '@angular/core';
+import { storage, auth } from '../firebase.config';
+import { ref, listAll, getDownloadURL, deleteObject, StorageReference, uploadBytesResumable, getMetadata } from 'firebase/storage';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { FirebaseService } from './firebase.service';
+import { StorageService } from './storage.service';
+import { Auth } from 'firebase/auth';
+import { AuthService } from './auth.service';
+import { User } from '../models/user';
+import { UserService } from './user.service';
+import { environment } from 'src/environments/environment';
+
+interface UserImages {
+  urls: string[];
+  currentIndex: number;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ImageManagementService {
+  
+  private readonly baseUrl = environment.apiUrl;
+  private userImagesMap = new Map<string, BehaviorSubject<UserImages>>();
+  private imageLoadErrors = new Set<string>();
+  private loadingImages = false;
+  public temporaryUrl: string | null = null;
+  private currentProfilePath: string | null = null;
+  private isProviderProfile: boolean = false; 
+  private hasStartedNavigating = false;
+  private preloadedImages = new Map<string, boolean>();
+  private currentImageIndex = 0;
+  private imageUrls: string[] = [];
+  private selectedImagePath: string | null = null;
+  private hasFirebaseImagesSubject = new BehaviorSubject<boolean>(false);
+  hasFirebaseImages$ = this.hasFirebaseImagesSubject.asObservable();
+  private firebaseImageCount = 0;
+  private currentProfileImage: string | null = null;
+  private convertedUrlCache = new Map<string, string>();
+
+  constructor(
+    private firebaseService: FirebaseService,
+    private storageService: StorageService,
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
+
+private cacheUrl(originalUrl: string, convertedUrl: string): void {
+this.convertedUrlCache.set(originalUrl, convertedUrl);
+}
+
+private getCachedUrl(originalUrl: string): string | undefined {
+return this.convertedUrlCache.get(originalUrl);
+}
+
+private clearUrlCache(): void {
+this.convertedUrlCache.clear();
+}
+
+// Subject Management
+getUserImagesSubject(userId: string): BehaviorSubject<UserImages> {
+  if (!this.userImagesMap.has(userId)) {
+    this.userImagesMap.set(userId, new BehaviorSubject<UserImages>({
+      urls: [],
+      currentIndex: 0
+    }));
+  }
+  return this.userImagesMap.get(userId)!;
+}
+
+isLoading(): boolean {
+  return this.loadingImages;
+}
+
+// setCurrentProfileImage(path: string) {
+//   // If it's a provider URL, store it as is
+//   if (this.isProviderUrl(path)) {
+//     this.currentProfilePath = path;
+//     this.isProviderProfile = true;
+//   } else {
+//     this.currentProfilePath = this.getImagePath(path);
+//     this.isProviderProfile = false;
+//   }
+//   console.log('Set current profile path:', this.currentProfilePath, 'isProvider:', this.isProviderProfile);
+// }
+
+setCurrentProfileImage(path: string) {
+  console.log('Setting current profile image:', path);
+  
+  // Clear any temporary URL when setting profile image
+  this.temporaryUrl = null;
+  
+  if (this.isProviderUrl(path)) {
+    this.currentProfilePath = path;
+    this.isProviderProfile = true;
+    console.log('Set provider URL as profile:', {
+      path: this.currentProfilePath,
+      isProvider: this.isProviderProfile
+    });
+  } else {
+    this.currentProfilePath = this.getImagePath(path);
+    this.isProviderProfile = false;
+    console.log('Set storage URL as profile:', {
+      path: this.currentProfilePath,
+      isProvider: this.isProviderProfile
+    });
+  }
+}
+
+setTemporaryUrl(url: string | null) {
+  this.temporaryUrl = url;
+  // Don't clear current profile path here anymore
+  
+  if (url) {
+    const subject = this.getUserImagesSubject(this.userService.getUserId());
+    const currentUrls = subject.value.urls;
+    const firebaseUrls = currentUrls.filter(u => !this.isProviderUrl(u));
+    const newUrls = [url, ...firebaseUrls];
+    
+    subject.next({
+      urls: newUrls,
+      currentIndex: 0
+    });
+  }
+  console.log('Temporary URL set and navigation updated:', url);
+}
+  
+clearTemporaryUrl() {
+  this.temporaryUrl = null;
+}
 
 // MAIN method 
 async loadUserImages(userId: string, inChangePictureState: boolean): Promise<void> {

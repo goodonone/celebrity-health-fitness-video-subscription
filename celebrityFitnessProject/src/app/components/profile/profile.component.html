@@ -206,17 +206,33 @@
                                                 #profileImg>
                                                 
                                                 <!-- Current Image -->
-                                                <div class="image-wrapper"
+                                                <!-- <div class="image-wrapper"
                                                     [ngStyle]="imageStyles"
                                                     [@slideAnimation]="currentImageState"
                                                     *ngIf="isTransitioning">
-                                                </div>
+                                                </div> -->
 
                                                 <!-- Next Image -->
-                                                <div class="image-wrapper"
+                                                <!-- <div class="image-wrapper"
                                                     [ngStyle]="nextImageStyles"
                                                     [@slideAnimation]="nextImageState">
-                                                </div>
+                                                </div> -->
+
+                                                <div class="image-container">
+                                                    <!-- Current Image -->
+                                                    <div class="image-wrapper"
+                                                        [ngStyle]="imageStyles"
+                                                        [@slideAnimation]="currentImageState"
+                                                        *ngIf="isTransitioning">
+                                                    </div>
+                                            
+                                                    <!-- Next Image -->
+                                                    <div class="image-wrapper"
+                                                        [ngStyle]="nextImageStyles"
+                                                        [@slideAnimation]="nextImageState"
+                                                        *ngIf="nextImageStyles">
+                                                    </div>
+                                                 </div>
 
                                                 <!-- Error and Avatar States -->
                                                 <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>

@@ -82,67 +82,126 @@ interface ProfilePictureSettings {
         ])
       ]),
       // trigger('slideAnimation', [
-      //   // State for current image
+      //   // Existing states
       //   state('current', style({
       //     transform: 'translateX(0)'
       //   })),
-      //   // State for next image waiting to slide in
       //   state('next', style({
       //     transform: 'translateX(100%)'
       //   })),
-      //   // State for current image sliding out
       //   state('slideOutLeft', style({
       //     transform: 'translateX(-100%)'
       //   })),
-      //   // State for next image sliding in
       //   state('slideIn', style({
       //     transform: 'translateX(0)'
       //   })),
-      //   // Transitions
+      //   // New states for sliding right
+      //   state('slideOutRight', style({
+      //     transform: 'translateX(100%)'
+      //   })),
+      //   state('prev', style({
+      //     transform: 'translateX(-100%)'
+      //   })),
+      
+      //   // Existing transitions
       //   transition('current => slideOutLeft', [
       //     animate('400ms ease-in-out')
       //   ]),
       //   transition('next => slideIn', [
       //     animate('400ms ease-in-out')
+      //   ]),
+      //   // New transitions for sliding right
+      //   transition('current => slideOutRight', [
+      //     animate('400ms ease-in-out')
+      //   ]),
+      //   transition('prev => slideIn', [
+      //     animate('400ms ease-in-out')
       //   ])
       // ])
+      
+      // trigger('slideAnimation', [
+      //   // States with GPU acceleration
+      //   state('current', style({
+      //     transform: 'translateX(0) translateZ(0)'
+      //   })),
+      //   state('next', style({
+      //     transform: 'translateX(100%) translateZ(0)'
+      //   })),
+      //   state('slideOutLeft', style({
+      //     transform: 'translateX(-100%) translateZ(0)'
+      //   })),
+      //   state('slideIn', style({
+      //     transform: 'translateX(0) translateZ(0)'
+      //   })),
+      //   state('slideOutRight', style({
+      //     transform: 'translateX(100%) translateZ(0)'
+      //   })),
+      //   state('prev', style({
+      //     transform: 'translateX(-100%) translateZ(0)'
+      //   })),
+      
+      //   // Specific transitions with Material Design timing
+      //   transition('current => slideOutLeft', [
+      //     animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+      //   ]),
+      //   transition('next => slideIn', [
+      //     animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+      //   ]),
+      //   transition('current => slideOutRight', [
+      //     animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+      //   ]),
+      //   transition('prev => slideIn', [
+      //     animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+      //   ])
+      // ])
+
       trigger('slideAnimation', [
-        // Existing states
+        // Base states
         state('current', style({
-          transform: 'translateX(0)'
+          transform: 'translateX(0) translateZ(0)',
+          zIndex: 1
         })),
+        
+        // Next image states
         state('next', style({
-          transform: 'translateX(100%)'
+          transform: 'translateX(100%) translateZ(0)',
+          zIndex: 2
         })),
         state('slideOutLeft', style({
-          transform: 'translateX(-100%)'
+          transform: 'translateX(-100%) translateZ(0)',
+          zIndex: 1
         })),
-        state('slideIn', style({
-          transform: 'translateX(0)'
-        })),
-        // New states for sliding right
-        state('slideOutRight', style({
-          transform: 'translateX(100%)'
-        })),
+        
+        // Previous image states
         state('prev', style({
-          transform: 'translateX(-100%)'
+          transform: 'translateX(-100%) translateZ(0)',
+          zIndex: 2
         })),
-      
-        // Existing transitions
+        state('slideOutRight', style({
+          transform: 'translateX(100%) translateZ(0)',
+          zIndex: 1
+        })),
+        
+        // Common destination state
+        state('slideIn', style({
+          transform: 'translateX(0) translateZ(0)',
+          zIndex: 2
+        })),
+  
+        // Transitions
         transition('current => slideOutLeft', [
-          animate('400ms ease-in-out')
+          animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
+        ]),
+        transition('current => slideOutRight', [
+          animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
         ]),
         transition('next => slideIn', [
-          animate('400ms ease-in-out')
-        ]),
-        // New transitions for sliding right
-        transition('current => slideOutRight', [
-          animate('400ms ease-in-out')
+          animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
         ]),
         transition('prev => slideIn', [
-          animate('400ms ease-in-out')
+          animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
         ])
-      ])
+      ])  
   ]
 })
 //   animations: [
@@ -388,6 +447,7 @@ export class ProfileComponent implements OnInit {
   private isFirstAnimation = true;
   private animationTimeout: any;
   private transitionTimeout: any;
+  hasProfilePictureTransitioned = false;
   // slideState: 'current' | 'slideOutLeft' | 'slideOutRight' | 'slideInLeft' | 'slideInRight' = 'current';
   // isSliding = false;
   // currentBgImage: string | null = null;
@@ -409,6 +469,8 @@ export class ProfileComponent implements OnInit {
   showNext = false;
   currentImageState = 'current';
   nextImageState = 'next';
+  initialProfileUrl?: string | null = null;  
+  selectedProfileUrl?: string | null = null;
   // showOldImage = true;
   // showNewImage = true;
     // oldImageStyles!: { [key: string]: any };
@@ -531,6 +593,12 @@ export class ProfileComponent implements OnInit {
     this.hoverCount = 0;
     this.showUploadSuccess = false;
     this.initializeLoadingState();
+    this.initialProfileUrl = this.currentUser.imgUrl;
+    this.pictureForm.get('imgUrl')?.valueChanges.subscribe(newUrl => {
+      if (newUrl && this.currentState === ProfileState.ChangingPicture) {
+        this.selectedProfileUrl = newUrl;
+      }
+    });
   
     try {
       // Start preloading images immediately
@@ -731,8 +799,14 @@ export class ProfileComponent implements OnInit {
       console.log('Profile initialization completed successfully');
 
       // Remove later, just for testing
+      // this.pictureForm.get('imgUrl')?.valueChanges.subscribe(newUrl => {
+      //   console.log('URL changed to:', newUrl);
+      // });
+
       this.pictureForm.get('imgUrl')?.valueChanges.subscribe(newUrl => {
-        console.log('URL changed to:', newUrl);
+        if (newUrl && this.currentState === ProfileState.ChangingPicture) {
+          this.selectedProfileUrl = newUrl;
+        }
       });
   
     } catch(error: any) {
@@ -4237,7 +4311,7 @@ async cancelAction(): Promise<void> {
         this.hasStartedNavigating = false;
         this.showUploadSuccess = false;
         this.providerUrlPasted = false;
-        this.xDirection = '';
+        this.hasProfilePictureTransitioned = false;
 
       } finally {
         if (this.profileImg?.nativeElement) {
@@ -8074,7 +8148,7 @@ async saveProfilePicture(): Promise<void> {
       await this.updateImageTransform();
       this.imageManagementService.clearTemporaryUrl();
       this.isUploadingOrPasting = false;
-      this.xDirection = '';
+      this.hasProfilePictureTransitioned = false;
       this.cdr.detectChanges();
     });
 
@@ -10949,6 +11023,22 @@ resetImagePositionAndZoomToSaved() {
   this.updateImageTransform();
   this.cdr.detectChanges();
 }
+
+getProfileClasses() {
+  return {
+    'changing-picture': this.currentState === ProfileState.ChangingPicture,
+    'default-position': !this.isDragged,
+    'loaded': this.imageLoadedSuccessfully,
+    'loading': !this.imageLoadedSuccessfully || this.isLoadingImages,
+    'firstTimeAnimation': this.firstTimeAnimation && this.tierThree,
+    'tierThreeStyle': this.tierThree,
+    'draggable': this.canDrag()
+  };
+}
+
+// onProfilePictureSelected() {
+//   this.selectedProfileUrl = newProfileUrl;  // Store the newly selected profile URL
+// }
 
 
 // savePosition() {
@@ -14547,1396 +14637,7 @@ private async updateDatabaseToNull(): Promise<void> {
 }
 
 // async nextImage() {
-//     if (this.rightClicked) return;
-    
-//     try {
-//       this.rightClicked = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-//       this.resetImagePositionAndZoomDuringNavigation();
-
-//       // if(this.imageManagementService.isProviderUrl(this.pictureForm.get('imgUrl')?.value)) {
-//       //   this.pictureForm.patchValue({ imgUrl: this.pictureForm.get('imgUrl')?.value }, { emitEvent: false });
-//       // } else {
-
-//       // // Get the original storage path
-//       // const originalPath = await this.imageManagementService.getOriginalPath(this.userId, 
-//       // this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex);
-      
-//       // if (originalPath) {
-//       //   // Generate the proper API URL format
-//       //   const displayUrl = `${environment.apiUrl}/api/storage/${originalPath}`;
-//       //   this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//       // }
-
-//       // }
-
-//     await this.imageManagementService.nextImage(this.userId);
-      
-//     } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//     } finally {
-//       setTimeout(() => {
-//         this.rightClicked = false;
-//         this.cdr.detectChanges();
-//       }, 0);
-//     }
-// }
-
-
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // if(this.imageManagementService.isProviderUrl(this.pictureForm.get('imgUrl')?.value)) {
-//     //   this.pictureForm.patchValue({ imgUrl: this.pictureForm.get('imgUrl')?.value }, { emitEvent: false });
-//     // } else {
-//     //     // Get the original storage path
-//     //     const originalPath = await this.imageManagementService.getOriginalPath(this.userId, 
-//     //     this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex);
-      
-//     //   if (originalPath) {
-//     //     // Generate the proper API URL format
-//     //     const displayUrl = `${environment.apiUrl}/api/storage/${originalPath}`;
-//     //     this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//     //   }
-//     // }
-
-//     await this.imageManagementService.previousImage(this.userId);
-    
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.cdr.detectChanges();
-//     }, 0);
-//   }
-// }
-
-// Latest WORKING
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Get subject before navigation
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-    
-//     // Calculate next index
-//     const nextIndex = (currentState.currentIndex + 1) % currentState.urls.length;
-//     const nextUrl = currentState.urls[nextIndex];
-
-//     // Navigate first
-//     await this.imageManagementService.nextImage(this.userId);
-
-//     // Update form with the correct URL based on type
-//     if (this.imageManagementService.isProviderUrl(nextUrl)) {
-//       // For provider URLs, use the URL directly
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     } else {
-//       // For Firebase URLs, get the proper API URL
-//       const originalPath = await this.imageManagementService.getOriginalPath(
-//         this.userId,
-//         nextIndex
-//       );
-      
-//       if (originalPath) {
-//         const displayUrl = `${environment.apiUrl}/api/storage/${originalPath}`;
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//       }
-//     }
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Get subject before navigation
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-    
-//     // Calculate previous index
-//     const prevIndex = (currentState.currentIndex - 1 + currentState.urls.length) % currentState.urls.length;
-//     const prevUrl = currentState.urls[prevIndex];
-
-//     // Navigate first
-//     await this.imageManagementService.previousImage(this.userId);
-
-//     // Update form with the correct URL based on type
-//     if (this.imageManagementService.isProviderUrl(prevUrl)) {
-//       // For provider URLs, use the URL directly
-//       this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//     } else {
-//       // For Firebase URLs, get the proper API URL
-//       const originalPath = await this.imageManagementService.getOriginalPath(
-//         this.userId,
-//         prevIndex
-//       );
-      
-//       if (originalPath) {
-//         const displayUrl = `${environment.apiUrl}/api/storage/${originalPath}`;
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//       }
-//     }
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// Latest Working
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Navigate first
-//     this.imageManagementService.nextImage(this.userId);
-
-//     // After navigation, get the updated state
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-
-//     const newIndex = currentState.currentIndex;
-//     const nextUrl = currentState.urls[newIndex];
-
-//     // Update form with the new URL directly
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// Latest Working
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Navigate first
-//     this.imageManagementService.previousImage(this.userId);
-
-//     // After navigation, get the updated state
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-
-//     const newIndex = currentState.currentIndex;
-//     const prevUrl = currentState.urls[newIndex];
-
-//     // Update form with the new URL directly
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// Working
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // --- 1) The old image URL
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // --- 2) Navigate
-//     this.imageManagementService.nextImage(this.userId);
-
-//     // After navigation, get the updated state
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const nextUrl = currentState.urls[newIndex] || '';
-
-//     // --- 3) Store the old/new URLs for the sliding animation
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = nextUrl;
-
-//     // --- 4) Trigger the "slide-right" animation
-//     this.newImageStartingClass = 'start-slide-right';
-//     this.isSlidingRight = true;
-//     this.isSlidingLeft = false;
-
-//     // --- 5) Temporarily patch the form with the new URL
-//     // but do NOT immediately switch the real background (we'll do that after animation).
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// Working
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-//     this.imageManagementService.previousImage(this.userId);
-
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const prevUrl = currentState.urls[newIndex] || '';
-
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = prevUrl;
-
-//     // Trigger the slide-left animation
-//     this.newImageStartingClass = 'start-slide-left';
-//     this.isSlidingLeft = true;
-//     this.isSlidingRight = false;
-
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-/**
- * Called when the CSS animation finishes (via (animationend) on mat-card).
- * Use this to do final cleanup: actually set the mat-card's background-image
- * to the new URL, remove the sliding classes, etc.
- */
-// onSlideAnimationEnd(event: AnimationEvent) {
-//   // 1) Remove the classes
-//   this.isSlidingRight = false;
-//   this.isSlidingLeft = false;
-
-//   // 2) Actually update the mat-card’s real background to the new URL 
-//   // so that the pseudo-elements aren’t needed
-//   if (this.newBackgroundUrl) {
-//     this.imageStyles['background-image'] = `url('${this.newBackgroundUrl}')`;
-//   }
-//   // 3) Clear the old/new references
-//   this.oldBackgroundUrl = null;
-//   this.newBackgroundUrl = null;
-// }
-
-// Last working
-// onSlideAnimationEnd(event: TransitionEvent) {
-//   // If we only want to handle the transitionend from the ::after pseudo-element,
-//   // check something like this (pseudo-code!):
-//   const element = event.target as HTMLElement;  
-  
-//   // Often, event.target will be the mat-card itself or the pseudo-element.
-//   // You can inspect event.propertyName === 'transform' to be sure it’s the transform ending.
-//   // If you want to handle only the ::after, you can do e.g.:
-//   if (element.matches('.profilePicture::after') || element === this.profileImg.nativeElement /* if that’s what's happening */) {
-//     this.finalizeSlideAnimation();
-//   }
-// }
-
-// last working
-// finalizeSlideAnimation() {
-//   this.isSlidingRight = false;
-//   this.isSlidingLeft = false;
-
-//   if (this.newBackgroundUrl) {
-//     this.imageStyles['background-image'] = `url('${this.newBackgroundUrl}')`;
-//   }
-
-//   this.oldBackgroundUrl = null;
-//   this.newBackgroundUrl = null;
-// }
-
-// Last working animation code
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index forward
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const nextUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Prepare for slide-right
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = nextUrl;
-
-//     this.newImageStartingClass = 'start-slide-right';
-//     this.isSlidingRight = true;
-//     this.isSlidingLeft = false;
-
-//     // 4) Temporarily patch new URL in form (don't set real bg yet)
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index backward
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const prevUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Prepare for slide-left
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = prevUrl;
-
-//     this.newImageStartingClass = 'start-slide-left';
-//     this.isSlidingLeft = true;
-//     this.isSlidingRight = false;
-
-//     // 4) Temporarily patch new URL in form
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 200);
-//   }
-// }
-
-// onSlideAnimationEnd(event: TransitionEvent) {
-//   // We only want to finalize once, typically for the ::after transform transition
-//   const element = event.target as HTMLElement;
-
-//   // Example check: propertyName === 'transform'
-//   // or if you want to ensure it's specifically the new image 
-//   // (some browsers won't let you easily match pseudo-elements):
-//   if (event.propertyName === 'transform') {
-//     this.finalizeSlideAnimation();
-//   }
-// }
-
-// finalizeSlideAnimation() {
-//   this.isSlidingRight = false;
-//   this.isSlidingLeft = false;
-//   this.newImageStartingClass = '';
-
-//   if (this.newBackgroundUrl) {
-//     this.imageStyles['background-image'] = `url('${this.newBackgroundUrl}')`;
-//   }
-
-//   this.oldBackgroundUrl = null;
-//   this.newBackgroundUrl = null;
-// }
-
-////animation working with glitches////
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index forward
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const nextUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Prepare for slide-right
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = nextUrl;
-
-//     this.newImageStartingClass = 'start-slide-right';
-//     this.xDirection = '100%';
-//     this.cdr.detectChanges();
-
-//     // B) Animate in
-//     requestAnimationFrame(() => {
-//       this.isSlidingRight = true; 
-//       this.isSlidingLeft = false;
-     
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     });
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       // this.xDirection = '';
-//       this.cdr.detectChanges();
-//     }, 400);
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index backward
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const prevUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Prepare for slide-left
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = prevUrl;
-
-//     this.newImageStartingClass = 'start-slide-left';
-//     this.xDirection = '-100%';
-//     // Force detection so the browser sees the .start-slide-left state
-//     this.cdr.detectChanges();
-
-//     // Step B: in the next animation frame, apply the slide
-//     requestAnimationFrame(() => {
-//       // Actually trigger the slide-left
-//       this.isSlidingLeft = true;
-//       this.isSlidingRight = false;
-
-//       // setTimeout(()=>{
-//       //   this.xDirection = '';
-//       // }, 0);
-
-//       // Patch new URL
-//       this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//     });
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       // this.xDirection = '';
-//       this.cdr.detectChanges();
-//     }, 400);
-//   }
-// }
-
-// onSlideAnimationEnd(event: TransitionEvent) {
-//   // We only want to finalize once, typically for the ::after transform transition
-//   const element = event.target as HTMLElement;
-
-//   // Example check: propertyName === 'transform'
-//   // or if you want to ensure it's specifically the new image 
-//   // (some browsers won't let you easily match pseudo-elements):
-//   if (event.propertyName === 'transform') {
-//     this.finalizeSlideAnimation();
-//   }
-// }
-
-// finalizeSlideAnimation() {
-//   this.isSlidingRight = false;
-//   this.isSlidingLeft = false;
-//   this.newImageStartingClass = '';
-
-//   if (this.newBackgroundUrl) {
-//     this.imageStyles['background-image'] = `url('${this.newBackgroundUrl}')`;
-//   }
-
-//   this.oldBackgroundUrl = null;
-//   this.newBackgroundUrl = null;
-// }
-
-//
-// async nextImage() {
-//   if (this.rightClicked) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index forward
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const nextUrl = currentState.urls[currentState.currentIndex] || '';
-
-//     // 3) Set up initial state
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = nextUrl;
-//     this.isSlidingLeft = false;
-//     this.isSlidingRight = false;
-//     this.newImageStartingClass = 'start-slide-right';
-//     this.xDirection = '100%';
-    
-//     // Force state update
-//     this.cdr.detectChanges();
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-
-//     // 4) Trigger animation
-//     this.isSlidingRight = true;
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     this.cdr.detectChanges();
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 400);
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index backward
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const prevUrl = currentState.urls[currentState.currentIndex] || '';
-
-//     // 3) Set up initial state
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = prevUrl;
-//     this.isSlidingLeft = false;
-//     this.isSlidingRight = false;
-//     this.newImageStartingClass = 'start-slide-left';
-//     this.xDirection = '-100%';
-    
-//     // Force state update
-//     this.cdr.detectChanges();
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-
-//     // 4) Trigger animation
-//     this.isSlidingLeft = true;
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//     this.cdr.detectChanges();
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 400);
-//   }
-// }
-
-/////////
-
-// ///// animation working but too fast ////
-// async nextImage() {
-//   if (this.rightClicked || this.isAnimating) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.isAnimating = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index forward
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const nextUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Reset any previous animation states
-//     this.isSlidingLeft = false;
-//     this.isSlidingRight = false;
-//     this.cdr.detectChanges();
-
-//     // 4) Set up new animation
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = nextUrl;
-//     this.newImageStartingClass = 'start-slide-right';
-//     this.xDirection = '100%';
-    
-//     // Force a repaint to ensure the starting position is set
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-//     this.cdr.detectChanges();
-    
-//     // Wait a frame to ensure starting position is applied
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-
-//     // 5) Trigger the animation
-//     this.isSlidingRight = true;
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     this.cdr.detectChanges();
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.rightClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 100); // Increased timeout to match transition duration
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked || this.isAnimating) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.isAnimating = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // 1) Current image
-//     const oldUrl = this.pictureForm.get('imgUrl')?.value || '';
-
-//     // 2) Move index backward
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const currentState = subject.value;
-//     const newIndex = currentState.currentIndex;
-//     const prevUrl = currentState.urls[newIndex] || '';
-
-//     // 3) Reset any previous animation states
-//     this.isSlidingLeft = false;
-//     this.isSlidingRight = false;
-//     this.cdr.detectChanges();
-
-//     // 4) Set up new animation
-//     this.oldBackgroundUrl = oldUrl;
-//     this.newBackgroundUrl = prevUrl;
-//     this.newImageStartingClass = 'start-slide-left';
-//     this.xDirection = '-100%';
-    
-//     // Force a repaint to ensure the starting position is set
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-//     this.cdr.detectChanges();
-    
-//     // Wait a frame to ensure starting position is applied
-//     await new Promise(resolve => requestAnimationFrame(resolve));
-
-//     // 5) Trigger the animation
-//     this.isSlidingLeft = true;
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//     this.cdr.detectChanges();
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     setTimeout(() => {
-//       this.leftClicked = false;
-//       this.isNavigating = false;
-//       this.cdr.detectChanges();
-//     }, 100); // Increased timeout to match transition duration
-//   }
-// }
-
-// onSlideAnimationEnd(event: TransitionEvent) {
-//   if (event.propertyName === 'transform') {
-//     this.finalizeSlideAnimation();
-//   }
-//   // if (
-//   //   event.propertyName === 'transform' &&
-//   //   event.target === event.currentTarget
-//   // ) {
-//   //   this.finalizeSlideAnimation();
-//   // }
-// }
-
-// finalizeSlideAnimation() {
-//   // Add a small delay to ensure the animation completes
-//   setTimeout(() => {
-//     this.isSlidingRight = false;
-//     this.isSlidingLeft = false;
-//     this.newImageStartingClass = '';
-//     this.xDirection = '';
-//     this.isAnimating = false;
-
-//     if (this.newBackgroundUrl) {
-//       this.imageStyles['background-image'] = `url('${this.newBackgroundUrl}')`;
-//     }
-
-//     this.oldBackgroundUrl = null;
-//     this.newBackgroundUrl = null;
-    
-//     this.cdr.detectChanges();
-//   }, 0); // Small buffer after transition ends
-// }
-
-/////////
-
-
-// async nextImage() {
 //   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.isTransitioning = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Get current and next URLs
-//     const currentUrl = this.pictureForm.get('imgUrl')?.value;
-    
-//     // Update image management service
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const nextUrl = subject.value.urls[subject.value.currentIndex];
-
-//     // Position the next image off-screen to the right
-//     this.nextImageStyles = {
-//       'background-image': `url("${nextUrl}")`,
-//       'background-position': '0% 0%',
-//       'background-size': '100%'
-//     };
-
-//     // Force a reflow before starting animation
-//     this.profileImg?.nativeElement.offsetHeight;
-
-//     // Start the slide animation
-//     this.isSlidingRight = true;
-//     this.cdr.detectChanges();
-
-//     // Wait for animation to complete
-//     // await new Promise(resolve => setTimeout(resolve, this.ANIMATION_DURATION));
-
-//     // Update the current image
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     this.imageStyles = { ...this.nextImageStyles };
-
-//     // Reset animation states
-//     // this.isSlidingRight = false;
-//     // this.nextImageStyles = null;
-
-//     this.imageManagementService.logNavigationState(this.userId);
-    
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     this.rightClicked = false;
-//     this.isTransitioning = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked || this.isTransitioning) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.isTransitioning = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Get current and previous URLs
-//     const currentUrl = this.pictureForm.get('imgUrl')?.value;
-    
-//     // Update image management service
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const prevUrl = subject.value.urls[subject.value.currentIndex];
-
-//     // Position the previous image off-screen to the left
-//     this.nextImageStyles = {
-//       'background-image': `url("${prevUrl}")`,
-//       'background-position': '0% 0%',
-//       'background-size': '100%'
-//     };
-
-//     // Force a reflow before starting animation
-//     this.profileImg?.nativeElement.offsetHeight;
-
-//     // Start the slide animation
-//     this.isSlidingLeft = true;
-//     this.cdr.detectChanges();
-
-//     // Wait for animation to complete
-//     // await new Promise(resolve => setTimeout(resolve, this.ANIMATION_DURATION));
-
-//     // Update the current image
-//     this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//     this.imageStyles = { ...this.nextImageStyles };
-
-//     // Reset animation states
-//     // this.isSlidingLeft = false;
-//     // this.nextImageStyles = null;
-
-//     this.imageManagementService.logNavigationState(this.userId);
-    
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     this.leftClicked = false;
-//     this.isTransitioning = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// onSlideAnimationEnd(event: TransitionEvent) {
-//   // Only handle transform transitions
-//   if (event.propertyName === 'transform') {
-//     // Reset all animation states
-//     this.isSlidingRight = false;
-//     this.isSlidingLeft = false;
-//     this.isTransitioning = false;
-
-//     // Update the current styles to the new image's styles
-//     if (this.nextImageStyles) {
-//       this.imageStyles = { ...this.nextImageStyles };
-//       this.nextImageStyles = null;
-//     }
-
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// profile.component.ts
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.isTransitioning = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.resetImagePositionAndZoomDuringNavigation();
-
-//     // Update image management service first
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const nextUrl = subject.value.urls[subject.value.currentIndex];
-
-//     // Set up the next image styles
-//     this.nextImageStyles = {
-//       'background-image': `url("${nextUrl}")`,
-//       'background-position': '0% 0%',
-//       'background-size': '100%'
-//     };
-
-//     // Force a reflow
-//     void this.profileImg?.nativeElement.offsetHeight;
-    
-//     // Start the slide animation
-//     this.isSlidingRight = true;
-    
-//     // Wait for the animation to complete via onSlideAnimationEnd
-//     await new Promise<void>(resolve => {
-//       const onAnimationComplete = (event: TransitionEvent) => {
-//         if (event.propertyName === 'transform') {
-//           this.profileImg?.nativeElement.removeEventListener('transitionend', onAnimationComplete);
-//           resolve();
-//         }
-//       };
-//       this.profileImg?.nativeElement.addEventListener('transitionend', onAnimationComplete);
-//     });
-    
-
-//     // Update the form after animation completes
-//     this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//     this.imageStyles = { ...this.nextImageStyles };
-//     this.nextImageStyles = null;
-    
-//     this.imageManagementService.logNavigationState(this.userId);
-//   } catch (error) {
-//     console.error('Error navigating to next image:', error);
-//   } finally {
-//     this.rightClicked = false;
-//     this.isTransitioning = false;
-//     this.isSlidingRight = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Updated nextImage() function
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//       this.rightClicked = true;
-//       this.isTransitioning = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-//       this.resetImagePositionAndZoomDuringNavigation();
-
-//       // Update image management service first
-//       this.imageManagementService.nextImage(this.userId);
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const nextUrl = subject.value.urls[subject.value.currentIndex];
-
-//       // Set up the next image styles
-//       this.nextImageStyles = {
-//           'background-image': `url("${nextUrl}")`,
-//           'background-position': '0% 0%',
-//           'background-size': '100%'
-//       };
-
-//       // Force a reflow to ensure new styles are applied
-//       void this.profileImg?.nativeElement.offsetHeight;
-
-//       // Start the slide animation
-//       requestAnimationFrame(() => {
-//           this.isSlidingRight = true;
-//           this.cdr.detectChanges();
-
-//           // Add sliding-complete class after a small delay to trigger the animation
-//           requestAnimationFrame(() => {
-//               const incomingElement = this.profileImg?.nativeElement.querySelector('.incoming');
-//               if (incomingElement) {
-//                   incomingElement.classList.add('sliding-complete');
-//               }
-//           });
-//       });
-
-//       // Wait for the animation to complete
-//       await new Promise<void>(resolve => {
-//           const onAnimationComplete = (event: TransitionEvent) => {
-//               if (event.propertyName === 'transform' && 
-//                   (event.target as HTMLElement).classList.contains('current')) {
-//                   this.profileImg?.nativeElement.removeEventListener('transitionend', onAnimationComplete);
-//                   resolve();
-//               }
-//           };
-//           this.profileImg?.nativeElement.addEventListener('transitionend', onAnimationComplete);
-//       });
-
-//       // Update the current image after animation completes
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//       this.imageStyles = { ...this.nextImageStyles };
-//       this.nextImageStyles = null;
-//       this.imageManagementService.logNavigationState(this.userId);
-
-//   } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//   } finally {
-//       this.rightClicked = false;
-//       this.isTransitioning = false;
-//       this.isSlidingRight = false;
-//       const incomingElement = this.profileImg?.nativeElement.querySelector('.incoming');
-//       if (incomingElement) {
-//           incomingElement.classList.remove('sliding-complete');
-//       }
-//       this.cdr.detectChanges();
-//   }
-// }
-
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//       this.rightClicked = true;
-//       this.isTransitioning = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-      
-//       // Get next image URL
-//       this.imageManagementService.nextImage(this.userId);
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const nextUrl = subject.value.urls[subject.value.currentIndex];
-      
-//       // Set up next image
-//       this.nextImageStyles = {
-//           'background-image': `url("${nextUrl}")`,
-//           'background-position': '0% 0%',
-//           'background-size': '100%'
-//       };
-      
-//       // Force reflow
-//       void this.profileImg?.nativeElement.offsetHeight;
-      
-//       // Start sliding animation
-//       this.isSliding = true;
-      
-//       // Wait for animation to complete
-//       await new Promise<void>(resolve => {
-//           const onTransitionEnd = (event: TransitionEvent) => {
-//               if (event.propertyName === 'transform') {
-//                   this.profileImg?.nativeElement.removeEventListener('transitionend', onTransitionEnd);
-//                   resolve();
-//               }
-//           };
-//           this.profileImg?.nativeElement.addEventListener('transitionend', onTransitionEnd);
-//       });
-      
-//       // Update current image
-//       this.imageStyles = { ...this.nextImageStyles };
-//       this.nextImageStyles = null;
-//       this.isSliding = false;
-      
-//       // Update form and log state
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//       this.imageManagementService.logNavigationState(this.userId);
-      
-//   } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//   } finally {
-//       this.rightClicked = false;
-//       this.isTransitioning = false;
-//       this.isSliding = false;
-//       this.cdr.detectChanges();
-//   }
-// }
-
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//       this.rightClicked = true;
-//       this.isTransitioning = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-//       this.resetImagePositionAndZoomDuringNavigation();
-      
-//       // Get next image URL
-//       this.imageManagementService.nextImage(this.userId);
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const nextUrl = subject.value.urls[subject.value.currentIndex];
-      
-//       // Prepare next image
-//       this.nextImageStyles = {
-//           'background-image': `url("${nextUrl}")`,
-//           'background-position': '0% 0%',
-//           'background-size': '100%'
-//       };
-      
-//       // Force reflow
-//       void this.profileImg?.nativeElement.offsetHeight;
-      
-//       // Start sliding animation
-//       requestAnimationFrame(() => {
-//           this.isSliding = true;
-//           this.cdr.detectChanges();
-//       });
-      
-//       // Wait for animation to complete
-//       await new Promise<void>(resolve => {
-//           const onTransitionEnd = (event: TransitionEvent) => {
-//               if (event.propertyName === 'transform' && 
-//                   (event.target as HTMLElement).classList.contains('next')) {
-//                   this.profileImg?.nativeElement.removeEventListener('transitionend', onTransitionEnd);
-//                   resolve();
-//               }
-//           };
-//           this.profileImg?.nativeElement.addEventListener('transitionend', onTransitionEnd);
-//       });
-      
-//       // Update current image
-//       this.imageStyles = { ...this.nextImageStyles };
-//       this.nextImageStyles = null;
-      
-//       // Update form and log state
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//       this.imageManagementService.logNavigationState(this.userId);
-      
-//   } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//   } finally {
-//       this.rightClicked = false;
-//       this.isTransitioning = false;
-//       this.isSliding = false;
-//       this.cdr.detectChanges();
-//   }
-// }
-
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-
-//   console.log('[nextImage] Start. isSliding:', this.isSliding);
-  
-//   try {
-//       // Clear any existing timeouts
-//       if (this.transitionTimeout) {
-//           clearTimeout(this.transitionTimeout);
-//           this.transitionTimeout = null;
-//       }
-
-//       this.rightClicked = true;
-//       this.isTransitioning = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-//       this.resetImagePositionAndZoomDuringNavigation();
-      
-//       // Get next image URL
-//       this.imageManagementService.nextImage(this.userId);
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const nextUrl = subject.value.urls[subject.value.currentIndex];
-      
-//       // Set up next image
-//       this.nextImageStyles = {
-//           'background-image': `url("${nextUrl}")`,
-//           'background-position': '0% 0%',
-//           'background-size': '100%'
-//       };
-      
-//       // Force reflow
-//       void this.profileImg?.nativeElement.offsetHeight;
-      
-//       // Start sliding animation
-//       this.isSliding = true;
-//       console.log('[nextImage] isSliding set to true');
-//       this.cdr.detectChanges();
-      
-//       // Wait for animation duration
-//       await new Promise<void>(resolve => {
-//           this.transitionTimeout = setTimeout(() => {
-//               // Update current image without triggering new animation
-//               console.log('[nextImage] Timeout firing, isSliding -> false');
-//               this.isSliding = false;
-//               this.imageStyles = {
-//                   'background-image': `url("${nextUrl}")`,
-//                   'background-position': '0% 0%',
-//                   'background-size': '100%'
-//               };
-//               this.nextImageStyles = null;
-//               this.cdr.detectChanges();
-//               resolve();
-//           }, 400); // Match transition duration
-//       });
-      
-//       // Update form and log state
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//       this.imageManagementService.logNavigationState(this.userId);
-      
-//   } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//   } finally {
-//       this.rightClicked = false;
-//       this.isTransitioning = false;
-//       if (this.transitionTimeout) {
-//           clearTimeout(this.transitionTimeout);
-//           this.transitionTimeout = null;
-//       }
-//       // this.cdr.detectChanges();
-//   }
-//   console.log('[nextImage] End');
-// }
-
-// works + extra slide
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//       // Clear any existing timeouts
-//       if (this.transitionTimeout) {
-//           clearTimeout(this.transitionTimeout);
-//           this.transitionTimeout = null;
-//       }
-
-//       this.rightClicked = true;
-//       this.isTransitioning = true;
-//       this.hasStartedNavigating = true;
-//       this.showUploadSuccess = false;
-//       this.resetImagePositionAndZoomDuringNavigation();
-      
-//       // Get next image URL
-//       this.imageManagementService.nextImage(this.userId);
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const nextUrl = subject.value.urls[subject.value.currentIndex];
-      
-//       // Set up next image
-//       this.nextImageStyles = {
-//           'background-image': `url("${nextUrl}")`,
-//           'background-position': '0% 0%',
-//           'background-size': '100%'
-//       };
-      
-      
-//       // Force reflow
-//       void this.profileImg?.nativeElement.offsetHeight;
-      
-//       // Start sliding animation
-//       this.isSliding = true;
-//       this.cdr.detectChanges();
-      
-//       // Wait for animation duration
-//       await new Promise<void>(resolve => {
-//           this.transitionTimeout = setTimeout(() => {
-//               // Update current image without triggering new animation
-//               this.isSliding = false;
-//               this.imageStyles = {
-//                   'background-image': `url("${nextUrl}")`,
-//                   'background-position': '0% 0%',
-//                   'background-size': '100%'
-//               };
-//               this.nextImageStyles = null;
-//               this.cdr.detectChanges();
-//               resolve();
-//           }, 400); // Match transition duration
-//       });
-      
-//       // Update form and log state
-//       this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//       this.imageManagementService.logNavigationState(this.userId);
-      
-//   } catch (error) {
-//       console.error('Error navigating to next image:', error);
-//   } finally {
-//       this.rightClicked = false;
-//       this.isTransitioning = false;
-//       if (this.transitionTimeout) {
-//           clearTimeout(this.transitionTimeout);
-//           this.transitionTimeout = null;
-//       }
-//       // this.cdr.detectChanges();
-//   }
-// }
-
-// works perfectly + 1 wrong direction when interchanging
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
 //   try {
 //     if (this.transitionTimeout) {
 //       clearTimeout(this.transitionTimeout);
@@ -15944,29 +14645,42 @@ private async updateDatabaseToNull(): Promise<void> {
 //     }
 
 //     this.rightClicked = true;
+//     this.hasStartedNavigating = true;
+//     this.showUploadSuccess = false;
 //     this.isTransitioning = true;
-    
+
+//     // Reset next image state if coming from opposite direction
+//     if (this.lastDirection === 'prev') {
+//       this.nextImageState = 'next';
+//       await this.cdr.detectChanges();
+//     }
+//     this.lastDirection = 'next';
+
+//     setTimeout(() => {
+//       this.resetImagePositionAndZoomDuringNavigation();
+//     }, 400)
+
 //     // Get next image URL
 //     this.imageManagementService.nextImage(this.userId);
 //     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
 //     const nextUrl = subject.value.urls[subject.value.currentIndex];
-    
-//     // Preload next image
-//     // await this.preloadImage(nextUrl, false);
-    
+
 //     // Set up next image styles
 //     this.nextImageStyles = {
 //       'background-image': `url("${nextUrl}")`,
-//       'background-position': this.imageStyles['background-position'] || '0% 0%',
-//       'background-size': this.imageStyles['background-size'] || '100%',
-//       'background-repeat': 'no-repeat',
-//       'background-color': '#c7ff20'
+//       'background-position': '0% 0%',  // Force default position
+//       'background-size': '100%'        // Force default zoom
 //     };
+
+//     // Force a change detection cycle before animation
+//     await this.cdr.detectChanges();
     
 //     // Trigger animations
-//     this.currentImageState = 'slideOutLeft';
-//     this.nextImageState = 'slideIn';
-    
+//     requestAnimationFrame(() => {
+//       this.currentImageState = 'slideOutLeft';
+//       this.nextImageState = 'slideIn';
+//     });
+
 //     // Wait for animation to complete
 //     await new Promise<void>(resolve => {
 //       this.transitionTimeout = setTimeout(() => {
@@ -15975,14 +14689,11 @@ private async updateDatabaseToNull(): Promise<void> {
 //         this.nextImageStyles = null;
 //         this.currentImageState = 'current';
 //         this.nextImageState = 'next';
-        
 //         // Update form
 //         this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-        
 //         resolve();
 //       }, 400);
 //     });
-    
 //   } catch (error) {
 //     console.error('Error in nextImage:', error);
 //   } finally {
@@ -15995,7 +14706,79 @@ private async updateDatabaseToNull(): Promise<void> {
 //   }
 // }
 
-// works perfectly + 1 wrong direction when interchanging
+async nextImage() {
+  if (this.rightClicked || this.isTransitioning) return;
+  
+  try {
+    this.rightClicked = true;
+    this.isTransitioning = true;
+    this.showUploadSuccess = false;
+    
+    // Clear any existing transition timeouts
+    if (this.transitionTimeout) {
+      clearTimeout(this.transitionTimeout);
+      this.transitionTimeout = null;
+    }
+
+    // Reset states if coming from opposite direction
+    if (this.lastDirection === 'prev') {
+      this.nextImageState = 'next';
+      await this.cdr.detectChanges();
+    }
+    this.lastDirection = 'next';
+
+    // Prepare next image
+    this.imageManagementService.nextImage(this.userId);
+    const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+    const nextUrl = subject.value.urls[subject.value.currentIndex];
+
+    // Set both current and next image styles simultaneously
+    this.nextImageStyles = {
+      'background-image': `url("${nextUrl}")`,
+      'background-position': '0% 0%',
+      'background-size': '100%',
+      'background-repeat': 'no-repeat',
+      'background-color': '#c7ff20'
+    };
+
+    // Force change detection before animation
+    await this.cdr.detectChanges();
+    
+    // Start both animations in the same frame
+    requestAnimationFrame(() => {
+      this.currentImageState = 'slideOutLeft';
+      this.nextImageState = 'slideIn';
+      this.cdr.detectChanges();
+    });
+
+    // Wait for animation completion
+    await new Promise<void>(resolve => {
+      this.transitionTimeout = setTimeout(() => {
+        this.imageStyles = { ...this.nextImageStyles };
+        this.nextImageStyles = null;
+        this.currentImageState = 'current';
+        this.nextImageState = 'next';
+        this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
+        
+        // Reset position and zoom after animation completes
+        this.resetImagePositionAndZoomDuringNavigation();
+        
+        resolve();
+      }, 400); // Match animation duration
+    });
+  } catch (error) {
+    console.error('Error in nextImage:', error);
+  } finally {
+    this.rightClicked = false;
+    this.isTransitioning = false;
+    if (this.transitionTimeout) {
+      clearTimeout(this.transitionTimeout);
+      this.transitionTimeout = null;
+    }
+  }
+}
+
+
 // async previousImage() {
 //   if (this.leftClicked || this.isTransitioning) return;
 //   try {
@@ -16003,32 +14786,50 @@ private async updateDatabaseToNull(): Promise<void> {
 //       clearTimeout(this.transitionTimeout);
 //       this.transitionTimeout = null;
 //     }
-    
+
 //     this.leftClicked = true;
-//     this.isTransitioning = true;
 //     this.hasStartedNavigating = true;
 //     this.showUploadSuccess = false;
-    
-//     // Reset position and zoom if needed
-//     this.resetImagePositionAndZoomDuringNavigation();
-    
+//     this.isTransitioning = true;
+
+//     // Reset next image state if coming from opposite direction
+//     if (this.lastDirection === 'next') {
+//       this.nextImageState = 'prev';
+//       await this.cdr.detectChanges();
+//     }
+//     this.lastDirection = 'prev';
+
+//     // this.resetImagePositionAndZoomDuringNavigation();
+
+//     setTimeout(() => {
+//       this.resetImagePositionAndZoomDuringNavigation();
+//     }, 400)
+
 //     // Get previous image URL
 //     this.imageManagementService.previousImage(this.userId);
 //     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
 //     const prevUrl = subject.value.urls[subject.value.currentIndex];
-    
+
 //     // Set up previous image styles
 //     this.nextImageStyles = {
 //       'background-image': `url("${prevUrl}")`,
-//       'background-position': this.imageStyles['background-position'] || '0% 0%',
-//       'background-size': this.imageStyles['background-size'] || '100%',
+//       // 'background-position': this.imageStyles['background-position'] || '0% 0%',
+//       // 'background-size': this.imageStyles['background-size'] || '100%',
 //       'background-repeat': 'no-repeat',
-//       'background-color': '#c7ff20'
+//       'background-color': '#c7ff20',
+//       'background-position': '0% 0%',  // Force default position
+//       'background-size': '100%'        // Force default zoom
 //     };
 
+
+//     // Force a change detection cycle before animation
+//     await this.cdr.detectChanges();
+
 //     // Trigger animations
-//     this.currentImageState = 'slideOutRight';
-//     this.nextImageState = 'slideIn';
+//     requestAnimationFrame(() => {
+//       this.currentImageState = 'slideOutRight';
+//       this.nextImageState = 'slideIn';
+//     });
 
 //     // Wait for animation to complete
 //     await new Promise<void>(resolve => {
@@ -16044,7 +14845,6 @@ private async updateDatabaseToNull(): Promise<void> {
 //         resolve();
 //       }, 400);
 //     });
-    
 //   } catch (error) {
 //     console.error('Error navigating to previous image:', error);
 //   } finally {
@@ -16057,130 +14857,66 @@ private async updateDatabaseToNull(): Promise<void> {
 //   }
 // }
 
-async nextImage() {
-  if (this.rightClicked || this.isTransitioning) return;
-  try {
-    if (this.transitionTimeout) {
-      clearTimeout(this.transitionTimeout);
-      this.transitionTimeout = null;
-    }
-
-    this.rightClicked = true;
-    this.isTransitioning = true;
-
-    // Reset next image state if coming from opposite direction
-    if (this.lastDirection === 'prev') {
-      this.nextImageState = 'next';
-      await this.cdr.detectChanges();
-    }
-    this.lastDirection = 'next';
-
-    // Get next image URL
-    this.imageManagementService.nextImage(this.userId);
-    const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    const nextUrl = subject.value.urls[subject.value.currentIndex];
-
-    // Set up next image styles
-    this.nextImageStyles = {
-      'background-image': `url("${nextUrl}")`,
-      'background-position': this.imageStyles['background-position'] || '0% 0%',
-      'background-size': this.imageStyles['background-size'] || '100%',
-      'background-repeat': 'no-repeat',
-      'background-color': '#c7ff20'
-    };
-
-    // Force a change detection cycle before animation
-    await this.cdr.detectChanges();
-    
-    // Trigger animations
-    requestAnimationFrame(() => {
-      this.currentImageState = 'slideOutLeft';
-      this.nextImageState = 'slideIn';
-    });
-
-    // Wait for animation to complete
-    await new Promise<void>(resolve => {
-      this.transitionTimeout = setTimeout(() => {
-        // Update current image
-        this.imageStyles = { ...this.nextImageStyles };
-        this.nextImageStyles = null;
-        this.currentImageState = 'current';
-        this.nextImageState = 'next';
-        // Update form
-        this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-        resolve();
-      }, 400);
-    });
-  } catch (error) {
-    console.error('Error in nextImage:', error);
-  } finally {
-    this.rightClicked = false;
-    this.isTransitioning = false;
-    if (this.transitionTimeout) {
-      clearTimeout(this.transitionTimeout);
-      this.transitionTimeout = null;
-    }
-  }
-}
-
 async previousImage() {
   if (this.leftClicked || this.isTransitioning) return;
+  
   try {
+    this.leftClicked = true;
+    this.isTransitioning = true;
+    this.showUploadSuccess = false;
+    
+    // Clear any existing transition timeouts
     if (this.transitionTimeout) {
       clearTimeout(this.transitionTimeout);
       this.transitionTimeout = null;
     }
 
-    this.leftClicked = true;
-    this.isTransitioning = true;
-    this.hasStartedNavigating = true;
-    this.showUploadSuccess = false;
-
-    // Reset next image state if coming from opposite direction
+    // Reset states if coming from opposite direction
     if (this.lastDirection === 'next') {
       this.nextImageState = 'prev';
       await this.cdr.detectChanges();
     }
     this.lastDirection = 'prev';
 
-    this.resetImagePositionAndZoomDuringNavigation();
-
-    // Get previous image URL
+    // Prepare previous image
     this.imageManagementService.previousImage(this.userId);
     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
     const prevUrl = subject.value.urls[subject.value.currentIndex];
 
-    // Set up previous image styles
+    // Set both current and next image styles simultaneously
     this.nextImageStyles = {
       'background-image': `url("${prevUrl}")`,
-      'background-position': this.imageStyles['background-position'] || '0% 0%',
-      'background-size': this.imageStyles['background-size'] || '100%',
+      'background-position': '0% 0%',
+      'background-size': '100%',
       'background-repeat': 'no-repeat',
       'background-color': '#c7ff20'
     };
 
-    // Force a change detection cycle before animation
+    // Force change detection before animation
     await this.cdr.detectChanges();
-
-    // Trigger animations
+    
+    // Start both animations in the same frame
     requestAnimationFrame(() => {
       this.currentImageState = 'slideOutRight';
       this.nextImageState = 'slideIn';
+      this.cdr.detectChanges();
     });
 
-    // Wait for animation to complete
+    // Wait for animation completion
     await new Promise<void>(resolve => {
       this.transitionTimeout = setTimeout(() => {
-        // Update current image
         this.imageStyles = { ...this.nextImageStyles };
         this.nextImageStyles = null;
         this.currentImageState = 'current';
         this.nextImageState = 'prev';
-        // Update form
         this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
+        
+        // Reset position and zoom after animation completes
+        this.resetImagePositionAndZoomDuringNavigation();
         this.imageManagementService.logNavigationState(this.userId);
+        
         resolve();
-      }, 400);
+      }, 400); // Match animation duration
     });
   } catch (error) {
     console.error('Error navigating to previous image:', error);
@@ -16193,6 +14929,16 @@ async previousImage() {
     }
   }
 }
+
+
+
+private isCurrentImageProfilePicture(): boolean {
+  // Logic to determine if current image is the profile picture
+  // This might be comparing the current URL with the profile picture URL
+  // or checking the index, depending on your implementation
+  return this.currentUser.imgUrl === this.imageStyles['background-image']?.replace('url("', '').replace('")', '');
+}
+
 
 // async nextImage() {
 //   if (this.rightClicked || this.isTransitioning) return;
@@ -16271,17 +15017,17 @@ async previousImage() {
 //   }
 // }
 
-getProfileClasses() {
-  return {
-    'changing-picture': this.currentState === ProfileState.ChangingPicture,
-    'default-position': !this.isDragged,
-    'loaded': this.imageLoadedSuccessfully,
-    'loading': !this.imageLoadedSuccessfully || this.isLoadingImages,
-    'firstTimeAnimation': this.firstTimeAnimation && this.tierThree,
-    'tierThreeStyle': this.tierThree,
-    'draggable': this.canDrag()
-  };
-}
+// getProfileClasses() {
+//   return {
+//     'changing-picture': this.currentState === ProfileState.ChangingPicture,
+//     'default-position': !this.isDragged,
+//     'loaded': this.imageLoadedSuccessfully,
+//     'loading': !this.imageLoadedSuccessfully || this.isLoadingImages,
+//     'firstTimeAnimation': this.firstTimeAnimation && this.tierThree,
+//     'tierThreeStyle': this.tierThree,
+//     'draggable': this.canDrag()
+//   };
+// }
 
 
 
