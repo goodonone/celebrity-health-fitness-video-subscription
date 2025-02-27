@@ -2071,7 +2071,7 @@
 import { Injectable } from '@angular/core';
 import { storage, auth } from '../firebase.config';
 import { ref, listAll, getDownloadURL, deleteObject, StorageReference, uploadBytesResumable, getMetadata } from 'firebase/storage';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { FirebaseService } from './firebase.service';
 import { StorageService } from './storage.service';
@@ -2643,8 +2643,79 @@ private findCurrentImageIndex(urls: string[]): number {
   return foundIndex !== -1 ? foundIndex : 0;
 }
 
+// Last working
 hasAnyFirebaseImages(): boolean {
   return this.firebaseImageCount > 0;
+}
+
+async checkAndUpdateFirebaseImageCount(userId: string): Promise<boolean> {
+  try {
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    this.firebaseImageCount = result.items.length;
+    this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+    return this.firebaseImageCount > 0;
+  } catch (error) {
+    console.error('Error checking Firebase images:', error);
+    return false;
+  }
+}
+
+// Add this to your ImageManagementService
+async debugStorageContents(userId: string): Promise<void> {
+  try {
+    console.log(`Starting debug check for user: ${userId}`);
+    
+    // 1. Check direct Firebase storage path
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    
+    console.log('Storage check results:', {
+      path: `profileImages/${userId}`,
+      itemCount: result.items.length,
+      items: result.items.map(item => item.fullPath)
+    });
+    
+    // 2. Check if our internal counters match
+    console.log('Current image tracking state:', {
+      firebaseImageCount: this.firebaseImageCount,
+      hasFirebaseImagesFlag: this.hasFirebaseImagesSubject.getValue()
+    });
+    
+    // 3. Check what URLs we have in the subject
+    const subject = this.getUserImagesSubject(userId);
+    console.log('Current URLs tracked:', {
+      urlsCount: subject.value.urls.length,
+      urls: subject.value.urls
+    });
+    
+    // Update counters based on actual result
+    this.firebaseImageCount = result.items.length;
+    this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+    
+    return;
+  } catch (error) {
+    console.error('Error in debug check:', error);
+  }
+}
+
+// hasAnyFirebaseImages(): boolean {
+//   const hasImages = this.firebaseImageCount > 0;
+//   this.hasFirebaseImagesSubject.next(hasImages);
+//   return hasImages;
+// }
+
+async refreshFirebaseImageCount(userId: string): Promise<void> {
+  try {
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    this.firebaseImageCount = result.items.length;
+    this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+  } catch (error) {
+    console.error('Error refreshing image count:', error);
+    this.firebaseImageCount = 0;
+    this.hasFirebaseImagesSubject.next(false);
+  }
 }
 
 private async preloadAllImages(urls: string[]): Promise<void> {
@@ -3190,6 +3261,19 @@ private ensureProxiedUrl(url: string, userId: string): string {
   return url;
 }
 
+async initializeImagesCount(userId: string): Promise<void> {
+  try {
+    const imagesRef = ref(storage, `profileImages/${userId}`);
+    const result = await listAll(imagesRef);
+    this.firebaseImageCount = result.items.length;
+    this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+  } catch (error) {
+    console.error('Error initializing image count:', error);
+    this.firebaseImageCount = 0;
+    this.hasFirebaseImagesSubject.next(false);
+  }
+}
+
 // async initializeImages(userId: string): Promise<void> {
 //   // Load all images from Firebase
 //   this.imageUrls = await this.storageService.listProfileImages(userId);
@@ -3582,6 +3666,83 @@ private async waitForFirebaseUpdate(delay: number = 1000) {
 //   }
 // }
 
+// Last working
+// async deleteCurrentImage(userId: string): Promise<void> {
+//   const subject = this.getUserImagesSubject(userId);
+//   const current = subject.value;
+  
+//   if (current.urls.length === 0) return;
+
+//   try {
+//     const currentUrl = current.urls[current.currentIndex];
+//     if (!currentUrl) {
+//       throw new Error('No current image URL found');
+//     }
+
+//     // Handle blob URLs by getting the original path
+//     let urlToDelete = currentUrl;
+//     if (currentUrl.startsWith('blob:')) {
+//       const originalPath = await this.getOriginalPath(userId, current.currentIndex);
+//       if (originalPath) {
+//         urlToDelete = `${environment.apiUrl}/api/storage/${originalPath}`;
+//       } else {
+//         throw new Error('Could not determine original path for blob URL');
+//       }
+//     }
+
+//     const isProvider = this.isProviderUrl(urlToDelete);
+
+//     // Remove the URL first to enable immediate UI update
+//     const updatedUrls = current.urls.filter((_, index) => index !== current.currentIndex);
+//     const newIndex = Math.min(current.currentIndex, updatedUrls.length - 1);
+
+//     // If it's a Firebase image, delete from storage
+//     if (!isProvider) {
+//       try {
+//         await this.deleteImageByUrl(urlToDelete);
+//         this.firebaseImageCount = Math.max(0, this.firebaseImageCount - 1);
+//         this.hasFirebaseImagesSubject.next(this.firebaseImageCount > 0);
+//       } catch (deleteError) {
+//         console.error('Error deleting from storage:', deleteError);
+//       }
+//     } else {
+//       // For provider URLs, ensure we clear temporary URL
+//       this.temporaryUrl = null;
+//       // Also clear from converted URL cache if it exists
+//       if (this.convertedUrlCache) {
+//         this.convertedUrlCache.delete(urlToDelete);
+//       }
+//     }
+
+//     // After successful deletion, clear the cached URLs
+//     this.convertedUrlCache.clear();
+    
+//     // Clear any other cache references
+//     this.preloadedImages.clear();
+
+//     // If this was the last image and it was a provider URL
+//     if (updatedUrls.length === 0) {
+//       this.resetToDefaultState(userId);
+//     } else {
+//       // Update the state with remaining URLs
+//       subject.next({
+//         urls: updatedUrls,
+//         currentIndex: Math.max(0, newIndex)
+//       });
+//     }
+
+//     // Reset position and zoom data after deletion
+//     this.resetImageTransformData(userId);
+
+//     // Refresh the image count explicitly
+//     this.refreshFirebaseImageCount(userId);
+
+//   } catch (error) {
+//     console.error('Error deleting image:', error);
+//     throw error;
+//   }
+// }
+
 async deleteCurrentImage(userId: string): Promise<void> {
   const subject = this.getUserImagesSubject(userId);
   const current = subject.value;
@@ -3593,6 +3754,10 @@ async deleteCurrentImage(userId: string): Promise<void> {
     if (!currentUrl) {
       throw new Error('No current image URL found');
     }
+
+    // Check if this is the currently set profile picture in the database
+    const user = await firstValueFrom(this.userService.getUser(userId));
+    const isCurrentProfilePicture = user.imgUrl && this.normalizeUrl(user.imgUrl) === this.normalizeUrl(currentUrl);
 
     // Handle blob URLs by getting the original path
     let urlToDelete = currentUrl;
@@ -3629,6 +3794,12 @@ async deleteCurrentImage(userId: string): Promise<void> {
       }
     }
 
+    // After successful deletion, clear the cached URLs
+    this.convertedUrlCache.clear();
+    
+    // Clear any other cache references
+    this.preloadedImages.clear();
+
     // If this was the last image and it was a provider URL
     if (updatedUrls.length === 0) {
       this.resetToDefaultState(userId);
@@ -3640,9 +3811,46 @@ async deleteCurrentImage(userId: string): Promise<void> {
       });
     }
 
+    // Reset position and zoom data after deletion
+    this.resetImageTransformData(userId);
+
+    // Refresh the image count explicitly
+    this.refreshFirebaseImageCount(userId);
+
+    // If we deleted the current profile picture, update the user record
+    if (isCurrentProfilePicture) {
+      const updatedUser = {
+        ...user,
+        imgUrl: null,
+        profilePictureSettings: null
+      };
+      
+      await firstValueFrom(this.userService.updateUser(updatedUser));
+      console.log('User database record updated - profile picture removed');
+    }
+
   } catch (error) {
     console.error('Error deleting image:', error);
     throw error;
+  }
+}
+
+private resetImageTransformData(userId: string): void {
+  // Reset transform data in the service
+  this.currentProfilePath = null;
+  this.isProviderProfile = false;
+  
+  // Emit updated state through subject
+  const subject = this.getUserImagesSubject(userId);
+  const current = subject.value;
+  
+  if (current.urls.length > 0) {
+    const nextUrl = current.urls[current.currentIndex];
+    // Don't store zoom/position data for the next image
+    subject.next({
+      ...current,
+      currentIndex: current.currentIndex
+    });
   }
 }
 
@@ -5173,4 +5381,140 @@ private navigateImage(userId: string, direction: number): void {
 isImageError(url: string): boolean {
   return this.imageLoadErrors.has(url);
 }
+
+async checkProfileImageExists(imgUrl: string | null): Promise<boolean> {
+  if (!imgUrl) return false;
+
+  try {
+    // For provider URLs (Unsplash, etc.), assume they exist
+    if (this.isProviderUrl(imgUrl)) {
+      return true;
+    }
+
+    // For Firebase URLs, check if file exists
+    if (imgUrl.includes('firebasestorage.googleapis.com')) {
+      try {
+        const imageRef = ref(storage, this.getImagePath(imgUrl));
+        await getDownloadURL(imageRef);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // For API URLs, verify using the storage service
+    if (imgUrl.includes('/api/storage/')) {
+      try {
+        const headers = await this.storageService.getAuthHeaders();
+        const response = await fetch(imgUrl, {
+          method: 'HEAD',
+          headers
+        });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    }
+
+    // For direct storage paths
+    if (imgUrl.startsWith('profileImages/')) {
+      try {
+        const imageRef = ref(storage, imgUrl);
+        await getDownloadURL(imageRef);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // For any other URLs, try a basic fetch
+    try {
+      const response = await fetch(imgUrl, { method: 'HEAD' });
+      return response.ok;
+    } catch {
+      return false;
+    }
+
+  } catch (error) {
+    console.error('Error checking if profile image exists:', error);
+    return false;
+  }
+}
+
+hasProfileImageInStorage(userId: string): boolean {
+  // Get the current state of user images
+  const subject = this.getUserImagesSubject(userId);
+  const state = subject.value;
+
+  // If there are no images at all, return false
+  if (state.urls.length === 0) return false;
+
+  // If there's no current profile path, return false
+  if (!this.currentProfilePath) return false;
+
+  // For provider URLs, they should be handled differently
+  if (this.isProviderProfile) {
+    // If it's a provider profile, check if the provider URL is in the list
+    return state.urls.includes(this.currentProfilePath);
+  }
+
+  // For Firebase/storage URLs, normalize both URLs before comparing
+  const normalizedProfilePath = this.normalizeUrl(this.currentProfilePath);
+  return state.urls.some(url => this.normalizeUrl(url) === normalizedProfilePath);
+}
+
+// Add this method to ImageManagementService
+async getNextState(userId: string): Promise<{
+  hasImages: boolean;
+  currentUrl: string | null;
+  nextIndex: number;
+  nextUrl: string | null;
+}> {
+  const subject = this.getUserImagesSubject(userId);
+  const current = subject.value;
+
+  // If no images, return empty state
+  if (current.urls.length === 0) {
+    return {
+      hasImages: false,
+      currentUrl: null,
+      nextIndex: 0,
+      nextUrl: null
+    };
+  }
+
+  // If only one image, return current state
+  if (current.urls.length === 1) {
+    return {
+      hasImages: true,
+      currentUrl: current.urls[0],
+      nextIndex: 0,
+      nextUrl: current.urls[0]
+    };
+  }
+
+  // Calculate next index
+  let nextIndex = current.currentIndex;
+  const tempUrls = [...current.urls];
+
+  // Remove current URL from array
+  tempUrls.splice(current.currentIndex, 1);
+
+  // If we removed the last image in the array, adjust the index
+  if (nextIndex >= tempUrls.length) {
+    nextIndex = 0;
+  }
+
+  // Get next URL from temporary array
+  const nextUrl = tempUrls[nextIndex] || null;
+
+  // Return new state
+  return {
+    hasImages: tempUrls.length > 0,
+    currentUrl: current.urls[current.currentIndex], 
+    nextIndex: nextIndex,
+    nextUrl: nextUrl
+  };
+}
+
 }

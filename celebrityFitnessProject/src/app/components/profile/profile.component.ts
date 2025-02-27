@@ -10,7 +10,7 @@ import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { profile } from 'console';
-import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject, connectStorageEmulator } from 'firebase/storage';
 import { storage, auth } from 'src/app/firebase.config';
 import { signInWithCustomToken } from 'firebase/auth';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -79,6 +79,12 @@ interface ProfilePictureSettings {
           animate('300ms ease-in', 
             style({ opacity: '{{finalOpacity}}' })
           )
+        ])
+      ]),
+      trigger('fadeInCircularNav', [
+        transition(':enter', [
+          style({ opacity: 0 }),
+          animate('300ms ease-in', style({ opacity: 1 }))
         ])
       ]),
       // trigger('slideAnimation', [
@@ -457,6 +463,7 @@ export class ProfileComponent implements OnInit {
   // private originalImageStyles: any = null;
   // private isNavigationInProgress = false;
   private isNavigating = false;
+  showButton = true;
   // Temporary holders for the old and new images
   oldBackgroundUrl: string | null = null;
   newBackgroundUrl: string | null = null;
@@ -487,6 +494,9 @@ export class ProfileComponent implements OnInit {
   // Flags to indicate which direction we are sliding
   
   // isSlidingLeft = false;
+  controlsAnimated: boolean = false;
+  controlsAnimationTimeout: any = null;
+  controlsVisible: boolean = false;
 
   private uploadState: UploadState = {
     isUploading: false,
@@ -527,6 +537,17 @@ export class ProfileComponent implements OnInit {
   faMinus = faMinus;
   faChevronLeft = faChevronLeft;
   faChevronRight = faChevronRight;
+
+  circleStrokeWidth = 4;
+  private resizeObserver: ResizeObserver | null = null;
+  isMobile = false;
+  isTablet = false;
+  showSegments = false;
+  transitionProgress = 0;
+  private animationFrame: number | null = null;
+  prevIndex: number = 0;
+  currentIndex: number = 0;
+  direction = 1; // 1 for next, -1 for previous
 
   private subscription: Subscription = new Subscription();
 
@@ -582,6 +603,23 @@ export class ProfileComponent implements OnInit {
     ).subscribe(() => {
       this.cleanupStagedImage();
     });
+
+    this.isMobile = window.innerWidth <= 937;
+    window.addEventListener('touchstart', () => {
+    this.isMobile = window.innerWidth <= 937;
+    this.cdr.detectChanges();
+    });
+
+    // window.addEventListener('touchstart', () => {
+    //   this.isTablet = window.innerWidth > 937 && window.innerWidth <= 1300;
+    //   this.cdr.detectChanges();
+    // });
+
+    window.addEventListener('touchstart', () => {
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      this.isTablet = isTouchDevice && (window.innerWidth > 937 && window.innerWidth <= 1366);
+      this.cdr.detectChanges();
+    });
   }
 
   async ngOnInit() {
@@ -599,13 +637,16 @@ export class ProfileComponent implements OnInit {
         this.selectedProfileUrl = newUrl;
       }
     });
-  
+    // this.checkIfMobile();
+    
     try {
       // Start preloading images immediately
       // this.imagePreloadPromise = this.preloadAllImages();
 
       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
       const loadedUrls = subject?.value?.urls || [];
+
+      await this.imageManagementService.initializeImagesCount(this.userId);
 
       // 3. Start preloading those images
       this.imagePreloadPromise = this.preloadAllImages(loadedUrls);
@@ -650,7 +691,15 @@ export class ProfileComponent implements OnInit {
       }
   
       this.userId = routeUserId;
-  
+      console.log(`Initialized with userId: ${this.userId}`);
+
+      await this.imageManagementService.refreshFirebaseImageCount(this.userId);
+      const hasImages = await this.imageManagementService.checkAndUpdateFirebaseImageCount(this.userId);
+      console.log('Storage has images:', hasImages);
+
+      // Now debug storage with the correct userId
+      await this.imageManagementService.debugStorageContents(this.userId);
+
       // Set up image management
       this.imageManagementService.getCurrentImage(this.userId)
         .pipe(
@@ -843,6 +892,13 @@ export class ProfileComponent implements OnInit {
       this.renderer.setStyle(this.profileImg.nativeElement, 'height', '100%');
       console.log('Initial styles set for profile image');
     }
+
+    if (this.profileImg?.nativeElement) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.cdr.detectChanges();
+      });
+      this.resizeObserver.observe(this.profileImg.nativeElement);
+    }
   }
 
   async ngOnDestroy(): Promise<void> {
@@ -893,6 +949,23 @@ export class ProfileComponent implements OnInit {
 
   this.controlsAnimationComplete = false;
   this.imageAnimationComplete = false;
+
+  if (this.resizeObserver) {
+    this.resizeObserver.disconnect();
+    this.resizeObserver = null;
+  }
+
+  window.removeEventListener('resize', () => {
+    this.isMobile = window.innerWidth <= 937;
+  });
+
+  if (this.animationFrame) {
+    cancelAnimationFrame(this.animationFrame);
+  }
+
+  if (this.controlsAnimationTimeout) {
+    clearTimeout(this.controlsAnimationTimeout);
+  }
 }
 
 
@@ -1727,143 +1800,7 @@ async loadProfile(): Promise<void> {
   }
 }
 
-// async loadProfile(): Promise<void> {
-//   // Initial state setup
-//   this.isInitialLoad = true;
-//   this.loadingComplete = false;
-//   this.allImagesLoaded = false;
-//   this.imageLoaded = false;
-//   this.imageLoadedSuccessfully = false; 
-//   this.imageNotFound = false;
-
-//   const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
-//   this.userId = UserId;
-
-//   try {
-//     // Start preloading images immediately
-//     this.imagePreloadPromise = this.preloadAllImages();  
-      
-//     const user: any = await firstValueFrom(this.userService.getUser(this.userId));
-    
-//     console.log('User data received:', user);
-//     this.currentUser = {
-//       ...user,
-//       paymentFrequency: user.billing
-//     };
-
-//     // Initialize settings before updating display
-//     this.initializeProfilePictureSettings();
-
-//     // Handle image URL conversion and styles
-//     let displayUrl = '';
-//     if (this.currentUser.imgUrl) {
-//       // Convert to API URL first
-//       displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//       this.imageStyles = this.getUpdatedStyles(displayUrl);
-
-//       // Preload image with converted URL before updating forms
-//       await this.preloadImage(displayUrl, true);
-//     } else {
-//       this.imageStyles = this.getUpdatedStyles();
-//       this.imageLoaded = true;
-//       this.checkLoadingComplete();
-//     }
-
-//     // Parse profile picture settings if needed
-//     if (typeof this.currentUser.profilePictureSettings === 'string') {
-//       try {
-//         this.currentUser.profilePictureSettings = JSON.parse(this.currentUser.profilePictureSettings);
-//       } catch (e) {
-//         console.error('Error parsing profilePictureSettings:', e);
-//         this.currentUser.profilePictureSettings = null;
-//       }
-//     }
-
-//     // Apply position and zoom settings
-//     if (this.currentUser.profilePictureSettings) {
-//       this.position = {
-//         x: this.currentUser.profilePictureSettings.x || 0,
-//         y: this.currentUser.profilePictureSettings.y || 0
-//       };
-//       this.zoomLevel = this.currentUser.profilePictureSettings.zoom || 1;
-//       this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//     } else {
-//       this.resetImagePositionAndZoom();
-//     } 
-
-//     console.log('Profile loaded:', this.currentUser);
-//     console.log('Profile picture settings:', this.currentUser.profilePictureSettings);
-
-//     // Update form controls with converted URL
-//     this.profileForm.patchValue({
-//       ...this.currentUser,
-//       imgUrl: displayUrl,
-//       profilePictureSettings: this.currentUser.profilePictureSettings,
-//       isGoogleAuth: this.currentUser.isGoogleAuth
-//     });
-
-//     this.pictureForm.patchValue({
-//       imgUrl: displayUrl,
-//       profilePictureSettings: this.currentUser.profilePictureSettings
-//     }, { emitEvent: false });
-
-//     // Handle Google Auth state
-//     if (this.currentUser.isGoogleAuth) {
-//       this.profileForm.get('email')?.disable();
-//       this.passwordForm.get('oldPassword')?.disable();
-//       this.passwordForm.get('passwordGroup')?.disable();
-//     } else {
-//       this.profileForm.get('email')?.enable();
-//     }
-
-//     await this.updateFormWithUserData();
-
-//     // Handle height display
-//     if (this.currentUser.height) {
-//       this.displayHeight = this.formatHeightForDisplay(this.currentUser.height);
-//     }
-
-//     // Set tier flags
-//     if (this.currentUser.tier === 'Just Looking') {
-//       this.tierOne = true;
-//       this.tierTwo = false;
-//       this.tierThree = false;
-//     } else if (this.currentUser.tier === 'Motivated') {
-//       this.tierOne = false;
-//       this.tierTwo = true;
-//       this.tierThree = false;
-//     } else {
-//       this.tierOne = false;
-//       this.tierTwo = false;
-//       this.tierThree = true;
-//     }
-
-//     // Set payment frequency
-//     this.monthOrYear = this.currentUser.paymentFrequency === 'monthly' ? 'month' : 'year';
-//     this.freeTier = this.currentUser.tier === 'Just Looking';
-
-//     // Wait for images to finish loading
-//     await this.imagePreloadPromise;
-    
-//     // Set final states
-//     this.allImagesLoaded = true;
-//     this.finishLoading();
-
-//     const displayName = this.currentUser.name;
-//     this.firstName = displayName?.split(' ').slice(0, 1).join(' ');
-
-//     await this.updateImageTransform();
-//     this.cdr.detectChanges();
-
-//   } catch (error) {
-//     console.error('Error loading user profile:', error);
-//     this.loadingComplete = true;
-//     this.imageLoaded = true;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-  reloadProfile() {
+reloadProfile() {
     this.isInitialLoad = false;
 
     const UserId = this.actRoute.snapshot.paramMap.get('id') ?? '';
@@ -2258,833 +2195,7 @@ deleteProfile() {
   this.classAppliedDeleteProfile = true;
 }
 
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     // Clean up any staged files
-//     const userId = this.userService.getUserId();
-//      // Only attempt cleanup if we have both a userId and a staged file
-//      if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-   
-//   if (this.isProcessingGoodbye) return;
-  
-//   this.currentState = ProfileState.Viewing;
-
-//   // Reset password form and clear all errors
-//   this.passwordForm.reset();
-//   Object.keys(this.passwordForm.controls).forEach(key => {
-//     const control = this.passwordForm.get(key);
-//     control?.setErrors(null);
-//     control?.updateValueAndValidity();
-//   });
-
-//   // Specifically reset the old password control
-//   const oldPasswordControl = this.passwordForm.get('oldPassword');
-//   if (oldPasswordControl) {
-//     oldPasswordControl.setErrors(null);
-//     oldPasswordControl.updateValueAndValidity();
-//   }
-
-//   // Reset profile form
-//   this.profileForm.reset();
-
-//   // Reset password group
-//   this.passwordGroup.reset();
-//   this.passwordGroup.disable();
-
-//   // Clear custom error flags
-//   this.authenticating = false;
-//   this.oldPasswordError = '';
-//   this.isOldPasswordCorrect = false;
-//   this.isWaitingToCheck = false;
-
-//   // Reset any other custom states
-//   this.passwordMismatch = false;
-//   this.isPopupVisible = false;
-//     // Reset state
-//     this.currentState = ProfileState.Viewing;
-//     this.resetImagePositionAndZoomToSaved();
-//     this.reloadProfile();
-//     // Trigger change detection
-//     this.cdr.detectChanges();
-
-//     this.resetPasswordForm();
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//   }
-// }
-
-
-
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     // Store current user ID
-//     const userId = this.userService.getUserId();
-    
-//     // Only attempt cleanup if we have both a userId and a staged file
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     // Reset state before form handling
-//     this.currentState = ProfileState.Viewing;
-
-//     // Ensure we restore the previous profile image URL
-//     const originalProfileUrl = await this.storageService.generateImageUrl(
-//       userId,
-//       this.originalProfileImage || ''
-//     );
-
-//     // Update image URL in state
-//     await this.updateProfileImageUrl(originalProfileUrl);
-
-//     // Handle password form reset
-//     this.resetPasswordForm();
-
-//     // Reset profile form and position
-//     this.resetProfileForm();
-//     this.resetImagePositionAndZoomToSaved();
-    
-//     // Reload profile after state reset
-//     await this.reloadProfile();
-
-//     // Final UI updates
-//     this.cdr.detectChanges();
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     // Even if there's an error, ensure we reset the state
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-
-// resetPasswordForm(): void {
-//   this.passwordForm.reset();
-//   Object.keys(this.passwordForm.controls).forEach(key => {
-//     const control = this.passwordForm.get(key);
-//     control?.setErrors(null);
-//     control?.updateValueAndValidity();
-//   });
-//   this.passwordGroup.reset();
-//   this.passwordGroup.disable();
-//   this.authenticating = false;
-//   this.oldPasswordError = '';
-//   this.isOldPasswordCorrect = false;
-//   this.isWaitingToCheck = false;
-//   this.passwordMismatch = false;
-  
-// }
-
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-//     // Cleanup staged file if exists
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     // Reset to original URL
-//     if (this.originalProfileImage) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-//       this.setImageUrl(displayUrl);
-//     }
-
-//     // Reset state
-//     this.currentState = ProfileState.Viewing;
-
-//     // Update transform with original settings
-//     await this.updateImageTransform();
-
-//     // Reset forms and position
-//     this.resetPasswordForm();
-//     this.resetProfileForm();
-//     this.resetImagePositionAndZoomToSaved();
-    
-//     // Reload profile
-//     await this.reloadProfile();
-
-//     // Update view
-//     this.cdr.detectChanges();
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-//     // Cleanup staged file if exists
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     // Reset to original URL using updateProfileImageUrl if it exists
-//     // if (this.originalProfileImage) {
-//     //   await this.updateProfileImageUrl(this.originalProfileImage);
-//     // } else {
-//     //   // Handle case where there was no original image
-//     //   await this.updateProfileImageUrl(null);
-//     // }
-
-//     // Reset to original URL if it exists
-//     if (this.originalProfileImage) {
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({
-//           imgUrl: this.originalProfileImage
-//         }, { emitEvent: false });
-        
-//         this.profileImageUrl = this.originalProfileImage;
-        
-//         // Update transform
-//         this.updateImageTransform();
-//       });
-//     }
-
-//     // Reset state
-//     this.currentState = ProfileState.Viewing;
-
-//     // Reset forms and position
-//     this.resetPasswordForm();
-//     this.resetProfileForm();
-//     this.resetImagePositionAndZoomToSaved();
-    
-//     // Reload profile
-//     // await this.reloadProfile();
-
-//     // Update view
-//     this.cdr.detectChanges();
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-//     // Cleanup staged file if exists
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     this.ngZone.run(async () => {
-//       // Restore original image if it exists
-//       if (this.originalProfileImage) {
-//         // Convert original URL if needed
-//         let displayUrl = this.originalProfileImage;
-//         if (displayUrl.includes('firebasestorage.googleapis.com')) {
-//           displayUrl = await this.storageService.convertFirebaseUrl(displayUrl);
-//         }
-
-//         // Set flag to ensure image updates
-//         this.isImageUrlChanged = true;
-
-//         // Update form with original URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-
-//         // Restore original styles if they exist
-//         if (this.originalImageStyles) {
-//           this.imageStyles = { ...this.originalImageStyles };
-//         }
-
-//         // Update the transform to show original image
-//         await this.updateImageTransform();
-//       }
-
-//       // Reset state and forms
-//       this.currentState = ProfileState.Viewing;
-//       this.resetPasswordForm();
-//       this.resetProfileForm();
-      
-//       // Reset position and zoom to saved values
-//       this.resetImagePositionAndZoomToSaved();
-      
-//       // Ensure loading states are reset
-//       this.imageLoadedSuccessfully = true;
-//       this.imageNotFound = false;
-
-//       // Update view
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.ngZone.run(() => {
-//       this.currentState = ProfileState.Viewing;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-//     // Cleanup staged file if exists
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     // Get current user image URL
-//     let currentUrl = this.currentUser?.imgUrl;
-//     if (currentUrl && !currentUrl.startsWith('http')) {
-//       currentUrl = await this.storageService.convertFirebaseUrl(currentUrl);
-//     }
-
-//     this.ngZone.run(() => {
-//       if (currentUrl) {
-//         // Set flag to force image update
-//         this.isImageUrlChanged = true;
-        
-//         // Update form with full URL
-//         this.pictureForm.patchValue({
-//           imgUrl: currentUrl
-//         }, { emitEvent: false });
-//       }
-
-//       // Reset to viewing state
-//       this.currentState = ProfileState.Viewing;
-      
-//       // Reset forms and position
-//       this.resetPasswordForm();
-//       this.resetProfileForm();
-//       this.resetImagePositionAndZoomToSaved();
-
-//       // Ensure loading states are reset
-//       this.imageLoadedSuccessfully = true;
-//       this.imageNotFound = false;
-      
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.ngZone.run(() => {
-//       this.currentState = ProfileState.Viewing;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-//     // Cleanup staged file if exists
-//     if (userId && this.firebaseService.hasStagedFile(userId)) {
-//       await this.firebaseService.cleanupStagedFile(userId);
-//       this.imageUrlManager.clearStagedFile(userId);
-//     }
-
-//     this.ngZone.run(async () => {
-//       // Get current saved image URL from user
-//       if (this.currentUser?.imgUrl) {
-//         // Force image update by setting flag
-//         this.isImageUrlChanged = true;
-        
-//         let displayUrl = this.currentUser.imgUrl;
-//         if (displayUrl.includes('firebasestorage.googleapis.com')) {
-//           displayUrl = await this.storageService.convertFirebaseUrl(displayUrl);
-//         }
-
-//         // Update form with original URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-//       }
-
-//       // Reset state
-//       this.currentState = ProfileState.Viewing;
-      
-//       // Reset forms
-//       this.resetPasswordForm();
-//       this.resetProfileForm();
-      
-//       // Reset position and force update
-//       this.resetImagePositionAndZoomToSaved();
-      
-//       // Force immediate update
-//       this.isImageUrlChanged = true;
-//       await this.updateImageTransform();
-      
-//       // Reset loading states
-//       this.imageLoadedSuccessfully = true;
-//       this.imageNotFound = false;
-
-//       // Update view
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.ngZone.run(() => {
-//       this.currentState = ProfileState.Viewing;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-    
-
-//     this.ngZone.run(async () => {
-//       // Restore original image if it exists
-//       if (this.originalProfileImage) {
-//         // Convert to display URL
-//         const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-        
-//         // Update form
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-        
-//         // Update image display
-//         if (this.profileImg?.nativeElement) {
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': '0% 0%',
-//             'background-repeat': 'no-repeat',
-//             'background-size': '100%',
-//             'background-color': '#c7ff20'
-//           };
-          
-//           Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//         }
-
-//         // Update states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-//         this.currentUser.imgUrl = this.originalProfileImage;
-//       }
-
-//       // Reset state
-//       this.currentState = ProfileState.Viewing;
-      
-//       // Reset position and zoom to original
-//       if (this.originalImageStyles) {
-//         this.imageStyles = { ...this.originalImageStyles };
-//       }
-      
-//       this.resetImagePositionAndZoomToSaved();
-      
-//       // Force update
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// working
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('No user ID available');
-
-//     this.ngZone.run(async () => {
-//       try {
-//         // Start loading state
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // First cleanup staged file if exists
-//         if (this.firebaseService.hasStagedFile(userId)) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // Restore original image if it exists
-//         if (this.originalProfileImage) {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           // Update form
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           // Update image states
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-//           this.currentUser.imgUrl = this.originalProfileImage;
-
-//           // Update image display
-//           if (this.profileImg?.nativeElement) {
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': '0% 0%',
-//               'background-repeat': 'no-repeat',
-//               'background-size': '100%',
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-//         }
-
-//         // Reset state and settings
-//         this.currentState = ProfileState.Viewing;
-//         this.resetImagePositionAndZoomToSaved();
-        
-//         // Clear staged image URL from cache
-//         this.storageService.clearStagedUrlCache(userId);
-
-//       } finally {
-//         // Remove loading state
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     // Ensure we still reset state on error
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     console.log('Starting cancel action, userId:', userId);
-
-//     // Check both services for staged files
-//     const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//     const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//     console.log('Staged file status:', {
-//       imageUrlManager: hasStagedFileUrl,
-//       firebaseService: hasStagedFileFirebase
-//     });
-
-//     if (hasStagedFileUrl || hasStagedFileFirebase) {
-//       try {
-//         // Get staged file info before cleanup
-//         const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//         console.log('Staged file to cleanup:', stagedFile);
-
-//         // Cleanup Firebase storage
-//         await this.firebaseService.cleanupStagedFile(userId);
-        
-//         // Clear local tracking
-//         this.imageUrlManager.clearStagedFile(userId);
-        
-//         console.log('Staged file cleanup completed');
-//       } catch (cleanupError) {
-//         console.error('Error during staged file cleanup:', cleanupError);
-//       }
-//     }
-
-//     // Restore original image
-//     if (this.originalProfileImage) {
-//       await this.ngZone.run(async () => {
-//         try {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage!);
-          
-//           console.log('Restoring original image:', {
-//             original: this.originalProfileImage,
-//             display: displayUrl
-//           });
-
-//           // Update form
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-
-//           // Update states
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-//           this.currentUser.imgUrl = this.originalProfileImage;
-
-//           // Update display
-//           await this.updateImageTransform();
-          
-//           console.log('Original image restored');
-//         } catch (error) {
-//           console.error('Error restoring original image:', error);
-//         }
-//       });
-//     }
-
-//     // Reset states
-//     this.currentState = ProfileState.Viewing;
-//     this.resetImagePositionAndZoomToSaved();
-//     this.storageService.clearStagedUrlCache(userId);
-    
-//     this.cdr.detectChanges();
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         // Start loading state
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Check both services for staged files
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         console.log('Staged file status:', {
-//           imageUrlManager: hasStagedFileUrl,
-//           firebaseService: hasStagedFileFirebase
-//         });
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           try {
-//             const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//             console.log('Staged file to cleanup:', stagedFile);
-
-//             await this.firebaseService.cleanupStagedFile(userId);
-//             this.imageUrlManager.clearStagedFile(userId);
-            
-//             console.log('Staged file cleanup completed');
-//           } catch (cleanupError) {
-//             console.error('Error during staged file cleanup:', cleanupError);
-//           }
-//         }
-
-//         // Restore original image if it exists
-//         if (this.originalProfileImage) {
-//           try {
-//             const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-            
-//             console.log('Restoring original image:', {
-//               original: this.originalProfileImage,
-//               display: displayUrl
-//             });
-
-//             // Update form
-//             this.pictureForm.patchValue({
-//               imgUrl: displayUrl
-//             }, { emitEvent: false });
-            
-//             // Update states
-//             this.imageLoadedSuccessfully = true;
-//             this.imageNotFound = false;
-//             this.currentUser.imgUrl = this.originalProfileImage;
-
-//             // Update image display with immediate style application
-//             if (this.profileImg?.nativeElement) {
-//               this.imageStyles = {
-//                 'background-image': `url("${displayUrl}")`,
-//                 'background-position': '0% 0%',
-//                 'background-repeat': 'no-repeat',
-//                 'background-size': '100%',
-//                 'background-color': '#c7ff20'
-//               };
-              
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//             }
-            
-//             // Update transform after styles are applied
-//             await this.updateImageTransform();
-            
-//             console.log('Original image restored');
-//           } catch (error) {
-//             console.error('Error restoring original image:', error);
-//           }
-//         }
-
-//         // Reset state and settings
-//         this.currentState = ProfileState.Viewing;
-//         this.resetImagePositionAndZoomToSaved();
-//         this.storageService.clearStagedUrlCache(userId);
-
-//       } finally {
-//         // Remove loading state
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         // Start loading state
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           try {
-//             await this.firebaseService.cleanupStagedFile(userId);
-//             this.imageUrlManager.clearStagedFile(userId);
-//           } catch (cleanupError) {
-//             console.error('Error during staged file cleanup:', cleanupError);
-//           }
-//         }
-
-//         // Restore original image and its transforms
-//         if (this.originalProfileImage) {
-//           try {
-//             const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-            
-//             // First restore the original position and zoom
-//             if (this.currentUser.profilePictureSettings) {
-//               this.position = {
-//                 x: this.currentUser.profilePictureSettings.x || 0,
-//                 y: this.currentUser.profilePictureSettings.y || 0
-//               };
-//               this.zoomLevel = this.currentUser.profilePictureSettings.zoom || 1;
-//               this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             } else {
-//               // Reset to defaults if no settings exist
-//               this.position = { x: 0, y: 0 };
-//               this.zoomLevel = 1;
-//               this.isDragged = false;
-//             }
-
-//             // Update form and current user
-//             this.pictureForm.patchValue({
-//               imgUrl: displayUrl
-//             }, { emitEvent: false });
-            
-//             this.currentUser.imgUrl = this.originalProfileImage;
-            
-//             // Update image styles with restored position and zoom
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             if (this.profileImg?.nativeElement) {
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//             }
-
-//             // Update states
-//             this.imageLoadedSuccessfully = true;
-//             this.imageNotFound = false;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-
-//             await this.updateImageTransform();
-//             console.log('Original image and transforms restored:', {
-//               position: this.position,
-//               zoom: this.zoomLevel,
-//               isDragged: this.isDragged
-//             });
-//           } catch (error) {
-//             console.error('Error restoring original image:', error);
-//           }
-//         }
-
-//         // Reset state
-//         this.currentState = ProfileState.Viewing;
-//         this.storageService.clearStagedUrlCache(userId);
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Last working
+// last working
 // async cancelAction(): Promise<void> {
 //   if (this.isProcessingGoodbye) return;
   
@@ -3099,672 +2210,6 @@ deleteProfile() {
 //       try {
 //         if (this.profileImg?.nativeElement) {
 //           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // Restore original image and transforms
-//         if (this.originalProfileImage) {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           // Restore original position and zoom
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             console.log('Restoring original transforms:', {
-//               position: this.originalPosition,
-//               zoom: this.originalZoom
-//             });
-            
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           // Update form and current user
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           // Apply restored transforms
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset state
-//         this.currentState = ProfileState.Viewing;
-        
-//         // Clear stored originals
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-        
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         let needsDatabaseUpdate = false;
-
-//         // Restore original image and verify it exists
-//         if (this.originalProfileImage) {
-//           try {
-//             const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-            
-//             // Verify the image is still accessible
-//             const headers = await this.storageService.getAuthHeaders();
-//             const response = await fetch(displayUrl, { 
-//               method: 'HEAD',
-//               headers 
-//             });
-
-//             if (!response.ok) {
-//               // Original image was deleted, need to update database
-//               needsDatabaseUpdate = true;
-//               throw new Error('Original image no longer exists');
-//             }
-
-//             // Restore original position and zoom
-//             if (this.originalPosition && this.originalZoom !== null) {
-//               console.log('Restoring original transforms:', {
-//                 position: this.originalPosition,
-//                 zoom: this.originalZoom
-//               });
-              
-//               this.position = { ...this.originalPosition };
-//               this.zoomLevel = this.originalZoom;
-//               this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//               this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//             }
-
-//             // Update form and current user
-//             this.pictureForm.patchValue({
-//               imgUrl: displayUrl
-//             }, { emitEvent: false });
-            
-//             this.currentUser.imgUrl = this.originalProfileImage;
-            
-//             // Apply restored transforms
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             if (this.profileImg?.nativeElement) {
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//             }
-
-//             this.imageLoadedSuccessfully = true;
-//             this.imageNotFound = false;
-
-//             await this.updateImageTransform();
-//           } catch (error) {
-//             // Original image doesn't exist or isn't accessible, show avatar
-//             console.log('Original image not accessible, showing avatar');
-//             this.currentUser.imgUrl = null;
-//             this.resetImage();
-//             this.imageNotFound = false;
-//             needsDatabaseUpdate = true;
-//           }
-//         } else {
-//           // No original image, show avatar
-//           this.currentUser.imgUrl = null;
-//           this.resetImage();
-//           this.imageNotFound = false;
-//           needsDatabaseUpdate = true;
-//         }
-
-//         // Update database if needed
-//         if (needsDatabaseUpdate) {
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-//         }
-
-//         // Reset state
-//         this.currentState = ProfileState.Viewing;
-        
-//         // Clear stored originals
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Cleanup staged files
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // If original profile image is null, it means we're canceling after a deletion
-//         if (this.originalProfileImage === null) {
-//           // Update database to null and show avatar
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//           this.currentUser.imgUrl = null;
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
-//           try {
-//             // Verify original image still exists
-//             const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-//             const headers = await this.storageService.getAuthHeaders();
-//             const response = await fetch(displayUrl, { headers, method: 'HEAD' });
-
-//             if (!response.ok) {
-//               throw new Error('Original image no longer exists');
-//             }
-
-//             // Restore original image and settings
-//             this.currentUser.imgUrl = this.originalProfileImage;
-//             if (this.originalPosition && this.originalZoom !== null) {
-//               this.position = { ...this.originalPosition };
-//               this.zoomLevel = this.originalZoom;
-//               this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//               this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//             }
-
-//             await this.updateImageTransform();
-//           } catch (error) {
-//             // Original image not accessible, update database and show avatar
-//             const updatedUser = {
-//               ...this.currentUser,
-//               imgUrl: null,
-//               profilePictureSettings: null
-//             };
-//             await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//             this.currentUser.imgUrl = null;
-//             this.resetImage();
-//             this.imageNotFound = false;
-//           }
-//         }
-
-//         // Reset states
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URLs
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // If an image was deleted, show avatar and update database
-//         if (this.imageWasDeleted || this.originalProfileImage === null) {
-//           await this.updateDatabaseToNull();
-//           this.currentUser.imgUrl = null;
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         }
-//         // Otherwise restore original image if it exists
-//         else if (this.originalProfileImage) {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           // Restore original position and zoom
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             console.log('Restoring original transforms:', {
-//               position: this.originalPosition,
-//               zoom: this.originalZoom
-//             });
-            
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           // Update form and current user
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           // Apply restored transforms
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset all states
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.imageWasDeleted = false;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // If we've deleted the profile image, ensure avatar is shown
-//         if (this.originalProfileImage === null || this.currentUser.imgUrl === null) {
-//           // Force update database to null if not already
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-          
-//           this.currentUser.imgUrl = null;
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
-//           try {
-//             const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-            
-//             // Restore original position and zoom
-//             if (this.originalPosition && this.originalZoom !== null) {
-//               console.log('Restoring original transforms:', {
-//                 position: this.originalPosition,
-//                 zoom: this.originalZoom
-//               });
-              
-//               this.position = { ...this.originalPosition };
-//               this.zoomLevel = this.originalZoom;
-//               this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//               this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//             }
-
-//             // Update form and current user
-//             this.pictureForm.patchValue({
-//               imgUrl: displayUrl
-//             }, { emitEvent: false });
-            
-//             this.currentUser.imgUrl = this.originalProfileImage;
-            
-//             // Apply restored transforms
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             if (this.profileImg?.nativeElement) {
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//             }
-
-//             this.imageLoadedSuccessfully = true;
-//             this.imageNotFound = false;
-
-//             await this.updateImageTransform();
-//           } catch (error) {
-//             // If original image can't be loaded, show avatar
-//             const updatedUser = {
-//               ...this.currentUser,
-//               imgUrl: null,
-//               profilePictureSettings: null
-//             };
-//             await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//             this.currentUser.imgUrl = null;
-//             this.resetImage();
-//             this.imageNotFound = false;
-//           }
-//         }
-
-//         // Reset state
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // If original was deleted, show avatar and update database
-//         if (this.originalProfileImage === null) {
-//           // Update database to null
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//           // Reset UI to show avatar
-//           this.currentUser.imgUrl = null;
-//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.imageStyles = {
-//             'background-image': 'none',
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
-//           // Rest of your existing restoration logic...
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset state
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Main method
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//           // Add no-image class if there's no image
 //           if (!this.currentUser.imgUrl) {
 //             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
 //           }
@@ -3779,284 +2224,9 @@ deleteProfile() {
 //           this.imageUrlManager.clearStagedFile(userId);
 //         }
 
-//         // If original was deleted, show avatar and update database
-//         if (this.originalProfileImage === null) {
-//           // Update database to null
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//           // Reset UI to show avatar
-//           this.currentUser.imgUrl = null;
-//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.imageStyles = {
-//             'background-image': 'none',
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-          
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
-//           // Restore original image and its settings
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           // Remove no-image class if restoring image
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.removeClass(this.profileImg.nativeElement, 'no-image');
-//           }
-
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset all states
-//         this.isInitialChangingPictureState = false;
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.resetHoverState();
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-//         this.providerUrlPasted = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//           // Add no-image class if there's no image
-//           if (!this.currentUser.imgUrl) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//           }
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // Check if the original image was deleted
-//         const wasDeleted = this.originalProfileImage !== null && !this.currentUser.imgUrl;
-
-//         // If original was deleted or never existed, show avatar and ensure database is updated
-//         if (wasDeleted || this.originalProfileImage === null) {
-//           // Only clear URLs and reset if the image was actually deleted
-//           if (wasDeleted) {
-//             // Ensure database reflects the null state
-//             const updatedUser = {
-//               ...this.currentUser,
-//               imgUrl: null,
-//               profilePictureSettings: null
-//             };
-//             await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//             // Reset UI to show avatar
-//             this.currentUser.imgUrl = null;
-//             this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//             this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
-            
-//             // Only clear temporary URL if it was the deleted image
-//             if (this.imageManagementService.temporaryUrl === this.originalProfileImage) {
-//               this.imageManagementService.clearTemporaryUrl();
-//             }
-            
-//             // Only reset original profile image if it was deleted
-//             this.originalProfileImage = null;
-//           }
-
-//           this.imageStyles = {
-//             'background-image': 'none',
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-          
-//           this.resetImage();
-//           this.imageNotFound = false;
-
-//         } else if (this.originalProfileImage) {
-//           // Restore original image and its settings
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           // Remove no-image class if restoring image
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.removeClass(this.profileImg.nativeElement, 'no-image');
-//           }
-
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset all states
-//         this.isInitialChangingPictureState = false;
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.resetHoverState();
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-//         this.providerUrlPasted = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Only clear temporary URL and hover count at the end
-//     // if we're not dealing with a provider URL that wasn't deleted
-//     if (!this.imageManagementService.temporaryUrl || 
-//         (this.originalProfileImage === null || this.currentUser.imgUrl === null)) {
-//       this.imageManagementService.clearTemporaryUrl();
-//     }
-//     this.hoverCount = 0;
-
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Testing
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//           // Add no-image class if there's no image
-//           if (!this.currentUser.imgUrl) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//           }
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // Check if the original image was deleted
-//         const wasDeleted = this.originalProfileImage !== null && !this.currentUser.imgUrl;
+//         // Get current database state
+//         const user = await firstValueFrom(this.userService.getUser(userId));
+//         const wasDeleted = this.originalProfileImage !== null && !user.imgUrl;
 
 //         // If original was deleted or never existed, show avatar and ensure database is updated
 //         if (wasDeleted || this.originalProfileImage === null) {
@@ -4091,7 +2261,6 @@ deleteProfile() {
 //               }
 //             }
             
-//             // Only reset original profile image if it was deleted
 //             this.originalProfileImage = null;
 //           }
 
@@ -4110,9 +2279,10 @@ deleteProfile() {
           
 //           this.resetImage();
 //           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
+//           this.imageManagementService.clearAllState(userId);
+//         } else if (user.imgUrl && this.originalProfileImage) {
 //           // Restore original image and its settings
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
+//           const displayUrl = await this.storageService.convertFirebaseUrl(user.imgUrl);
           
 //           if (this.originalPosition && this.originalZoom !== null) {
 //             this.position = { ...this.originalPosition };
@@ -4121,7 +2291,6 @@ deleteProfile() {
 //             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
 //           }
 
-//           // Remove no-image class if restoring image
 //           if (this.profileImg?.nativeElement) {
 //             this.renderer.removeClass(this.profileImg.nativeElement, 'no-image');
 //           }
@@ -4160,16 +2329,178 @@ deleteProfile() {
 //         this.hasStartedNavigating = false;
 //         this.showUploadSuccess = false;
 //         this.providerUrlPasted = false;
+//         this.hasProfilePictureTransitioned = false;
+//         this.showButton = true;
 
 //       } finally {
 //         if (this.profileImg?.nativeElement) {
 //           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
 //         }
+//         this.isUploadingOrPasting = false; 
 //         this.cdr.detectChanges();
 //       }
 //     });
 
-//     // Do not clear temporary URL here to avoid affecting non-deleted provider URLs
+//     this.hoverCount = 0;
+//   } catch (error) {
+//     console.error('Error in cancelAction:', error);
+//     this.currentState = ProfileState.Viewing;
+//     this.cdr.detectChanges();
+//   }
+// }
+
+// Last working
+// async cancelAction(): Promise<void> {
+//   if (this.isProcessingGoodbye) return;
+  
+//   try {
+//     const userId = this.userService.getUserId();
+//     if (!userId) {
+//       console.error('No userId available for cleanup');
+//       return;
+//     }
+
+//     await this.ngZone.run(async () => {
+//       try {
+//         if (this.profileImg?.nativeElement) {
+//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
+//           if (!this.currentUser.imgUrl) {
+//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
+//           }
+//         }
+
+//         // Handle staged files cleanup
+//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
+//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
+
+//         if (hasStagedFileUrl || hasStagedFileFirebase) {
+//           await this.firebaseService.cleanupStagedFile(userId);
+//           this.imageUrlManager.clearStagedFile(userId);
+//         }
+
+//         // Get current database state and check if profile image still exists
+//         const user = await firstValueFrom(this.userService.getUser(userId));
+//         const wasDeleted = this.originalProfileImage !== null && !user.imgUrl;
+//         const profileImageExists = await this.imageManagementService.checkProfileImageExists(user.imgUrl!);
+
+//         // Reset to avatar if:
+//         // 1. Image was deleted or never existed
+//         // 2. Profile image doesn't exist in storage anymore
+//         // 3. We're canceling an upload
+//         if (wasDeleted || this.originalProfileImage === null || !profileImageExists || this.isUploadingOrPasting) {
+//           // Only update database if the image was actually deleted
+//           if (wasDeleted) {
+//             const updatedUser = {
+//               ...this.currentUser,
+//               imgUrl: null,
+//               profilePictureSettings: null
+//             };
+//             await firstValueFrom(this.userService.updateUser(updatedUser));
+
+//             // If it was a provider URL, ensure complete cleanup
+//             if (this.originalProfileImage && this.imageManagementService.isProviderUrl(this.originalProfileImage)) {
+//               const subject = this.imageManagementService.getUserImagesSubject(userId);
+//               const current = subject.value;
+//               const updatedUrls = current.urls.filter(url => url !== this.originalProfileImage);
+//               subject.next({
+//                 urls: updatedUrls,
+//                 currentIndex: 0
+//               });
+
+//               if (this.imageManagementService.temporaryUrl === this.originalProfileImage) {
+//                 this.imageManagementService.clearTemporaryUrl();
+//               }
+//             }
+            
+//             this.originalProfileImage = null;
+//           }
+
+//           // Reset UI and form states
+//           this.currentUser.imgUrl = null;
+//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
+//           this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
+
+//           // Reset image styles with fixed positions
+//           this.imageStyles = {
+//             'background-image': 'none',
+//             'background-position': '0% 0%',
+//             'background-repeat': 'no-repeat',
+//             'background-size': '100%',
+//             'background-color': '#c7ff20'
+//           };
+          
+//           if (this.profileImg?.nativeElement) {
+//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
+//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
+//           }
+          
+//           // Reset all states
+//           this.imageNotFound = false;
+//           this.imageLoadedSuccessfully = false;
+//           this.resetImagePositionAndZoom();
+//           this.imageManagementService.clearAllState(userId);
+
+//         } else if (user.imgUrl && this.originalProfileImage) {
+//           // Restore original image and its settings
+//           const displayUrl = await this.storageService.convertFirebaseUrl(user.imgUrl);
+          
+//           if (this.originalPosition && this.originalZoom !== null) {
+//             this.position = { ...this.originalPosition };
+//             this.zoomLevel = this.originalZoom;
+//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
+//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
+//           }
+
+//           if (this.profileImg?.nativeElement) {
+//             this.renderer.removeClass(this.profileImg.nativeElement, 'no-image');
+//           }
+
+//           this.pictureForm.patchValue({
+//             imgUrl: displayUrl
+//           }, { emitEvent: false });
+          
+//           this.currentUser.imgUrl = this.originalProfileImage;
+          
+//           this.imageStyles = {
+//             'background-image': `url("${displayUrl}")`,
+//             'background-position': `${this.position.x}% ${this.position.y}%`,
+//             'background-repeat': 'no-repeat',
+//             'background-size': `${this.zoomLevel * 100}%`,
+//             'background-color': '#c7ff20'
+//           };
+          
+//           if (this.profileImg?.nativeElement) {
+//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
+//           }
+
+//           this.imageLoadedSuccessfully = true;
+//           this.imageNotFound = false;
+
+//           await this.updateImageTransform();
+//         }
+
+//         // Reset all states
+//         this.isInitialChangingPictureState = false;
+//         this.currentState = ProfileState.Viewing;
+//         this.originalPosition = null;
+//         this.originalZoom = null;
+//         this.storageService.clearStagedUrlCache(userId);
+//         this.resetHoverState();
+//         this.hasStartedNavigating = false;
+//         this.showUploadSuccess = false;
+//         this.providerUrlPasted = false;
+//         this.hasProfilePictureTransitioned = false;
+//         this.showButton = true;
+
+//       } finally {
+//         if (this.profileImg?.nativeElement) {
+//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
+//         }
+//         this.isUploadingOrPasting = false;
+//         this.cdr.detectChanges();
+//       }
+//     });
+
 //     this.hoverCount = 0;
 //   } catch (error) {
 //     console.error('Error in cancelAction:', error);
@@ -4206,15 +2537,18 @@ async cancelAction(): Promise<void> {
           this.imageUrlManager.clearStagedFile(userId);
         }
 
-        // Get current database state
+        // Get current database state and check if profile image still exists
         const user = await firstValueFrom(this.userService.getUser(userId));
         const wasDeleted = this.originalProfileImage !== null && !user.imgUrl;
+        const profileImageExists = await this.imageManagementService.checkProfileImageExists(user.imgUrl!);
 
-        // If original was deleted or never existed, show avatar and ensure database is updated
-        if (wasDeleted || this.originalProfileImage === null) {
-          // Only clear URLs and reset if the image was actually deleted
+        // Reset to avatar if:
+        // 1. Image was deleted or never existed
+        // 2. Profile image doesn't exist in storage anymore
+        // 3. We're canceling an upload
+        if (wasDeleted || this.originalProfileImage === null || !profileImageExists || this.isUploadingOrPasting) {
+          // Only update database if the image was actually deleted
           if (wasDeleted) {
-            // Ensure database reflects the null state
             const updatedUser = {
               ...this.currentUser,
               imgUrl: null,
@@ -4222,11 +2556,6 @@ async cancelAction(): Promise<void> {
             };
             await firstValueFrom(this.userService.updateUser(updatedUser));
 
-            // Reset UI to show avatar
-            this.currentUser.imgUrl = null;
-            this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-            this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
-            
             // If it was a provider URL, ensure complete cleanup
             if (this.originalProfileImage && this.imageManagementService.isProviderUrl(this.originalProfileImage)) {
               const subject = this.imageManagementService.getUserImagesSubject(userId);
@@ -4237,7 +2566,6 @@ async cancelAction(): Promise<void> {
                 currentIndex: 0
               });
 
-              // Clear all references to this provider URL
               if (this.imageManagementService.temporaryUrl === this.originalProfileImage) {
                 this.imageManagementService.clearTemporaryUrl();
               }
@@ -4246,11 +2574,17 @@ async cancelAction(): Promise<void> {
             this.originalProfileImage = null;
           }
 
+          // Reset UI and form states
+          this.currentUser.imgUrl = null;
+          this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
+          this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
+
+          // Reset image styles with fixed positions
           this.imageStyles = {
             'background-image': 'none',
-            'background-position': `${this.position.x}% ${this.position.y}%`,
+            'background-position': '0% 0%',
             'background-repeat': 'no-repeat',
-            'background-size': `${this.zoomLevel * 100}%`,
+            'background-size': '100%',
             'background-color': '#c7ff20'
           };
           
@@ -4259,9 +2593,12 @@ async cancelAction(): Promise<void> {
             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
           }
           
-          this.resetImage();
+          // Reset all states
           this.imageNotFound = false;
+          this.imageLoadedSuccessfully = false;
+          this.resetImagePositionAndZoom();
           this.imageManagementService.clearAllState(userId);
+
         } else if (user.imgUrl && this.originalProfileImage) {
           // Restore original image and its settings
           const displayUrl = await this.storageService.convertFirebaseUrl(user.imgUrl);
@@ -4312,12 +2649,20 @@ async cancelAction(): Promise<void> {
         this.showUploadSuccess = false;
         this.providerUrlPasted = false;
         this.hasProfilePictureTransitioned = false;
+        this.showButton = true;
+
+        // const container = document.querySelector('.profilePictureContainerForDragging');
+        // if (container && (this.isMobile || this.isTablet)) {
+        //   container.classList.remove('post-animation');
+        // }
+        
+        await this.imageManagementService.refreshFirebaseImageCount(userId);
 
       } finally {
         if (this.profileImg?.nativeElement) {
           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
         }
-        this.isUploadingOrPasting = false; 
+        this.isUploadingOrPasting = false;
         this.cdr.detectChanges();
       }
     });
@@ -4329,134 +2674,6 @@ async cancelAction(): Promise<void> {
     this.cdr.detectChanges();
   }
 }
-
-// async cancelAction(): Promise<void> {
-//   if (this.isProcessingGoodbye) return;
-  
-//   try {
-//     const userId = this.userService.getUserId();
-//     if (!userId) {
-//       console.error('No userId available for cleanup');
-//       return;
-//     }
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//           // Add no-image class if there's no image
-//           if (!this.currentUser.imgUrl) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//           }
-//         }
-
-//         // Handle staged files cleanup
-//         const hasStagedFileUrl = this.imageUrlManager.hasStagedFile(userId);
-//         const hasStagedFileFirebase = this.firebaseService.hasStagedFile(userId);
-
-//         if (hasStagedFileUrl || hasStagedFileFirebase) {
-//           await this.firebaseService.cleanupStagedFile(userId);
-//           this.imageUrlManager.clearStagedFile(userId);
-//         }
-
-//         // If original was deleted, show avatar and update database
-//         if (this.originalProfileImage === null) {
-//           // Update database to null
-//           const updatedUser = {
-//             ...this.currentUser,
-//             imgUrl: null,
-//             profilePictureSettings: null
-//           };
-//           await firstValueFrom(this.userService.updateUser(updatedUser));
-
-//           // Reset UI to show avatar
-//           this.currentUser.imgUrl = null;
-//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
-//           this.imageStyles = {
-//             'background-image': 'none',
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-          
-//           this.resetImage();
-//           this.imageNotFound = false;
-//         } else if (this.originalProfileImage) {
-//           // Restore original image and its settings
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.originalProfileImage);
-          
-//           if (this.originalPosition && this.originalZoom !== null) {
-//             this.position = { ...this.originalPosition };
-//             this.zoomLevel = this.originalZoom;
-//             this.isDragged = this.position.x !== 0 || this.position.y !== 0;
-//             this.isDefaultPosition = this.position.x === 0 && this.position.y === 0;
-//           }
-
-//           // Remove no-image class if restoring image
-//           if (this.profileImg?.nativeElement) {
-//             this.renderer.removeClass(this.profileImg.nativeElement, 'no-image');
-//           }
-
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-          
-//           this.currentUser.imgUrl = this.originalProfileImage;
-          
-//           this.imageStyles = {
-//             'background-image': `url("${displayUrl}")`,
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-          
-//           if (this.profileImg?.nativeElement) {
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoadedSuccessfully = true;
-//           this.imageNotFound = false;
-
-//           await this.updateImageTransform();
-//         }
-
-//         // Reset all states
-//         this.isInitialChangingPictureState = false;
-//         this.currentState = ProfileState.Viewing;
-//         this.originalPosition = null;
-//         this.originalZoom = null;
-//         this.storageService.clearStagedUrlCache(userId);
-//         this.resetHoverState();
-//         this.hasStartedNavigating = false;
-//         this.showUploadSuccess = false;
-//         this.providerUrlPasted = false;
-
-//       } finally {
-//         if (this.profileImg?.nativeElement) {
-//           this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         }
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     // Clear temporary URL when canceling
-//     this.imageManagementService.clearTemporaryUrl();
-//     this.hoverCount = 0;
-//   } catch (error) {
-//     console.error('Error in cancelAction:', error);
-//     this.currentState = ProfileState.Viewing;
-//     this.cdr.detectChanges();
-//   }
-// }
-
 /*-----------------------------------------------------------------------*/
 
 
@@ -4488,6 +2705,7 @@ triggerAnimations(){
   this.firstTimeAnimation = true;
   this.cdr.detectChanges();
 }
+
 skipAnimations(){
   const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
   profilePicture?.classList.remove('firstTimeAnimation');
@@ -5097,871 +3315,14 @@ checkEmail(event: Event) {
   
     // Clean up subscription in ngOnDestroy
     this.subscriptions.add(this.styleSubscription);
-  }
+}
 
-  // changePicture() {
-  //   this.currentState = ProfileState.ChangingPicture;
-  //   console.log('Entered change picture mode:', {
-  //     currentState: this.currentState,
-  //     stateName: ProfileState[this.currentState],
-  //     canDrag: this.canDrag()
-  //   });
-  //   // this.syncFormWithCurrentUser();
-  // }
-
-  // async changePicture() {
-  //   this.currentState = ProfileState.ChangingPicture;
-    
-  //   if (this.currentUser.imgUrl) {
-  //     try {
-  //       // Get proxied URL synchronously
-  //       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-        
-  //       // Update form with resolved URL
-  //       this.ngZone.run(() => {
-  //         this.pictureForm.patchValue({
-  //           imgUrl: displayUrl
-  //         }, { emitEvent: false });
-          
-  //         // Ensure image is displayed
-  //         this.imageLoadedSuccessfully = true;
-  //         this.imageNotFound = false;
-          
-  //         // Update transform with saved settings
-  //         this.updateImageTransform();
-  //         this.cdr.detectChanges();
-  //       });
-  //     } catch (error) {
-  //       console.error('Error converting URL:', error);
-  //       this.imageNotFound = true;
-  //     }
-  //   }
-  // }
-
-// async changePicture() {
-//   try {
-//     // Store original image URL before changing state
-//     this.originalProfileImage = this.currentUser?.imgUrl || null;
-    
-//     // Change state first
-//     this.currentState = ProfileState.ChangingPicture;
-    
-//     if (this.currentUser?.imgUrl) {
-//       // Get proxied URL
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-      
-//       // Run UI updates in NgZone
-//       this.ngZone.run(() => {
-//         // Update form with resolved URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-        
-//         // Update component URL
-//         this.profileImageUrl = displayUrl;
-        
-//         // Update image states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-        
-//         // Update transform with saved settings
-//         this.updateImageTransform();
-        
-//         // Ensure view is updated
-//         this.cdr.detectChanges();
-//       });
-//     } else {
-//       // Handle case where there's no current image
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({
-//           imgUrl: null
-//         }, { emitEvent: false });
-        
-//         this.profileImageUrl = null;
-//         this.imageLoadedSuccessfully = false;
-//         this.imageNotFound = false;
-        
-//         this.cdr.detectChanges();
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-    
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async changePicture() {
-//   try {
-//     // Store original full URL before state change
-//     if (this.currentUser?.imgUrl) {
-//       this.originalProfileImage = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//     }
-    
-//     this.currentState = ProfileState.ChangingPicture;
-    
-//     if (this.currentUser?.imgUrl) {
-//       // Get proxied URL
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-      
-//       this.ngZone.run(() => {
-//         // Update form with resolved URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-        
-//         // Store the current URL
-//         this.profileImageUrl = displayUrl;
-        
-//         // Reset image states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-        
-//         // Update transform
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async changePicture() {
-//   try {
-//     if (this.currentUser?.imgUrl) {
-//       // Store the current URL and styles before entering edit mode
-//       this.originalProfileImage = this.currentUser.imgUrl;
-//       this.originalImageStyles = { ...this.imageStyles };
-//     }
-    
-//     this.currentState = ProfileState.ChangingPicture;
-    
-//     if (this.currentUser?.imgUrl) {
-//       // Get proxied URL
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-      
-//       this.ngZone.run(() => {
-//         // Update form with resolved URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-        
-//         // Reset image states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-        
-//         // Update transform with saved settings
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async changePicture() {
-//   try {
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     // Clear any existing temporary URL when entering change picture state
-//     this.imageManagementService.clearTemporaryUrl();
-
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-
-//     if (this.currentUser?.imgUrl) {
-//       // Store the full API URL as original
-//       const fullUrl = this.currentUser.imgUrl.startsWith('http') ?
-//         this.currentUser.imgUrl :
-//         await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-      
-//       this.originalProfileImage = fullUrl;
-      
-//       this.ngZone.run(() => {
-//         // Update form with resolved URL
-//         this.pictureForm.patchValue({
-//           imgUrl: fullUrl
-//         }, { emitEvent: false });
-        
-//         // Reset image states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-        
-//         // Update transform
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Initialize image navigation
-//     this.initializeImageNavigation().then(() => {
-//       console.log('Image navigation initialized');
-//     }).catch(error => {
-//       console.error('Failed to initialize image navigation:', error);
-//     });
-
-//     // Log state after initialization
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//     console.log('Stored original transforms:', {
-//       position: this.originalPosition,
-//       zoom: this.originalZoom
-//     });
-
-    
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async changePicture() {
-//   try {
-//     this.hasStartedNavigating = false;
-//     // Store original image and transforms before changing state
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl!;
-
-//     // Get current image URL and index from ImageManagementService
-//     const currentState = this.imageManagementService.getUserImagesSubject(this.userId).value;
-//     const currentUrl = this.currentUser.imgUrl;
-
-//     // Change state first
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     if (currentUrl) {
-//       // Convert Firebase URL if needed
-//       const displayUrl = await this.storageService.convertFirebaseUrl(currentUrl);
-
-//       this.ngZone.run(() => {
-//         // Update form with current URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-
-//         // Update states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-
-//         // Update transform with saved settings
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-
-//       // Initialize image navigation while maintaining current index
-//       await this.imageManagementService.loadUserImages(this.userId);
-      
-//       // Find index of current image in the loaded images
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const updatedState = subject.value;
-//       const currentIndex = updatedState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === 
-//         this.imageManagementService.normalizeUrl(currentUrl)
-//       );
-
-//       // If found, update the current index
-//       if (currentIndex !== -1) {
-//         subject.next({
-//           ...updatedState,
-//           currentIndex
-//         });
-//       }
-//     }
-
-//     // Initialize image navigation
-//     await this.initializeImageNavigation();
-
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//     console.log('Stored original transforms:', {
-//       position: this.originalPosition,
-//       zoom: this.originalZoom
-//     });
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-// async changePicture() {
-//   try {
-//     this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-    
-//     // Store original values
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl!;
-
-//     // Set current profile image in service
-//     if (this.currentUser.imgUrl) {
-//       this.imageManagementService.setCurrentProfileImage(this.currentUser.imgUrl);
-//       const profilePath = this.imageManagementService.getImagePath(this.currentUser.imgUrl);
-//       console.log('Current profile image path:', profilePath);
-//     }
-
-
-//     this.isLoadingImages = true;
-//     this.allImagesLoaded = false;
-
-//     // Change state
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     // if (!this.allImagesLoaded) {
-//     //   this.isLoadingImages = true;
-//     //   try {
-//     //     await this.preloadAllImages();
-//     //   } finally {
-//     //     this.isLoadingImages = false;
-//     //   }
-//     // }
-
-//      // Get image count
-//     //  const count = await firstValueFrom(this.imageManagementService.getImageCount(this.userId));
-//     //  this.imageCount = count;
-
-//      // Load all images
-//      try {
-//        await this.imageManagementService.loadUserImages(this.userId);
-//        this.allImagesLoaded = true;
-//      } finally {
-//        // Hide loading spinner
-//        this.isLoadingImages = false;
-//      }
-    
-
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-
-//       this.ngZone.run(() => {
-//         // Update form with current URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-
-//         // Update states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-
-//         // Update transform
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Initialize navigation
-//     await this.initializeImageNavigation();
-
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.isLoadingImages = false;
-//       this.allImagesLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// async changePicture() {
-//   try {
-//     // Initial state setup
-//     // this.isLoadingImages = true;
-//     // this.allImagesLoaded = false;
-//     this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-    
-//     // Store original state
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl!;
-
-//     // Set current profile image in service
-//     if (this.currentUser.imgUrl) {
-//       this.imageManagementService.setCurrentProfileImage(this.currentUser.imgUrl);
-//     }
-
-//     // Change state first
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     // Load and preload all images
-//     try {
-//       // First load current image while others preload
-//       if (this.currentUser.imgUrl) {
-//         const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//         await this.updateImageDisplay(displayUrl, true); // true indicates it's the initial load
-//       }
-
-//       // Load and preload all images
-//       await this.imageManagementService.loadUserImages(this.userId);
-
-//       // Get image count for navigation
-//       const count = await firstValueFrom(this.imageManagementService.getImageCount(this.userId));
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-
-//       // Mark loading as complete
-//       this.allImagesLoaded = true;
-//     } finally {
-//       this.isLoadingImages = false;
-//     }
-
-//     // Update form and UI
-//     this.ngZone.run(() => {
-//       if (this.currentUser.imgUrl) {
-//         this.pictureForm.patchValue({
-//           imgUrl: this.currentUser.imgUrl
-//         }, { emitEvent: false });
-//       }
-//       this.cdr.detectChanges();
-//     });
-
-//     console.log('Change picture completed:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.isLoadingImages = false;
-//       this.allImagesLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// Main method 1
-// async changePicture() {
-//   try {
-
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//     // Update display and form with proxied URL
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-
-//       this.ngZone.run(() => {
-//         // Update form with proxied URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-
-//         // Update states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-
-//         // this.imageManagementService.hasAnyFirebaseImages();
-
-//         // Update transform
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // if (!this.isInitialLoadComplete) {
-//     //   // Wait for initial count to be ready
-//     //   await new Promise(resolve => setTimeout(resolve, 100));
-//     // }
-
-//     this.controlsAnimationComplete = false;
-//     this.imageAnimationComplete = false;
-//     this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-//     this.imageManagementService.hasAnyFirebaseImages();
-    
-//     // Store original values
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl!;
-
-//     this.isLoadingImages = true;
-//     this.allImagesLoaded = false;
-
-//     // Change state
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     // Check if we're starting from avatar
-//     // const startingFromAvatar = !this.currentUser.imgUrl;
-
-//     // Load all images
-//     try {
-//       // await this.imageManagementService.loadUserImages(this.userId);
-//       await this.imageManagementService.loadUserImages(this.userId, true);
-//       this.allImagesLoaded = true;
-//     } finally {
-//       this.isLoadingImages = false;
-//     }
-
-//     // Add fade-in class before updating the image
-//     // if (startingFromAvatar) {
-//     //   this.renderer.addClass(this.profileImg.nativeElement, 'fade-in-image');
-//     // }
-
-//     // Update display and form with proxied URL
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-
-//       this.ngZone.run(() => {
-//         // Update form with proxied URL
-//         this.pictureForm.patchValue({
-//           imgUrl: displayUrl
-//         }, { emitEvent: false });
-
-//         // Update states
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-
-//         // Update transform
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Initialize navigation
-//     await this.initializeImageNavigation();
-
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//     // // Remove fade-in class after animation completes
-//     // if (startingFromAvatar) {
-//     //   setTimeout(() => {
-//     //     this.renderer.removeClass(this.profileImg.nativeElement, 'fade-in-image');
-//     //   }, 300);
-//     // }
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.isLoadingImages = false;
-//       this.allImagesLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// Main method 2
-// async changePicture() {
-//   try {
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//     // If there's a current image, update the form with a proxied URL initially
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     this.controlsAnimationComplete = false;
-//     this.imageAnimationComplete = false;
-//     this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-//     this.imageManagementService.hasAnyFirebaseImages();
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl!;
-//     this.isLoadingImages = true;
-//     this.allImagesLoaded = false;
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     try {
-//       await this.imageManagementService.loadUserImages(this.userId, true);
-//       this.allImagesLoaded = true;
-//     } finally {
-//       this.isLoadingImages = false;
-//     }
-
-//     // Preload all images (including current provider image if any) before navigation
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const loadedUrls = subject.value.urls; // All images available for navigation
-//     await this.preloadAllImages(loadedUrls);
-
-//     // Update the display and form again after everything is preloaded
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Now that images are preloaded, initialize navigation without extra async tasks
-//     await this.initializeImageNavigation();
-
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.isLoadingImages = false;
-//       this.allImagesLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// Main method 3
-// async changePicture() {
-//   try {
-//     console.log('Entering changePicture()...');
-
-//     // Log the current state for debugging
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//     // If there is a current image, convert it once and patch the form
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Reset some flags
-//     this.controlsAnimationComplete = false;
-//     this.imageAnimationComplete = false;
-//     this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-//     this.imageManagementService.hasAnyFirebaseImages(); // Refresh internal state
-
-//     // Save original transform info
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl || null;
-
-//     // Indicate loading
-//     this.isLoadingImages = true;
-//     this.allImagesLoaded = false;
-
-//     // Move into ChangingPicture state
-//     this.currentState = ProfileState.ChangingPicture;
-
-//     try {
-//       // Load and gather all user images
-//       await this.imageManagementService.loadUserImages(this.userId, true);
-//       this.allImagesLoaded = true;
-//     } finally {
-//       this.isLoadingImages = false;
-//     }
-
-//     // Preload everything so no flicker occurs later
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const loadedUrls = subject.value.urls; // All images available
-//     await this.preloadAllImages(loadedUrls);
-
-//     // After preloading, patch the form again if we still have a currentUser.imgUrl
-//     if (this.currentUser.imgUrl) {
-//       const displayUrl = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
-//       this.ngZone.run(() => {
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//         this.imageLoadedSuccessfully = true;
-//         this.imageNotFound = false;
-//         this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       });
-//     }
-
-//     // Initialize navigation without extra <img>.onload checks
-//     await this.initializeImageNavigation();
-
-//     console.log('State after navigation init:', {
-//       currentState: this.currentState,
-//       showImageNavigation: this.showImageNavigation,
-//       imageCount: this.imageCount
-//     });
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     this.ngZone.run(() => {
-//       // Only set this once if we truly have no images
-//       this.imageNotFound = true;
-//       this.isLoadingImages = false;
-//       this.allImagesLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// Main method
-// async changePicture() {
-//   try {
-//     console.log('Entering changePicture()...');
-//     this.imageManagementService.logNavigationState(this.userId);
-
-//     // Reset states first
-//     this.controlsAnimationComplete = false;
-//     this.imageAnimationComplete = false;
-//     this.resetHoverState();
-//     this.isInitialChangingPictureState = true;
-//     // this.canHoverDelete = false;
-//     this.hasStartedNavigating = false;
-//     this.imageNotFound = false; // Reset error state
-//     this.imageLoadedSuccessfully = false;
-//     this.imageManagementService.hasAnyFirebaseImages(); // Refresh internal state
-    
-//     // Store original states
-//     this.originalPosition = { ...this.position };
-//     this.originalZoom = this.zoomLevel;
-//     this.originalProfileImage = this.currentUser.imgUrl || null;
-
-//     // Enter changing picture state
-//     this.currentState = ProfileState.ChangingPicture;
-    
-//     // Start loading state
-//     this.isLoadingImages = true;
-//     this.allImagesLoaded = false;
-
-//     try {
-//       // Initial image setup if we have one
-//       if (this.currentUser.imgUrl) {
-//         try {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
-//           this.ngZone.run(() => {
-//             this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//             this.imageLoadedSuccessfully = true;
-//             this.updateImageTransform();
-//             this.cdr.detectChanges();
-//           });
-//         } catch (initialError) {
-//           console.error('Error setting initial image:', initialError);
-//           // Don't set error state, just log the error
-//         }
-//       }
-
-//       // Load user images first
-//       await this.imageManagementService.loadUserImages(this.userId, true);
-      
-//       // Get all available URLs and preload
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const loadedUrls = subject.value.urls;
-//       await this.preloadAllImages(loadedUrls);
-//       this.allImagesLoaded = true;
-
-//       // After preloading, update current image display if we have one
-//       if (this.currentUser.imgUrl) {
-//         try {
-//           const displayUrl = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
-//           if (displayUrl) {
-//             this.ngZone.run(() => {
-//               this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//               this.imageLoadedSuccessfully = true;
-//               this.updateImageTransform();
-//               this.cdr.detectChanges();
-//             });
-//           }
-//         } catch (displayError) {
-//           console.error('Error displaying current image:', displayError);
-//           // Don't set error state here, just log it
-//         }
-//       }
-
-//       // Initialize navigation without extra <img>.onload checks
-//       await this.initializeImageNavigation();
-
-//       console.log('State after navigation init:', {
-//         currentState: this.currentState,
-//         showImageNavigation: this.showImageNavigation,
-//         imageCount: this.imageCount
-//       });
-
-//     } finally {
-//       this.isLoadingImages = false;
-//     }
-
-//   } catch (error) {
-//     console.error('Error in changePicture:', error);
-//     // Only set error state if we truly have no images
-//     const hasAnyImages = this.imageManagementService.hasAnyFirebaseImages();
-//     if (!hasAnyImages) {
-//       this.ngZone.run(() => {
-//         this.imageNotFound = true;
-//         this.isLoadingImages = false;
-//         this.allImagesLoaded = false;
-//         this.imageLoadedSuccessfully = false;
-//         this.cdr.detectChanges();
-//       });
-//     } else {
-//       // If we have images but encountered an error, just reset loading states
-//       this.ngZone.run(() => {
-//         this.isLoadingImages = false;
-//         this.allImagesLoaded = true;
-//         this.cdr.detectChanges();
-//       });
-//     }
-//   }
-// }
-
+// Last working  
 async changePicture() {
   try {
 
     const user = await firstValueFrom(this.userService.getUser(this.userId));
+
     if (!user.imgUrl) {
       // Ensure clean state if database has no image
       this.currentUser.imgUrl = null;
@@ -5969,6 +3330,19 @@ async changePicture() {
       this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
       this.imageManagementService.resetAll(this.userId);
     }
+
+    // const container = document.querySelector('.profilePictureContainerForDragging') as HTMLElement;
+    // if (!container) return;
+
+    // // Remove it first if it’s already there (in case of repeated clicks)
+    // container.classList.remove('post-animation');
+
+    setTimeout(() => {
+      // this.onStateChangeToChangingPicture();
+      // this.checkControlsVisibility();
+    }, 0);
+
+    this.imageManagementService.hasAnyFirebaseImages();
     
     console.log('Entering changePicture()...');
     this.imageManagementService.logNavigationState(this.userId);
@@ -5983,7 +3357,6 @@ async changePicture() {
     this.imageLoadedSuccessfully = false;
     this.isUploadingOrPasting = false;
     this.firebaseImageLoaded = false;
-    this.imageManagementService.hasAnyFirebaseImages();
     
     // Store original states
     this.originalPosition = { ...this.position };
@@ -6098,8 +3471,158 @@ async changePicture() {
   }
 }
 
+// async changePicture() {
+//   try {
+//     // Before loading images, verify they exist
+//     this.isLoadingImages = true;
+    
+//     // Refresh image list from storage directly
+//     await this.imageManagementService.refreshFirebaseImageCount(this.userId);
 
-// Helper method to preload and cache all images
+//     const user = await firstValueFrom(this.userService.getUser(this.userId));
+
+//     if (!user.imgUrl) {
+//       // Ensure clean state if database has no image
+//       this.currentUser.imgUrl = null;
+//       this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
+//       this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
+//       this.imageManagementService.resetAll(this.userId);
+//     }
+    
+//     console.log('Entering changePicture()...');
+//     this.imageManagementService.logNavigationState(this.userId);
+
+//     // Reset states first
+//     this.controlsAnimationComplete = false;
+//     this.imageAnimationComplete = false;
+//     this.resetHoverState();
+//     this.isInitialChangingPictureState = true;
+//     this.hasStartedNavigating = false;
+//     this.imageNotFound = false;
+//     this.imageLoadedSuccessfully = false;
+//     this.isUploadingOrPasting = false;
+//     this.firebaseImageLoaded = false;
+    
+//     // Store original states
+//     this.originalPosition = { ...this.position };
+//     this.originalZoom = this.zoomLevel;
+//     this.originalProfileImage = this.currentUser.imgUrl || null;
+
+//     // Enter changing picture state
+//     this.currentState = ProfileState.ChangingPicture;
+    
+//     // We're already setting this at the beginning now
+//     // this.isLoadingImages = true;
+//     this.allImagesLoaded = false;
+
+//     try {
+//       // Important: Check actual database state first is already done above
+      
+//       if (!user.imgUrl) {
+//         // If no image in database, ensure UI is clean
+//         this.ngZone.run(() => {
+//           this.currentUser.imgUrl = null;
+//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
+//           this.imageStyles = {
+//             'background-image': 'none',
+//             'background-position': '0% 0%',
+//             'background-repeat': 'no-repeat',
+//             'background-size': '100%',
+//             'background-color': '#c7ff20'
+//           };
+//           if (this.profileImg?.nativeElement) {
+//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
+//           }
+//           this.imageLoadedSuccessfully = false;
+//           this.cdr.detectChanges();
+//         });
+//       } else if (this.currentUser.imgUrl) {
+//         // Only set up initial image if it matches database state
+//         if (this.currentUser.imgUrl === user.imgUrl) {
+//           try {
+//             const displayUrl = await this.storageService.convertFirebaseUrl(this.currentUser.imgUrl);
+//             this.ngZone.run(() => {
+//               this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
+//               this.imageLoadedSuccessfully = true;
+//               this.updateImageTransform();
+//               this.cdr.detectChanges();
+//             });
+//           } catch (initialError) {
+//             console.error('Error setting initial image:', initialError);
+//           }
+//         }
+//       }
+
+//       // Load user images
+//       await this.imageManagementService.loadUserImages(this.userId, true);
+      
+//       // Get all available URLs and preload
+//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+//       const loadedUrls = subject.value.urls;
+      
+//       // If no images found, reset position and zoom immediately
+//       if (loadedUrls.length === 0) {
+//         this.resetImagePositionAndZoom();
+//       }
+      
+//       await this.preloadAllImages(loadedUrls);
+//       this.allImagesLoaded = true;
+
+//       // Only update display if database state still matches
+//       if (this.currentUser.imgUrl && this.currentUser.imgUrl === user.imgUrl) {
+//         try {
+//           const displayUrl = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
+//           if (displayUrl) {
+//             this.ngZone.run(() => {
+//               this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
+//               this.imageLoadedSuccessfully = true;
+//               this.updateImageTransform();
+//               this.cdr.detectChanges();
+//             });
+//           }
+//         } catch (displayError) {
+//           console.error('Error displaying current image:', displayError);
+//         }
+//       }
+
+//       // Initialize navigation
+//       await this.initializeImageNavigation();
+
+//       console.log('State after navigation init:', {
+//         currentState: this.currentState,
+//         showImageNavigation: this.showImageNavigation,
+//         imageCount: this.imageCount
+//       });
+
+//     } finally {
+//       this.isLoadingImages = false;
+//     }
+
+//   } catch (error) {
+//     console.error('Error in changePicture:', error);
+//     // Only set error state if we truly have no images
+//     const hasAnyImages = this.imageManagementService.hasAnyFirebaseImages();
+//     if (!hasAnyImages) {
+//       this.ngZone.run(() => {
+//         this.imageNotFound = true;
+//         this.isLoadingImages = false;
+//         this.allImagesLoaded = false;
+//         this.imageLoadedSuccessfully = false;
+//         this.cdr.detectChanges();
+//       });
+//     } else {
+//       // If we have images but encountered an error, just reset loading states
+//       this.ngZone.run(() => {
+//         this.isLoadingImages = false;
+//         this.allImagesLoaded = true;
+//         this.cdr.detectChanges();
+//       });
+//     }
+//   } finally {
+//     this.isLoadingImages = false;
+//   }
+// }
+
 private async preloadAllImages(urls: string[]): Promise<void> {
   const promises = urls.map(async (originalUrl) => {
     let displayUrl = originalUrl;
@@ -6117,29 +3640,6 @@ private async preloadAllImages(urls: string[]): Promise<void> {
 
   await Promise.all(promises);
 }
-
-// Main method
-// private async getDisplayableUrlOnce(url: string): Promise<string> {
-//   if (this.convertedUrlCache.has(url)) {
-//     return this.convertedUrlCache.get(url)!;
-//   }
-
-//   let displayUrl = url;
-//   if (url.includes('firebasestorage.googleapis.com')) {
-//     displayUrl = await this.storageService.convertFirebaseUrl(url);
-//   }
-
-//   // Preload this specific image
-//   await new Promise<void>((resolve, reject) => {
-//     const img = new Image();
-//     img.onload = () => resolve();
-//     img.onerror = () => reject(`Failed to load image: ${displayUrl}`);
-//     img.src = displayUrl;
-//   });
-
-//   this.convertedUrlCache.set(url, displayUrl);
-//   return displayUrl;
-// }
 
 private async getDisplayableUrlOnce(url: string): Promise<string | null> {
   if (!url) return null;
@@ -6182,21 +3682,6 @@ private async getDisplayableUrlOnce(url: string): Promise<string | null> {
     return null;
   }
 }
-
-// logNavigationConditions(): boolean {
-//   const canDragResult = this.canDrag();
-//   const isFilledResult = this.isImageUrlFilled();
-  
-//   console.log('Navigation visibility conditions:', {
-//     canDrag: canDragResult,
-//     isImageUrlFilled: isFilledResult,
-//     showImageNavigation: this.showImageNavigation,
-//     imageCount: this.imageCount,
-//     allConditions: canDragResult && isFilledResult && this.showImageNavigation
-//   });
-  
-//   return canDragResult && isFilledResult && this.showImageNavigation;
-// }
 
 private async getDisplayUrl(url: string): Promise<string> {
   if (!url) return '';
@@ -6309,55 +3794,7 @@ shouldShowPluralText(): boolean {
 }
 
 
-
-  // private async updateImageDisplay(url: string) {
-  //   try {
-  //     const displayUrl = await this.getDisplayUrl(url);
-  //     this.ngZone.run(() => {
-  //       if (this.profileImg?.nativeElement) {
-  //         this.profileImg.nativeElement.style.backgroundImage = `url(${displayUrl})`;
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error('Error updating image display:', error);
-  //   }
-  // }
-
-  // private async updateImageDisplay(url: string) {
-  //   if (!this.profileImg?.nativeElement) return;
-  
-  //   try {
-  
-  //     // Use cached or convert URL
-  //     const displayUrl = await this.storageService.convertFirebaseUrl(url);
-      
-  //     // Set background image immediately from cache if available
-  //     this.ngZone.run(() => {
-  //       this.profileImg.nativeElement.style.backgroundImage = `url(${displayUrl})`;
-  //       this.imageLoadedSuccessfully = true;
-  //       this.imageNotFound = false;
-  //       this.cdr.detectChanges();
-  //     });
-  
-  //     // Preload image
-  //     const img = new Image();
-  //     img.src = displayUrl;
-  //     await new Promise((resolve, reject) => {
-  //       img.onload = resolve;
-  //       img.onerror = reject;
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('Error displaying image:', error);
-  //     this.imageNotFound = true;
-  //     this.imageLoadedSuccessfully = false;
-  //   } finally {
-  //     this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-  //     this.cdr.detectChanges();
-  //   }
-  // }
-
-  private async updateImageDisplay(url: string, isInitialLoad: boolean = false): Promise<void> {
+private async updateImageDisplay(url: string, isInitialLoad: boolean = false): Promise<void> {
     if (!this.profileImg?.nativeElement) return;
   
     try {
@@ -6421,89 +3858,6 @@ shouldShowPluralText(): boolean {
     }
   }
 
-  // onImageUrlInput(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   const newValue = input.value.trim();
-
-  //   // Queue the value for processing
-  //   this.imageUrlDebouncer.next(newValue);
-
-  //   this.imageNotFound = false;
-
-  //   // this.profileForm.patchValue({ imgUrl: newValue });
-  //   this.pictureForm.patchValue({ imgUrl: newValue });
-  //   this.currentUser.imgUrl = newValue === '' ? null : newValue; // Use null for empty string
-  //   this.cdr.detectChanges();
-
-  //   this.resetImagePositionAndZoom();
-  //   this.cdr.detectChanges();
-  
-  //   // Update the UI to reflect the change immediately
-  //   if (newValue) {
-  //     this.isInitialLoad = false;
-  //     this.preloadImage(newValue); 
-  //   } else {
-  //     this.resetImage();
-  //   }
-  //   this.cdr.detectChanges();
-  // }
-
-  // onImageUrlInput(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   const newValue = input.value.trim();
-  
-  //   // Early return if already processing to prevent duplicate work
-  //   // if (this.isProcessingUrl) return;
-  
-  //   // Batch immediate UI updates inside NgZone
-  //   this.ngZone.run(() => {
-  //     // Update form state without triggering validation
-  //     this.pictureForm.patchValue({ imgUrl: newValue }, { emitEvent: false });
-      
-  //     // Reset flags
-  //     this.imageNotFound = false;
-  //     this.isInitialLoad = false;
-      
-  //     // Reset position and zoom for new input
-  //     this.resetImagePositionAndZoom();
-  
-  //     // Single change detection call for immediate updates
-  //     this.stateUpdateDebouncer.next();
-  //   });
-  
-  //   // Queue the value for debounced processing
-  //   this.imageUrlDebouncer.next(newValue);
-  // }
-
-  // async onImageUrlInput(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   const newValue = input.value.trim();
-  
-  //   try {
-  //     // If it's a Firebase URL, convert it before updating the form
-  //     if (newValue.includes('firebasestorage.googleapis.com')) {
-  //       const displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-  //       this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-  //     } else {
-  //       this.pictureForm.patchValue({ imgUrl: newValue }, { emitEvent: false });
-  //     }
-  
-  //     // Reset flags
-  //     this.imageNotFound = false;
-  //     this.isInitialLoad = false;
-      
-  //     // Queue the value for processing
-  //     this.imageUrlDebouncer.next(newValue);
-  
-  //   } catch (error) {
-  //     console.error('Error processing URL:', error);
-  //     this.imageNotFound = true;
-  //   }
-  
-  //   // Queue a single state update
-  //   this.stateUpdateDebouncer.next();
-  // }
-
 private async updateProfileImageUrl(url: string | null): Promise<void> {
   try {
     if (!url) {
@@ -6527,230 +3881,6 @@ private async updateProfileImageUrl(url: string | null): Promise<void> {
   }
 }
 
-  // async onImageUrlInput(event: Event) {
-  //   const input = event.target as HTMLInputElement;
-  //   const newValue = input.value.trim();
-  
-  //   this.ngZone.run(() => {
-  //     // Don't update form value yet
-  //     this.imageNotFound = false;
-  //     this.isInitialLoad = false;
-
-  //     // If it's a provider URL (Unsplash, etc.), add it to navigation
-  //     if (this.isProviderUrl(newValue)) {
-  //       this.imageManagementService.setTemporaryUrl(newValue);
-  //       // Reload images to include the temporary URL
-  //       this.initializeImageNavigation();
-  //     }
-
-  //     this.imageUrlDebouncer.next(newValue);
-  //   });
-  
-  //   try {
-  //     let displayUrl = newValue;
-      
-  //     // Convert Firebase URL if needed
-  //     if (newValue.includes('firebasestorage.googleapis.com')) {
-  //       displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-  //     }
-  
-  //     // Now update form with resolved URL
-  //     this.ngZone.run(() => {
-  //       this.pictureForm.patchValue({ 
-  //         imgUrl: displayUrl 
-  //       }, { emitEvent: false });
-        
-  //       if (displayUrl) {
-  //         this.preloadImage(displayUrl);
-  //         this.updateImageTransform();
-  //       } else {
-  //         this.resetImage();
-  //       }
-  //     });
-  
-  //   } catch (error) {
-  //     console.error('Error processing URL:', error);
-  //     this.ngZone.run(() => {
-  //       this.imageNotFound = true;
-  //       this.pictureForm.get('imgUrl')?.setErrors({ 'invalidImage': true });
-  //     });
-  //   }
-  
-  //   // Queue state update
-  //   this.stateUpdateDebouncer.next();
-  // }
-
-// async onImageUrlInput(event: Event) {
-//   const input = event.target as HTMLInputElement;
-//   const newValue = input.value.trim();
-
-//   this.ngZone.run(() => {
-//     // Don't update form value yet
-//     this.imageNotFound = false;
-//     this.isInitialLoad = false;
-
-//     // If it's a provider URL (Unsplash, etc.), add it to navigation
-//     if (this.isProviderUrl(newValue)) {
-//       this.imageManagementService.setTemporaryUrl(newValue);
-//       // Reload images to include the temporary URL
-//       this.initializeImageNavigation();
-//     }
-
-//     this.imageUrlDebouncer.next(newValue);
-//   });
-
-//   try {
-//     let displayUrl = newValue;
-    
-//     // Convert Firebase URL if needed
-//     if (newValue.includes('firebasestorage.googleapis.com')) {
-//       displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-//     }
-
-//     // Now update form with resolved URL
-//     this.ngZone.run(() => {
-//       this.pictureForm.patchValue({ 
-//         imgUrl: displayUrl 
-//       }, { emitEvent: false });
-      
-//       if (displayUrl) {
-//         this.preloadImage(displayUrl);
-//         this.updateImageTransform();
-//       } else {
-//         this.resetImage();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error processing URL:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'invalidImage': true });
-//     });
-//   }
-
-//   // Queue state update
-//   this.stateUpdateDebouncer.next();
-// }
-
-// async onImageUrlInput(event: Event) {
-//   const input = event.target as HTMLInputElement;
-//   const newValue = input.value.trim();
-
-//   this.ngZone.run(() => {
-//     // Don't update form value yet
-//     this.imageNotFound = false;
-//     this.isInitialLoad = false;
-
-//     // If it's a provider URL (Unsplash, etc.), handle it first
-//     if (this.isProviderUrl(newValue)) {
-//       this.imageManagementService.setCurrentProfileImage(''); // Clear current profile image
-//       this.imageManagementService.setTemporaryUrl(newValue);
-//     }
-
-//     this.imageUrlDebouncer.next(newValue);
-//   });
-
-//   try {
-//     let displayUrl = newValue;
-    
-//     // Convert Firebase URL if needed
-//     if (newValue.includes('firebasestorage.googleapis.com')) {
-//       displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-//     }
-
-//     // Now update form with resolved URL
-//     this.ngZone.run(() => {
-//       this.pictureForm.patchValue({ 
-//         imgUrl: displayUrl 
-//       }, { emitEvent: false });
-      
-//       if (displayUrl) {
-//         this.preloadImage(displayUrl);
-//         this.updateImageTransform();
-//       } else {
-//         this.resetImage();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error processing URL:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'invalidImage': true });
-//     });
-//   }
-
-//   // Queue state update
-//   this.stateUpdateDebouncer.next();
-// }
-
-// Last Working
-// async onImageUrlInput(event: Event) {
-//   const input = event.target as HTMLInputElement;
-//   const newValue = input.value.trim();
-
-//   this.ngZone.run(() => {
-//     // Reset states without affecting loading
-//     this.imageNotFound = false;
-//     this.isInitialLoad = false;
-//     this.loadingComplete = true; // Keep page loaded while handling URL input
-
-//     // Handle provider URLs (like Unsplash)
-//     if (this.isProviderUrl(newValue)) {
-//       // this.imageManagementService.setCurrentProfileImage(''); // Clear current profile image
-//       this.imageManagementService.setTemporaryUrl(newValue);
-//     }
-
-//     // Check if this is a paste event with a complete URL
-//     // if (event.type === 'paste' || ((newValue.startsWith('http://') || newValue.startsWith('https://')) && newValue !== this.currentInputValue)) {
-//     //   // Completely replace the input value
-//     //   this.ngZone.run(() => {
-//     //     this.pictureForm.patchValue({
-//     //       imgUrl: newValue
-//     //     }, { emitEvent: false });
-        
-//     //     this.currentInputValue = newValue;
-//     //   });
-//     // }
-
-//     this.imageUrlDebouncer.next(newValue);
-//   });
-
-//   try {
-//     let displayUrl = newValue;
-    
-//     // Convert Firebase URL if needed
-//     if (newValue.includes('firebasestorage.googleapis.com')) {
-//       displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-//     }
-
-//     // Update form with resolved URL
-//     this.ngZone.run(() => {
-//       this.pictureForm.patchValue({
-//         imgUrl: displayUrl
-//       }, { emitEvent: false });
-      
-//       if (displayUrl) {
-//         // Pass false to prevent loading state changes
-//         this.preloadImage(displayUrl, false);
-//         this.updateImageTransform();
-//       } else {
-//         this.resetImage();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error processing URL:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'invalidImage': true });
-//     });
-//   }
-
-//   // Queue state update
-//   this.stateUpdateDebouncer.next();
-// }
 
 // Update onImageUrlInput to handle paste events better
 async onImageUrlInput(event: Event) {
@@ -6818,103 +3948,6 @@ async onImageUrlInput(event: Event) {
   });
 }
 
-// async onImageUrlInput(event: Event) {
-//   const input = event.target as HTMLInputElement;
-//   const newValue = input.value.trim();
-
-//   this.ngZone.run(() => {
-//     // Reset states without affecting loading
-//     this.imageNotFound = false;
-//     this.isInitialLoad = false;
-//     this.loadingComplete = true;
-
-//     // Handle provider URLs (like Unsplash)
-//     if (this.isProviderUrl(newValue)) {
-//       // Add to navigation sequence at the beginning
-//       this.imageManagementService.setTemporaryUrl(newValue);
-      
-//       // Reset navigation index to show the newly added image
-//       const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//       const currentState = subject.value;
-      
-//       // Set current index to 0 to show the temporary URL first
-//       subject.next({
-//         ...currentState,
-//         currentIndex: 0
-//       });
-
-//       // Update image count to include temporary URL
-//       this.imageCount = currentState.urls.length;
-//       this.showImageNavigation = this.imageCount > 1;
-//     }
-
-//     this.imageUrlDebouncer.next(newValue);
-//   });
-
-//   try {
-//     let displayUrl = newValue;
-    
-//     // Convert Firebase URL if needed
-//     if (newValue.includes('firebasestorage.googleapis.com')) {
-//       displayUrl = await this.storageService.convertFirebaseUrl(newValue);
-//     }
-
-//     // Update form and display
-//     this.ngZone.run(() => {
-//       this.pictureForm.patchValue({
-//         imgUrl: displayUrl
-//       }, { emitEvent: false });
-
-//       if (displayUrl) {
-//         // Update image immediately
-//         const img = new Image();
-//         img.onload = () => {
-//           this.ngZone.run(() => {
-//             if (this.profileImg?.nativeElement) {
-//               this.imageStyles = {
-//                 'background-image': `url("${displayUrl}")`,
-//                 'background-position': `${this.position.x}% ${this.position.y}%`,
-//                 'background-repeat': 'no-repeat',
-//                 'background-size': `${this.zoomLevel * 100}%`,
-//                 'background-color': '#c7ff20'
-//               };
-              
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//               this.imageLoadedSuccessfully = true;
-//               this.cdr.detectChanges();
-//             }
-//           });
-//         };
-
-//         img.onerror = () => {
-//           this.ngZone.run(() => {
-//             this.imageNotFound = true;
-//             this.imageLoadedSuccessfully = false;
-//             this.cdr.detectChanges();
-//           });
-//         };
-
-//         img.src = displayUrl;
-        
-//         // Reset position for temporary URL
-//         this.resetImagePositionAndZoom();
-//       } else {
-//         this.resetImage();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error processing URL:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.pictureForm.get('imgUrl')?.setErrors({ 'invalidImage': true });
-//     });
-//   }
-
-//   // Queue state update
-//   this.stateUpdateDebouncer.next();
-// }
-
 
 // Helper method to check if URL is from a provider
 private isProviderUrl(url: string): boolean {
@@ -6949,7 +3982,6 @@ private updateImageStyles(displayUrl: string) {
     Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
   }
 }
-
 
 
 private async handleDebouncedUrlChange(newValue: string) {
@@ -7114,909 +4146,6 @@ async handleImageUrlChange(newValue: string) {
   }
 }
 
-// Latest working
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     // Get and validate user ID
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     // Get and validate form image URL
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     // Create settings object with safe number conversions
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     let storagePath: string;
-
-//     console.log('Processing image:', { 
-//       hasStaged: this.imageUrlManager.hasStagedFile(userId),
-//       formUrl: formImageUrl
-//     });
-
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       try {
-//         const fileName = stagedFile.fileName;
-//         storagePath = `profileImages/${userId}/${fileName}`;
-
-//         console.log('Moving staged file:', { fileName, storagePath });
-
-//         // Move to permanent storage with retry on auth error
-//         await this.imageUrlManager.saveProfileImage(
-//           userId,
-//           fileName
-//         ).catch(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.imageUrlManager.saveProfileImage(userId, fileName);
-//           }
-//           throw error;
-//         });
-
-//         console.log('File moved successfully:', { storagePath });
-
-//       } catch (error: any) {
-//         console.error('Error moving staged file:', error);
-//         throw new Error(`Failed to move staged file: ${error.message}`);
-//       }
-//     } else {
-//       // Use existing image path
-//       storagePath = this.currentUser.imgUrl!;
-//       console.log('Using existing image:', { storagePath });
-//     }
-
-//     // Prepare and update user data
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     console.log('Updating user profile:', updatedUser);
-
-//     // Update user with retry on auth error
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     // Update UI inside NgZone
-//     await this.ngZone.run(async () => {
-//       try {
-//         // Update current user with response and original storage path
-//         this.currentUser = {
-//           ...this.currentUser,
-//           ...response,
-//           imgUrl: storagePath,
-//           profilePictureSettings: settings
-//         };
-
-//         // Get proxied URL for display
-//         // const displayUrl = await this.storageService.convertFirebaseUrl(storagePath);
-        
-//         // // Update form with proxied URL
-//         // this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-
-//         // // Update image display
-//         // await this.updateProfileImageDisplay(displayUrl);
-        
-//         // Update state
-//         this.currentState = ProfileState.Viewing;
-//         await this.updateImageTransform();
-
-//         // console.log('UI updated successfully:', {
-//         //   displayUrl,
-//         //   storagePath,
-//         //   settings
-//         // });
-
-//       // Clear temporary URL after successful save
-//       this.imageManagementService.clearTemporaryUrl();
-
-//       } catch (uiError: any) {
-//         console.error('Error updating UI:', uiError);
-//         throw new Error(`Failed to update UI: ${uiError.message}`);
-//       }
-//     });
-
-//     // Clean up staged files
-//     try {
-//       await this.imageUrlManager.clearStagedFile(userId);
-//       console.log('Cleanup completed');
-//     } catch (error) {
-//       console.warn('Non-critical cleanup error:', error);
-//     }
-
-//     // this.isStagedImage = false;
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Latest Working
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     // Get and validate user ID
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     // Get and validate form image URL
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     // Create settings object with safe number conversions
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     // Extract proper storage path based on URL type
-//     let storagePath: string;
-
-//     console.log('Processing image:', { 
-//       hasStaged: this.imageUrlManager.hasStagedFile(userId),
-//       formUrl: formImageUrl
-//     });
-
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       // Handle newly uploaded file
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       try {
-//         const fileName = stagedFile.fileName;
-//         storagePath = `profileImages/${userId}/${fileName}`;
-
-//         console.log('Moving staged file:', { fileName, storagePath });
-
-//         // Move to permanent storage with retry on auth error
-//         await this.imageUrlManager.saveProfileImage(
-//           userId,
-//           fileName
-//         ).catch(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.imageUrlManager.saveProfileImage(userId, fileName);
-//           }
-//           throw error;
-//         });
-
-//         console.log('File moved successfully:', { storagePath });
-
-//       } catch (error: any) {
-//         console.error('Error moving staged file:', error);
-//         throw new Error(`Failed to move staged file: ${error.message}`);
-//       }
-//     } else {
-//       // Handle navigation case or existing image
-//       if (formImageUrl.includes('/api/storage/')) {
-//         // Extract path from API URL
-//         storagePath = formImageUrl.split('/api/storage/')[1];
-//       } else if (formImageUrl.includes('firebasestorage.googleapis.com')) {
-//         // Extract path from Firebase URL
-//         const urlObj = new URL(formImageUrl);
-//         storagePath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       } else if (formImageUrl.startsWith('profileImages/')) {
-//         // Already a clean path
-//         storagePath = formImageUrl;
-//       } else {
-//         // Fallback to current user's image path
-//         storagePath = this.currentUser.imgUrl!;
-//       }
-//       console.log('Using existing image path:', { storagePath });
-//     }
-
-//     // Verify storage path
-//     if (!storagePath.startsWith('profileImages/')) {
-//       console.error('Invalid storage path:', storagePath);
-//       throw new Error('Invalid storage path format');
-//     }
-
-//     // Prepare user update with verified path
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     console.log('Updating user profile:', updatedUser);
-
-//     // Update user with retry on auth error
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     // Update UI inside NgZone
-//     await this.ngZone.run(async () => {
-//       try {
-//         // Update current user with response and verified storage path
-//         this.currentUser = {
-//           ...this.currentUser,
-//           ...response,
-//           imgUrl: storagePath,
-//           profilePictureSettings: settings
-//         };
-
-//         // Reset states
-//         this.currentState = ProfileState.Viewing;
-//         this.hasStartedNavigating = false;
-
-//         // Update transform and display
-//         await this.updateImageTransform();
-
-//         // Clear temporary URL after successful save
-//         this.imageManagementService.clearTemporaryUrl();
-
-//         console.log('Profile updated successfully with path:', storagePath);
-
-//       } catch (uiError: any) {
-//         console.error('Error updating UI:', uiError);
-//         throw new Error(`Failed to update UI: ${uiError.message}`);
-//       }
-//     });
-
-//     // Clean up staged files if they exist
-//     try {
-//       if (this.imageUrlManager.hasStagedFile(userId)) {
-//         await this.imageUrlManager.clearStagedFile(userId);
-//         console.log('Staged file cleanup completed');
-//       }
-//     } catch (error) {
-//       console.warn('Non-critical cleanup error:', error);
-//     }
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.showUploadSuccess = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     // Get and validate user ID
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     // Get and validate form image URL
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     // Create settings object with safe number conversions
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     // Check if this is a provider URL before processing storage path
-//     const isProviderUrl = formImageUrl.includes('unsplash.com') || 
-//                          formImageUrl.includes('pexels.com') ||
-//                          formImageUrl.includes('pixabay.com');
-
-//     let storagePath: string;
-
-//     console.log('Processing image:', { 
-//       hasStaged: this.imageUrlManager.hasStagedFile(userId),
-//       formUrl: formImageUrl
-//     });
-
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       // Handle newly uploaded file - keep your original code
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       try {
-//         const fileName = stagedFile.fileName;
-//         storagePath = `profileImages/${userId}/${fileName}`;
-
-//         console.log('Moving staged file:', { fileName, storagePath });
-
-//         await this.imageUrlManager.saveProfileImage(
-//           userId,
-//           fileName
-//         ).catch(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.imageUrlManager.saveProfileImage(userId, fileName);
-//           }
-//           throw error;
-//         });
-
-//         console.log('File moved successfully:', { storagePath });
-
-//       } catch (error: any) {
-//         console.error('Error moving staged file:', error);
-//         throw new Error(`Failed to move staged file: ${error.message}`);
-//       }
-//     } else if (isProviderUrl) {
-//       // For provider URLs, use the URL directly
-//       storagePath = formImageUrl;
-//       console.log('Using provider URL:', { storagePath });
-//     } else {
-//       // Your original path handling for Firebase/API URLs
-//       if (formImageUrl.includes('/api/storage/')) {
-//         storagePath = formImageUrl.split('/api/storage/')[1];
-//       } else if (formImageUrl.includes('firebasestorage.googleapis.com')) {
-//         const urlObj = new URL(formImageUrl);
-//         storagePath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       } else if (formImageUrl.startsWith('profileImages/')) {
-//         storagePath = formImageUrl;
-//       } else {
-//         storagePath = this.currentUser.imgUrl!;
-//       }
-//       console.log('Using existing image path:', { storagePath });
-//     }
-
-//     // Only verify storage path for non-provider URLs
-//     if (!isProviderUrl && !storagePath.startsWith('profileImages/')) {
-//       console.error('Invalid storage path:', storagePath);
-//       throw new Error('Invalid storage path format');
-//     }
-
-//     // Rest of your original code remains the same
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     console.log('Updating user profile:', updatedUser);
-
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     await this.ngZone.run(async () => {
-//       try {
-//         this.currentUser = {
-//           ...this.currentUser,
-//           ...response,
-//           imgUrl: storagePath,
-//           profilePictureSettings: settings
-//         };
-
-//         this.currentState = ProfileState.Viewing;
-//         this.hasStartedNavigating = false;
-
-//         await this.updateImageTransform();
-
-//         this.imageManagementService.clearTemporaryUrl();
-
-//         console.log('Profile updated successfully with path:', storagePath);
-
-//       } catch (uiError: any) {
-//         console.error('Error updating UI:', uiError);
-//         throw new Error(`Failed to update UI: ${uiError.message}`);
-//       }
-//     });
-
-//     try {
-//       if (this.imageUrlManager.hasStagedFile(userId)) {
-//         await this.imageUrlManager.clearStagedFile(userId);
-//         console.log('Staged file cleanup completed');
-//       }
-//     } catch (error) {
-//       console.warn('Non-critical cleanup error:', error);
-//     }
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.showUploadSuccess = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Working
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     let storagePath: string;
-
-//     // Handle staged files first
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       try {
-//         storagePath = `profileImages/${userId}/${stagedFile.fileName}`;
-//         console.log('Moving staged file:', { fileName: stagedFile.fileName, storagePath });
-
-//         await this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName)
-//           .catch(async (error) => {
-//             if (error instanceof HttpErrorResponse && error.status === 401) {
-//               await this.authService.refreshToken();
-//               return this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName);
-//             }
-//             throw error;
-//           });
-
-//           // Increment counter after successful move from staging to permanent storage
-//           this.onlyFirebaseImageCount++;
-
-//       } catch (error: any) {
-//         console.error('Error moving staged file:', error);
-//         throw new Error(`Failed to move staged file: ${error.message}`);
-//       }
-//     } 
-//     // Handle navigated images
-//     else if (this.hasStartedNavigating) {
-//       const subject = this.imageManagementService.getUserImagesSubject(userId);
-//       const currentState = subject.value;
-
-//       if (currentState.currentIndex >= 0 && currentState.urls.length > 0) {
-//         const currentUrl = currentState.urls[currentState.currentIndex];
-        
-//         if (currentUrl.startsWith('blob:')) {
-//           const originalPath = await this.imageManagementService.getOriginalPath(userId, currentState.currentIndex);
-//           if (!originalPath) throw new Error('Could not determine storage path');
-//           storagePath = originalPath;
-//         } else {
-//           storagePath = currentUrl;
-//         }
-//       } else {
-//         throw new Error('No valid image selected during navigation');
-//       }
-//     }
-//     // Handle provider URLs
-//     else if (this.imageManagementService.isProviderUrl(formImageUrl)) {
-//       storagePath = formImageUrl;
-//       console.log('Using provider URL:', { storagePath });
-//     }
-//     // Handle existing URLs
-//     else {
-//       if (formImageUrl.includes('/api/storage/')) {
-//         storagePath = formImageUrl.split('/api/storage/')[1];
-//       } else if (formImageUrl.includes('firebasestorage.googleapis.com')) {
-//         const urlObj = new URL(formImageUrl);
-//         storagePath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       } else if (formImageUrl.startsWith('profileImages/')) {
-//         storagePath = formImageUrl;
-//       } else {
-//         storagePath = this.currentUser.imgUrl!;
-//       }
-//       console.log('Using existing image path:', { storagePath });
-//     }
-
-//     // Validate storage path
-//     if (!this.imageManagementService.isProviderUrl(storagePath) && !storagePath.startsWith('profileImages/')) {
-//       console.error('Invalid storage path:', storagePath);
-//       throw new Error('Invalid storage path format');
-//     }
-
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     await this.ngZone.run(async () => {
-//       this.currentUser = {
-//         ...this.currentUser,
-//         ...response,
-//         imgUrl: storagePath,
-//         profilePictureSettings: settings
-//       };
-
-//       this.currentState = ProfileState.Viewing;
-//       this.hasStartedNavigating = false;
-//       await this.updateImageTransform();
-//       this.imageManagementService.clearTemporaryUrl();
-//     });
-
-//     // Cleanup staged files
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       await this.imageUrlManager.clearStagedFile(userId);
-//       console.log('Staged file cleanup completed');
-//     }
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.showUploadSuccess = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// Main method
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     let storagePath: string;
-
-//     // Handle staged files first
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       try {
-//         storagePath = `profileImages/${userId}/${stagedFile.fileName}`;
-//         console.log('Moving staged file:', { fileName: stagedFile.fileName, storagePath });
-
-//         await this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName)
-//           .catch(async (error) => {
-//             if (error instanceof HttpErrorResponse && error.status === 401) {
-//               await this.authService.refreshToken();
-//               return this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName);
-//             }
-//             throw error;
-//           });
-
-//         this.onlyFirebaseImageCount++;
-
-//       } catch (error: any) {
-//         console.error('Error moving staged file:', error);
-//         throw new Error(`Failed to move staged file: ${error.message}`);
-//       }
-//     }
-//     // Handle navigated images (when user clicks through carousel)
-//     else if (this.hasStartedNavigating) {
-//       const subject = this.imageManagementService.getUserImagesSubject(userId);
-//       const currentState = subject.value;
-
-//       if (currentState.currentIndex >= 0 && currentState.urls.length > 0) {
-//         const currentUrl = currentState.urls[currentState.currentIndex];
-        
-//         if (currentUrl.startsWith('blob:')) {
-//           const originalPath = await this.imageManagementService.getOriginalPath(userId, currentState.currentIndex);
-//           if (!originalPath) throw new Error('Could not determine storage path');
-//           storagePath = originalPath;
-//         } else if (currentUrl.includes('/api/storage/')) {
-//           storagePath = currentUrl.split('/api/storage/')[1];
-//         } else {
-//           storagePath = currentUrl;
-//         }
-//       } else {
-//         throw new Error('No valid image selected during navigation');
-//       }
-//     }
-//     // Handle provider URLs (Unsplash, etc.)
-//     else if (this.imageManagementService.isProviderUrl(formImageUrl)) {
-//       storagePath = formImageUrl;
-//       console.log('Using provider URL:', { storagePath });
-//     }
-//     // Handle existing URLs and paths
-//     else {
-//       if (formImageUrl.includes('/api/storage/')) {
-//         storagePath = formImageUrl.split('/api/storage/')[1];
-//       } else if (formImageUrl.includes('firebasestorage.googleapis.com')) {
-//         const urlObj = new URL(formImageUrl);
-//         storagePath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       } else if (formImageUrl.startsWith('profileImages/')) {
-//         storagePath = formImageUrl;
-//       } else {
-//         storagePath = this.currentUser.imgUrl!;
-//       }
-//       console.log('Using existing image path:', { storagePath });
-//     }
-
-//     // Validate storage path format
-//     if (!this.imageManagementService.isProviderUrl(storagePath) && 
-//         !storagePath.startsWith('profileImages/')) {
-//       console.error('Invalid storage path:', storagePath);
-//       throw new Error('Invalid storage path format');
-//     }
-
-//     // Update user with new path and settings
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     // Update user with retry on auth error
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     // Update UI state in NgZone
-//     await this.ngZone.run(async () => {
-//       this.currentUser = {
-//         ...this.currentUser,
-//         ...response,
-//         imgUrl: storagePath,
-//         profilePictureSettings: settings
-//       };
-
-//       this.currentState = ProfileState.Viewing;
-//       this.hasStartedNavigating = false;
-//       this.showUploadSuccess = false;
-//       await this.updateImageTransform();
-//       this.imageManagementService.clearTemporaryUrl();
-//       this.cdr.detectChanges();
-//     });
-
-//     // Clean up staged files if they exist
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       await this.imageUrlManager.clearStagedFile(userId);
-//       console.log('Staged file cleanup completed');
-//     }
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// almost works
-// async saveProfilePicture(): Promise<void> {
-//   if (!this.pictureForm.valid) {
-//     console.log('Form validation failed');
-//     return;
-//   }
-
-//   try {
-//     this.isSavingPicture = true;
-//     console.log('Starting save process...');
-
-//     const userId = this.userService.getUserId();
-//     if (!userId) throw new Error('User ID not found');
-
-//     const formImageUrl = this.pictureForm.get('imgUrl')?.value;
-//     if (!formImageUrl) throw new Error('No image URL provided');
-
-//     const settings = {
-//       zoom: Number(this.zoomLevel || 1),
-//       x: Number(this.position.x || 0),
-//       y: Number(this.position.y || 0)
-//     };
-
-//     let storagePath: string;
-
-//     // Handle staged files
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       const stagedFile = this.imageUrlManager.getStagedFile(userId);
-//       if (!stagedFile) throw new Error('Staged file info not found');
-
-//       storagePath = `profileImages/${userId}/${stagedFile.fileName}`;
-//       console.log('Moving staged file:', { fileName: stagedFile.fileName, storagePath });
-
-//       await this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName)
-//         .catch(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.imageUrlManager.saveProfileImage(userId, stagedFile.fileName);
-//           }
-//           throw error;
-//         });
-
-//       this.onlyFirebaseImageCount++;
-//     }
-//     // Handle navigated images
-//     else if (this.hasStartedNavigating) {
-//       const subject = this.imageManagementService.getUserImagesSubject(userId);
-//       const currentState = subject.value;
-
-//       if (currentState.currentIndex >= 0 && currentState.urls.length > 0) {
-//         const currentUrl = currentState.urls[currentState.currentIndex];
-        
-//         if (currentUrl.startsWith('blob:')) {
-//           const originalPath = await this.imageManagementService.getOriginalPath(userId, currentState.currentIndex);
-//           if (!originalPath) throw new Error('Could not determine storage path');
-//           storagePath = originalPath;
-//         } else if (currentUrl.includes('/api/storage/')) {
-//           storagePath = currentUrl.split('/api/storage/')[1];
-//         } else {
-//           storagePath = currentUrl;
-//         }
-//       } else {
-//         throw new Error('No valid image selected during navigation');
-//       }
-//     }
-//     // Handle provider URLs (Unsplash, etc.)
-//     else if (this.imageManagementService.isProviderUrl(formImageUrl)) {
-//       storagePath = formImageUrl;
-//       console.log('Using provider URL:', { storagePath });
-//     }
-//     // Handle existing URLs and paths
-//     else {
-//       if (formImageUrl.includes('/api/storage/')) {
-//         storagePath = formImageUrl.split('/api/storage/')[1];
-//       } else if (formImageUrl.includes('firebasestorage.googleapis.com')) {
-//         const urlObj = new URL(formImageUrl);
-//         storagePath = decodeURIComponent(urlObj.pathname.split('/o/')[1].split('?')[0]);
-//       } else if (formImageUrl.startsWith('profileImages/')) {
-//         storagePath = formImageUrl;
-//       } else {
-//         storagePath = this.currentUser.imgUrl!;
-//       }
-//       console.log('Using existing image path:', { storagePath });
-//     }
-
-//     // Validate storage path format
-//     if (!this.imageManagementService.isProviderUrl(storagePath) && 
-//         !storagePath.startsWith('profileImages/')) {
-//       console.error('Invalid storage path:', storagePath);
-//       throw new Error('Invalid storage path format');
-//     }
-
-//     // Update user with new path and settings
-//     const updatedUser = {
-//       ...this.currentUser,
-//       imgUrl: storagePath,
-//       profilePictureSettings: settings
-//     };
-
-//     const response = await firstValueFrom(
-//       this.userService.updateUser(updatedUser).pipe(
-//         catchError(async (error) => {
-//           if (error instanceof HttpErrorResponse && error.status === 401) {
-//             await this.authService.refreshToken();
-//             return this.userService.updateUser(updatedUser);
-//           }
-//           throw error;
-//         })
-//       )
-//     );
-
-//     // Once successfully updated the user...
-//     if (this.imageManagementService.isProviderUrl(storagePath)) {
-//       // Inform the imageManagementService that the profile is now a provider image
-//       this.imageManagementService.setCurrentProfileImage(storagePath);
-//     }
-
-//     // Update UI state in NgZone
-//     await this.ngZone.run(async () => {
-//       this.currentUser = {
-//         ...this.currentUser,
-//         ...response,
-//         imgUrl: storagePath,
-//         profilePictureSettings: settings
-//       };
-
-//       this.currentState = ProfileState.Viewing;
-//       this.hasStartedNavigating = false;
-//       this.showUploadSuccess = false;
-//       await this.updateImageTransform();
-//       this.imageManagementService.clearTemporaryUrl();
-//       this.cdr.detectChanges();
-//     });
-
-//     // Clean up staged files if they exist
-//     if (this.imageUrlManager.hasStagedFile(userId)) {
-//       await this.imageUrlManager.clearStagedFile(userId);
-//       console.log('Staged file cleanup completed');
-//     }
-
-//   } catch (error) {
-//     console.error('Save profile picture error:', error);
-//     this.handleSaveError(error);
-//   } finally {
-//     this.isSavingPicture = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
 async saveProfilePicture(): Promise<void> {
   if (!this.pictureForm.valid) {
     console.log('Form validation failed');
@@ -8149,6 +4278,11 @@ async saveProfilePicture(): Promise<void> {
       this.imageManagementService.clearTemporaryUrl();
       this.isUploadingOrPasting = false;
       this.hasProfilePictureTransitioned = false;
+      this.showButton = true;
+      // const container = document.querySelector('.profilePictureContainerForDragging');
+      // if (container && (this.isMobile || this.isTablet)) {
+      //   container.classList.remove('post-animation');
+      // }
       this.cdr.detectChanges();
     });
 
@@ -8290,418 +4424,6 @@ private initializeProfilePictureSettings() {
   
     return 'Invalid input';
   }
-
-//  Working
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage', { isInitialLoad, imgUrl: url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Batch initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first using cached promise
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no image URL provided
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get cached or convert URL
-//     const displayUrl = await this.storageService.convertFirebaseUrl(url);
-//     console.log('Using converted URL:', displayUrl);
-
-//     // Verify image exists
-//     const headers = await this.storageService.getAuthHeaders();
-//     const checkResponse = await fetch(displayUrl, { 
-//       headers,
-//       method: 'HEAD'
-//     });
-
-//     if (!checkResponse.ok) {
-//       throw new Error(`Failed to verify image: ${checkResponse.status}`);
-//     }
-
-//     // Update the image display
-//     this.ngZone.run(() => {
-//       if (this.profileImg?.nativeElement) {
-//         // Update background image and styles
-//         this.imageStyles = {
-//           'background-image': `url("${displayUrl}")`,
-//           'background-position': `${this.position.x}% ${this.position.y}%`,
-//           'background-repeat': 'no-repeat',
-//           'background-size': `${this.zoomLevel * 100}%`,
-//           'background-color': '#c7ff20'
-//         };
-        
-//         Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//       }
-
-//       // Update states
-//       this.imageLoaded = true;
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = true;
-//       this.currentUser.imgUrl = url;
-//       this.urlImageLoaded.next(true);
-
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = true;
-//       this.urlImageLoaded.next(true);
-//       this.finishLoading();
-//     });
-//   }
-// }
-
-// private async preloadAllImages(): Promise<void> {
-//   const imagesToPreload = [];
-
-//   // Always preload avatar
-//   imagesToPreload.push(this.preloadSingleImage('assets/Images/avatar.png'));
-
-//   // Preload user profile image if exists
-//   if (this.currentUser?.imgUrl) {
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       this.userId,
-//       this.currentUser.imgUrl,
-//       false
-//     );
-//     imagesToPreload.push(this.preloadSingleImage(displayUrl));
-//   }
-
-//   await Promise.all(imagesToPreload);
-// }
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Always convert to proxied URL first
-//     const displayUrl = await this.storageService.convertFirebaseUrl(url);
-    
-//     // Get auth headers if needed
-//     const headers = displayUrl.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a promise that resolves when the image loads
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Directly use proxied URL in styles
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           // Update states
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-//           this.allImagesLoaded = true;
-
-//           resolve();
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', displayUrl);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Load the image with headers if needed
-//       if (headers) {
-//         fetch(displayUrl, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             img.src = displayUrl; // Use proxied URL directly
-//           })
-//           .catch(() => {
-//             img.src = displayUrl;
-//           });
-//       } else {
-//         img.src = displayUrl;
-//       }
-//     });
-
-//     // Complete loading
-//     if (isInitialLoad) {
-//       console.log('Image loaded successfully, finishing loading state');
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-// Latest working
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Always convert to proxied URL first
-//     const displayUrl = await this.storageService.convertFirebaseUrl(url);
-    
-//     // Get auth headers if needed
-//     const headers = displayUrl.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a promise that resolves when the image loads
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Keep loading state true until transforms are applied
-//             this.loadingComplete = false;
-
-//             // Directly use proxied URL in styles
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           // Update states
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-//           this.allImagesLoaded = true;
-
-//           // Let the transforms apply before resolving
-//           requestAnimationFrame(() => {
-//             resolve();
-//           });
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', displayUrl);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Load the image with headers if needed
-//       if (headers) {
-//         fetch(displayUrl, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             img.src = displayUrl; // Use proxied URL directly
-//           })
-//           .catch(() => {
-//             img.src = displayUrl;
-//           });
-//       } else {
-//         img.src = displayUrl;
-//       }
-//     });
-
-//     // Complete loading only after image and transforms are fully applied
-//     if (isInitialLoad) {
-//       // Give transforms time to apply before checking
-//       requestAnimationFrame(() => {
-//         console.log('Image loaded successfully, finishing loading state');
-//         this.finishLoading();
-//       });
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
 
 // Latest working
 async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
@@ -8849,1270 +4571,6 @@ async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
   }
 }
 
-// New Working but image loads after spinner
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   // Only affect loadingComplete state during initial load
-//   if (!isInitialLoad) {
-//     this.loadingComplete = true; // Keep page loaded during URL changes
-//   }
-
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Handle no URL case
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Convert Firebase URL if needed
-//     const displayUrl = url.includes('firebasestorage.googleapis.com') ?
-//       await this.storageService.convertFirebaseUrl(url) : url;
-
-//     // Get auth headers if needed
-//     const headers = displayUrl.includes('/api/storage/') ?
-//       await this.storageService.getAuthHeaders() : undefined;
-
-//     // Verify image exists before attempting to load
-//     try {
-//       const response = await fetch(displayUrl, { 
-//         method: 'HEAD',
-//         headers 
-//       });
-
-//       if (!response.ok) {
-//         throw new Error('Image not accessible');
-//       }
-//     } catch (error) {
-//       // Image not accessible, show avatar
-//       this.ngZone.run(() => {
-//         this.imageNotFound = false;
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//         this.urlImageLoaded.next(true);
-//         if (isInitialLoad) {
-//           this.finishLoading();
-//         }
-//       });
-//       return;
-//     }
-
-//     // Load and display image
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Keep loading state true until transforms are applied
-//             if (isInitialLoad) {
-//               this.loadingComplete = false;
-//             }
-
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-//           this.allImagesLoaded = true;
-
-//           requestAnimationFrame(() => {
-//             resolve();
-//           });
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', displayUrl);
-//           this.imageNotFound = false; // Show avatar instead of error
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           this.resetImage();
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       if (headers) {
-//         fetch(displayUrl, { headers })
-//           .then(response => {
-//             if (!response.ok) throw new Error('Failed to fetch image');
-//             return response.blob();
-//           })
-//           .then(blob => {
-//             img.src = URL.createObjectURL(blob);
-//           })
-//           .catch(() => {
-//             // Fallback to direct loading if fetch fails
-//             img.src = displayUrl;
-//           });
-//       } else {
-//         img.src = displayUrl;
-//       }
-//     });
-
-//     if (isInitialLoad) {
-//       requestAnimationFrame(() => {
-//         console.log('Image loaded successfully, finishing loading state');
-//         this.finishLoading();
-//       });
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false; // Show avatar instead of error
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.resetImage();
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a blob URL for the image
-//     let blobUrl: string | null = null;
-    
-//     if (headers) {
-//       const response = await fetch(url, { headers });
-//       if (!response.ok) throw new Error('Failed to load image');
-//       const blob = await response.blob();
-//       blobUrl = URL.createObjectURL(blob);
-//     }
-
-//     // Create a promise that resolves when the image loads
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Update styles
-//             this.imageStyles = {
-//               'background-image': `url("${blobUrl || url}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-
-//             // Update states
-//             this.imageLoaded = true;
-//             this.imageNotFound = false;
-//             this.imageLoadedSuccessfully = true;
-//             this.currentUser.imgUrl = url;
-//             this.urlImageLoaded.next(true);
-//             this.allImagesLoaded = true;
-
-//             // Cleanup blob URL
-//             if (blobUrl) {
-//               setTimeout(() => URL.revokeObjectURL(blobUrl!), 1000);
-//             }
-//           }
-//           resolve();
-//         });
-//       };
-
-//       img.onerror = () => {
-//         if (blobUrl) URL.revokeObjectURL(blobUrl);
-//         reject(new Error('Failed to load image'));
-//       };
-
-//       // Set the source
-//       img.src = blobUrl || url;
-//     });
-
-//     // Complete loading if initial load
-//     if (isInitialLoad) {
-//       console.log('Image loaded successfully, finishing loading state');
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a promise that resolves when the image is loaded
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-//       let imageUrl = url;
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           // Update states first
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-//           this.allImagesLoaded = true;
-
-//           // Update styles in next tick after DOM is ready
-//           setTimeout(() => {
-//             if (this.profileImg?.nativeElement) {
-//               this.imageStyles = {
-//                 'background-image': `url("${imageUrl}")`,
-//                 'background-position': `${this.position.x}% ${this.position.y}%`,
-//                 'background-repeat': 'no-repeat',
-//                 'background-size': `${this.zoomLevel * 100}%`,
-//                 'background-color': '#c7ff20'
-//               };
-              
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-              
-//               // Clean up blob URL if we created one
-//               if (imageUrl !== url) {
-//                 URL.revokeObjectURL(imageUrl);
-//               }
-
-//               this.cdr.detectChanges();
-//               resolve();
-//             } else {
-//               // If element still not found, continue anyway to avoid spinner hang
-//               console.warn('Profile image element not found, but continuing');
-//               resolve();
-//             }
-//           });
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', url);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           if (imageUrl !== url) {
-//             URL.revokeObjectURL(imageUrl);
-//           }
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Load image with auth if needed
-//       if (headers) {
-//         fetch(url, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             imageUrl = URL.createObjectURL(blob);
-//             img.src = imageUrl;
-//           })
-//           .catch(() => {
-//             img.src = url;
-//           });
-//       } else {
-//         img.src = url;
-//       }
-//     });
-
-//     // Complete loading
-//     if (isInitialLoad) {
-//       console.log('Image loaded successfully, finishing loading state');
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   // Wait for profile image element to be available
-//   const maxAttempts = 10;
-//   const interval = 100;
-//   let attempts = 0;
-
-//   while (!this.profileImg?.nativeElement && attempts < maxAttempts) {
-//     await new Promise(resolve => setTimeout(resolve, interval));
-//     attempts++;
-//   }
-
-//   if (!this.profileImg?.nativeElement) {
-//     console.error('Profile image element not found after multiple attempts');
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a promise that resolves when the image is loaded AND applied to UI
-//     await new Promise<void>((resolve, reject) => {
-//       let imageUrl = url;
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Update image styles
-//             this.imageStyles = {
-//               'background-image': `url("${imageUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             // Apply styles
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-
-//             // Wait for next frame to ensure styles are applied
-//             requestAnimationFrame(() => {
-//               // Verify image is applied
-//               const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
-//               const backgroundImage = computedStyle.backgroundImage;
-//               const imageApplied = backgroundImage.includes(imageUrl) || backgroundImage.includes(url);
-
-//               if (imageApplied) {
-//                 // Update all states
-//                 this.imageLoaded = true;
-//                 this.imageNotFound = false;
-//                 this.imageLoadedSuccessfully = true;
-//                 this.currentUser.imgUrl = url;
-//                 this.urlImageLoaded.next(true);
-//                 this.allImagesLoaded = true;
-
-//                 // Clean up blob URL if we created one
-//                 if (imageUrl !== url) {
-//                   URL.revokeObjectURL(imageUrl);
-//                 }
-
-//                 console.log('Image successfully loaded and applied to UI');
-//                 resolve();
-//               } else {
-//                 reject(new Error('Image loaded but not applied to UI'));
-//               }
-//             });
-//           } else {
-//             reject(new Error('Profile image element not found'));
-//           }
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', url);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           if (imageUrl !== url) {
-//             URL.revokeObjectURL(imageUrl);
-//           }
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Load image with auth if needed
-//       if (headers) {
-//         fetch(url, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             imageUrl = URL.createObjectURL(blob);
-//             img.src = imageUrl;
-//           })
-//           .catch(() => {
-//             img.src = url;
-//           });
-//       } else {
-//         img.src = url;
-//       }
-//     });
-
-//     // Only finish loading after image is successfully loaded and applied
-//     if (isInitialLoad) {
-//       console.log('Image loaded successfully, finishing loading state');
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true;
-//       this.allImagesLoaded = true;
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Create a promise that resolves when the image is loaded AND applied to UI
-//     await new Promise<void>(async (resolve, reject) => {
-//       try {
-//         // First fetch the image with auth if needed
-//         let imageUrl = url;
-//         if (headers) {
-//           const response = await fetch(url, { headers });
-//           if (!response.ok) throw new Error('Failed to fetch image');
-//           const blob = await response.blob();
-//           imageUrl = URL.createObjectURL(blob);
-//         }
-
-//         const img = new Image();
-//         let imageApplied = false;
-
-//         img.onload = () => {
-//           this.ngZone.run(() => {
-//             // Update display
-//             if (this.profileImg?.nativeElement) {
-//               this.imageStyles = {
-//                 'background-image': `url("${imageUrl}")`,
-//                 'background-position': `${this.position.x}% ${this.position.y}%`,
-//                 'background-repeat': 'no-repeat',
-//                 'background-size': `${this.zoomLevel * 100}%`,
-//                 'background-color': '#c7ff20'
-//               };
-              
-//               Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-
-//               // Wait for next frame to ensure styles are applied
-//               requestAnimationFrame(() => {
-//                 // Update states
-//                 this.imageLoaded = true;
-//                 this.imageNotFound = false;
-//                 this.imageLoadedSuccessfully = true;
-//                 this.currentUser.imgUrl = url;
-//                 this.urlImageLoaded.next(true);
-//                 this.allImagesLoaded = true;
-                
-//                 // Clean up blob URL if we created one
-//                 if (imageUrl !== url) {
-//                   URL.revokeObjectURL(imageUrl);
-//                 }
-
-//                 // Verify image is actually visible
-//                 const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
-//                 const backgroundImage = computedStyle.backgroundImage;
-//                 imageApplied = backgroundImage.includes(imageUrl) || backgroundImage.includes(url);
-
-//                 if (imageApplied) {
-//                   console.log('Image successfully loaded and applied to UI');
-//                   resolve();
-//                 } else {
-//                   console.error('Image loaded but not applied to UI');
-//                   reject(new Error('Image not applied to UI'));
-//                 }
-//               });
-//             } else {
-//               reject(new Error('Profile image element not found'));
-//             }
-//           });
-//         };
-
-//         img.onerror = () => {
-//           this.ngZone.run(() => {
-//             console.error('Error loading image:', url);
-//             this.imageNotFound = true;
-//             this.imageLoadedSuccessfully = false;
-//             this.currentUser.imgUrl = null;
-//             this.imageLoaded = false;
-//             this.urlImageLoaded.next(true);
-//             if (imageUrl !== url) {
-//               URL.revokeObjectURL(imageUrl);
-//             }
-//             reject(new Error('Failed to load image'));
-//           });
-//         };
-
-//         img.src = imageUrl;
-//       } catch (error) {
-//         reject(error);
-//       }
-//     });
-
-//     // Only finish loading after image is successfully loaded and applied
-//     if (isInitialLoad) {
-//       console.log('Image loaded successfully, finishing loading state');
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true;
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.imageLoaded = true; // Set to true for no-image case
-//       this.allImagesLoaded = true; // Set all images loaded flag
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Load main profile image
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           // Update display
-//           if (this.profileImg?.nativeElement) {
-//             this.imageStyles = {
-//               'background-image': `url("${url}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           // Update states
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-//           this.allImagesLoaded = true; // Set all images loaded flag
-
-//           resolve();
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', url);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Set source with credentials if needed
-//       if (headers) {
-//         fetch(url, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             img.src = URL.createObjectURL(blob);
-//           })
-//           .catch(() => {
-//             img.src = url;
-//           });
-//       } else {
-//         img.src = url;
-//       }
-//     });
-
-//     // Finish loading only after successful image load
-//     if (isInitialLoad) {
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       this.allImagesLoaded = true; // Set for error case
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no URL
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Already converted in loadProfile, use URL directly
-//     const displayUrl = url;
-    
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Verify the URL is accessible
-//     if (headers) {
-//       const verifyResponse = await fetch(displayUrl, { 
-//         method: 'HEAD',
-//         headers 
-//       });
-      
-//       if (!verifyResponse.ok) {
-//         throw new Error('Image URL not accessible');
-//       }
-//     }
-
-//     // Create promise for image loading
-//     await new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           // Update display
-//           if (this.profileImg?.nativeElement) {
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           // Update states
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-
-//           resolve();
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', displayUrl);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = false;
-//           this.urlImageLoaded.next(true);
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // Set source with credentials if needed
-//       if (headers) {
-//         fetch(displayUrl, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             img.src = URL.createObjectURL(blob);
-//           })
-//           .catch(() => {
-//             img.src = displayUrl;
-//           });
-//       } else {
-//         img.src = displayUrl;
-//       }
-//     });
-
-//     // Complete loading
-//     if (isInitialLoad) {
-//       this.finishLoading();
-//     }
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = false;
-//       this.urlImageLoaded.next(true);
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-//   }
-// }
-
-// async preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
-//   console.log('Starting preloadImage:', { isInitialLoad, url });
-
-//   this.imageLoadedSuccessfully = false;
-//   this.loadingComplete = false;
-
-//   // Batch initial state updates
-//   this.ngZone.run(() => {
-//     if (isInitialLoad) {
-//       this.imageLoaded = false;
-//     }
-//     this.avatarLoaded.next(false);
-//     this.urlImageLoaded.next(false);
-//   });
-
-//   // Load avatar first using cached promise
-//   try {
-//     if (!this.avatarLoadPromise) {
-//       this.avatarLoadPromise = new Promise<void>((resolve, reject) => {
-//         const avatarImg = new Image();
-//         avatarImg.onload = () => resolve();
-//         avatarImg.onerror = () => reject(new Error('Failed to load avatar'));
-//         avatarImg.src = 'assets/Images/avatar.png';
-//       });
-//     }
-    
-//     await this.avatarLoadPromise;
-//     this.ngZone.run(() => {
-//       this.avatarLoaded.next(true);
-//     });
-//   } catch (error) {
-//     console.error('Error loading avatar:', error);
-//   }
-
-//   // Early return if no image URL provided
-//   if (!url) {
-//     this.ngZone.run(() => {
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.urlImageLoaded.next(true);
-//       this.finishLoading();
-//     });
-//     return;
-//   }
-
-//   try {
-//     // Get auth headers if needed
-//     const headers = url.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       undefined;
-
-//     // Convert Firebase URL if needed
-//     let displayUrl = url;
-//     if (url.includes('firebasestorage.googleapis.com')) {
-//       displayUrl = await this.storageService.convertFirebaseUrl(url);
-//     }
-
-//     // Create a promise that resolves when the image loads
-//     const imageLoadPromise = new Promise<void>((resolve, reject) => {
-//       const img = new Image();
-      
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           if (this.profileImg?.nativeElement) {
-//             // Update background image and styles
-//             this.imageStyles = {
-//               'background-image': `url("${displayUrl}")`,
-//               'background-position': `${this.position.x}% ${this.position.y}%`,
-//               'background-repeat': 'no-repeat',
-//               'background-size': `${this.zoomLevel * 100}%`,
-//               'background-color': '#c7ff20'
-//             };
-            
-//             Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-//           }
-
-//           // Update states
-//           this.imageLoaded = true;
-//           this.imageNotFound = false;
-//           this.imageLoadedSuccessfully = true;
-//           this.currentUser.imgUrl = url;
-//           this.urlImageLoaded.next(true);
-
-//           resolve();
-//         });
-//       };
-
-//       img.onerror = () => {
-//         this.ngZone.run(() => {
-//           console.error('Error loading image:', displayUrl);
-//           this.imageNotFound = true;
-//           this.imageLoadedSuccessfully = false;
-//           this.currentUser.imgUrl = null;
-//           this.imageLoaded = true;
-//           this.urlImageLoaded.next(true);
-//           reject(new Error('Failed to load image'));
-//         });
-//       };
-
-//       // If headers are needed, fetch with credentials first
-//       if (headers) {
-//         fetch(displayUrl, { headers })
-//           .then(response => response.blob())
-//           .then(blob => {
-//             img.src = URL.createObjectURL(blob);
-//           })
-//           .catch(error => {
-//             console.error('Error fetching image:', error);
-//             img.src = displayUrl; // Fallback to direct loading
-//           });
-//       } else {
-//         img.src = displayUrl;
-//       }
-//     });
-
-//     // Wait for both avatar and profile image to load
-//     await Promise.all([
-//       this.avatarLoadPromise,
-//       imageLoadPromise
-//     ]);
-
-//     // Only finish loading after both images are ready
-//     this.ngZone.run(() => {
-//       if (isInitialLoad) {
-//         this.finishLoading();
-//       }
-//     });
-
-//   } catch (error) {
-//     console.error('Error in preloadImage:', error);
-//     this.ngZone.run(() => {
-//       this.imageNotFound = true;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null;
-//       this.imageLoaded = true;
-//       this.urlImageLoaded.next(true);
-//       this.finishLoading();
-//     });
-//   }
-// }
-
-// private async preloadAllImages(): Promise<void> {
-//   const imagesToPreload = [];
-
-//   // Always preload avatar
-//   imagesToPreload.push(this.preloadSingleImage('assets/Images/avatar.png'));
-
-//   // Preload user profile image if exists
-//   if (this.currentUser?.imgUrl) {
-//     const displayUrl = await this.storageService.generateImageUrl(
-//       this.userId,
-//       this.currentUser.imgUrl,
-//       false
-//     );
-//     imagesToPreload.push(this.preloadSingleImage(displayUrl));
-//   }
-
-//   await Promise.all(imagesToPreload);
-// }
-
-// Main method
-// private async preloadAllImages(): Promise<void> {
-//   try {
-//     // Load all images while maintaining current profile
-//     // await this.imageManagementService.loadUserImages(this.userId);
-//     this.imageManagementService.loadUserImages(this.userId, false);
-    
-//     // Wait for loading to complete
-//     while (this.imageManagementService.isLoading()) {
-//       await new Promise(resolve => setTimeout(resolve, 100));
-//     }
-//   } catch (error) {
-//     console.error('Error preloading images:', error);
-//   }
-// }
-
 private preloadSingleImage(src: string): Promise<void> {
   return new Promise((resolve) => {
     const img = new Image();
@@ -10124,200 +4582,6 @@ private preloadSingleImage(src: string): Promise<void> {
     img.src = src;
   });
 }
-
-// Helper method to finish loading with a small delay
-// private finishLoading(): void {
-//   // Small delay to ensure UI is updated before hiding spinner
-//   setTimeout(() => {
-//     this.ngZone.run(() => {
-//       this.loadingComplete = true;
-//       this.cdr.detectChanges();
-//     });
-//   }, 500); // Adjust delay as needed
-// }
-// private finishLoading(): void {
-//   const allLoaded = this.imageLoaded && 
-//                    this.avatarLoaded.getValue() && 
-//                    this.urlImageLoaded.getValue();
-
-//   if (allLoaded) {
-//     // Small delay to ensure UI is updated before hiding spinner
-//     setTimeout(() => {
-//       this.ngZone.run(() => {
-//         this.loadingComplete = true;
-//         this.cdr.detectChanges();
-//       });
-//     }, 500);
-//   } else {
-//     console.log('Waiting for all assets to load:', {
-//       imageLoaded: this.imageLoaded,
-//       avatarLoaded: this.avatarLoaded.getValue(),
-//       urlImageLoaded: this.urlImageLoaded.getValue()
-//     });
-//   }
-// }
-
-// private finishLoading(): void {
-//   const allLoaded = this.imageLoaded && 
-//                    this.avatarLoaded.getValue() && 
-//                    this.urlImageLoaded.getValue() &&
-//                    this.allImagesLoaded;
-
-//   if (allLoaded) {
-//     // Small delay to ensure UI is updated before hiding spinner
-//     setTimeout(() => {
-//       this.ngZone.run(() => {
-//         this.loadingComplete = true;
-//         this.cdr.detectChanges();
-//       });
-//     }, 100);
-//   } else {
-//     console.log('Waiting for all assets to load:', {
-//       imageLoaded: this.imageLoaded,
-//       avatarLoaded: this.avatarLoaded.getValue(),
-//       urlImageLoaded: this.urlImageLoaded.getValue(),
-//       allImagesLoaded: this.allImagesLoaded
-//     });
-//   }
-// }
-
-// private finishLoading(): void {
-//   const allLoaded = this.imageLoaded && 
-//                    this.avatarLoaded.getValue() && 
-//                    this.urlImageLoaded.getValue() &&
-//                    this.allImagesLoaded;
-
-//   if (allLoaded) {
-//     // Add a small delay to ensure UI is fully updated
-//     setTimeout(() => {
-//       this.ngZone.run(() => {
-//         // Double check image is actually visible before completing
-//         if (this.profileImg?.nativeElement) {
-//           const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
-//           const backgroundImage = computedStyle.backgroundImage;
-//           if (backgroundImage !== 'none' && backgroundImage !== '') {
-//             console.log('Loading complete, image verified');
-//             this.loadingComplete = true;
-//             this.cdr.detectChanges();
-//           } else {
-//             console.log('Image not visible in UI, retrying...');
-//             setTimeout(() => this.finishLoading(), 100);
-//           }
-//         } else {
-//           this.loadingComplete = true;
-//           this.cdr.detectChanges();
-//         }
-//       });
-//     }, 100);
-//   }
-// // }
-
-// private finishLoading(): void {
-//   const allLoaded = this.imageLoaded &&
-//                    this.avatarLoaded.getValue() &&
-//                    this.urlImageLoaded.getValue() &&
-//                    this.allImagesLoaded;
-
-//   if (allLoaded) {
-//     // Add a small delay to ensure UI is fully updated
-//     setTimeout(() => {
-//       this.ngZone.run(() => {
-//         // Double check image is actually visible before completing
-//         if (this.profileImg?.nativeElement) {
-//           const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
-//           const backgroundImage = computedStyle.backgroundImage;
-//           const imageVisible = backgroundImage !== 'none' && 
-//                              backgroundImage !== '' && 
-//                              !backgroundImage.includes('avatar.png');
-
-//           if (imageVisible) {
-//             console.log('Loading complete, image verified');
-//             this.loadingComplete = true;
-//             this.cdr.detectChanges();
-//           } else {
-//             console.log('Image not visible in UI, retrying...');
-//             // Add max retry count to avoid infinite loops
-//             if (!this.retryCount) {
-//               this.retryCount = 0;
-//             }
-//             if (this.retryCount < 5) {
-//               this.retryCount++;
-//               setTimeout(() => this.finishLoading(), 100);
-//             } else {
-//               console.log('Max retries reached, completing anyway');
-//               this.loadingComplete = true;
-//               this.cdr.detectChanges();
-//             }
-//           }
-//         } else {
-//           console.log('Profile element not found, completing anyway');
-//           this.loadingComplete = true;
-//           this.cdr.detectChanges();
-//         }
-//       });
-//     }, 100);
-//   } else {
-//     console.log('Waiting for assets to load:', {
-//       imageLoaded: this.imageLoaded,
-//       avatarLoaded: this.avatarLoaded.getValue(),
-//       urlImageLoaded: this.urlImageLoaded.getValue(),
-//       allImagesLoaded: this.allImagesLoaded
-//     });
-//   }
-// // }
-
-// private finishLoading(): void {
-//   const allLoaded = this.imageLoaded && 
-//                    this.avatarLoaded.getValue() && 
-//                    this.urlImageLoaded.getValue() &&
-//                    this.allImagesLoaded;
-
-//   if (allLoaded) {
-//     if (this.profileImg?.nativeElement) {
-//       const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
-//       const backgroundImage = computedStyle.backgroundImage;
-
-//       // Extract blob URL if present
-//       const blobMatch = backgroundImage.match(/url\("(blob:[^"]+)"\)/);
-//       if (blobMatch) {
-//         const blobUrl = blobMatch[1];
-//         // Keep the blob URL alive until the image is fully displayed
-//         setTimeout(() => {
-//           URL.revokeObjectURL(blobUrl);
-//         }, 1000); // Give enough time for the image to be displayed
-//       }
-
-//       const hasValidImage = backgroundImage !== 'none' && 
-//                           backgroundImage !== '' && 
-//                           !backgroundImage.includes('avatar.png');
-
-//       if (hasValidImage) {
-//         this.ngZone.run(() => {
-//           console.log('Image verified, completing load');
-//           this.loadingComplete = true;
-//           this.cdr.detectChanges();
-//         });
-//       } else {
-//         if (!this.retryCount) {
-//           this.retryCount = 0;
-//         }
-//         if (this.retryCount < 10) {
-//           this.retryCount++;
-//           console.log(`Waiting for image to apply (${this.retryCount})`);
-//           setTimeout(() => this.finishLoading(), 100);
-//         } else {
-//           console.log('Max retries reached, completing anyway');
-//           this.loadingComplete = true;
-//           this.cdr.detectChanges();
-//         }
-//       }
-//     } else {
-//       console.error('Profile image element not found');
-//       this.loadingComplete = true;
-//       this.cdr.detectChanges();
-//     }
-//   }
-// }
 
 
 private finishLoading(): void {
@@ -10387,259 +4651,6 @@ private checkAllImagesLoaded(): void {
     this.finishLoading();
   }
 }
-
-// Helper method to check if all images are loaded
-// private checkAllImagesLoaded(isInitialLoad: boolean) {
-//   const avatarLoaded = this.avatarLoaded.getValue();
-//   const urlLoaded = this.urlImageLoaded.getValue();
-  
-//   console.log('Checking image loading status:', { avatarLoaded, urlLoaded });
-
-//   if (avatarLoaded && urlLoaded) {
-//     this.imageLoaded = true;
-//     this.checkLoadingComplete();
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// async refreshImages() {
-//   await this.imageManagementService.loadUserImages(this.userId);
-//   if (this.currentUser.imgUrl) {
-//     await this.preloadImage(this.currentUser.imgUrl);
-//   }
-// }
-// async refreshImages() {
-//   try {
-//     await this.imageManagementService.loadUserImages(this.userId);
-//     if (this.currentUser.imgUrl) {
-//       // Add a small delay before preloading image
-//       await new Promise(resolve => setTimeout(resolve, 300));
-//       await this.preloadImage(this.currentUser.imgUrl);
-//     }
-//   } catch (error) {
-//     console.error('Error refreshing images:', error);
-//   }
-// }
-
-// async refreshImages(forceRefresh: boolean = false) {
-//   try {
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     if (this.currentUser.imgUrl) {
-//       if (forceRefresh) {
-//         // Add cache-busting parameter to the URL
-//         const cacheBuster = `?t=${Date.now()}`;
-//         const baseUrl = this.currentUser.imgUrl.split('?')[0];
-//         await this.preloadImage(baseUrl + cacheBuster);
-//       } else {
-//         await this.preloadImage(this.currentUser.imgUrl);
-//       }
-//     }
-//   } catch (error) {
-//     console.error('Error refreshing images:', error);
-//   }
-// }
-
-// private checkAllImagesLoaded(isInitialLoad: boolean) {
-//   // Combine both loading states
-//   if (this.avatarLoaded.getValue() && this.urlImageLoaded.getValue()) {
-//     this.imageLoaded = true;
-//     if (this.isInitialLoad) {
-//       this.checkLoadingComplete();
-//     }
-//   }
-// }
-
-//   isImageUrlFilled(): boolean {
-//   const imgUrlControl = this.profileForm.get('imgUrl');
-  
-//   const formValue = imgUrlControl?.value?.trim();
-//   const isFilled = !!formValue;
-
-
-//   if (isFilled) {
-//     // Basic URL validation
-//     try {
-//       const url = new URL(formValue);
-//       return url.protocol === 'http:' || url.protocol === 'https:';
-//     } catch {
-//       return false;
-//     }
-//   }
-  
-//   return false;
-// }
-
-// isImageUrlFilled(): boolean {
-//   // this.imageNotFound = false;
-//   if (!this.pictureForm) return false;
-//   if (this.imageNotFound) return false;
-
-//   const imgUrlControl = this.pictureForm.get('imgUrl');
-//   if (!imgUrlControl) return false;
-  
-//   const formValue = imgUrlControl.value?.trim();
-//   if (!formValue) return false;
-
-//   if (this._isFirebaseUrl(formValue)) {
-//     return !this.imageNotFound;
-//   }
-
-//   // For uploaded images (Firebase URLs)
-//   // if (formValue.includes('firebasestorage.googleapis.com')) return true;
-
-//   // For external URLs
-//   try {
-//     const url = new URL(formValue);
-//     const isValidProtocol = url.protocol === 'http:' || url.protocol === 'https:';
-//     return isValidProtocol && !this.imageNotFound;
-//   } catch {
-//     return false;
-//   }
-// }
-
-// private _isFirebaseUrl(url: string): boolean {
-//   return url.includes('firebasestorage.googleapis.com');
-// }
-
-// isImageUrlFilled(): boolean {
-//   // Get the form control
-//   if (!this.pictureForm) return false;
-//   if (this.imageNotFound) return false;
-
-//   const imgUrlControl = this.pictureForm.get('imgUrl');
-//   if (!imgUrlControl) return false;
-  
-//   const formValue = imgUrlControl.value;
-//   // Check if value exists and convert to string if needed
-//   if (!formValue) return false;
-  
-//   const stringValue = typeof formValue === 'string' ? formValue.trim() : String(formValue).trim();
-//   if (!stringValue) return false;
-
-//   // For uploaded images (Firebase URLs)
-//   if (this.isFirebaseUrl(stringValue)) {
-//     return !this.imageNotFound;
-//   }
-
-//   // For external URLs
-//   try {
-//     const url = new URL(stringValue);
-//     const isValidProtocol = url.protocol === 'http:' || url.protocol === 'https:';
-//     return isValidProtocol && !this.imageNotFound;
-//   } catch {
-//     return false;
-//   }
-// }
-
-// isImageUrlFilled(): boolean {
-//   // Early returns for invalid states
-//   if (!this.pictureForm || this.imageNotFound) return false;
-
-//   // First check currentUser.imgUrl since that's the actual image being displayed
-//   if (this.currentUser.imgUrl && this.imageLoadedSuccessfully) {
-//     return true;
-//   }
-
-//   // Then check form control
-//   const imgUrlControl = this.pictureForm.get('imgUrl');
-//   if (!imgUrlControl) return false;
-  
-//   const value = imgUrlControl.value;
-//   if (!value) return false;
-
-//   // Handle both string and promise values
-//   if (value instanceof Promise) {
-//     return this.imageLoadedSuccessfully;
-//   }
-
-//   const stringValue = typeof value === 'string' ? value.trim() : String(value).trim();
-//   if (!stringValue) return false;
-
-//   return this.imageLoadedSuccessfully && !this.imageNotFound;
-// }
-
-// isImageUrlFilled(): boolean {
-//   // Early returns for invalid states
-//   if (!this.pictureForm || this.imageNotFound) return false;
-
-//   // First check currentUser.imgUrl since that's the actual image being displayed
-//   if (this.currentUser.imgUrl && this.imageLoadedSuccessfully) {
-//     return true;
-//   }
-
-//   // Then check form control
-//   const imgUrlControl = this.pictureForm.get('imgUrl');
-//   if (!imgUrlControl) return false;
-  
-//   const value = imgUrlControl.value;
-//   if (!value) return false;
-
-//   // Handle both string and promise values
-//   if (value instanceof Promise) {
-//     return this.imageLoadedSuccessfully;
-//   }
-
-//   const stringValue = typeof value === 'string' ? value.trim() : String(value).trim();
-//   if (!stringValue) return false;
-
-//   return this.imageLoadedSuccessfully && !this.imageNotFound;
-// }
-
-// isImageUrlFilled(): boolean {
-//   // Early returns for invalid states
-//   if (!this.pictureForm || this.imageNotFound) {
-//     // console.log('Early return check failed:', {
-//     //   hasForm: !!this.pictureForm,
-//     //   imageNotFound: this.imageNotFound
-//     // });
-//     return false;
-//   }
-
-//   // First check currentUser.imgUrl since that's the actual image being displayed
-//   if (this.currentUser.imgUrl && this.imageLoadedSuccessfully) {
-//     // console.log('Current user image check passed:', {
-//     //   imgUrl: this.currentUser.imgUrl,
-//     //   imageLoadedSuccessfully: this.imageLoadedSuccessfully
-//     // });
-//     return true;
-//   }
-
-//   // Then check form control
-//   const imgUrlControl = this.pictureForm.get('imgUrl');
-//   if (!imgUrlControl) {
-//     console.log('No imgUrl control found');
-//     return false;
-//   }
-  
-//   const value = imgUrlControl.value;
-//   if (!value) {
-//     console.log('No value in imgUrl control');
-//     return false;
-//   }
-
-//   // Handle both string and promise values
-//   if (value instanceof Promise) {
-//     console.log('Value is a Promise:', {
-//       imageLoadedSuccessfully: this.imageLoadedSuccessfully
-//     });
-//     return this.imageLoadedSuccessfully;
-//   }
-
-//   const stringValue = typeof value === 'string' ? value.trim() : String(value).trim();
-//   if (!stringValue) {
-//     console.log('Empty string value after trimming');
-//     return false;
-//   }
-
-//   console.log('Final check:', {
-//     stringValue,
-//     imageLoadedSuccessfully: this.imageLoadedSuccessfully,
-//     imageNotFound: this.imageNotFound
-//   });
-
-//   return this.imageLoadedSuccessfully && !this.imageNotFound;
-// }
 
 // Latest working
 isImageUrlFilled(): boolean {
@@ -10820,6 +4831,17 @@ startDrag(event: MouseEvent | TouchEvent) {
   this.isDragged = true;
   this.isDefaultPosition = false;
 
+  // Force all controls to disappear when dragging starts
+ 
+  // const container = document.querySelector('.profilePictureContainerForDragging');
+  // if (container) {
+  //   container.classList.add('is-dragging');
+  // }
+
+  // if(this.isMobile || this.isTablet){
+  //   this.hideAllControls();
+  // }
+
   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
   
@@ -10843,6 +4865,8 @@ startDrag(event: MouseEvent | TouchEvent) {
   // this.initialPosition = { ...this.position };
 
   console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
+
+  // this.isDefaultPosition = false;
 
   // Attach event listeners
   this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
@@ -10952,9 +4976,17 @@ endDrag(event: MouseEvent | TouchEvent) {
     this.updateImageTransform();
     // this.savePositionAndZoom();
   }
+
+  // if(this.isMobile || this.isTablet){
+  //   const container = document.querySelector('.profilePictureContainerForDragging');
+  //   if (container) {
+  //     container.classList.remove('is-dragging');
+  //   }
+  // }
   
   setTimeout(() => {
     this.isDragging = false;
+    this.cdr.detectChanges(); 
   }, 50);
 
   // Remove event listeners
@@ -10966,6 +4998,10 @@ endDrag(event: MouseEvent | TouchEvent) {
   if (this.upListener) this.upListener();
   if (this.touchMoveListener) this.touchMoveListener();
   if (this.touchEndListener) this.touchEndListener();
+
+  // if(this.isMobile || this.isTablet){
+  //   this.showAllControls();
+  // }
 
   event.preventDefault();
   event.stopPropagation();
@@ -11246,115 +5282,6 @@ async updateImageTransform() {
   }
 }
 
-// async updateImageTransform() {
-//   if (!this.profileImg?.nativeElement) return;
-
-//   const imgElement = this.profileImg.nativeElement;
-  
-//   try {
-//     this.renderer.addClass(imgElement, 'smooth-transform');
-
-//     // Get current URL from form or user
-//     let currentUrl = this.pictureForm.get('imgUrl')?.value || this.currentUser?.imgUrl;
-//     if (!currentUrl) return;
-
-//     // Handle Promise/ZoneAwarePromise
-//     if (currentUrl instanceof Promise || (currentUrl && typeof currentUrl === 'object' && '__zone_symbol__value' in currentUrl)) {
-//       currentUrl = await currentUrl;
-//     }
-
-//     if (!currentUrl) return;
-
-//     // Convert Firebase URLs if needed
-//     if (currentUrl.includes('firebasestorage.googleapis.com')) {
-//       currentUrl = await this.storageService.convertFirebaseUrl(currentUrl);
-//     }
-
-//     // Get auth headers for API storage URLs
-//     const headers = currentUrl.includes('/api/storage/') ? 
-//       await this.storageService.getAuthHeaders() : 
-//       null;
-
-//     // Get current background image
-//     const currentBgImage = window.getComputedStyle(imgElement).backgroundImage;
-
-//     // If we have a valid current background image and it's not changing, keep it
-//     const backgroundImage = currentBgImage !== 'none' && !this.isImageUrlChanged ? 
-//       currentBgImage : 
-//       `url("${currentUrl}")`;
-
-//     // Determine position and zoom based on navigation state
-//     let position = { x: 0, y: 0 };
-//     let zoom = 1;
-
-//     if (this.currentState === ProfileState.ChangingPicture && 
-//         this.imageManagementService.isFirstImage(this.userId) && 
-//         !this.hasStartedNavigating) {
-//       // Use saved settings only for profile picture before navigation starts
-//       position = {
-//         x: this.currentUser.profilePictureSettings?.x || 0,
-//         y: this.currentUser.profilePictureSettings?.y || 0
-//       };
-//       zoom = this.currentUser.profilePictureSettings?.zoom || 1;
-//     } else {
-//       // Use current position and zoom for other cases
-//       position = { x: 0, y: 0 };
-//       zoom = 1;
-//     }
-
-//     // Create the styles object with determined position and zoom
-//     const styles = {
-//       'background-image': backgroundImage,
-//       'background-position': `${position.x}% ${position.y}%`,
-//       'background-repeat': 'no-repeat',
-//       'background-size': `${zoom * 100}%`,
-//       'background-color': '#c7ff20'
-//     };
-
-//     // Apply styles
-//     Object.entries(styles).forEach(([key, value]) => {
-//       // Only update background-image if it's changing
-//       if (key !== 'background-image' || this.isImageUrlChanged) {
-//         this.renderer.setStyle(imgElement, key, value);
-//       }
-//     });
-    
-//     // Store styles for reference
-//     this.imageStyles = styles;
-
-//     // Update component position and zoom to match what was applied
-//     this.position = position;
-//     this.zoomLevel = zoom;
-
-//     // Update user settings if they exist and we're using saved settings
-//     if (this.currentUser && !this.hasStartedNavigating && 
-//         this.imageManagementService.isFirstImage(this.userId)) {
-//       this.currentUser.profilePictureSettings = {
-//         zoom,
-//         x: position.x,
-//         y: position.y
-//       };
-//     }
-
-//     // Reset the image URL changed flag
-//     this.isImageUrlChanged = false;
-
-//   } catch (error) {
-//     console.error('Error updating image transform:', error);
-//   }
-// }
-
-
-// setImageUrl(url: string | null) {
-//   const currentUrl = this.pictureForm.get('imgUrl')?.value;
-//   this.isImageUrlChanged = currentUrl !== url;
-//   if (url) {
-//     this.pictureForm.patchValue({ imgUrl: url });
-//   } else {
-//     this.pictureForm.get('imgUrl')?.reset();
-//   }
-// }
-
 setImageUrl(url: string) {
   const currentUrl = this.pictureForm.get('imgUrl')?.value;
   this.isImageUrlChanged = currentUrl !== url;
@@ -11377,199 +5304,6 @@ async updateStyles() {
     this.cdr.detectChanges();
   }
 }
-
-
-// async getProfileImageStyles(): Promise<any> {
-//   try {
-//     // Check if form is initialized
-//     if (!this.pictureForm) {
-//       return this.getDefaultStyles();
-//     }
-
-//     // Get and validate the current URL
-//     const formUrl = this.pictureForm.get('imgUrl')?.value;
-//     const currentUrl = typeof formUrl === 'string' ? formUrl : this.currentUser?.imgUrl || '';
-
-//     // Add logging to debug URL handling
-//     console.log('Current URL:', {
-//       formUrl,
-//       currentUrl,
-//       userImgUrl: this.currentUser?.imgUrl
-//     });
-
-//     // Cache check with logging
-//     if (this.imageTransformCache?.url === currentUrl) {
-//       console.log('Using cached styles for URL:', currentUrl);
-//       return this.imageTransformCache!.styles;
-//     }
-
-//     // Get settings with better error handling
-//     let settings = this.currentUser.profilePictureSettings;
-//     if (typeof settings === 'string') {
-//       try {
-//         settings = JSON.parse(settings);
-//       } catch (e) {
-//         console.warn('Error parsing settings, using defaults:', e);
-//         settings = {
-//           zoom: this.zoomLevel || 1,
-//           x: this.position.x || 0,
-//           y: this.position.y || 0
-//         };
-//       }
-//     }
-
-//     // Process image URL with better error handling
-//     // let displayUrl = currentUrl;
-//     // if (typeof currentUrl === 'string' && currentUrl.includes('firebasestorage.googleapis.com')) {
-//     //   try {
-//     //     displayUrl = await this.storageService.convertFirebaseUrl(currentUrl);
-//     //     console.log('Converted Firebase URL:', { original: currentUrl, converted: displayUrl });
-//     //   } catch (error) {
-//     //     console.error('Error converting Firebase URL:', error);
-//     //     displayUrl = currentUrl;
-//     //   }
-//     // }
-
-//     let displayUrl = currentUrl;
-//     if (typeof currentUrl === 'string' && currentUrl.includes('firebasestorage.googleapis.com')) {
-//       try {
-//         // Check if we have a cached proxied URL
-//         displayUrl = await this.storageService.getProxiedUrl(currentUrl);
-//       } catch (error) {
-//         console.error('Error converting Firebase URL:', error);
-//         displayUrl = currentUrl;
-//       }
-//     }
-
-//     // Create styles object with nullish coalescing
-//     const styles = {
-//       'background-image': displayUrl ? `url(${displayUrl})` : 'none',
-//       'background-position': `${Number(this.position.x ?? 0)}% ${Number(this.position.y ?? 0)}%`,
-//       'background-repeat': 'no-repeat',
-//       'background-size': `${(Number(this.zoomLevel ?? 1) * 100)}%`,
-//       'background-color': '#c7ff20'
-//     };
-
-//     // Cache the result
-//     this.imageTransformCache = {
-//       url: currentUrl,
-//       styles
-//     };
-
-//     // Add logging for final styles
-//     console.log('Generated styles:', {
-//       currentUrl,
-//       displayUrl,
-//       styles
-//     });
-
-//     // Update imageStyles property
-//     this.imageStyles = styles;
-
-//     return styles;
-
-//   } catch (error) {
-//     console.error('Error generating image styles:', error);
-//     return this.getDefaultStyles();
-//   }
-// }
-
-// async getProfileImageStyles(): Promise<any> {
-//   try {
-//     // Check if form is initialized
-//     if (!this.pictureForm) {
-//       return this.getDefaultStyles();
-//     }
-
-//     // Get and validate the current URL
-//     const formUrl = this.pictureForm.get('imgUrl')?.value;
-//     const currentUrl = typeof formUrl === 'string' ? formUrl : this.currentUser?.imgUrl || '';
-
-//     // Add logging to debug URL handling
-//     console.log('Current URL:', {
-//       formUrl,
-//       currentUrl,
-//       userImgUrl: this.currentUser?.imgUrl
-//     });
-
-//     // Cache check with logging
-//     if (this.imageTransformCache?.url === currentUrl) {
-//       console.log('Using cached styles for URL:', currentUrl);
-//       return this.imageTransformCache!.styles;
-//     }
-
-//     // Get settings with better error handling
-//     let settings = this.currentUser.profilePictureSettings;
-//     if (typeof settings === 'string') {
-//       try {
-//         settings = JSON.parse(settings);
-//       } catch (e) {
-//         console.warn('Error parsing settings, using defaults:', e);
-//         settings = {
-//           zoom: this.zoomLevel || 1,
-//           x: this.position.x || 0,
-//           y: this.position.y || 0
-//         };
-//       }
-//     }
-
-//     let displayUrl = currentUrl;
-//     if (typeof currentUrl === 'string' && currentUrl.includes('firebasestorage.googleapis.com')) {
-//       try {
-//         // Get auth headers
-//         const headers = await this.storageService.getAuthHeaders();
-        
-//         // Get proxied URL and fetch with auth
-//         displayUrl = await this.storageService.getProxiedUrl(currentUrl);
-//         const response = await fetch(displayUrl, { headers });
-        
-//         if (!response.ok) {
-//           throw new Error('Failed to load image');
-//         }
-
-//         const blob = await response.blob();
-//         displayUrl = URL.createObjectURL(blob);
-
-//         // Clean up blob URL after a delay
-//         setTimeout(() => URL.revokeObjectURL(displayUrl), 1000);
-//       } catch (error) {
-//         console.error('Error processing Firebase URL:', error);
-//         displayUrl = currentUrl;
-//       }
-//     }
-
-//     // Create styles object with nullish coalescing
-//     const styles = {
-//       'background-image': displayUrl ? `url(${displayUrl})` : 'none',
-//       'background-position': `${Number(this.position.x ?? 0)}% ${Number(this.position.y ?? 0)}%`,
-//       'background-repeat': 'no-repeat',
-//       'background-size': `${(Number(this.zoomLevel ?? 1) * 100)}%`,
-//       'background-color': '#c7ff20'
-//     };
-
-//     // Cache the result
-//     this.imageTransformCache = {
-//       url: currentUrl,
-//       styles
-//     };
-
-//     // Add logging for final styles
-//     console.log('Generated styles:', {
-//       currentUrl,
-//       displayUrl,
-//       styles
-//     });
-
-//     // Update imageStyles property
-//     this.imageStyles = styles;
-
-//     return styles;
-
-//   } catch (error) {
-//     console.error('Error generating image styles:', error);
-//     return this.getDefaultStyles();
-//   }
-// }
 
 async getProfileImageStyles(): Promise<any> {
   try {
@@ -11716,8 +5450,6 @@ private getDefaultStyles() {
   return defaults;
 }
 
-
-
 // Add a helper method to determine if we're using a Firebase URL
 private isFirebaseUrl(url: string): boolean {
   return url.includes('firebasestorage.googleapis.com');
@@ -11802,13 +5534,12 @@ zoomOut() {
   }
 }
 
-onMouseEnter(button: string) {
+onPointerEnter(button: string) {
   this.hoveredButton = button;
   this.isIconHovered = true;
-  // Existing functionality for specific button actions
 }
 
-onMouseDown(button: string) {
+onPointerDown(button: string) {
   if (button === 'minus') {
     if (this.zoomLevel <= this.minZoom) return;
     this.isOutClicked = true;
@@ -11834,14 +5565,29 @@ onMouseDown(button: string) {
   }
 }
 
-onMouseUp(button: string) {
+onPointerUp(button: string) {
   this.resetButtonState(button);
+  this.cdr.detectChanges();
 }
 
-onMouseLeave(button: string) {
+onPointerLeave(button: string) {
   this.hoveredButton = null;
   this.isIconHovered = false;
   this.resetButtonState(button);
+}
+
+onChevronEnter() {
+  if (!this.isMobile) {
+    this.showSegments = true;
+    this.cdr.detectChanges();
+  }
+}
+
+onChevronLeave() {
+  if (!this.isMobile) {
+    this.showSegments = false;
+    this.cdr.detectChanges();
+  }
 }
 
 isButtonHovered(button: string): boolean {
@@ -11870,15 +5616,307 @@ resetButtonState(button: string) {
     reset?.classList.remove('clicked');
   } else if (button === 'left') {
     this.leftClicked = false;
-    const reset = document.querySelector('.chevronLeft');
-    reset?.classList.remove('clicked');
+    requestAnimationFrame(() => {
+      const chevron = document.querySelector('.chevronLeft');
+      chevron?.classList.remove('clicked');
+      this.cdr.detectChanges();
+    });
   } else if (button === 'right') {
     this.rightClicked = false;
-    const reset = document.querySelector('.chevronRight');
-    reset?.classList.remove('clicked');
-  }
+    requestAnimationFrame(() => {
+      const chevron = document.querySelector('.chevronRight');
+      chevron?.classList.remove('clicked');
+      this.cdr.detectChanges();
+    });
+  } 
 }
 
+// Animates controls for tablet and mobile devices because css overrides Angular Animations
+// animateControls() {
+//   if (this.currentState !== ProfileState.ChangingPicture) {
+//     return;
+//   }
+  
+//   // Clear any existing timeout
+//   if (this.controlsAnimationTimeout) {
+//     clearTimeout(this.controlsAnimationTimeout);
+//   }
+  
+//   // Define the controls to animate
+//   const controls = [
+//     '.dragToCenter', 
+//     '.zoomButtons', 
+//     '.profile-image-navigation', 
+//     '.reset',
+//     '.circular-nav-container'
+//   ];
+  
+//   // Apply pre-animation state (opacity: 0)
+//   controls.forEach(selector => {
+//     const elements = document.querySelectorAll(selector);
+//     elements.forEach(el => {
+//       (el as HTMLElement).classList.remove('entering');
+//       (el as HTMLElement).classList.add('pre-animation');
+//     });
+//   });
+  
+//   // Force a reflow to ensure the pre-animation state is applied
+//   document.body.offsetHeight;
+  
+//   // Start the animations with a slight stagger for visual appeal
+//   setTimeout(() => {
+//     controls.forEach((selector, index) => {
+//       setTimeout(() => {
+//         const elements = document.querySelectorAll(selector);
+//         elements.forEach(el => {
+//           (el as HTMLElement).classList.remove('pre-animation');
+//           (el as HTMLElement).classList.add('entering');
+//         });
+//       }, index * 70); // Stagger by 70ms per control
+//     });
+    
+//     // Mark as animated after all animations complete
+//     this.controlsAnimationTimeout = setTimeout(() => {
+//       controls.forEach(selector => {
+//         const elements = document.querySelectorAll(selector);
+//         elements.forEach(el => {
+//           (el as HTMLElement).classList.remove('entering');
+//         });
+//       });
+//       this.controlsAnimated = true;
+//     }, controls.length * 70 + 300); // Total animation time
+//   }, 10);
+// }
+
+// animateControls() {
+//   console.log('animateControls called'); // Debug log
+  
+//   if (this.currentState !== ProfileState.ChangingPicture) {
+//     console.log('Not in ChangingPicture state, animation aborted');
+//     return;
+//   }
+  
+//   // Clear any existing timeout
+//   if (this.controlsAnimationTimeout) {
+//     clearTimeout(this.controlsAnimationTimeout);
+//   }
+  
+//   // Define the controls to animate
+//   const controls = [
+//     '.dragToCenter', 
+//     '.zoomButtons', 
+//     '.profile-image-navigation', 
+//     '.reset',
+//     '.circular-nav-container'
+//   ];
+  
+//   // Give the DOM a chance to render first with a small delay
+//   setTimeout(() => {
+//     console.log('Setting pre-animation state');
+    
+//     // Apply pre-animation state (opacity: 0)
+//     controls.forEach(selector => {
+//       const elements = document.querySelectorAll(selector);
+//       console.log(`Found ${elements.length} elements for selector: ${selector}`);
+      
+//       elements.forEach(el => {
+//         (el as HTMLElement).classList.remove('entering');
+//         (el as HTMLElement).classList.add('pre-animation');
+//       });
+//     });
+    
+//     // Force a reflow to ensure the pre-animation state is applied
+//     document.body.offsetHeight;
+    
+//     // Give pre-animation state time to take effect
+//     setTimeout(() => {
+//       console.log('Starting staggered animations');
+      
+//       // Start the animations with a slight stagger for visual appeal
+//       controls.forEach((selector, index) => {
+//         setTimeout(() => {
+//           const elements = document.querySelectorAll(selector);
+//           elements.forEach(el => {
+//             (el as HTMLElement).classList.remove('pre-animation');
+//             (el as HTMLElement).classList.add('entering');
+//             console.log(`Animation started for ${selector}`);
+//           });
+//         }, index * 70); // Stagger by 70ms per control
+//       });
+      
+//       // Mark as animated after all animations complete
+//       this.controlsAnimationTimeout = setTimeout(() => {
+//         console.log('Animation complete, cleaning up classes');
+        
+//         controls.forEach(selector => {
+//           const elements = document.querySelectorAll(selector);
+//           elements.forEach(el => {
+//             (el as HTMLElement).classList.remove('entering');
+//           });
+//         });
+//         this.controlsAnimated = true;
+
+//         // Log final state
+//         setTimeout(() => {
+//           console.log('Animation complete - final state:');
+//           this.debugAnimationState();
+//         }, 100);
+
+//       }, controls.length * 70 + 300); // Total animation time
+//     }, 50); // Short delay to ensure pre-animation state is applied
+//   }, 50); // Small delay to ensure DOM is ready
+// }
+
+
+// onStateChangeToChangingPicture() {
+//   console.log('State changed to ChangingPicture');
+//   this.debugAnimationState(); // Log initial state
+
+//   // Reset animation state
+//   this.controlsAnimated = false;
+  
+//   // Initialize mobile controls if needed
+//   if (this.isMobile || this.isTablet) {
+//     const resetButton = document.querySelector('.reset') as HTMLElement;
+//     const zoomInButton = document.querySelector('.zoomIn') as HTMLElement;
+//     const zoomOutButton = document.querySelector('.zoomOut') as HTMLElement;
+    
+//     if (resetButton) {
+//       resetButton.classList.toggle('disabled', this.isInDefaultPosition());
+//     }
+    
+//     if (zoomInButton) {
+//       zoomInButton.classList.toggle('disabled', this.zoomLevel >= this.maxZoom);
+//     }
+    
+//     if (zoomOutButton) {
+//       zoomOutButton.classList.toggle('disabled', this.zoomLevel <= this.minZoom);
+//     }
+//   }
+
+//   // Make sure the component has finished rendering before animating
+//   this.cdr.detectChanges();
+  
+//   // Trigger animations with a small delay to ensure DOM is ready
+//   requestAnimationFrame(() => {
+//     setTimeout(() => {
+//       this.animateControls();
+//     }, 100); // Slight delay to ensure DOM is fully rendered
+//   });
+// }
+
+// checkControlsVisibility() {
+//   // This mirrors your ngIf condition exactly
+//   this.controlsVisible = (!this.isLoadingImages && 
+//                          this.currentState === ProfileState.ChangingPicture) && 
+//                          (this.currentUser.imgUrl || 
+//                          (this.imageManagementService.hasAnyFirebaseImages() && this.firebaseImageLoaded) || 
+//                          (this.pictureForm.get('imgUrl')?.value && this.imageLoadedSuccessfully));
+  
+//   // If controls just became visible and we're in the right state, animate them
+//   if (this.controlsVisible && this.currentState === ProfileState.ChangingPicture) {
+//     console.log('Controls now visible, starting animation');
+//     this.animateControls();
+//   }
+// }
+
+debugAnimationState() {
+  console.log('Debugging animation state:');
+  console.log('Current state:', this.currentState);
+  console.log('Is ProfileState.ChangingPicture:', this.currentState === ProfileState.ChangingPicture);
+  console.log('Controls animated:', this.controlsAnimated);
+  
+  const controls = [
+    '.dragToCenter', 
+    '.zoomButtons', 
+    '.profile-image-navigation', 
+    '.reset',
+    '.circular-nav-container'
+  ];
+  
+  controls.forEach(selector => {
+    const elements = document.querySelectorAll(selector);
+    console.log(`Selector: ${selector}, Elements found: ${elements.length}`);
+    
+    elements.forEach((el, i) => {
+      const classes = Array.from(el.classList).join(', ');
+      const styles = window.getComputedStyle(el as Element);
+      console.log(`  Element ${i}: Classes = [${classes}], opacity = ${styles.opacity}, visibility = ${styles.visibility}`);
+    });
+  });
+}
+
+// hideAllControls() {
+//   const controls = ['.reset', '.dragToCenter', '.zoomIn', '.zoomOut', '.chevronLeft', '.chevronRight'];
+
+//   for (const control of controls) {
+//     const element = document.querySelector(control) as HTMLElement;
+//     if (element) {
+//       element.style.visibility = '0';
+//       // element.style.transition = 'visibility 0.2s ease';
+//     }
+//   }
+
+//   this.cdr.detectChanges();
+// }
+
+// showAllControls() {
+//   const controls = ['.reset', '.dragToCenter', '.zoomIn', '.zoomOut', '.chevronLeft', '.chevronRight'];
+
+//   for (const control of controls) {
+//     const element = document.querySelector(control) as HTMLElement;
+//     if (element) {
+//       element.style.visibility = '1';
+//       // element.style.transition = 'visibility 0.2s ease';
+//     }
+//   }
+
+  // Handle `.reset` separately with a different opacity
+  // const resetElement = document.querySelector('.reset') as HTMLElement;
+  // if (resetElement) {
+  //   resetElement.style.opacity = this.isInDefaultPosition() ? '0.4' : '1'; // Adjust opacity based on position
+  //   resetElement.style.transition = 'opacity 0.3s ease';
+  // }
+
+//   this.cdr.detectChanges();
+// }
+
+// checkIfMobile() {
+//   this.isMobile = window.innerWidth <= 937;
+  
+//   // If on mobile, ensure controls have the right opacity
+//   if (this.isMobile) {
+//     this.updateControlsForMobile();
+//   }
+// }
+
+// updateControlsForMobile() {
+//   // Force update the reset button state
+//   requestAnimationFrame(() => {
+//     const resetButton = document.querySelector('.reset');
+//     if (resetButton) {
+//       if (this.isInDefaultPosition()) {
+//         resetButton.classList.add('disabled');
+//       } else {
+//         resetButton.classList.remove('disabled');
+//       }
+//     }
+    
+//     // Update zoom buttons
+//     const zoomInButton = document.querySelector('.zoomIn');
+//     const zoomOutButton = document.querySelector('.zoomOut');
+    
+//     if (zoomInButton) {
+//       zoomInButton.classList.toggle('disabled', this.zoomLevel >= this.maxZoom);
+//     }
+    
+//     if (zoomOutButton) {
+//       zoomOutButton.classList.toggle('disabled', this.zoomLevel <= this.minZoom);
+//     }
+    
+//     this.cdr.detectChanges();
+//   });
+// }
 
 // handleMouseEnter() {
 //   if (this.currentState === ProfileState.ChangingPicture) {
@@ -11890,7 +5928,7 @@ resetButtonState(button: string) {
 //   }
 // }
 
-handleMouseEnter() {
+handlePointerEnter() {
   // Only handle hover if we're explicitly in ChangingPicture state
   if (this.currentState !== ProfileState.ChangingPicture) {
     this.resetHoverState();
@@ -11916,13 +5954,50 @@ private resetHoverState() {
   this.canHoverDelete = false;
 }
 
-handleMouseLeave() {
+handlePointerLeave() {
   if (this.hoverCount === 1) {
     // If we leave during first hover, make sure hover is disabled
     this.canHoverDelete = false;
     this.cdr.detectChanges();
   }
 }
+
+// initializeMobileControls() {
+//   if (this.isMobile && this.currentState === ProfileState.ChangingPicture) {
+//     // Set appropriate initial states for buttons on mobile
+//     const resetButton = document.querySelector('.reset') as HTMLElement;
+//     const zoomInButton = document.querySelector('.zoomIn') as HTMLElement;
+//     const zoomOutButton = document.querySelector('.zoomOut') as HTMLElement;
+    
+//     if (resetButton) {
+//       resetButton.classList.toggle('disabled', this.isInDefaultPosition());
+//     }
+    
+//     if (zoomInButton) {
+//       zoomInButton.classList.toggle('disabled', this.zoomLevel >= this.maxZoom);
+//     }
+    
+//     if (zoomOutButton) {
+//       zoomOutButton.classList.toggle('disabled', this.zoomLevel <= this.minZoom);
+//     }
+//   }
+// }
+
+// hideAllControls() {
+//   const container = document.querySelector('.profilePictureContainerForDragging');
+//   if (container) {
+//     container.classList.add('is-dragging');
+//   }
+//   this.cdr.detectChanges();
+// }
+
+// showAllControls() {
+//   const container = document.querySelector('.profilePictureContainerForDragging');
+//   if (container) {
+//     container.classList.remove('is-dragging');
+//   }
+//   this.cdr.detectChanges();
+// }
 
 getCancelButtonText(): string {
   return this.isInitialChangingPictureState ? 'Cancel' : 'Back';
@@ -12290,6 +6365,53 @@ getLabelStyle(controlName: string): { [key: string]: string } {
     'color': isInvalid ? 'red' : 'white',
   };
 }
+
+get circleSize(): number {
+  if (!this.profileImg?.nativeElement) return 200; // Default fallback
+  const element = this.profileImg.nativeElement;
+  // Get the actual rendered width of the profile picture
+  return element.offsetWidth;
+}
+
+get circleRadius(): number {
+  return this.circleSize / 2 - this.circleStrokeWidth - 4;
+}
+
+get circleCenter(): number {
+  return this.circleSize / 2;
+}
+
+getSegmentPath(index: number): string {
+  const totalImages = this.imageManagementService.getUserImagesSubject(this.userId).value.urls.length;
+  const segmentAngle = 360 / totalImages;
+  const padding = totalImages > 20 ? segmentAngle * 0.1 : segmentAngle * 0.05;
+  
+  // Offset by -90 degrees (270 degrees) to start at 9 o'clock
+  const startAngle = (index * segmentAngle) + padding + 270;
+  const endAngle = ((index + 1) * segmentAngle) - padding + 270;
+  
+  const startX = this.circleCenter + this.circleRadius * Math.cos(this.toRadians(startAngle));
+  const startY = this.circleCenter + this.circleRadius * Math.sin(this.toRadians(startAngle));
+  const endX = this.circleCenter + this.circleRadius * Math.cos(this.toRadians(endAngle));
+  const endY = this.circleCenter + this.circleRadius * Math.sin(this.toRadians(endAngle));
+
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+  return `M ${startX} ${startY} A ${this.circleRadius} ${this.circleRadius} 0 ${largeArcFlag} 1 ${endX} ${endY}`;
+}
+
+private toRadians(degrees: number): number {
+  return degrees * Math.PI / 180;
+}
+
+getSegmentClass(index: number): string {
+  const currentIndex = this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex;
+  return index === currentIndex ? 'active' : 'inactive';
+}
+
+pasteUrl(){
+  this.showButton = !this.showButton;
+}
 /*-----------------------------------------------------------------------*/
 
 
@@ -12405,357 +6527,6 @@ private showError(message: string) {
   // Example: this.snackBar.open(message, 'Close', { duration: 3000 });
 }
 
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   try {
-//     if (!this.profileImg?.nativeElement) {
-//       console.error('Profile image element not found');
-//       return;
-//     }
-
-//     console.log('Setting background image:', imageUrl);
-    
-//     // Add loading state
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-
-//     // Fetch with auth headers
-//     // const response = await fetch(imageUrl, {
-//     //   headers: this.storageService.getAuthHeaders(),
-//     //   credentials: 'include'
-//     // });
-//     const response = await fetch(imageUrl, {
-//       headers: await this.storageService.getAuthHeaders(), // Await here to resolve the Promise
-//       credentials: 'include'
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to load image: ${response.status} ${response.statusText}`);
-//     }
-
-//     const blob = await response.blob();
-//     const objectUrl = URL.createObjectURL(blob);
-    
-//     const img = new Image();
-    
-//     await new Promise<void>((resolve, reject) => {
-//       img.onload = () => {
-//         this.ngZone.run(() => {
-//           try {
-//             this.profileImg.nativeElement.style.backgroundImage = `url(${objectUrl})`;
-//             // Remove loading state
-//             this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//             // Cleanup object URL
-//             URL.revokeObjectURL(objectUrl);
-//             this.cdr.detectChanges();
-//             resolve();
-//           } catch (error) {
-//             reject(error);
-//           }
-//         });
-//       };
-      
-//       img.onerror = (error) => {
-//         URL.revokeObjectURL(objectUrl);
-//         this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//         console.error('Error loading image:', error);
-//         reject(error);
-//       };
-      
-//       img.src = objectUrl;
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     // Remove loading state on error
-//     if (this.profileImg?.nativeElement) {
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//     }
-//   }
-// }
-
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   if (!this.profileImg?.nativeElement) {
-//     console.error('Profile image element not found');
-//     return;
-//   }
-
-//   try {
-//     // Add loading state
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-
-//     // Get auth headers
-//     const headers = await this.storageService.getAuthHeaders();
-
-//     // Fetch image with auth headers and proper credentials
-//     const response = await fetch(imageUrl, {
-//       headers,
-//       credentials: 'include'
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to load image: ${response.status}`);
-//     }
-
-//     // Convert to object URL
-//     const blob = await response.blob();
-//     const objectUrl = URL.createObjectURL(blob);
-
-//     // Apply image in NgZone
-//     this.ngZone.run(() => {
-//       this.profileImg.nativeElement.style.backgroundImage = `url(${objectUrl})`;
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-
-//       // Clean up old object URL after image loads
-//       const img = new Image();
-//       img.onload = () => {
-//         URL.revokeObjectURL(objectUrl);
-//       };
-//       img.src = objectUrl;
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//     this.imageNotFound = true;
-//   }
-// }
-
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   if (!this.profileImg?.nativeElement) {
-//     console.error('Profile image element not found');
-//     return;
-//   }
-
-//   try {
-//     // Add loading state
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-
-//     // Convert Firebase URL if needed
-//     const displayUrl = await this.storageService.convertFirebaseUrl(imageUrl);
-
-//     // Fetch with auth headers
-//     const headers = await this.storageService.getAuthHeaders();
-//     const response = await fetch(displayUrl, {
-//       headers,
-//       credentials: 'include'
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to load image: ${response.status}`);
-//     }
-
-//     const blob = await response.blob();
-//     const objectUrl = URL.createObjectURL(blob);
-
-//     // Apply image in NgZone
-//     this.ngZone.run(() => {
-//       this.profileImg.nativeElement.style.backgroundImage = `url(${displayUrl})`;
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageLoaded = true;
-//       this.imageNotFound = false;
-
-//       // Clean up old object URL after image loads
-//       const img = new Image();
-//       img.onload = () => {
-//         URL.revokeObjectURL(objectUrl);
-//       };
-//       img.src = objectUrl;
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//     this.imageNotFound = true;
-//     this.imageLoaded = false;
-//     this.cdr.detectChanges();
-//   }
-// }
-
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   if (!this.profileImg?.nativeElement) {
-//     console.error('Profile image element not found');
-//     return;
-//   }
-
-//   try {
-//     // Add loading state
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-
-//     // Convert Firebase URL if needed and get from cache if available
-//     const displayUrl = await this.storageService.convertFirebaseUrl(imageUrl);
-
-//     // Verify image exists first with HEAD request
-//     const headers = await this.storageService.getAuthHeaders();
-//     const checkResponse = await fetch(displayUrl, { 
-//       headers,
-//       method: 'HEAD'
-//     });
-
-//     if (!checkResponse.ok) {
-//       throw new Error(`Failed to verify image: ${checkResponse.status}`);
-//     }
-
-//     // Set the image URL directly and update styles
-//     this.ngZone.run(() => {
-//       // Update background image
-//       this.profileImg.nativeElement.style.backgroundImage = `url("${displayUrl}")`;
-      
-//       // Update all styles to ensure consistency
-//       this.imageStyles = {
-//         'background-image': `url("${displayUrl}")`,
-//         'background-position': `${this.position.x}% ${this.position.y}%`,
-//         'background-repeat': 'no-repeat',
-//         'background-size': `${this.zoomLevel * 100}%`,
-//         'background-color': '#c7ff20'
-//       };
-
-//       // Update states
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageLoaded = true;
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = true;
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     this.ngZone.run(() => {
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageNotFound = true;
-//       this.imageLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   if (!this.profileImg?.nativeElement) {
-//     console.error('Profile image element not found');
-//     return;
-//   }
-
-//   try {
-//     // Add loading state
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-
-//     // Convert Firebase URL if needed and get from cache if available
-//     const displayUrl = await this.storageService.convertFirebaseUrl(imageUrl);
-
-//     // Verify image exists first with HEAD request
-//     const headers = await this.storageService.getAuthHeaders();
-//     const checkResponse = await fetch(displayUrl, { 
-//       headers,
-//       method: 'HEAD'
-//     });
-
-//     if (!checkResponse.ok) {
-//       throw new Error(`Failed to verify image: ${checkResponse.status}`);
-//     }
-
-//     // Set the image URL directly and update styles
-//     this.ngZone.run(() => {
-//       // Update background image and styles
-//       this.profileImg.nativeElement.style.backgroundImage = `url("${displayUrl}")`;
-      
-//       // Update all styles to ensure consistency
-//       this.imageStyles = {
-//         'background-image': `url("${displayUrl}")`,
-//         'background-position': `${this.position.x}% ${this.position.y}%`,
-//         'background-repeat': 'no-repeat',
-//         'background-size': `${this.zoomLevel * 100}%`,
-//         'background-color': '#c7ff20'
-//       };
-
-//       // Update form with the actual URL, not the promise
-//       this.pictureForm.patchValue({
-//         imgUrl: displayUrl
-//       }, { emitEvent: false });
-
-//       // Update states
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageLoaded = true;
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = true;
-//       this.currentUser.imgUrl = imageUrl; // Keep original URL in currentUser
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     this.ngZone.run(() => {
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageNotFound = true;
-//       this.imageLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.currentUser.imgUrl = null; // Clear the URL on error
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
-// private async updateProfileImageDisplay(imageUrl: string) {
-//   if (!this.profileImg?.nativeElement) return;
-
-//   try {
-//     this.renderer.addClass(this.profileImg.nativeElement, 'loading');
-//     const displayUrl = await this.storageService.convertFirebaseUrl(imageUrl);
-
-//     // Verify image exists
-//     const headers = await this.storageService.getAuthHeaders();
-//     const checkResponse = await fetch(displayUrl, { 
-//       headers,
-//       method: 'HEAD'
-//     });
-
-//     if (!checkResponse.ok) {
-//       throw new Error(`Failed to verify image: ${checkResponse.status}`);
-//     }
-
-//     this.ngZone.run(() => {
-//       // Update form with resolved URL
-//       this.pictureForm.patchValue({
-//         imgUrl: displayUrl
-//       }, { emitEvent: false });
-
-//       // Update image display
-//       this.imageStyles = {
-//         'background-image': `url("${displayUrl}")`,
-//         'background-position': `${this.position.x}% ${this.position.y}%`,
-//         'background-repeat': 'no-repeat',
-//         'background-size': `${this.zoomLevel * 100}%`,
-//         'background-color': '#c7ff20'
-//       };
-
-//       Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
-
-//       // Update states
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageLoaded = true;
-//       this.imageNotFound = false;
-//       this.imageLoadedSuccessfully = true;
-//       this.currentUser.imgUrl = imageUrl;
-
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error updating image display:', error);
-//     this.ngZone.run(() => {
-//       this.renderer.removeClass(this.profileImg.nativeElement, 'loading');
-//       this.imageNotFound = true;
-//       this.imageLoaded = false;
-//       this.imageLoadedSuccessfully = false;
-//       this.cdr.detectChanges();
-//     });
-//   }
-// }
-
 private handleUploadError(error: any): void {
   this.ngZone.run(() => {
     const imgUrlControl = this.pictureForm.get('imgUrl');
@@ -12869,1030 +6640,6 @@ private async deleteOldImage(oldImageUrl: string): Promise<void> {
       });
     }
 
-  // async initializeImageNavigation() {
-  //   await this.imageManagementService.loadUserImages(this.userId);
-  //   this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-  //     this.imageCount = count;
-  //     this.showImageNavigation = count > 1;
-  //   });
-
-  //   this.imageManagementService.getCurrentImage(this.userId).subscribe(url => {
-  //     if (url) {
-  //       this.currentUser.imgUrl = url;
-  //       this.updateImageTransform();
-  //     }
-  //   });
-  // }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Load all images for the user
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Image count received:', count);
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       console.log('showImageNavigation set to:', this.showImageNavigation);
-//       this.cdr.detectChanges();
-//     });
-
-//     // Subscribe to current image
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async url => {
-//       console.log('Current image URL:', url);
-//       if (url) {
-//         // Update the display with the new image
-//         const displayUrl = await this.storageService.convertFirebaseUrl(url);
-//         this.currentUser.imgUrl = url;
-//         this.pictureForm.patchValue({ imgUrl: displayUrl }, { emitEvent: false });
-//         await this.updateImageTransform();
-//         this.cdr.detectChanges();
-//       }
-//     });
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-
-//     // Store current profile image URL
-//     const currentProfileUrl = this.currentUser.imgUrl;
-//     console.log('Current profile image:', currentProfileUrl);
-
-//     // Load all images first
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       console.log('Navigation visibility updated:', {
-//         newShowNav: this.showImageNavigation,
-//         imageCount: this.imageCount
-//       });
-//       this.cdr.detectChanges();
-//     });
-    
-//     // Subscribe to current image changes
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async newUrl => {
-//     console.log('Current image changed:', { newUrl });
-//     if (newUrl) {
-//       const isFirstImage = this.imageManagementService.isFirstImage(this.userId);
-//       console.log('Image position check:', { isFirstImage });
-      
-//       if (!isFirstImage) {
-//         // Reset position and zoom for non-first images
-//         this.currentUser.imgUrl = newUrl;
-//         this.resetImagePositionAndZoom();
-//       } else {
-//         // Keep current position and zoom for first image (profile picture)
-//         this.currentUser.imgUrl = newUrl;
-//         this.updateImageTransform();
-//       }
-      
-//       this.cdr.detectChanges();
-//     }
-//   });
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     throw error;
-//   }
-// }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Store current image URL
-//     const currentImageUrl = this.currentUser.imgUrl;
-//     console.log('Current profile image:', currentImageUrl);
-
-//     // If current image is from a provider, set it as temporary URL
-//     if (currentImageUrl && this.imageManagementService.isProviderUrl(currentImageUrl)) {
-//       console.log('Setting provider URL as temporary:', currentImageUrl);
-//       this.imageManagementService.setTemporaryUrl(currentImageUrl);
-//     } else {
-//       // Clear any existing temporary URL if current image is from Firebase
-//       this.imageManagementService.clearTemporaryUrl();
-//     }
-
-//     // Load all images
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       console.log('Navigation visibility updated:', {
-//         newShowNav: this.showImageNavigation,
-//         imageCount: this.imageCount
-//       });
-//       this.cdr.detectChanges();
-//     });
-
-//     // Subscribe to current image changes
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async newUrl => {
-//       console.log('Current image changed:', { newUrl });
-//       if (newUrl) {
-//         const isFirstImage = this.imageManagementService.isFirstImage(this.userId);
-//         console.log('Image position check:', { isFirstImage });
-        
-//         if (!isFirstImage) {
-//           // Reset position and zoom for non-first images
-//           this.currentUser.imgUrl = newUrl;
-//           this.resetImagePositionAndZoom();
-//         } else {
-//           // Keep current position and zoom for first image (profile picture)
-//           this.currentUser.imgUrl = newUrl;
-//           this.updateImageTransform();
-//         }
-        
-//         this.cdr.detectChanges();
-//       }
-//     });
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     throw error;
-//   }
-// // }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Store current image URL
-//     const currentImageUrl = this.currentUser.imgUrl;
-//     console.log('Current profile image:', currentImageUrl);
-
-//     // If current image is from a provider, set it as temporary URL
-//     if (currentImageUrl && this.imageManagementService.isProviderUrl(currentImageUrl)) {
-//       console.log('Setting provider URL as temporary:', currentImageUrl);
-//       this.imageManagementService.setTemporaryUrl(currentImageUrl);
-//     }
-
-//     // Load all images while maintaining current image
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       this.cdr.detectChanges();
-//     });
-
-//     // Subscribe to current image changes
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async newUrl => {
-//       console.log('Current image changed:', { newUrl });
-//       if (newUrl) {
-//         const isFirstImage = this.imageManagementService.isFirstImage(this.userId);
-//         console.log('Image position check:', { isFirstImage });
-        
-//         // Only update if this is a legitimate change
-//         if (newUrl !== this.currentUser.imgUrl) {
-//           if (!isFirstImage) {
-//             // Reset position and zoom for non-first images
-//             this.currentUser.imgUrl = newUrl;
-//             this.resetImagePositionAndZoom();
-//           } else {
-//             // Keep current position and zoom for first image (profile picture)
-//             this.currentUser.imgUrl = newUrl;
-//             this.updateImageTransform();
-//           }
-          
-//           this.cdr.detectChanges();
-//         }
-//       }
-//     });
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-
-// //// most recent working
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Store current image URL
-//     const currentImageUrl = this.currentUser.imgUrl;
-//     console.log('Current profile image:', currentImageUrl);
-
-//     // If current image is from a provider, set it as temporary URL
-//     if (currentImageUrl && this.imageManagementService.isProviderUrl(currentImageUrl)) {
-//       console.log('Setting provider URL as temporary:', currentImageUrl);
-//       this.imageManagementService.setTemporaryUrl(currentImageUrl);
-//     }
-
-//     // Load all images while maintaining current image
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       this.cdr.detectChanges();
-//     });
-
-//     // Subscribe to current image changes
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async newUrl => {
-//       console.log('Current image changed:', { newUrl });
-//       if (newUrl) {
-//         const isFirstImage = this.imageManagementService.isFirstImage(this.userId);
-//         console.log('Image position check:', { isFirstImage });
-        
-//         // Only update if this is a legitimate change
-//         if (this.normalizeUrl(newUrl) !== this.normalizeUrl(this.currentUser.imgUrl!)) {
-//           if (!isFirstImage) {
-//             // Reset position and zoom for non-first images
-//             this.currentUser.imgUrl = newUrl;
-//             this.resetImagePositionAndZoom();
-//           } else {
-//             // Keep current position and zoom for first image (profile picture)
-//             this.currentUser.imgUrl = newUrl;
-//             this.updateImageTransform();
-//           }
-          
-//           this.cdr.detectChanges();
-//         }
-//       }
-//     });
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Store current image URL
-//     const currentImageUrl = this.currentUser.imgUrl;
-//     console.log('Current profile image:', currentImageUrl);
-
-//     // If current image is from a provider, set it as temporary URL
-//     if (currentImageUrl && this.imageManagementService.isProviderUrl(currentImageUrl)) {
-//       console.log('Setting provider URL as temporary:', currentImageUrl);
-//       this.imageManagementService.setTemporaryUrl(currentImageUrl);
-//     }
-
-//     // Load all images while maintaining current image
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       this.cdr.detectChanges();
-//     });
-
-//     // Subscribe to current image changes
-//     this.imageManagementService.getCurrentImage(this.userId).subscribe(async newUrl => {
-//       // console.log('Current image changed:', { newUrl });
-//       if (newUrl) {
-//         const isFirstImage = this.imageManagementService.isFirstImage(this.userId);
-//         console.log('Image position check:', { isFirstImage });
-
-//         // Update form URL regardless of change in actual image
-//         this.ngZone.run(async () => {
-//           // Get displayable URL
-//           const displayUrl = await this.getDisplayableUrl(newUrl);
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false }); // Prevent triggering input event
-//           this.cdr.detectChanges();
-//         });
-        
-//         // Only update if this is a legitimate change
-//         if (this.normalizeUrl(newUrl) !== this.normalizeUrl(this.currentUser.imgUrl!)) {
-//           if (!isFirstImage) {
-//             // Reset position and zoom for non-first images
-//             this.currentUser.imgUrl = newUrl;
-//             this.resetImagePositionAndZoom();
-//           } else {
-//             // Keep current position and zoom for first image (profile picture)
-//             this.currentUser.imgUrl = newUrl;
-//             this.updateImageTransform();
-//           }
-          
-//         }
-//       }
-//     });
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    
-//     // First ensure we have the current image set correctly
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       // Get the current state
-//       const currentState = subject.value;
-      
-//       // Convert URLs for comparison
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         // Update the state to maintain current image position
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//       }
-//     }
-
-//     // Now load all images while maintaining the current index
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count after loading
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // Check if we're still on the first image
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', { isFirstImage: !hasStartedNav });
-
-//     // Update display URL
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       this.pictureForm.patchValue({
-//         imgUrl: url
-//       }, { emitEvent: false });
-//     }
-
-//     console.log('Image navigation initialization complete');
-
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    
-//     // First ensure we have the current image set correctly
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       // Get the current state
-//       const currentState = subject.value;
-      
-//       // Convert URLs for comparison
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         // Update the state to maintain current image position
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//         // Force the current index to stick
-//         await new Promise(resolve => setTimeout(resolve, 0));
-//       }
-//     }
-
-//     // Now load all images while maintaining the current index
-//     const previousState = subject.value;
-//     const previousIndex = previousState.currentIndex;
-//     console.log('State before loading:', { previousIndex });
-
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Recheck index after loading
-//     const newState = subject.value;
-//     console.log('State after loading:', { 
-//       newIndex: newState.currentIndex,
-//       previousIndex: previousIndex
-//     });
-
-//     // If the index changed unexpectedly, restore it
-//     if (previousIndex !== newState.currentIndex && !this.hasStartedNavigating) {
-//       subject.next({
-//         ...newState,
-//         currentIndex: previousIndex
-//       });
-//     }
-    
-//     // Subscribe to image count after loading
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // Check if we're still on the first image
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', { 
-//       isFirstImage: !hasStartedNav,
-//       currentIndex: subject.value.currentIndex
-//     });
-
-//     // Update display URL using the current index
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       if (url) {
-//         this.pictureForm.patchValue({
-//           imgUrl: url
-//         }, { emitEvent: false });
-//       }
-//     }
-
-//     console.log('Image navigation initialization complete');
-
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-
-// Working
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    
-//     // First ensure we have the current image set correctly
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       // Get the current state
-//       const currentState = subject.value;
-      
-//       // Convert URLs for comparison
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         // Update the state to maintain current image position
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//         // Force the current index to stick
-//         await new Promise(resolve => setTimeout(resolve, 0));
-//       }
-//     }
-
-//     // Now load all images while maintaining the current index
-//     const previousState = subject.value;
-//     const expectedIndex = previousState.currentIndex;
-//     const expectedUrl = this.currentUser.imgUrl ? 
-//       this.imageManagementService.normalizeUrl(this.currentUser.imgUrl) : null;
-    
-//     console.log('State before loading:', { 
-//       expectedIndex,
-//       expectedUrl 
-//     });
-
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Recheck index after loading
-//     const newState = subject.value;
-//     const newIndex = newState.currentIndex;
-    
-//     console.log('State after loading:', { 
-//       newIndex,
-//       expectedIndex,
-//       newUrl: newState.urls[newIndex] ? 
-//         this.imageManagementService.normalizeUrl(newState.urls[newIndex]) : null,
-//       expectedUrl
-//     });
-
-//     // Only restore if we moved away from our profile image
-//     if (expectedUrl && newState.urls[newIndex] && 
-//         this.imageManagementService.normalizeUrl(newState.urls[newIndex]) !== expectedUrl && 
-//         !this.hasStartedNavigating) {
-//       // Find our expected image in the new URLs
-//       const correctIndex = newState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === expectedUrl
-//       );
-      
-//       if (correctIndex !== -1) {
-//         console.log('Restoring to correct index:', correctIndex);
-//         subject.next({
-//           ...newState,
-//           currentIndex: correctIndex
-//         });
-//       }
-//     }
-    
-//     // // Rest of the method remains the same...
-//     // this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//     //   console.log('Setting navigation visibility:', {
-//     //     count,
-//     //     previousShowNav: this.showImageNavigation
-//     //   });
-//     //   this.imageCount = count;
-//     //   this.showImageNavigation = count > 1;
-//     // });
-
-//      // Subscribe to image changes to update URL input
-//      this.imageManagementService.getCurrentImageUrl(this.userId)
-//      .subscribe(async url => {
-//        if (url) {
-//          let displayUrl = url;
-//          if (url.includes('firebasestorage.googleapis.com')) {
-//            displayUrl = await this.storageService.convertFirebaseUrl(url);
-//          }
-//          this.pictureForm.patchValue({
-//            imgUrl: displayUrl
-//          }, { emitEvent: false });
-//        }
-//      });
-
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', { 
-//       isFirstImage: !hasStartedNav,
-//       currentIndex: subject.value.currentIndex
-//     });
-
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       if (url) {
-//         this.pictureForm.patchValue({
-//           imgUrl: url
-//         }, { emitEvent: false });
-//       }
-//     }
-
-//     console.log('Image navigation initialization complete');
-
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-// Working
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    
-//     // First ensure we have the current image set correctly
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       // Get the current state
-//       const currentState = subject.value;
-      
-//       // Convert URLs for comparison
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         // Update the state to maintain current image position
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//         // Force the current index to stick
-//         await new Promise(resolve => setTimeout(resolve, 0));
-//       }
-//     }
-
-//     // Now load all images while maintaining the current index
-//     const previousState = subject.value;
-//     const expectedIndex = previousState.currentIndex;
-//     const expectedUrl = this.currentUser.imgUrl ? 
-//       this.imageManagementService.normalizeUrl(this.currentUser.imgUrl) : null;
-    
-//     console.log('State before loading:', { 
-//       expectedIndex,
-//       expectedUrl 
-//     });
-
-//     // await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count after loading
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // Subscribe to image changes to update URL input
-//     // this.imageManagementService.getCurrentImageUrl(this.userId)
-//     //   .subscribe(async url => {
-//     //     if (url) {
-//     //       let displayUrl = url;
-//     //       if (url.includes('firebasestorage.googleapis.com')) {
-//     //         displayUrl = await this.storageService.convertFirebaseUrl(url);
-//     //       }
-//     //       this.pictureForm.patchValue({
-//     //         imgUrl: displayUrl
-//     //       }, { emitEvent: false });
-//     //     }
-//     //   });
-//     this.imageManagementService.getCurrentImageUrl(this.userId)
-//     .subscribe(async url => {
-//       if (url) {
-//         // Never use blob URLs, always convert to proxied URLs
-//         let displayUrl = url;
-//         if (url.includes('firebasestorage.googleapis.com')) {
-//           displayUrl = await this.storageService.convertFirebaseUrl(url);
-//         } else if (url.startsWith('blob:')) {
-//           // Convert blob URL to proxied URL
-//           const pathMatch = url.match(/\/([^/]+)$/);
-//           if (pathMatch) {
-//             displayUrl = `${environment.apiUrl}/api/storage/profileImages/${this.userId}/${pathMatch[1]}`;
-//           }
-//         }
-
-//         this.ngZone.run(() => {
-//           this.pictureForm.patchValue({
-//             imgUrl: displayUrl
-//           }, { emitEvent: false });
-//         });
-//       }
-//     });
-
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', { 
-//       isFirstImage: !hasStartedNav,
-//       currentIndex: subject.value.currentIndex
-//     });
-
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       if (url) {
-//         this.pictureForm.patchValue({
-//           imgUrl: url
-//         }, { emitEvent: false });
-//       }
-//     }
-
-//     console.log('Image navigation initialization complete');
-
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-// Latest working
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     this.firebaseImageLoaded = false;
-
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-    
-//     // Handle current image state first
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       const currentState = subject.value;
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url => 
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//         await new Promise(resolve => setTimeout(resolve, 0));
-//       } else if (currentState.urls.length === 0) {
-//         // No images available, show avatar
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//       }
-//     }
-
-//     // Track state before loading
-//     const previousState = subject.value;
-//     const expectedIndex = previousState.currentIndex;
-//     const expectedUrl = this.currentUser.imgUrl ? 
-//       this.imageManagementService.normalizeUrl(this.currentUser.imgUrl) : null;
-    
-//     console.log('State before loading:', { 
-//       expectedIndex,
-//       expectedUrl 
-//     });
-
-//     // Subscribe to image count updates
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // Subscribe to current image updates
-//     this.imageManagementService.getCurrentImageUrl(this.userId)
-//       .subscribe(async url => {
-//         if (url) {
-//           let displayUrl = url;
-//           if (url.includes('firebasestorage.googleapis.com')) {
-//             displayUrl = await this.storageService.convertFirebaseUrl(url);
-//           } else if (url.startsWith('blob:')) {
-//             const pathMatch = url.match(/\/([^/]+)$/);
-//             if (pathMatch) {
-//               displayUrl = `${environment.apiUrl}/api/storage/profileImages/${this.userId}/${pathMatch[1]}`;
-//             }
-//           }
-
-//           this.ngZone.run(() => {
-//             this.pictureForm.patchValue({
-//               imgUrl: displayUrl
-//             }, { emitEvent: false });
-//           });
-//         } else {
-//           // No image available, show avatar
-//           this.resetImage();
-//         }
-//       });
-
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', { 
-//       isFirstImage: !hasStartedNav,
-//       currentIndex: subject.value.currentIndex
-//     });
-
-//     // Update current image if available
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       if (url) {
-//         this.pictureForm.patchValue({
-//           imgUrl: url
-//         }, { emitEvent: false });
-//       }
-//     }
-
-//     console.log('Image navigation initialization complete');
-
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     // Fallback to avatar on error
-//     this.resetImage();
-//   }
-// }
-
-// Main method
-// // async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     this.firebaseImageLoaded = false;
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-
-//     // Handle current image state first
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       const currentState = subject.value;
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(url =>
-//         this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         subject.next({
-//           ...currentState,
-//           currentIndex
-//         });
-//         await new Promise(resolve => setTimeout(resolve, 0));
-//       } else if (currentState.urls.length === 0) {
-//         // No images available, show avatar
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//       }
-//     }
-
-//     // Track state before loading
-//     const previousState = subject.value;
-//     const expectedIndex = previousState.currentIndex;
-//     const expectedUrl = this.currentUser.imgUrl ?
-//       this.imageManagementService.normalizeUrl(this.currentUser.imgUrl) : null;
-
-//     console.log('State before loading:', {
-//       expectedIndex,
-//       expectedUrl
-//     });
-
-//     // Subscribe to image count updates
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // Subscribe to current image updates
-//     this.imageManagementService.getCurrentImageUrl(this.userId)
-//       .subscribe(async url => {
-//         if (url) {
-//           let displayUrl = url;
-//           if (url.includes('firebasestorage.googleapis.com')) {
-//             displayUrl = await this.storageService.convertFirebaseUrl(url);
-//           } else if (url.startsWith('blob:')) {
-//             const pathMatch = url.match(/\/([^/]+)$/);
-//             if (pathMatch) {
-//               displayUrl = `${environment.apiUrl}/api/storage/profileImages/${this.userId}/${pathMatch[1]}`;
-//             }
-//           }
-
-//           // Wait for image to load before updating UI
-//           await new Promise<void>((resolve) => {
-//             const img = new Image();
-//             img.onload = () => {
-//               this.ngZone.run(() => {
-//                 this.pictureForm.patchValue({
-//                   imgUrl: displayUrl
-//                 }, { emitEvent: false });
-//                 setTimeout(() => {
-//                   this.firebaseImageLoaded = true;
-//                 }, 150)
-//                 this.cdr.detectChanges();
-//                 resolve();
-//               });
-//             };
-//             img.src = displayUrl;
-//           });
-//         } else {
-//           // No image available, show avatar
-//           this.resetImage();
-//         }
-//       });
-
-//     const hasStartedNav = this.hasStartedNavigating;
-//     console.log('Image position check:', {
-//       isFirstImage: !hasStartedNav,
-//       currentIndex: subject.value.currentIndex
-//     });
-
-//     // Update current image if available
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrl(this.currentUser.imgUrl);
-//       if (url) {
-//         this.pictureForm.patchValue({
-//           imgUrl: url
-//         }, { emitEvent: false });
-//       }
-//     }
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     // Fallback to avatar on error
-//     this.resetImage();
-//   }
-// }
-
-// Main method 2
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     this.firebaseImageLoaded = false;
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-
-//     // Set currentIndex if current image exists
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       const currentState = subject.value;
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(
-//         url => this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         subject.next({ ...currentState, currentIndex });
-//       } else if (currentState.urls.length === 0) {
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//       }
-//     }
-
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', { count, previousShowNav: this.showImageNavigation });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//     });
-
-//     // At this point, images are already preloaded
-//     // If needed, you can directly set firebaseImageLoaded = true without re-checking the image
-//     this.firebaseImageLoaded = true;
-
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
-//       this.pictureForm.patchValue({ imgUrl: url }, { emitEvent: false });
-//     }
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     this.resetImage();
-//   }
-// }
-
-// Latest working
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // This indicates we won't do any further .onload checks
-//     this.firebaseImageLoaded = true; 
-
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-
-//     // If there's a current user image and we haven't navigated yet, align the index
-//     if (this.currentUser.imgUrl && !this.hasStartedNavigating) {
-//       const currentState = subject.value;
-//       const normalizedCurrentUrl = this.imageManagementService.normalizeUrl(this.currentUser.imgUrl);
-//       const currentIndex = currentState.urls.findIndex(
-//         url => this.imageManagementService.normalizeUrl(url) === normalizedCurrentUrl
-//       );
-//       if (currentIndex !== -1) {
-//         console.log('Setting initial state with current image at index:', currentIndex);
-//         subject.next({ ...currentState, currentIndex });
-//       } else if (currentState.urls.length === 0) {
-//         // If no images exist, fallback to avatar
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//       }
-//     }
-
-//     // Subscribe to image count for navigation
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', { 
-//         count, 
-//         previousShowNav: this.showImageNavigation 
-//       });
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-//       this.cdr.detectChanges();
-//     });
-
-//     // If we need to patch the form with the final display URL, do it once:
-//     if (this.currentUser.imgUrl) {
-//       const url = await this.getDisplayableUrlOnce(this.currentUser.imgUrl);
-//       this.pictureForm.patchValue({ imgUrl: url }, { emitEvent: false });
-//     }
-
-//     console.log('Image navigation initialization complete');
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//     // If we can’t navigate or we fail to load user images, revert to an avatar
-//     this.resetImage();
-//   }
-// }
-
 async initializeImageNavigation() {
   console.log('Starting image navigation initialization');
   try {
@@ -13953,17 +6700,6 @@ async initializeImageNavigation() {
   }
 }
 
-// private shouldApplyStoredTransforms(): boolean {
-//   // Only apply stored transforms if:
-//   // 1. We haven't started navigating yet
-//   // 2. The current image is the profile image
-//   return !this.hasStartedNavigating && 
-//          this.imageManagementService.isProfileImage(
-//            this.userId, 
-//            this.currentUser.imgUrl!
-//          );
-// }
-
 private normalizeUrl(url: string): string {
   if (!url) return '';
   
@@ -13979,36 +6715,6 @@ private normalizeUrl(url: string): string {
     return url;
   }
 }
-
-// private async getDisplayableUrl(url: string): Promise<string> {
-//   if (!url) return '';
-
-//   console.log('Converting URL for display:', { originalUrl: url });
-
-//   let displayUrl = url;
-  
-//   // If it's a Firebase URL, convert it to a proxied URL
-//   if (url.includes('firebasestorage.googleapis.com')) {
-//     displayUrl = await this.storageService.convertFirebaseUrl(url);
-//     console.log('Converted Firebase URL:', { displayUrl });
-//   }
-
-//   // If it's already a proxied URL, keep it as is
-//   if (url.includes('/api/storage/')) {
-//     console.log('Using proxied URL as is');
-//     return url;
-//   }
-
-//   // For provider URLs (like Unsplash), return as is
-//   if (this.imageManagementService.isProviderUrl(url)) {
-//     console.log('Using provider URL as is');
-//     return url;
-//   }
-
-//   // Default case - return the URL as is
-//   console.log('Using default URL:', { displayUrl });
-//   return displayUrl;
-// }
 
 private async getDisplayableUrl(url: string): Promise<string> {
   console.log('Converting URL for display:', { originalUrl: url });
@@ -14034,367 +6740,52 @@ private async getDisplayableUrl(url: string): Promise<string> {
   return await this.storageService.convertFirebaseUrl(url);
 }
 
-// async initializeImageNavigation() {
-//   console.log('Starting image navigation initialization');
-//   try {
-//     // Get current image URL before loading all images
-//     const currentImageUrl = this.currentUser.imgUrl;
-//     console.log('Current image before navigation:', currentImageUrl);
-
-//     await this.imageManagementService.loadUserImages(this.userId);
-    
-//     // Subscribe to image count
-//     this.imageManagementService.getImageCount(this.userId).subscribe(count => {
-//       console.log('Setting navigation visibility:', {
-//         count,
-//         previousShowNav: this.showImageNavigation
-//       });
-      
-//       this.imageCount = count;
-//       this.showImageNavigation = count > 1;
-      
-//       // If we have the current image, make sure it's the first one
-//       if (count > 0 && currentImageUrl) {
-//         this.imageManagementService.setInitialImage(this.userId, currentImageUrl);
-//       }
-      
-//       this.cdr.detectChanges();
-//     });
-
-//     // ... rest of the method
-//   } catch (error) {
-//     console.error('Error initializing image navigation:', error);
-//   }
-// }
-
-  // async deleteCurrentImage() {
-  //   try {
-  //     await this.imageManagementService.deleteCurrentImage(this.userId);
-  //     if (this.imageCount === 0) {
-  //       this.currentUser.imgUrl = null;
-  //       // this.onlyFirebaseImageCount--;
-  //       this.resetImage();        
-  //     }
-  //   } catch (error) {
-  //     console.error('Error deleting image:', error);
-  //   }
-  // }
-
-  // that kind of works, but the db is still not being updated to null
-
-// async deleteCurrentImage() {
-//   try {
-//     // Get current state before deletion
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     // Decrement counter if it was a Firebase image
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     // Get new state after deletion
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       if (!newState.hasImages) {
-//         // No images left, show avatar and update database
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-        
-//         // Update the database to set imgUrl to null
-//         const updatedUser = {
-//           ...this.currentUser,
-//           imgUrl: null,
-//           profilePictureSettings: null
-//         };
-//         await firstValueFrom(this.userService.updateUser(updatedUser));
-        
-//       } else if (wasProfileImage) {
-//         // If we deleted the profile image, update with the next image
-//         const updatedUser = {
-//           ...this.currentUser,
-//           imgUrl: newState.currentUrl
-//         };
-//         await firstValueFrom(this.userService.updateUser(updatedUser));
-//       }
-
-//       // Update original profile image reference
-//       this.originalProfileImage = this.currentUser.imgUrl!;
-      
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     // Handle error state
-//     this.imageNotFound = false; // Reset error state
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// async deleteCurrentImage() {
-//   try {
-//     // Get current state before deletion
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     // Decrement counter if it was a Firebase image
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     // Get new state after deletion
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       if (!newState.hasImages) {
-//         // No images left, show avatar and update database
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-        
-//         // Update the database to set imgUrl to null
-//         const updatedUser = {
-//           ...this.currentUser,
-//           imgUrl: null,
-//           profilePictureSettings: null
-//         };
-//         await firstValueFrom(this.userService.updateUser(updatedUser));
-//       }
-
-//       // Don't update database with new image yet - wait for user to save
-//       if (wasProfileImage) {
-//         // Just update the UI state without saving to database
-//         this.currentUser.imgUrl = newState.currentUrl;
-//       }
-
-//       // Set flag to indicate deletion occurred
-//       this.originalProfileImage = null; // Clear original image reference
-      
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     // Handle error state
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     this.ngZone.run(async () => {
-//       // Set deletion flag
-//       this.imageWasDeleted = true;
-//       this.originalProfileImage = null;
-
-//       if (!previousState.hasImages) {
-//         // No images left
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//         await this.updateDatabaseToNull();
-//       } else if (wasProfileImage) {
-//         // Just update UI state temporarily
-//         const newState = this.imageManagementService.getCurrentState(this.userId);
-//         this.currentUser.imgUrl = newState.currentUrl;
-//         // Don't update database yet - wait for save
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// Main method
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       this.imageWasDeleted = true;
-//       this.originalProfileImage = null;
-
-//       if (!newState.hasImages) {
-//         this.isInitialChangingPictureState = false;
-//         this.currentUser.imgUrl = null;
-//         this.imageStyles = {
-//           'background-image': 'none',
-//           'background-position': `${this.position.x}% ${this.position.y}%`,
-//           'background-repeat': 'no-repeat',
-//           'background-size': `${this.zoomLevel * 100}%`,
-//           'background-color': '#c7ff20'
-//         };
-//         this.resetImage();
-//         await this.updateDatabaseToNull();
-//       } else if (wasProfileImage) {
-//         this.currentUser.imgUrl = newState.currentUrl;
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
+// last working
 // async deleteCurrentImage() {
 //   try {
 //     const previousState = this.imageManagementService.getCurrentState(this.userId);
 //     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
     
 //     await this.imageManagementService.deleteCurrentImage(this.userId);
-
 //     const newState = this.imageManagementService.getCurrentState(this.userId);
 
 //     // Update form and UI based on new state
 //     this.ngZone.run(async () => {
 //       if (!newState.hasImages) {
+//         // If no images left, do a complete reset
 //         this.currentUser.imgUrl = null;
+//         this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
+//         this.profileForm.patchValue({ imgUrl: null }, { emitEvent: false });
+        
+//         // Reset all service state
+//         this.imageManagementService.resetAll(this.userId);
+        
+//         // Reset UI
 //         this.resetImage();
 //         await this.updateDatabaseToNull();
+
+//         // Reset image styles
+//         if (this.profileImg?.nativeElement) {
+//           this.imageStyles = {
+//             'background-image': 'none',
+//             'background-position': '0% 0%',
+//             'background-repeat': 'no-repeat',
+//             'background-size': '100%',
+//             'background-color': '#c7ff20'
+//           };
+//           Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
+//           this.renderer.addClass(this.profileImg.nativeElement, 'no-image');
+//         }
+
+//         // Ensure cache is cleared
+//         this.imageTransformCache = null;
+//         this.invalidateStyleCache();
 //       } else {
-//         // Get the new current URL
 //         const currentUrl = await firstValueFrom(
 //           this.imageManagementService.getCurrentImage(this.userId)
 //         );
         
 //         if (currentUrl) {
-//           // Update form with new URL
-//           this.pictureForm.patchValue({
-//             imgUrl: currentUrl
-//           }, { emitEvent: false });
-//         }
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const urlBeingDeleted = previousState.currentUrl; 
-//     const wasProfileImage = this.currentUser.imgUrl === urlBeingDeleted;
-
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     console.log('URL being deleted:', urlBeingDeleted);
-//     console.log('temporaryUrl:', this.imageManagementService.temporaryUrl);
-
-//     // Only clear the temporary URL if the one you're deleting is that *same* ephemeral provider URL.
-//     // if (this.imageManagementService.isProviderUrl(urlBeingDeleted!)) {
-//     //   console.log('Clearing temporary URL');
-//     //   this.imageManagementService.clearTemporaryUrl();
-//     //   this.imageManagementService.temporaryUrl = null;
-//     // }
-
-//     // Now get the new state
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       if (!newState.hasImages) {
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//         await this.updateDatabaseToNull();
-//       } else {
-//         const currentUrl = await firstValueFrom(
-//           this.imageManagementService.getCurrentImage(this.userId)
-//         );
-//         if (currentUrl) {
-//           this.pictureForm.patchValue({ imgUrl: currentUrl }, { emitEvent: false });
-//         }
-//       }
-//       this.showUploadSuccess = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// Testing
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     // Update form and UI based on new state
-//     this.ngZone.run(async () => {
-//       if (!newState.hasImages) {
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//         await this.updateDatabaseToNull();
-//       } else {
-//         // Get the new current URL
-//         const currentUrl = await firstValueFrom(
-//           this.imageManagementService.getCurrentImage(this.userId)
-//         );
-        
-//         if (currentUrl) {
-//           // Update form with new URL
 //           this.pictureForm.patchValue({
 //             imgUrl: currentUrl
 //           }, { emitEvent: false });
@@ -14418,12 +6809,15 @@ async deleteCurrentImage() {
     const previousState = this.imageManagementService.getCurrentState(this.userId);
     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
     
+    // Store the next state before deletion for smooth transition
+    const nextState = await this.imageManagementService.getNextState(this.userId);
+    
     await this.imageManagementService.deleteCurrentImage(this.userId);
-    const newState = this.imageManagementService.getCurrentState(this.userId);
+    const currentState = this.imageManagementService.getCurrentState(this.userId);
 
     // Update form and UI based on new state
     this.ngZone.run(async () => {
-      if (!newState.hasImages) {
+      if (!currentState.hasImages) {
         // If no images left, do a complete reset
         this.currentUser.imgUrl = null;
         this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
@@ -14453,14 +6847,41 @@ async deleteCurrentImage() {
         this.imageTransformCache = null;
         this.invalidateStyleCache();
       } else {
+        // Reset position and zoom before transitioning to next image
+        this.position = { x: 0, y: 0 };
+        this.zoomLevel = 1;
+        this.isDragged = false;
+        this.isDefaultPosition = true;
+
         const currentUrl = await firstValueFrom(
           this.imageManagementService.getCurrentImage(this.userId)
         );
         
         if (currentUrl) {
+          // Update form with new URL and default position/zoom
           this.pictureForm.patchValue({
-            imgUrl: currentUrl
+            imgUrl: currentUrl,
+            profilePictureSettings: {
+              zoom: 1,
+              x: 0,
+              y: 0
+            }
           }, { emitEvent: false });
+
+          // Update styles with default position/zoom
+          this.imageStyles = {
+            'background-image': `url("${currentUrl}")`,
+            'background-position': '0% 0%',
+            'background-repeat': 'no-repeat',
+            'background-size': '100%',
+            'background-color': '#c7ff20'
+          };
+
+          if (this.profileImg?.nativeElement) {
+            Object.assign(this.profileImg.nativeElement.style, this.imageStyles);
+          }
+
+          await this.updateImageTransform();
         }
       }
 
@@ -14476,153 +6897,6 @@ async deleteCurrentImage() {
   }
 }
 
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isProviderUrl = this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-//     const isFirebaseImage = !isProviderUrl;
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       this.imageWasDeleted = true;
-      
-//       // If we deleted a provider URL (Unsplash)
-//       if (isProviderUrl) {
-//         // Clear it from temporary storage
-//         this.imageManagementService.clearTemporaryUrl();
-        
-//         // If it was the profile picture, clear it properly
-//         if (wasProfileImage) {
-//           this.currentUser.imgUrl = null;
-//           this.originalProfileImage = null;
-//           await this.updateDatabaseToNull();
-          
-//           // Clear the form
-//           this.pictureForm.patchValue({ imgUrl: null }, { emitEvent: false });
-          
-//           // Reset image display
-//           this.imageStyles = {
-//             'background-image': 'none',
-//             'background-position': `${this.position.x}% ${this.position.y}%`,
-//             'background-repeat': 'no-repeat',
-//             'background-size': `${this.zoomLevel * 100}%`,
-//             'background-color': '#c7ff20'
-//           };
-//         }
-//       }
-
-//       if (!newState.hasImages) {
-//         this.currentUser.imgUrl = null;
-//         this.resetImage();
-//         await this.updateDatabaseToNull();
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     this.ngZone.run(async () => {
-//       if (wasProfileImage) {
-//         // Always set to null if we deleted the profile image
-//         this.currentUser.imgUrl = null;
-//         this.originalProfileImage = null;
-        
-//         // Update database immediately
-//         const updatedUser = {
-//           ...this.currentUser,
-//           imgUrl: null,
-//           profilePictureSettings: null
-//         };
-//         await firstValueFrom(this.userService.updateUser(updatedUser));
-        
-//         // Reset UI to show avatar
-//         this.resetImage();
-//         this.imageNotFound = false;
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
-// async deleteCurrentImage() {
-//   try {
-//     const previousState = this.imageManagementService.getCurrentState(this.userId);
-//     const wasProfileImage = this.currentUser.imgUrl === previousState.currentUrl;
-//     const isFirebaseImage = !this.imageManagementService.isProviderUrl(previousState.currentUrl!);
-    
-//     await this.imageManagementService.deleteCurrentImage(this.userId);
-
-//     if (isFirebaseImage) {
-//       this.onlyFirebaseImageCount = Math.max(0, this.onlyFirebaseImageCount - 1);
-//     }
-
-//     const newState = this.imageManagementService.getCurrentState(this.userId);
-
-//     this.ngZone.run(async () => {
-//       if (wasProfileImage) {
-//         // Just update the UI with next image, don't save to database
-//         if (newState.hasImages) {
-//           const displayUrl = await this.storageService.convertFirebaseUrl(newState.currentUrl!);
-//           this.pictureForm.patchValue({ 
-//             imgUrl: displayUrl 
-//           }, { emitEvent: false });
-//         }
-        
-//         // Mark original as deleted
-//         this.originalProfileImage = null;
-//       }
-
-//       this.showUploadSuccess = false;
-//       this.hasStartedNavigating = false;
-//       this.cdr.detectChanges();
-//     });
-
-//   } catch (error) {
-//     console.error('Error deleting image:', error);
-//     this.imageNotFound = false;
-//     this.currentUser.imgUrl = null;
-//     this.resetImage();
-//   }
-// }
-
 private async updateDatabaseToNull(): Promise<void> {
   const updatedUser = {
     ...this.currentUser,
@@ -14636,76 +6910,8 @@ private async updateDatabaseToNull(): Promise<void> {
     });
 }
 
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-//   try {
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
 
-//     this.rightClicked = true;
-//     this.hasStartedNavigating = true;
-//     this.showUploadSuccess = false;
-//     this.isTransitioning = true;
-
-//     // Reset next image state if coming from opposite direction
-//     if (this.lastDirection === 'prev') {
-//       this.nextImageState = 'next';
-//       await this.cdr.detectChanges();
-//     }
-//     this.lastDirection = 'next';
-
-//     setTimeout(() => {
-//       this.resetImagePositionAndZoomDuringNavigation();
-//     }, 400)
-
-//     // Get next image URL
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const nextUrl = subject.value.urls[subject.value.currentIndex];
-
-//     // Set up next image styles
-//     this.nextImageStyles = {
-//       'background-image': `url("${nextUrl}")`,
-//       'background-position': '0% 0%',  // Force default position
-//       'background-size': '100%'        // Force default zoom
-//     };
-
-//     // Force a change detection cycle before animation
-//     await this.cdr.detectChanges();
-    
-//     // Trigger animations
-//     requestAnimationFrame(() => {
-//       this.currentImageState = 'slideOutLeft';
-//       this.nextImageState = 'slideIn';
-//     });
-
-//     // Wait for animation to complete
-//     await new Promise<void>(resolve => {
-//       this.transitionTimeout = setTimeout(() => {
-//         // Update current image
-//         this.imageStyles = { ...this.nextImageStyles };
-//         this.nextImageStyles = null;
-//         this.currentImageState = 'current';
-//         this.nextImageState = 'next';
-//         // Update form
-//         this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-//         resolve();
-//       }, 400);
-//     });
-//   } catch (error) {
-//     console.error('Error in nextImage:', error);
-//   } finally {
-//     this.rightClicked = false;
-//     this.isTransitioning = false;
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-//   }
-// }
-
+// Last working
 async nextImage() {
   if (this.rightClicked || this.isTransitioning) return;
   
@@ -14726,6 +6932,12 @@ async nextImage() {
       await this.cdr.detectChanges();
     }
     this.lastDirection = 'next';
+
+    // this.resetImagePositionAndZoomDuringNavigation();
+
+    // if(this.isCurrentImageProfilePicture()){
+    //   this.imageStyles = this.imageStyles;
+    // }
 
     // Prepare next image
     this.imageManagementService.nextImage(this.userId);
@@ -14766,6 +6978,7 @@ async nextImage() {
         resolve();
       }, 400); // Match animation duration
     });
+    
   } catch (error) {
     console.error('Error in nextImage:', error);
   } finally {
@@ -14857,6 +7070,7 @@ async nextImage() {
 //   }
 // }
 
+// Last working
 async previousImage() {
   if (this.leftClicked || this.isTransitioning) return;
   
@@ -14877,6 +7091,8 @@ async previousImage() {
       await this.cdr.detectChanges();
     }
     this.lastDirection = 'prev';
+
+    this.resetImagePositionAndZoomDuringNavigation();
 
     // Prepare previous image
     this.imageManagementService.previousImage(this.userId);
@@ -14913,10 +7129,9 @@ async previousImage() {
         
         // Reset position and zoom after animation completes
         this.resetImagePositionAndZoomDuringNavigation();
-        this.imageManagementService.logNavigationState(this.userId);
         
         resolve();
-      }, 400); // Match animation duration
+      }, 400); 
     });
   } catch (error) {
     console.error('Error navigating to previous image:', error);
@@ -14930,6 +7145,179 @@ async previousImage() {
   }
 }
 
+shouldShowAvatar(){
+  // Show avatar if:
+  // 1. No profile picture set
+  // 2. In changing picture state but the remaining image isn't the profile picture
+  // 3. No images in storage
+  return !this.currentUser.imgUrl || 
+         (this.currentState === ProfileState.ChangingPicture && 
+          !this.imageManagementService.hasProfileImageInStorage(this.userId)) ||
+         !this.imageManagementService.hasAnyFirebaseImages();
+}
+
+// async nextImage() {
+//   if (this.rightClicked || this.isTransitioning) return;
+  
+//   try {
+//     this.rightClicked = true;
+//     this.isTransitioning = true;
+//     this.showUploadSuccess = false;
+    
+//     // Get the current index before transition
+//     const prevIndex = this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex;
+    
+//     // Clear any existing transition timeouts
+//     if (this.transitionTimeout) {
+//       clearTimeout(this.transitionTimeout);
+//       this.transitionTimeout = null;
+//     }
+
+//     // Reset states if coming from opposite direction
+//     if (this.lastDirection === 'prev') {
+//       this.nextImageState = 'next';
+//       await this.cdr.detectChanges();
+//     }
+//     this.lastDirection = 'next';
+
+//     // Prepare next image
+//     this.imageManagementService.nextImage(this.userId);
+//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+//     const nextUrl = subject.value.urls[subject.value.currentIndex];
+//     const currentIndex = subject.value.currentIndex;
+
+//     this.direction = 1;
+
+//     // Start segment animation
+//     this.animateTransition(prevIndex, currentIndex);
+
+//     // Set both current and next image styles simultaneously
+//     this.nextImageStyles = {
+//       'background-image': `url("${nextUrl}")`,
+//       'background-position': '0% 0%',
+//       'background-size': '100%',
+//       'background-repeat': 'no-repeat',
+//       'background-color': '#c7ff20'
+//     };
+
+//     // Force change detection before animation
+//     await this.cdr.detectChanges();
+    
+//     // Start both animations in the same frame
+//     requestAnimationFrame(() => {
+//       this.currentImageState = 'slideOutLeft';
+//       this.nextImageState = 'slideIn';
+//       this.cdr.detectChanges();
+//     });
+
+//     // Wait for animation completion
+//     await new Promise<void>(resolve => {
+//       this.transitionTimeout = setTimeout(() => {
+//         this.imageStyles = { ...this.nextImageStyles };
+//         this.nextImageStyles = null;
+//         this.currentImageState = 'current';
+//         this.nextImageState = 'next';
+//         this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
+        
+//         // Reset position and zoom after animation completes
+//         this.resetImagePositionAndZoomDuringNavigation();
+        
+//         resolve();
+//       }, 400); // Match animation duration
+//     });
+//   } catch (error) {
+//     console.error('Error in nextImage:', error);
+//   } finally {
+//     this.rightClicked = false;
+//     this.isTransitioning = false;
+//     if (this.transitionTimeout) {
+//       clearTimeout(this.transitionTimeout);
+//       this.transitionTimeout = null;
+//     }
+//   }
+// }
+
+// async previousImage() {
+//   if (this.leftClicked || this.isTransitioning) return;
+  
+//   try {
+//     this.leftClicked = true;
+//     this.isTransitioning = true;
+//     this.showUploadSuccess = false;
+    
+//     // Get the current index before transition
+//     const prevIndex = this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex;
+    
+//     // Clear any existing transition timeouts
+//     if (this.transitionTimeout) {
+//       clearTimeout(this.transitionTimeout);
+//       this.transitionTimeout = null;
+//     }
+
+//     // Reset states if coming from opposite direction
+//     if (this.lastDirection === 'next') {
+//       this.nextImageState = 'prev';
+//       await this.cdr.detectChanges();
+//     }
+//     this.lastDirection = 'prev';
+
+//     // Prepare previous image
+//     this.imageManagementService.previousImage(this.userId);
+//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+//     const prevUrl = subject.value.urls[subject.value.currentIndex];
+//     const currentIndex = subject.value.currentIndex;
+
+//     this.direction = -1;
+
+//     // Start segment animation
+//     this.animateTransition(prevIndex, currentIndex);
+
+//     // Set both current and next image styles simultaneously
+//     this.nextImageStyles = {
+//       'background-image': `url("${prevUrl}")`,
+//       'background-position': '0% 0%',
+//       'background-size': '100%',
+//       'background-repeat': 'no-repeat',
+//       'background-color': '#c7ff20'
+//     };
+
+//     // Force change detection before animation
+//     await this.cdr.detectChanges();
+    
+//     // Start both animations in the same frame
+//     requestAnimationFrame(() => {
+//       this.currentImageState = 'slideOutRight';
+//       this.nextImageState = 'slideIn';
+//       this.cdr.detectChanges();
+//     });
+
+//     // Wait for animation completion
+//     await new Promise<void>(resolve => {
+//       this.transitionTimeout = setTimeout(() => {
+//         this.imageStyles = { ...this.nextImageStyles };
+//         this.nextImageStyles = null;
+//         this.currentImageState = 'current';
+//         this.nextImageState = 'prev';
+//         this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
+        
+//         // Reset position and zoom after animation completes
+//         this.resetImagePositionAndZoomDuringNavigation();
+//         this.imageManagementService.logNavigationState(this.userId);
+        
+//         resolve();
+//       }, 400); // Match animation duration
+//     });
+//   } catch (error) {
+//     console.error('Error navigating to previous image:', error);
+//   } finally {
+//     this.leftClicked = false;
+//     this.isTransitioning = false;
+//     if (this.transitionTimeout) {
+//       clearTimeout(this.transitionTimeout);
+//       this.transitionTimeout = null;
+//     }
+//   }
+// }
 
 
 private isCurrentImageProfilePicture(): boolean {
