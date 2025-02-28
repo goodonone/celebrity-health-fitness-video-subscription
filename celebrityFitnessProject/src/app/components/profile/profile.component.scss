@@ -565,8 +565,16 @@ fieldset {
     // box-shadow: 0px 0px 0 10px #C7FF20;
   }
 
+  // &.firstTimeAnimation {
+  //   animation: boxShadowExpand 0.5s ease-in forwards;
+  // }
+
   &.firstTimeAnimation {
-    animation: boxShadowExpand 0.5s ease-in forwards;
+    animation-name: boxShadowExpand;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.6s; 
   }
 
   &.dragged {
@@ -645,6 +653,24 @@ fieldset {
     }
   }
 }
+
+// .profilePicture.fade-in-bg {
+//   animation: fadeInBackground 300ms ease-in forwards;
+// }
+
+// @keyframes fadeInBackground {
+//   from { opacity: 0; }
+//   to { opacity: 1; }
+// }
+
+// .fade-in-background {
+//   animation: fadeInBg 300ms ease-in forwards;
+// }
+
+// @keyframes fadeInBg {
+//   from { opacity: 0; }
+//   to { opacity: 1; }
+// }
 
 ////////////////////////// Picture navigation dots //////////////////////////////
 .circular-nav-container {
@@ -1161,7 +1187,24 @@ fieldset {
     // color: rgb(0, 0, 0);
     opacity: 0.4;
   }
+
+  // &.reset:hover:has(.disabled) .zoomIn,
+  // &.reset:hover:has(.disabled) .zoomOut{
+  //   opacity: 0;
+  // }
 }
+
+.zoomButtons.temp-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+// Make sure to remove the class after transition ends
+.zoomButtons.temp-hidden.transition-end {
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
 
 .zoomIn::selection{
   color: grey;
@@ -1259,12 +1302,16 @@ fieldset {
     // pointer-events: none;
     opacity: 0.4;
   } 
-
+  
   // &.draggingOver{
   //   opacity: 0;
   //   pointer-events: none;
   // }
 }
+
+// .reset:hover:has(.disabled):hover .zoomButtons{
+//     opacity:0;
+// }
 
 // Define the mixin
 // Fade In Controls
@@ -1441,6 +1488,7 @@ fieldset {
   &.is-dragging {
     .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight, .circular-nav-container{
       opacity: 0;
+      pointer-events: none;
     }
   }
 
@@ -1473,6 +1521,8 @@ fieldset {
     .reset:not(.disabled) {
       opacity: 1;
     }
+
+    
   }
 
   // When hovering over chevron-left button
@@ -1511,9 +1561,17 @@ fieldset {
   .chevronRight.disabled {
     opacity: 0.4;
     // pointer-events: not-allowed;
-    pointer-events: none;
+    // pointer-events: none;
   }
+
+
 }
+
+
+// .profilePictureContainerForDragging:has(.reset:hover:not(.disabled)) .reset:not(.disabled) {
+//   opacity: 0;
+//   pointer-events: none;
+// }
 
 // Additional helper classes
 .fadeOut {
@@ -2019,6 +2077,11 @@ h3.profileDetails.plan{
 
 /* Delete Picture button hover - only works when can-hover class is present */
 .btn-editPhotoButton.deletePicture.can-hover:hover {
+  background-color: red;
+  color: black !important;
+}
+
+.btn-editPhotoButton.deletePicture:active {
   background-color: red;
   color: black !important;
 }
@@ -2565,6 +2628,15 @@ img.warningImg {
   // border-radius: 50%;
   // border: 0.5rem solid #C7FF20;
   // box-shadow: 0 0 0 #C7FF20;
+}
+
+.avatar.fade-in{
+  opacity: 0;
+  transition: opacity 300ms ease-in;
+}
+
+.avatar.fade-in.visible {
+  opacity: 1;
 }
 
 // .fade-in {
@@ -3708,6 +3780,7 @@ input[matInput]:focus.error-input::placeholder {
     // margin-left: -0.5rem;
     // gap: 1.5rem;
     gap: clamp(0rem, 2vw, 1rem);
+    margin-left: -0.2rem;
     // margin-left: -0.7rem;
   }
 
@@ -3955,17 +4028,6 @@ input[matInput]:focus.error-input::placeholder {
   // }
 
   .profileDataContainer {
-    // transform: scale(0.85);
-    // width: 70vw;
-    // max-width: 50rem;
-    // min-width: 14rem;
-    // display: flex;
-    // flex-direction: column;
-    // justify-content: center;
-    // position: absolute;
-    // bottom: 0%;
-    // left: 0%;
-    // transform: translateY(-50%);
     transform: none;
     width: fit-content;
     max-width: 100%;
@@ -3978,16 +4040,8 @@ input[matInput]:focus.error-input::placeholder {
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-padding: 0.2rem;
-    // box-shadow: #131313 0px 0px 0px 0.5rem inset;
-    // box-shadow: inset 0 0 0 1000px rgba(63, 63, 63, 0.5);
-    // background-color: #131313;
-    // border-radius: 1rem;
-    // border-color: #605f5f;
-    // border-style: solid;
-    padding: 0.8rem;
-    // padding-top: 0;
+    // padding: 0.8rem;
     margin: auto;
-    // margin-bottom: 0.5rem;
 
     &::-webkit-scrollbar {
       width: 10px; // Adjust scrollbar width
@@ -4072,7 +4126,8 @@ input[matInput]:focus.error-input::placeholder {
 
   input, 
   select {
-    width: 97%;
+    // width: 97%;
+    width: 96%;
     max-width: 40rem;
     height: 2.5rem;
     font-size: large;
@@ -4083,6 +4138,11 @@ input[matInput]:focus.error-input::placeholder {
     border-color: white;
     border-width: 1px;
     color: white;
+  }
+
+  select.gender,
+  select.goals{
+    width: 99%;
   }
 
   .absoluteContainer {
@@ -4120,6 +4180,11 @@ input[matInput]:focus.error-input::placeholder {
     font-weight: bold;
     // box-shadow: #605f5f 0px 0px 0px 1px;
     // margin: 0 auto 0 1rem;
+  }
+
+  .btn-cancelSubscriptionButton:active{
+    background-color: red;
+    color: black !important;
   }
 
   h3.profileDetails {

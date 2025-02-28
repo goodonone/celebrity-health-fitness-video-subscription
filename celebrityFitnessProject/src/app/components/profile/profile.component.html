@@ -50,7 +50,7 @@
                                 <!-- Loading Spinner Overlay -->
                                 <div class="loading-overlay" *ngIf="shouldShowLoadingOverlay">
                                     <mat-spinner class="loadingImagesSpinner" diameter="40" style="--mdc-circular-progress-active-indicator-color: white;"></mat-spinner>
-                                    <p class="loadingImagesText">{{ loadingText }}</p>
+                                    <p class="loadingImagesText"><strong>Loading...</strong></p>
                                 </div>
 
                                 <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded))">
@@ -225,6 +225,7 @@
                                                     <div class="image-wrapper"
                                                         [ngStyle]="imageStyles"
                                                         [@slideAnimation]="currentImageState"
+                                                        [@fadeInImage]="imageState === 'visible'"
                                                         *ngIf="isTransitioning">
                                                     </div>
                                             
@@ -265,7 +266,8 @@
                                                 <p class="imageNotFound" *ngIf="imageNotFound && currentUser.imgUrl && !shouldShowAvatar()">Image Not Found. <br> Please Contact Support!</p>
                                                 <img class="avatar" 
                                                     src="assets/Images/avatar.png" 
-                                                    *ngIf="shouldShowAvatar()">
+                                                    *ngIf="shouldShowAvatar()"
+                                                    [@fadeInImage]="(!currentUser.imgUrl && currentState === ProfileState.ChangingPicture) ? imageState : 'visible'">
                                     </mat-card>
                             </div>
                             <div class="editProfileButtonsContainerIncludingPicture">
@@ -408,7 +410,7 @@
                                  
                                 <h3 class="profileDetailsInputGender">
                                     <span class="spanProfileCategory">Gender</span><br>
-                                    <select matNativeControl name="gender" formControlName="gender">
+                                    <select class="gender" matNativeControl name="gender" formControlName="gender">
                                         <option value="" disabled selected>Select Gender</option>
                                         <option value="Male">Male</option>
                                         <option value="Female">Female</option>
@@ -451,7 +453,7 @@
 
                                 <h3 class="profileDetailsInputObjective">
                                     <span class="spanProfileCategory">Objective</span><br>
-                                    <select matNativeControl name="goals" formControlName="goals">
+                                    <select class="goals" matNativeControl name="goals" formControlName="goals">
                                         <option value="" disabled selected>Select Objective</option>
                                         <option value="Lose Fat">Lose Fat</option>
                                         <option value="Maintain Weight">Maintain Weight</option>

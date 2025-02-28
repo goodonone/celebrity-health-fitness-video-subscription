@@ -474,5 +474,19 @@ async getProxiedUrl(path: string, isStaged: boolean = false): Promise<string> {
   }
 }  
 
+// In StorageService
+invalidateUrlCache(userId: string | null = null): void {
+  if (userId) {
+    // Clear specific user's cached URLs
+    Array.from(this.urlCache.keys())
+      .filter(key => key.includes(userId))
+      .forEach(key => this.urlCache.delete(key));
+  } else {
+    // Clear all cached URLs
+    this.urlCache.clear();
+  }
+}
+
+
 }
 
