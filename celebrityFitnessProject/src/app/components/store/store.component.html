@@ -1,21 +1,6 @@
 <div class="pageContainer">
     <div class="pageContent">
         <h1 class="pageName">Store</h1>
-<!-- 
-        <div class="debug-controls" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background: #fff; padding: 10px; border: 1px solid #ccc;">
-            <button (click)="forceTabletMode(true)" style="margin-right: 10px;">Force Tablet ON</button>
-            <button (click)="forceTabletMode(false)">Force Tablet OFF</button>
-            <div style="margin-top: 10px;">
-              <strong>Current mode:</strong> {{ isTablet ? 'Tablet' : (isMobile ? 'Mobile' : 'Desktop') }}
-            </div>
-            <div>
-              <small>Natural detection: {{ _naturalTabletDetection ? 'Tablet' : 'Not Tablet' }}</small>
-            </div>
-            <div>
-              <small>Force mode: {{ _isForceTabletMode ? 'ON' : 'OFF' }}</small>
-            </div>
-        </div> -->
-
         <ng-container *ngIf="productList$ | async as productList">
             <div class="productsContainer">
                 <div class="cardsDiv" *ngFor="let product of productList">

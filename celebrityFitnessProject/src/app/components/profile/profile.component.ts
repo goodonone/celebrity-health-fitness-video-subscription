@@ -5723,9 +5723,9 @@ getBackgroundImageStyles(): ImageStyles {
 
 
 // Add a helper method to determine if we're using a Firebase URL
-private isFirebaseUrl(url: string): boolean {
-  return url.includes('firebasestorage.googleapis.com');
-}
+// private isFirebaseUrl(url: string): boolean {
+//   return url.includes('firebasestorage.googleapis.com');
+// }
 
 // // Update getProfileImageStyles
 // getProfileImageStyles(): any {

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, finalize, tap } from 'rxjs/operators';
 import { Product } from 'src/app/models/product';
 import { ProductService } from 'src/app/services/product.service';
 import { CartService } from 'src/app/services/cart.service';
@@ -22,6 +22,7 @@ export class StoreComponent implements OnInit {
   buttonTexts: { [productId: string]: string } = {};
   private cartSubscription?: Subscription;
   private cartChangedSubscription?: Subscription;
+  private productStatusSubscription?: Subscription;
   isLoading = true;
   loadingImages: { [productId: string]: boolean } = {}; // Track loading status per product
   initialLoad = true;
@@ -78,17 +79,53 @@ const hasVisited = localStorage.getItem('imagesLoaded');
 
 this.cartSubscription = this.cartService.getCartObservable().subscribe(cart => {
   this.cartItems = cart.CartProducts;
-  this.updateProductStatuses();
+  // If the cart is empty, reset all product statuses
+  if (!cart.CartProducts || cart.CartProducts.length === 0) {
+    console.log('Cart is empty in getCartObservable, resetting all product statuses');
+    this.productStatusService.resetAllProductStatuses();
+    this.cdr.detectChanges();
+  } else {
+    this.updateProductStatuses();
+  }
 });
 
+// this.cartChangedSubscription = this.cartService.getCartChangedObservable().subscribe(change => {
+//   if (change) {
+//     if (change.action === 'clear') {
+//       this.productStatusService.resetAllProductStatuses();
+//     } else if (change.action === 'remove' && change.productId) {
+//       this.productStatusService.resetProductStatus(change.productId);
+//     }
+//   }
+// });
+
+// Subscribe to cart actions (clear, remove)
 this.cartChangedSubscription = this.cartService.getCartChangedObservable().subscribe(change => {
+  console.log('Cart changed event received:', change);
   if (change) {
     if (change.action === 'clear') {
+      console.log('Clear cart event detected, resetting all product statuses');
       this.productStatusService.resetAllProductStatuses();
+      this.cdr.detectChanges();
     } else if (change.action === 'remove' && change.productId) {
+      console.log(`Remove product event detected for: ${change.productId}`);
       this.productStatusService.resetProductStatus(change.productId);
+      this.cdr.detectChanges();
     }
   }
+});
+
+// Subscribe to limit reached products changes
+this.productStatusSubscription = this.productStatusService.getLimitReachedProducts().subscribe(limitReachedProducts => {
+  console.log('Limit reached products updated:', Array.from(limitReachedProducts));
+  
+  // Update local cache
+  this.maxReachedForProducts = {};
+  limitReachedProducts.forEach(productId => {
+    this.maxReachedForProducts[productId] = true;
+  });
+  
+  this.cdr.detectChanges();
 });
 
 this.productList$ = this.productService.getAllProducts().pipe(
@@ -97,7 +134,11 @@ this.productList$ = this.productService.getAllProducts().pipe(
     this.error = 'Failed to load products. Please try again later.';
     return of([]);
   }),
-  tap(productList => this.preloadProductImages(productList)) // Preload images after getting product list
+  tap(productList => this.preloadProductImages(productList)), // Preload images after getting product list
+  finalize(() => {
+    // Make sure we're getting the latest cart data after loading products
+    this.cartService.loadCart();
+  })
 );
 
 // this.initDeviceDetection();
@@ -105,12 +146,21 @@ this.productList$ = this.productService.getAllProducts().pipe(
 }
 
 ngOnDestroy(): void {
-if (this.cartSubscription) {
-  this.cartSubscription.unsubscribe();
-}
-if (this.cartChangedSubscription) {
-  this.cartChangedSubscription.unsubscribe();
-}
+  if (this.cartSubscription) {
+    this.cartSubscription.unsubscribe();
+  }
+  if (this.cartChangedSubscription) {
+    this.cartChangedSubscription.unsubscribe();
+  }
+  if (this.productStatusSubscription) {
+    this.productStatusSubscription.unsubscribe();
+  }
+  if (this.hoverTimeout) {
+    clearTimeout(this.hoverTimeout);
+  }
+  if (this.leaveTimeout) {
+    clearTimeout(this.leaveTimeout);
+  }
 }
 
 // initDeviceDetection(): void {
@@ -291,20 +341,50 @@ if (this.cartChangedSubscription) {
 //   window.addEventListener('touchstart', touchStartHandler);
 // }
 
-addToCart(selectedProduct: Product) {
-if (this.productStatusService.isLimitReached(selectedProduct.productId)) {
-  return;
-}
+// addToCart(selectedProduct: Product) {
+// if (this.productStatusService.isLimitReached(selectedProduct.productId)) {
+//   return;
+// }
 
-this.cartService.addToCart(selectedProduct).subscribe(
-  () => {
-    console.log('Product added to cart:', selectedProduct);
-    this.updateProductStatuses();
-    const updatedQuantity = this.cartItems.find(item => item.productId === selectedProduct.productId)?.quantity || 0;
-    this.productStatusService.setTemporaryQuantity(selectedProduct.productId, updatedQuantity);
-  },
-  error => console.error('Error adding product to cart:', error)
-);
+// this.cartService.addToCart(selectedProduct).subscribe(
+//   () => {
+//     console.log('Product added to cart:', selectedProduct);
+//     this.updateProductStatuses();
+//     const updatedQuantity = this.cartItems.find(item => item.productId === selectedProduct.productId)?.quantity || 0;
+//     this.productStatusService.setTemporaryQuantity(selectedProduct.productId, updatedQuantity);
+//   },
+//   error => console.error('Error adding product to cart:', error)
+// );
+// }
+
+addToCart(selectedProduct: Product) {
+  if (this.productStatusService.isLimitReached(selectedProduct.productId)) {
+    return;
+  }
+
+  this.cartService.addToCart(selectedProduct).subscribe(
+    (updatedCart) => {
+      console.log('Product added to cart:', selectedProduct);
+      
+      // Find the item in the updated cart to get its quantity
+      const cartItem = updatedCart.CartProducts?.find(
+        item => item.Product?.productId === selectedProduct.productId
+      );
+      
+      if (cartItem) {
+        console.log(`Setting quantity for ${selectedProduct.productId} to ${cartItem.quantity}`);
+        this.productStatusService.setTemporaryQuantity(selectedProduct.productId, cartItem.quantity);
+        
+        // Update limit reached status if needed
+        if (cartItem.quantity >= 10) {
+          this.productStatusService.setLimitReached(selectedProduct.productId, true);
+        }
+      }
+      
+      this.cdr.detectChanges();
+    },
+    error => console.error('Error adding product to cart:', error)
+  );
 }
 
 // addToCart(selectedProduct: Product) {
@@ -333,10 +413,31 @@ this.cartService.addToCart(selectedProduct).subscribe(
 //   );
 // }
 
+// updateProductStatuses() {
+// this.cartItems.forEach(item => {
+//   this.productStatusService.setLimitReached(item.productId, item.quantity >= 10);
+// });
+// }
+
 updateProductStatuses() {
-this.cartItems.forEach(item => {
-  this.productStatusService.setLimitReached(item.productId, item.quantity >= 10);
-});
+  console.log('Updating product statuses based on cart items', this.cartItems);
+  
+  // First check if cart is empty, and if so, reset all product statuses
+  if (!this.cartItems || this.cartItems.length === 0) {
+    console.log('Cart is empty, resetting all product statuses');
+    this.productStatusService.resetAllProductStatuses();
+    return;
+  }
+  
+  // Otherwise update based on current cart items
+  this.cartItems.forEach(item => {
+    if (item.Product && item.Product.productId) {
+      console.log(`Setting quantity for ${item.Product.productId} to ${item.quantity}`);
+      this.productStatusService.setProductQuantity(item.Product.productId, item.quantity);
+    }
+  });
+  
+  this.cdr.detectChanges();
 }
 
 preloadProductImages(products: Product[]): void {
@@ -354,7 +455,7 @@ preloadProductImages(products: Product[]): void {
     }
   }).catch(error => {
     console.error('Error preloading images:', error);
-    this.isLoading = true; // Consider loading complete even if some images fail
+    this.isLoading = false; // Consider loading complete even if some images fail
   });
 }
 
