@@ -67,6 +67,70 @@ mat-card.products {
   /* padding-bottom: 4rem; */
 }
 
+/* Disable all hover animations */
+.tablet.dimmed-card {
+  filter: none !important;
+  transition: none !important;
+}
+
+.tablet.active-card {
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Make sure all cards have proper pointer events */
+.tablet.cardsDiv {
+  pointer-events: auto;
+}
+
+///////// Hovering effects for cards ///////////
+/* Hovering one card makes other cards dimmer */
+.products {
+  transition: filter 0.2s ease, transform 0.2s ease;
+  position: relative;
+  transform: scale(1);
+}
+
+.cardsDiv {
+  pointer-events: none;
+}
+
+/* But allow pointer events on the actual card and its contents */
+.products, 
+.productDetails,
+.buttonContainer,
+.buttonView,
+.buttonAdd {
+  pointer-events: auto;
+}
+
+/* But keep the current card at normal brightness */
+.cardsDiv:hover .products {
+  filter: none;
+  transform: none;
+}
+
+/* Better approach using JavaScript */
+/* Add this class to your CSS */
+.dimmed-card {
+  filter: brightness(0.9) blur(5px) saturate(60%);
+  transition: filter 0.2s ease;
+}
+
+.active-card {
+  transform: scale(1.05) !important;
+  z-index: 3;
+  filter: saturate(120%) !important;
+  transition: transform 0.2s ease !important;
+}
+
+.products:not(.dimmed-card) {
+  z-index: 2;
+}
+//////////////////
+
+
+
 .productDetails {
   position: relative;
   /* top: 4%;
@@ -121,22 +185,50 @@ mat-card.products {
   bottom: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: row;
+  // display: flex;
+  // flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   justify-content: center;
-  // align-items: center;
-  /* opacity: 0.9; */
   height: 2.8rem;
   width: 96%;
-  /* margin-top: -2rem; */
-  /* margin-left: -0.7rem; */
   background-color: white;
-  // border-radius: 0 0 8px 8px;
   border-radius: 0.7rem;
   max-width: 23rem;
   overflow: hidden;
   margin: auto;
+  box-shadow: 0 0 30px rgb(169, 168, 168, 0);
+  
+  &:hover{
+    box-shadow: 0 0 30px rgb(169, 168, 168, 1);
+    transition: box-shadow 0.2s ease-in-out;
+  }
 }
+
+// .buttonContainer::before {
+//   content: '';
+//   position: absolute;
+//   top: -20px;     
+//   right: -20px;   
+//   bottom: -20px;  
+//   left: -20px;   
+//   z-index: -1;   
+//   pointer-events: auto; 
+// }
+
+// .button-buffer {
+//   position: absolute;
+//   top: -8px;
+//   right: -8px;
+//   bottom: -8px;
+//   left: -8px;
+//   z-index: 1; /* Just above the container but below buttons */
+//   pointer-events: auto;
+//   background-color: transparent;
+// }
+
+
+
 
 // .mdc-button {
 //   line-height: 1 !important;
@@ -144,7 +236,7 @@ mat-card.products {
 
 .buttonView,
 .buttonAdd {
-  flex: 1;
+  // flex: 1;
   font-size: 1rem;
   color: black;
   background-color: white;
@@ -155,6 +247,9 @@ mat-card.products {
   font-weight: 500;
   height: 100%;
   border-radius: 0;
+
+  // outline: none;
+  // box-sizing: border-box;
   // line-height: 1;
   /* text-transform: uppercase; */
 }
@@ -166,7 +261,6 @@ mat-card.products {
 .buttonAdd {
   position: relative;
   overflow: hidden;
-  // line-height: 1;
 }
 
 /* .buttonAdd:disabled {
@@ -409,7 +503,59 @@ mat-card.products {
 //     /* padding-bottom: 4rem; */
 //   }
 
-@media screen and (min-width: 300px) and (max-width: 945px) {
+@media (pointer: coarse) and (hover: none) {
+  /* Disable all hover animations */
+  .dimmed-card {
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .active-card {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Make sure all cards have proper pointer events */
+  .cardsDiv {
+    pointer-events: auto;
+  }
+
+  .buttonView:hover, 
+  .buttonAdd:hover {
+    color: white;
+    background-color: black;
+  }
+
+  .buttonAdd.limit-reached:hover {
+    background-color: white;
+    color: black;
+  }
+
+  .buttonAdd.limit-reached:active {
+    background-color: black;
+    color: white;
+  }
+
+  .buttonView:active,
+  .buttonAdd:active {
+    background-color: black;
+    color: white;
+  }
+
+  .buttonAdd:not(.disabled):hover{
+    background-color: white;
+    color: black;
+  }
+
+  .buttonAdd:not(.disabled):active{
+    background-color: black;
+    color: white;
+  }
+  
+}
+
+
+@media screen and (min-width: 300px) and (max-width: 937px) {
 
   .pageContent{
     padding-top: 8.5rem;
@@ -441,7 +587,7 @@ mat-card.products {
   mat-card.products {
     position: relative;
     background-color: rgb(18, 17, 17);
-    width: 90vw;
+    width: 80vw;
     max-width: 23rem;
     height: auto;
     // max-height: 23rem;
@@ -466,6 +612,37 @@ mat-card.products {
 
   .productsContainer{
     margin-top: 2rem;
+  }
+
+  /* Disable all hover animations */
+  .dimmed-card {
+    filter: none !important;
+    transition: none !important;
+  }
+  
+  .active-card {
+    transform: none !important;
+    transition: none !important;
+  }
+  
+  /* Make sure all cards have proper pointer events */
+  .cardsDiv {
+    pointer-events: auto;
+  }
+
+  .name{
+    font-size: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .price{
+    font-size: 9rem;
+    padding-bottom: 6rem;
+    font-weight: 600;
+  }
+
+  .actionButtonsContainer{
+    bottom: 1.5rem
   }
 }
 

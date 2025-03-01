@@ -582,6 +582,7 @@ textarea:focus::placeholder {
     // line-height: 1;
     // font-size: 7rem;
     font-size: clamp(6rem, 15vw, 10rem);
+    // padding-left: 0;
     padding-left: 0;
     // padding-top: 4rem;
     padding-top: 8.5rem;

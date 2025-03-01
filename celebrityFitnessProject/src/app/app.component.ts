@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Host,
   HostListener,
   OnInit,
   ViewChild,
@@ -56,10 +57,40 @@ export class AppComponent implements OnInit, AfterViewInit {
   // private routerSubscription!: Subscription;
 
   private subscription: Subscription = new Subscription();
-  
-
   private closeMenuTimer: any;
   private hoverTimer: any;
+
+// Click anywhere on page for mobile devices to minimize hamburger menu
+@HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    // Only run this on touch devices
+    if (!this.isTouchDevice) return;
+    
+    // Get references to the menu, hamburger, and toggle elements
+    const menuElement = document.getElementById('menu');
+    const hamburgerElement = document.getElementById('hamburger');
+    const toggleElement = document.getElementById('toggle') as HTMLInputElement;
+    
+    // Check if click target is not part of the menu or hamburger
+    const clickTarget = event.target as HTMLElement;
+    
+    // Only proceed if the menu is open and the click wasn't on menu or hamburger
+    if (this.isMenuOpen && 
+        menuElement && 
+        hamburgerElement && 
+        !menuElement.contains(clickTarget) && 
+        !hamburgerElement.contains(clickTarget) &&
+        clickTarget.id !== 'toggle') {
+      
+      // Close the menu
+      this.isMenuOpen = false;
+      toggleElement.checked = false;
+      hamburgerElement.classList.remove('active');
+      
+      // Clear any existing timers
+      this.clearTimers();
+    }
+}
 
   constructor(
     private actRoute: ActivatedRoute,
@@ -518,7 +549,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   // }
 
   onMenuMouseEnter() {
-    if (this.isTouchDevice) return;
+    // if (this.isTouchDevice) return;
     this.isMenuHovered = true;
     // console.log('Menu hovered.');
 
@@ -527,7 +558,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onMenuMouseLeave() {
-    if (this.isTouchDevice) return;
+    // if (this.isTouchDevice) return;
     this.isMenuHovered = false;
     // console.log('Menu hover exited.');
     const toggle = document.querySelector('#toggle') as HTMLInputElement;
@@ -585,6 +616,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   detectTouchDevice() {
     this.isTouchDevice =
       ('ontouchstart' in window) ||
-      (navigator.maxTouchPoints > 0);
+      (navigator.maxTouchPoints > 0) || (window.innerWidth <= 937);
   }
 }

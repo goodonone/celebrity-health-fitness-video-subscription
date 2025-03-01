@@ -560,6 +560,15 @@ fieldset {
   border-radius: 100rem;
   overflow: hidden;
 
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, background-image;
+  /* Ensure single transition property for all related changes */
+  transition: background-image 0.1s ease-out, 
+              background-position 0.1s ease-out, 
+              background-size 0.1s ease-out,
+              opacity 0.1s ease-out !important;
+
   &.tierThreeStyle {
     box-shadow: 0 0 30px 10px #C7FF20;
     // box-shadow: 0px 0px 0 10px #C7FF20;
@@ -652,6 +661,10 @@ fieldset {
       display: block !important;
     }
   }
+}
+
+.profilePicture.state-transition {
+  transition: none !important;
 }
 
 // .profilePicture.fade-in-bg {
@@ -805,6 +818,7 @@ fieldset {
   height: 100%;
   overflow: hidden;
   transform: translateZ(0);
+  will-change: transform;
 }
 
 // .image-wrapper {
@@ -2985,92 +2999,202 @@ input[matInput]:focus.error-input::placeholder {
   stroke: black !important;
 }
 
-.profilePictureContainerForDragging.tablet {
-  /* All your existing rules go inside here */
-  .dragToCenter.pre-animation,
-  .zoomButtons.pre-animation,
-  .profile-image-navigation.pre-animation,
-  .reset.pre-animation,
-  .circular-nav-container.pre-animation {
-    opacity: 0 !important;
-    visibility: visible !important;
+// .profilePictureContainerForDragging.tablet {
+//   /* All your existing rules go inside here */
+//   .dragToCenter.pre-animation,
+//   .zoomButtons.pre-animation,
+//   .profile-image-navigation.pre-animation,
+//   .reset.pre-animation,
+//   .circular-nav-container.pre-animation {
+//     opacity: 0 !important;
+//     visibility: visible !important;
+//   }
+
+//   &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
+//   &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
+//   &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
+//   &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
+//     opacity: 1;
+//     transition: opacity 0.2s ease-out;
+//   }
+
+//   /* Ensure all controls (including reset) disappear during drag */
+//   &.is-dragging .dragToCenter,
+//   &.is-dragging .zoomButtons,
+//   &.is-dragging .profile-image-navigation,
+//   &.is-dragging .reset,
+//   &.is-dragging .circular-nav-container {
+//     opacity: 0 !important;
+//     transition: opacity 0.2s ease-out;
+//     pointer-events: none !important;
+//   }
+
+//   /* Make sure zoom buttons have proper opacity */
+//   .zoomIn:not(.disabled),
+//   .zoomOut:not(.disabled) {
+//     opacity: 1 !important;
+//   }
+
+//   /* Chevron visibility */
+//   &:has(.zoomIn:hover) .chevronRight,
+//   &:has(.zoomOut:hover) .chevronLeft,
+//   &:has(.zoomButtons) .chevronLeft,
+//   &:has(.zoomButtons) .chevronRight {
+//     opacity: 1 !important;
+//   }
+
+//   /* Disabled state */
+//   .zoomOut:disabled,
+//   .zoomIn:disabled,
+//   .reset:disabled {
+//     opacity: 0.4 !important;
+//   }
+
+//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
+//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
+//     opacity: 1;
+//   }
+
+//   /* Reset button default state */
+//   &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
+//     opacity: 1 !important;
+//   }
+
+//   &:has(.chevronRight:hover:not(.disabled)) .reset,
+//   &:has(.chevronLeft:hover:not(.disabled)) .reset {
+//     opacity: 0.4;
+//   }
+
+//   /* If you want to nest again, we can do:
+//    * &.is-dragging .reset {
+//    *   opacity: 0 !important;
+//    * }
+//    */
+
+//   /* Override the hover state effects completely on mobile */
+//   &:has(.zoomButtons:hover) .reset,
+//   &:has(.chevronLeft:hover) .reset,
+//   &:has(.chevronRight:hover) .reset {
+//     opacity: 0.4;
+//   }
+
+//   .zoomIn:active,
+//   .zoomOut:active,
+//   .chevronLeft:active,
+//   .chevronRight:active {
+//     opacity: 1 !important;
+//     transform: scale(0.75);
+//   }
+// }
+
+.btn-change:active,
+.btn-editPhotoButton:active,
+.btn-editProfileButton:active,
+.btn-updateProfileButton:active,
+.btn-backButton:active,
+.btn-signOutButton:active,
+.btn-changePasswordButton:active,
+.btn-cancelPasswordButton:active,
+.btn-updatePasswordButton:active,
+.btn-savePhotoButton:active,
+.btn-cancelPhotoButton:active,
+.btn-cancelProfileButton:active,
+.btn-billingDetailsButton:active {
+  background-color: #ffffff;
+  color: black;
+}
+
+@media (pointer:coarse) and (hover:none) {
+
+  .profilePictureContainerForDragging {
+    /* All your existing rules go inside here */
+    .dragToCenter.pre-animation,
+    .zoomButtons.pre-animation,
+    .profile-image-navigation.pre-animation,
+    .reset.pre-animation,
+    .circular-nav-container.pre-animation {
+      opacity: 0 !important;
+      visibility: visible !important;
+    }
+
+    &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
+    &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
+    &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
+    &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
+      opacity: 1;
+      transition: opacity 0.2s ease-out;
+    }
+
+    /* Ensure all controls (including reset) disappear during drag */
+    &.is-dragging .dragToCenter,
+    &.is-dragging .zoomButtons,
+    &.is-dragging .profile-image-navigation,
+    &.is-dragging .reset,
+    &.is-dragging .circular-nav-container {
+      opacity: 0 !important;
+      transition: opacity 0.2s ease-out;
+      pointer-events: none !important;
+    }
+
+    /* Make sure zoom buttons have proper opacity */
+    .zoomIn:not(.disabled),
+    .zoomOut:not(.disabled) {
+      opacity: 1 !important;
+    }
+
+    /* Chevron visibility */
+    &:has(.zoomIn:hover) .chevronRight,
+    &:has(.zoomOut:hover) .chevronLeft,
+    &:has(.zoomButtons) .chevronLeft,
+    &:has(.zoomButtons) .chevronRight {
+      opacity: 1 !important;
+    }
+
+    /* Disabled state */
+    .zoomOut:disabled,
+    .zoomIn:disabled,
+    .reset:disabled {
+      opacity: 0.4 !important;
+    }
+
+    &:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
+    &:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
+      opacity: 1;
+    }
+
+    /* Reset button default state */
+    &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
+      opacity: 1 !important;
+    }
+
+    &:has(.chevronRight:hover:not(.disabled)) .reset,
+    &:has(.chevronLeft:hover:not(.disabled)) .reset {
+      opacity: 0.4;
+    }
+
+    /* If you want to nest again, we can do:
+    * &.is-dragging .reset {
+    *   opacity: 0 !important;
+    * }
+    */
+
+    /* Override the hover state effects completely on mobile */
+    &:has(.zoomButtons:hover) .reset,
+    &:has(.chevronLeft:hover) .reset,
+    &:has(.chevronRight:hover) .reset {
+      opacity: 0.4;
+    }
+
+    .zoomIn:active,
+    .zoomOut:active,
+    .chevronLeft:active,
+    .chevronRight:active {
+      opacity: 1 !important;
+      transform: scale(0.75);
+    }
   }
 
-  &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-  &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-  &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-  &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
-    opacity: 1;
-    transition: opacity 0.2s ease-out;
-  }
-
-  /* Ensure all controls (including reset) disappear during drag */
-  &.is-dragging .dragToCenter,
-  &.is-dragging .zoomButtons,
-  &.is-dragging .profile-image-navigation,
-  &.is-dragging .reset,
-  &.is-dragging .circular-nav-container {
-    opacity: 0 !important;
-    transition: opacity 0.2s ease-out;
-    pointer-events: none !important;
-  }
-
-  /* Make sure zoom buttons have proper opacity */
-  .zoomIn:not(.disabled),
-  .zoomOut:not(.disabled) {
-    opacity: 1 !important;
-  }
-
-  /* Chevron visibility */
-  &:has(.zoomIn:hover) .chevronRight,
-  &:has(.zoomOut:hover) .chevronLeft,
-  &:has(.zoomButtons) .chevronLeft,
-  &:has(.zoomButtons) .chevronRight {
-    opacity: 1 !important;
-  }
-
-  /* Disabled state */
-  .zoomOut:disabled,
-  .zoomIn:disabled,
-  .reset:disabled {
-    opacity: 0.4 !important;
-  }
-
-  &:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
-  &:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
-    opacity: 1;
-  }
-
-  /* Reset button default state */
-  &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-    opacity: 1 !important;
-  }
-
-  &:has(.chevronRight:hover:not(.disabled)) .reset,
-  &:has(.chevronLeft:hover:not(.disabled)) .reset {
-    opacity: 0.4;
-  }
-
-  /* If you want to nest again, we can do:
-   * &.is-dragging .reset {
-   *   opacity: 0 !important;
-   * }
-   */
-
-  /* Override the hover state effects completely on mobile */
-  &:has(.zoomButtons:hover) .reset,
-  &:has(.chevronLeft:hover) .reset,
-  &:has(.chevronRight:hover) .reset {
-    opacity: 0.4;
-  }
-
-  .zoomIn:active,
-  .zoomOut:active,
-  .chevronLeft:active,
-  .chevronRight:active {
-    opacity: 1 !important;
-    transform: scale(0.75);
-  }
+  
 }
 
 @media screen and (min-width: 2400px) {
@@ -3776,12 +3900,8 @@ input[matInput]:focus.error-input::placeholder {
     min-width: 21rem;
     max-width: 100%;
     margin: auto;
-    // margin-bottom: 1rem;
-    // margin-left: -0.5rem;
-    // gap: 1.5rem;
     gap: clamp(0rem, 2vw, 1rem);
-    margin-left: -0.2rem;
-    // margin-left: -0.7rem;
+    // margin-left: -0.2rem;
   }
 
   .updatePasswordButtonContainer{
@@ -3829,6 +3949,15 @@ input[matInput]:focus.error-input::placeholder {
     // padding-left: 2rem;
     // flex: 1;
     // margin: auto;
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    /* Smoother transitions on mobile */
+    transition: background-image 0.4s ease-out, 
+                background-position 0.4s ease-out, 
+                background-size 0.4s ease-out,
+                opacity 0.4s ease-out !important;
+    /* Prevent flickering during state changes */
+    will-change: background-image, background-position, background-size, opacity;
   }
 
   .profileNameTier.tierOne, 
@@ -4333,8 +4462,6 @@ input[matInput]:focus.error-input::placeholder {
 
     &.firstTimeAnimation {
       animation: fadeIn 1s ease-in-out 0.5s both;
-    
-      // bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
 
       @keyframes fadeIn {
         from {
@@ -4782,6 +4909,11 @@ input[matInput]:focus.error-input::placeholder {
   // }
 
   //////////////////////
+  .profilePictureContainerForDragging {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
   .profilePictureContainerForDragging .dragToCenter.pre-animation,
   .profilePictureContainerForDragging .zoomButtons.pre-animation,
   .profilePictureContainerForDragging .profile-image-navigation.pre-animation,

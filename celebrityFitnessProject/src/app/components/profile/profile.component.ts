@@ -2446,6 +2446,12 @@ triggerAnimations() {
       void profileNameTier.offsetWidth;
       profileNameTier.classList.add('firstTimeAnimation');
     }
+
+    // const arrows = document.querySelector('.arrows') as HTMLElement;
+    // if (arrows) {
+    //   void arrows.offsetWidth;
+    //   arrows.classList.add('firstTimeAnimation');
+    // }
     
     this.cdr.detectChanges();
   }, 100);
@@ -3134,8 +3140,25 @@ async changePicture() {
   if (this.isStateTransitioning) return;
 
   try {
+    
     // Setting initial animation state
-    this.imageState = 'hidden';
+    // this.imageState = 'hidden';
+
+    // Special handling for mobile devices
+    // if (this.isMobile) {
+    //   // Apply immediate styling to prevent flicker
+    //   if (this.profileImg?.nativeElement) {
+    //     // Force hardware acceleration on mobile
+    //     this.renderer.setStyle(this.profileImg.nativeElement, 'transform', 'translateZ(0)');
+    //     // Disable transitions temporarily
+    //     this.renderer.setStyle(this.profileImg.nativeElement, 'transition', 'none');
+    //     // Force a reflow
+    //     void this.profileImg.nativeElement.offsetHeight;
+    //   }
+
+    //   // Wait a frame before changing state
+    //   await new Promise(resolve => requestAnimationFrame(resolve));
+    // }
 
     const user = await firstValueFrom(this.userService.getUser(this.userId));
 
@@ -3182,6 +3205,14 @@ async changePicture() {
 
     // Enter changing picture state
     this.currentState = ProfileState.ChangingPicture;
+
+    // Re-enable transitions for mobile after state change
+    if (this.isMobile && this.profileImg?.nativeElement) {
+      // Wait a frame to ensure the state change is applied
+      await new Promise(resolve => requestAnimationFrame(resolve));
+      // Re-enable transitions
+      this.renderer.removeStyle(this.profileImg.nativeElement, 'transition');
+    }
 
     // Immediately update form with resolved URL to prevent [object Promise] flash
     if (resolvedUrl) {
@@ -3289,7 +3320,6 @@ async changePicture() {
       }
     }, 100);
     
-
   } catch (error) {
     console.error('Error in changePicture:', error);
     // Only set error state if we truly have no images
@@ -4760,17 +4790,17 @@ preloadImage(url: string | null, isInitialLoad = false): Promise<void> {
   });
 }
 
-private preloadSingleImage(src: string): Promise<void> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => {
-      console.error(`Failed to preload image: ${src}`);
-      resolve(); // Resolve anyway to not block loading
-    };
-    img.src = src;
-  });
-}
+// private preloadSingleImage(src: string): Promise<void> {
+//   return new Promise((resolve) => {
+//     const img = new Image();
+//     img.onload = () => resolve();
+//     img.onerror = () => {
+//       console.error(`Failed to preload image: ${src}`);
+//       resolve(); // Resolve anyway to not block loading
+//     };
+//     img.src = src;
+//   });
+// }
 
 
 private finishLoading(): void {

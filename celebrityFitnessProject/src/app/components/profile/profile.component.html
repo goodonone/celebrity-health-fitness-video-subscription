@@ -50,7 +50,7 @@
                                 <!-- Loading Spinner Overlay -->
                                 <div class="loading-overlay" *ngIf="shouldShowLoadingOverlay">
                                     <mat-spinner class="loadingImagesSpinner" diameter="40" style="--mdc-circular-progress-active-indicator-color: white;"></mat-spinner>
-                                    <p class="loadingImagesText"><strong>Loading...</strong></p>
+                                    <p class="loadingImagesText">Loading...</p>
                                 </div>
 
                                 <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded))">
@@ -225,7 +225,7 @@
                                                     <div class="image-wrapper"
                                                         [ngStyle]="imageStyles"
                                                         [@slideAnimation]="currentImageState"
-                                                        [@fadeInImage]="imageState === 'visible'"
+                                                        
                                                         *ngIf="isTransitioning">
                                                     </div>
                                             
@@ -267,7 +267,7 @@
                                                 <img class="avatar" 
                                                     src="assets/Images/avatar.png" 
                                                     *ngIf="shouldShowAvatar()"
-                                                    [@fadeInImage]="(!currentUser.imgUrl && currentState === ProfileState.ChangingPicture) ? imageState : 'visible'">
+                                                    [@fadeInImage]="(!currentUser.imgUrl && currentState === ProfileState.ChangingPicture && this.imageManagementService.hasAnyFirebaseImages()) ? imageState : 'visible'">
                                     </mat-card>
                             </div>
                             <div class="editProfileButtonsContainerIncludingPicture">
