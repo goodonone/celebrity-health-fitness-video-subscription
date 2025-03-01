@@ -578,9 +578,57 @@ private isValidUrl(url: string): boolean {
   }
 }
 
+// async handleImageUrl(url: string): Promise<string> {
+//   try {
+//     if (!url) return '';
+
+//     // Handle API URLs - append auth token
+//     if (url.startsWith('/api/')) {
+//       const token = await this.authService.getToken();
+//       return `${this.baseUrl}${url}?token=${token}`;
+//     }
+
+//     // Handle Firebase Storage URLs
+//     if (url.includes('firebasestorage.googleapis.com')) {
+//       return this.storageService.convertFirebaseUrl(url);
+//     }
+
+//     // Handle provider-specific URLs (Unsplash, etc.)
+//     const provider = this.detectImageProvider(url);
+//     if (provider) {
+//       const imageUrl = provider.extractImageUrl(url);
+//       if (imageUrl) {
+//         await this.verifyImageAccess(imageUrl);
+//         return imageUrl;
+//       }
+//     }
+
+//     // Handle direct image URLs
+//     if (this.isDirectImageUrl(url)) {
+//       await this.verifyImageAccess(url);
+//       return url;
+//     }
+
+//     throw new Error('Invalid or unsupported image URL');
+//   } catch (error) {
+//     console.error('Error handling image URL:', error);
+//     throw error;
+//   }
+// }
+
 async handleImageUrl(url: string): Promise<string> {
   try {
     if (!url) return '';
+
+    // Handle provider-specific URLs first (Unsplash, etc.)
+    const provider = this.detectImageProvider(url);
+    if (provider) {
+      const imageUrl = provider.extractImageUrl(url);
+      if (imageUrl) {
+        // Skip verification for provider URLs since they're trusted
+        return imageUrl;
+      }
+    }
 
     // Handle API URLs - append auth token
     if (url.startsWith('/api/')) {
@@ -593,23 +641,15 @@ async handleImageUrl(url: string): Promise<string> {
       return this.storageService.convertFirebaseUrl(url);
     }
 
-    // Handle provider-specific URLs (Unsplash, etc.)
-    const provider = this.detectImageProvider(url);
-    if (provider) {
-      const imageUrl = provider.extractImageUrl(url);
-      if (imageUrl) {
-        await this.verifyImageAccess(imageUrl);
-        return imageUrl;
-      }
-    }
-
     // Handle direct image URLs
     if (this.isDirectImageUrl(url)) {
       await this.verifyImageAccess(url);
       return url;
     }
 
-    throw new Error('Invalid or unsupported image URL');
+    // If we get here, the URL might still be valid but not in a format we recognize
+    return url;
+
   } catch (error) {
     console.error('Error handling image URL:', error);
     throw error;
@@ -686,12 +726,37 @@ private async processUrl(url: string): Promise<string | null> {
   //          this.hasImageMimeTypeParam(url);
   // }
 
+// private isDirectImageUrl(url: string): boolean {
+//   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+//   const lowercaseUrl = url.toLowerCase();
+//   return imageExtensions.some(ext => lowercaseUrl.endsWith(ext)) ||
+//   this.hasImageMimeTypeParam(url);
+// }  
+
 private isDirectImageUrl(url: string): boolean {
-  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  const lowercaseUrl = url.toLowerCase();
-  return imageExtensions.some(ext => lowercaseUrl.endsWith(ext)) ||
-  this.hasImageMimeTypeParam(url);
-}  
+  // Add common provider domains to skip validation
+  const trustedDomains = [
+    'unsplash.com',
+    'images.unsplash.com',
+    'pexels.com',
+    'images.pexels.com',
+    'pixabay.com'
+  ];
+
+  try {
+    const urlObj = new URL(url);
+    if (trustedDomains.some(domain => urlObj.hostname.includes(domain))) {
+      return true;
+    }
+
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    const lowercaseUrl = url.toLowerCase();
+    return imageExtensions.some(ext => lowercaseUrl.endsWith(ext)) ||
+           this.hasImageMimeTypeParam(url);
+  } catch {
+    return false;
+  }
+}
 
   private hasImageMimeTypeParam(url: string): boolean {
     try {

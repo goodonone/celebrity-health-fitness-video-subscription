@@ -9,7 +9,7 @@ import { filter, Subject, Subscription, take, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-upgrade',
   templateUrl: './upgrade.component.html',
-  styleUrls: ['./upgrade.component.css'],
+  styleUrls: ['./upgrade.component.scss'],
 })
 export class UpgradeComponent implements OnInit, OnDestroy {
   userLoggedIn = true;

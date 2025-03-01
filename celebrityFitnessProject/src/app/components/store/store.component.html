@@ -1,17 +1,21 @@
 <div class="pageContainer">
     <div class="pageContent">
         <h1 class="pageName">Store</h1>
-
         <ng-container *ngIf="productList$ | async as productList">
             <div class="productsContainer">
                 <div class="cardsDiv" *ngFor="let product of productList">
-                    <mat-card class="products" [ngStyle]="{'background-image': 'url(' + (product.productUrl || 'assets/default-product-image.jpg') + ')', 'background-size': 'cover', 'background-position': 'center center'}">
+                    <mat-card class="products"
+                        [class.dimmed-card]="shouldDimCard(product.productId)" 
+                        [class.active-card]="isCardActive(product.productId)"
+                        [ngStyle]="{'background-image': 'url(' + (product.productUrl || 'assets/Images/default-product-image.jpg') + ')', 'background-size': 'cover', 'background-position': 'center center'}">
                         <div class="productDetails" [attr.id]="'card' + product.productId">
                             <div class="absoluteContainer">
                                 <p class="name">{{product.productName}}</p>
                                 <p class="price" id="price">${{product.productPrice | priceFormat }}</p>
                             </div>
-                            <div class="buttonContainer">
+                            <div class="buttonContainer"
+                                (mouseenter)="onButtonContainerHover(product.productId)"
+                                (mouseleave)="onButtonContainerLeave()">
                                 <button mat-button [routerLink]="['/store/product', product.productId]" class="buttonView">View</button>
                                 <!-- <button mat-button (click)="addToCart(product)" class="buttonAdd">{{ getButtonText(product) }}</button> -->
                                 <!-- <button mat-button (click)="addToCart(product)" class="buttonAdd" [disabled]="maxReachedForProducts[product.productId]">

@@ -20,7 +20,6 @@ import { CustomOAuthService } from './services/oauth.service';
 import { AuthStateService } from './services/authstate.service';
 import { AuthService } from './services/auth.service';
 import { ImageUrlManagerService } from './services/imageurlmanager.service';
-import { AuthInterceptor } from './auth.interceptor';
 import { UploadStateService } from './services/uploadstate.service';
 
 @NgModule({
@@ -45,13 +44,13 @@ import { UploadStateService } from './services/uploadstate.service';
     SharedModule,
     OAuthModule.forRoot()
   ],
-  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService, AuthService, ImageUrlManagerService, 
-    {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }],
+  providers: [{ provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}, CustomOAuthService, AuthStateService, AuthService, ImageUrlManagerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
 
+// {
+//   provide: HTTP_INTERCEPTORS,
+//   useClass: AuthInterceptor,
+//   multi: true
+// }

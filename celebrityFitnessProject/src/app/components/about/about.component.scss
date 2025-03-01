@@ -11,7 +11,7 @@
   overflow-x: hidden;
   // height: fit-content;
   position: relative;
-  margin-bottom: 3rem;
+  // margin-bottom: 3rem;
   // background-color: royalblue;
 }
 
@@ -29,6 +29,7 @@
   // // top: 50%;
   // transform: translateX(-50%);
   margin: auto;
+  margin-bottom: 3rem;
 }
 
 .pageName {
@@ -69,6 +70,7 @@
   margin-top: 4rem;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 0 0 20px rgb(98, 97, 97);
 }
 
 /* h1 {
@@ -283,7 +285,7 @@ img {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 85%
+    width: 85%;
   }
 
   // .hughJackedManContainer {
