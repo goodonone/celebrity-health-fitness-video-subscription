@@ -7,6 +7,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { CartService } from 'src/app/services/cart.service';
 import { CartItem } from 'src/app/models/cart-items';
 import { ProductStatusService } from 'src/app/services/productstatus.service';
+import { ProductPositionService } from 'src/app/services/product-position.service';
 
 
 @Component({
@@ -41,6 +42,7 @@ export class StoreComponent implements OnInit {
     private router: Router,
     private cartService: CartService,
     private productStatusService: ProductStatusService,
+    private productPositionService: ProductPositionService,
     private cdr: ChangeDetectorRef
   ) {
     this.productList$ = this.productService.getAllProducts().pipe(
@@ -66,16 +68,58 @@ export class StoreComponent implements OnInit {
 
 ngOnInit(): void {
 
-const hasVisited = localStorage.getItem('imagesLoaded');
-  if (!hasVisited) {
-    // Trigger animations
-    this.initialLoad = true;
-    // Store the flag in localStorage
-    localStorage.setItem('imagesLoaded', 'true');
-  } else {
-    // Skip animations
-    this.initialLoad = false;
-  }
+const imagesAlreadyLoaded = this.productService.hasImagesLoaded();
+
+// Store product IDs when products are loaded
+this.productList$ = this.productService.getAllProducts().pipe(
+  tap(products => {
+    console.log('Store received products, storing order in position service:', products.length);
+    
+    // Store the product order in the position service
+    this.productPositionService.storeProductOrder(products);
+    
+    // Debug - verify the mappings
+    // setTimeout(() => this.productPositionService.logAllPositions(), 100);
+  }),
+  catchError(error => {
+    console.error('Error loading products:', error);
+    this.error = 'Failed to load products. Please try again later.';
+    return of([]);
+  }),
+  tap(productList => this.preloadProductImages(productList)),
+  finalize(() => {
+    this.cartService.loadCart();
+  })
+);
+
+
+if (!imagesAlreadyLoaded) {
+  // First visit, show loading and animations
+  this.initialLoad = true;
+  this.isLoading = true;
+  console.log('First visit detected, showing full loading animation');
+} else {
+  // Return visit, skip loading animation
+  this.initialLoad = false;
+  // We'll still set isLoading to true initially, but we'll make it very brief
+  // This gives the component time to render properly before hiding the spinner
+  setTimeout(() => {
+    this.isLoading = false;
+    this.cdr.detectChanges();
+  }, 0);
+  console.log('Return visit detected, skipping full loading animation');
+}
+
+// const hasVisited = localStorage.getItem('imagesLoaded');
+//   if (!hasVisited) {
+//     // Trigger animations
+//     this.initialLoad = true;
+//     // Store the flag in localStorage
+//     localStorage.setItem('imagesLoaded', 'true');
+//   } else {
+//     // Skip animations
+//     this.initialLoad = false;
+//   }
 
 this.cartSubscription = this.cartService.getCartObservable().subscribe(cart => {
   this.cartItems = cart.CartProducts;
@@ -128,18 +172,18 @@ this.productStatusSubscription = this.productStatusService.getLimitReachedProduc
   this.cdr.detectChanges();
 });
 
-this.productList$ = this.productService.getAllProducts().pipe(
-  catchError(error => {
-    console.error('Error loading products:', error);
-    this.error = 'Failed to load products. Please try again later.';
-    return of([]);
-  }),
-  tap(productList => this.preloadProductImages(productList)), // Preload images after getting product list
-  finalize(() => {
-    // Make sure we're getting the latest cart data after loading products
-    this.cartService.loadCart();
-  })
-);
+// this.productList$ = this.productService.getAllProducts().pipe(
+//   catchError(error => {
+//     console.error('Error loading products:', error);
+//     this.error = 'Failed to load products. Please try again later.';
+//     return of([]);
+//   }),
+//   tap(productList => this.preloadProductImages(productList)), // Preload images after getting product list
+//   finalize(() => {
+//     // Make sure we're getting the latest cart data after loading products
+//     this.cartService.loadCart();
+//   })
+// );
 
 // this.initDeviceDetection();
 
@@ -440,22 +484,67 @@ updateProductStatuses() {
   this.cdr.detectChanges();
 }
 
+// preloadProductImages(products: Product[]): void {
+//   const imagePromises = products.map(product => this.preloadImage(product.productUrl, product.productId));
+  
+//   // Check all promises
+//   Promise.all(imagePromises).then(() => {
+//     if(this.initialLoad) {
+//     this.isLoading = false;
+//     }
+//     else{
+//       setTimeout(() => {
+//         this.isLoading = false; 
+//       }, 400)
+//     }
+//   }).catch(error => {
+//     console.error('Error preloading images:', error);
+//     this.isLoading = false; // Consider loading complete even if some images fail
+//   });
+// }
+
 preloadProductImages(products: Product[]): void {
+  // If images have already been loaded, don't show loading spinner for long
+  if (this.productService.hasImagesLoaded()) {
+    setTimeout(() => {
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }, 100);
+    return;
+  }
+  
   const imagePromises = products.map(product => this.preloadImage(product.productUrl, product.productId));
   
   // Check all promises
   Promise.all(imagePromises).then(() => {
-    if(this.initialLoad) {
-    this.isLoading = false;
-    }
-    else{
+    // Mark images as loaded in the service
+    this.productService.setImagesLoaded();
+    
+    if (this.initialLoad) {
+      this.productService.ensureMinimumLoadingTime(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        console.log('First-time loading complete, spinner shown for minimum duration');
+      });
+    } else {
       setTimeout(() => {
-        this.isLoading = false; 
-      }, 400)
+        this.isLoading = false;
+        this.cdr.detectChanges(); 
+      }, 400);
     }
+    this.cdr.detectChanges();
   }).catch(error => {
     console.error('Error preloading images:', error);
-    this.isLoading = false; // Consider loading complete even if some images fail
+    // Even on error, ensure minimum spinner time on first load
+    if (this.initialLoad) {
+      this.productService.ensureMinimumLoadingTime(() => {
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      });
+    } else {
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }
   });
 }
 
@@ -582,6 +671,7 @@ isCardActive(productId: string): boolean {
 //   console.log(`Tablet mode ${force ? 'FORCED ON' : 'FORCED OFF'}`);
 //   this.cdr.detectChanges();
 // }
+
 
 }
 

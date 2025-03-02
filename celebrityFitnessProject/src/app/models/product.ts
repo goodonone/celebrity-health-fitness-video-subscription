@@ -30,8 +30,16 @@
 //     };
 // }
 
+export interface ImageStyle {
+    position?: string;
+    size?: string;
+    repeat?: string;
+    blend?: string;
+    opacity?: number;
+  }
+
 export interface Product {
-    [key: string]: string | number | Date;
+    [key: string]: string | number | Date | ImageStyle;
     productId: string;
     productName: string;
     productPrice: number;
@@ -39,4 +47,6 @@ export interface Product {
     productUrl: string;
     createdAt: Date;
     updatedAt: Date;
+    imageStyle: ImageStyle;
 }
+

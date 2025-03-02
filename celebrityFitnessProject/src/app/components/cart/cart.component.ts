@@ -670,7 +670,8 @@ loadCart(): void {
       productDescription: cp.Product.productDescription,
       productUrl: cp.Product.productUrl,
       createdAt: new Date(cp.Product.createdAt),
-      updatedAt: new Date(cp.Product.updatedAt)
+      updatedAt: new Date(cp.Product.updatedAt),
+      imageStyle: cp.Product.imageStyle
     };
 
     return {
