@@ -1,39 +1,39 @@
 <div class="pageContainer">
         <ng-container *ngIf="currentProduct$ | async as currentProduct;">
-            <mat-card class="productContainer">
+            <mat-card class="productContainer" [ngStyle]="getProductImageStyles(currentProduct)">
                 <mat-card-content class="cardFlex">
-                    <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl(currentProduct) + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
-                    </mat-card>
+                    <!-- <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl(currentProduct) + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
+                    </mat-card> -->
                     <div class="productInfo">
                         <p class="name">{{currentProduct.productName}}</p>
                         <p class="price" id="price">${{currentProduct.productPrice | priceFormat }}</p>
-                        <div class="productDescriptionContainer">
+                        <div class="productDescriptionAndButtonsContainer">
                             <p class="descriptionTitle"> Product Description <br><br> </p>
                             <p class="productDescriptionLorem">{{currentProduct.productDescription}}</p>
+
+                            <div class="buttonContainer">
+                                <button mat-button class="backButton" routerLink="/store" [ngClass]="{'wide': true}"> Back To Store</button>
+                                <button mat-button class="backButton" routerLink="/store" [ngClass]="{'narrow': true}"> Store </button>
+                                <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
+                                <button mat-button 
+                                    class="addToCartButton" 
+                                    (click)="addToCart(currentProduct)"
+                                    (mouseenter)="onMouseEnter(currentProduct)"
+                                    (mouseleave)="onMouseLeave(currentProduct)"
+                                    [class.limit-reached]="isLimitReached(currentProduct)">
+                                    {{ getButtonText(currentProduct) }}
+                                </button>
+                                <!-- <button mat-button class="viewCartButton" routerLink="/cart" [disabled]="isCartEmpty">View Cart</button> -->
+                                <button mat-button 
+                                    class="viewCartButton" 
+                                    [routerLink]="isCartEmpty ? null : '/cart'"
+                                    (mouseenter)="onViewCartMouseEnter()"
+                                    (mouseleave)="onViewCartMouseLeave()">
+                                    {{ viewCartButtonText }}
+                                </button>
+                            </div>
                         </div>
-                       
                     
-                    <div class="buttonContainer">
-                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'wide': true}"> Back To Store</button>
-                        <button mat-button class="backButton" routerLink="/store" [ngClass]="{'narrow': true}"> Store </button>
-                        <!-- <button mat-button class="addToCartButton" (click)="addToCart(currentProduct)">{{ isLimitReached ? 'Limit Reached' : 'Add to Cart' }}</button> -->
-                        <button mat-button 
-                            class="addToCartButton" 
-                            (click)="addToCart(currentProduct)"
-                            (mouseenter)="onMouseEnter(currentProduct)"
-                            (mouseleave)="onMouseLeave(currentProduct)"
-                            [class.limit-reached]="isLimitReached(currentProduct)">
-                            {{ getButtonText(currentProduct) }}
-                        </button>
-                        <!-- <button mat-button class="viewCartButton" routerLink="/cart" [disabled]="isCartEmpty">View Cart</button> -->
-                        <button mat-button 
-                            class="viewCartButton" 
-                            [routerLink]="isCartEmpty ? null : '/cart'"
-                            (mouseenter)="onViewCartMouseEnter()"
-                            (mouseleave)="onViewCartMouseLeave()">
-                            {{ viewCartButtonText }}
-                        </button>
-                    </div>
                 </div>
                 </mat-card-content>
                

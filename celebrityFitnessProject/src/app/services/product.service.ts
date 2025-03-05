@@ -117,7 +117,7 @@
 
 import { Injectable } from '@angular/core';
 import { Product } from '../models/product';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -126,8 +126,58 @@ import { HttpClient } from '@angular/common/http';
 export class ProductService {
   baseURL: string = "http://localhost:3000/api/products/";
   tokenKey: string = "token";
+  private imagesLoadedKey = 'imagesLoaded';
+  private imageLoadingStatusSubject = new BehaviorSubject<boolean>(false);
+  private minimumSpinnerTime = 1000;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.initializeLoadingStatus();
+   }
+
+  private initializeLoadingStatus(): void {
+  const hasLoaded = localStorage.getItem(this.imagesLoadedKey) === 'true';
+  this.imageLoadingStatusSubject.next(hasLoaded);
+  }
+
+  public getImageLoadingStatus(): Observable<boolean> {
+    return this.imageLoadingStatusSubject.asObservable();
+  }
+
+  public hasImagesLoaded(): boolean {
+    return localStorage.getItem(this.imagesLoadedKey) === 'true';
+  }
+
+  public setImagesLoaded(): void {
+    localStorage.setItem(this.imagesLoadedKey, 'true');
+    this.imageLoadingStatusSubject.next(true);
+  }
+
+  public resetLoadingState(): void {
+    localStorage.removeItem(this.imagesLoadedKey);
+    this.imageLoadingStatusSubject.next(false);
+  }
+
+  public ensureMinimumLoadingTime(callback: () => void): void {
+    const startTime = new Date().getTime();
+    
+    // Function to check if minimum time has passed
+    const checkTime = () => {
+      const currentTime = new Date().getTime();
+      const elapsedTime = currentTime - startTime;
+      
+      if (elapsedTime >= this.minimumSpinnerTime) {
+        // Minimum time has passed, execute callback
+        callback();
+      } else {
+        // Wait for the remaining time
+        const remainingTime = this.minimumSpinnerTime - elapsedTime;
+        setTimeout(callback, remainingTime);
+      }
+    };
+    
+    // Start checking
+    checkTime();
+  }
 
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.baseURL);

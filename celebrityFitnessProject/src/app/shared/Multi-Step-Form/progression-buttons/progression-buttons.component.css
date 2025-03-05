@@ -107,6 +107,10 @@ a.disabled {
   opacity: 0.5;
 }
 
+/* @media (pointer: coarse) and (hover: none) {
+
+} */
+
 @media screen and (min-width: 872px) and (max-width: 1300px){
 
   :host {

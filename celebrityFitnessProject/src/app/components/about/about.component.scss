@@ -47,13 +47,13 @@
   // padding-top: 9.5rem;
   // max-width: 3000px;
 
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   // align-items: center;
   padding: 1rem;
   padding-bottom: 0.5rem;
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.5rem;
   // padding-top: 5rem;
   // padding-top: 100px;
   // padding-left: 3rem;
@@ -89,6 +89,7 @@
   // justify-content: center;
   // align-items: center;
   width: 100%;
+  min-width: 20rem;
   // padding-left: 5rem;
   // padding-right: 5rem;
   // padding-top: 5rem;
@@ -98,7 +99,7 @@
   // max-height: 45rem;
   width: 100%;
   // max-width: 30rem;
-  height: 37rem;
+  height: 30rem;
   // aspect-ratio: 9/16;
   // aspect-ratio: 1/2;
   // max-width: 30rem;
@@ -108,7 +109,7 @@
   background-size: cover;
   border-radius: 1rem;
   background-position: center;
-  float: left;
+  // float: left;
   // padding: 10rem 3rem 3rem auto;
   // margin: auto 5rem 1.5rem auto;
   // overflow: hidden;
@@ -127,16 +128,41 @@ img {
 }
 
 .description {
-  margin: auto;
+  // margin: auto;
   // width: 40%;
   // max-width: 600px;
   box-sizing: border-box;
+  width: 50%;
+  height: 30rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
   // padding-right: 3rem;
   // padding-left: 2rem;
   // background-color: black;
   // padding: 1rem;
   // border-radius: 1rem;
   // text-align: left;
+
+  &::-webkit-scrollbar {
+    width: 5px; 
+    height: 10px;
+    position: absolute;
+    right: 0;
+    top: 0; 
+    bottom: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #9b9a9a;
+    border: 0px solid #030303;
+  }
+
+  &::-webkit-scrollbar-track {
+    margin-top: 0.3rem; 
+    margin-bottom: 0.3rem;
+    background-color: #e6e4e4;
+  }
 }
 
 .customText {
@@ -235,7 +261,7 @@ img {
 @media screen and (min-width: 672px) and (max-width: 945px) {
 
   .pageName {
-    font-size: clamp(6rem, 15vw, 10rem);
+    font-size: clamp(6rem, 15vw, 8rem);
     margin-left: auto;
     margin-right: auto;
     padding-left: 0;
@@ -246,11 +272,175 @@ img {
     // letter-spacing: -2px
   }
 
+  // .pageContent {
+    // max-height: 40rem;/
+    // overflow-y: scroll;
+    // padding-bottom: 1rem;
+
+    //   &::-webkit-scrollbar {
+    //     width:6px; 
+    //     height: 10px;
+    //     position: absolute;
+    //     left: -5px !important;
+    //     top: 20px; 
+    //     bottom: 20px; 
+    //     padding-left: -2.2rem;
+    // }
+
+    // &::-webkit-scrollbar-thumb {
+    //   margin-top: 20rem;
+    //   margin-bottom: 1rem;
+    //   border-radius: 10px;
+    //   background-color: #bdbdbd;
+    //   border: 0px solid #030303;
+      
+    // }
+
+    // &::-webkit-scrollbar-track {
+    //   margin-top: 0.8rem; 
+    //   margin-bottom: 0.8rem;
+    //   margin-right: 5px;
+    //   padding-right: 1rem !important;
+    // }
+  
+  // }
+
+  
+
 }
 
 
-@media screen and (min-width: 300px) and (max-width: 671px) {
+// @media screen and (min-width: 300px) and (max-width: 671px) {
 
+//   .wide{
+//     display: none;
+//   }
+
+//   .narrow{
+//     display: flex;
+//   }
+
+//   // h1.heading{
+//   //   font-size: 5rem;
+//   //   text-align: center;
+//   //   padding-left:0;
+//   //   padding-top: 13rem;
+//   //   padding-bottom: 0;
+//   //   margin-bottom: 0;
+//   // }
+
+//   .pageName {
+//     font-size: clamp(6rem, 15vw, 8rem);
+//     margin-left: auto;
+//     margin-right: auto;
+//     padding-left: 0;
+//     // text-align: left;
+//     padding-top: 8.5rem;
+//     // padding-left: 1.5rem;
+//     margin-bottom: 0;
+//     // letter-spacing: -2px
+//   }
+
+//   .pageContent{
+//     display: block;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     width: 80%;
+//     max-height: 40rem;
+//     // overflow-y: scroll;
+//     overflow-y: auto; /* Changed from scroll to auto for better behavior */
+//     position: relative; /* Added to establish positioning context */
+    
+//     /* Re-enable and fix the scrollbar styling */
+//     &::-webkit-scrollbar {
+//       width: 5px; 
+//       height: 10px;
+//       position: absolute;
+//       right: 0; /* Changed from left: -5px to right: 0 */
+//       top: 0; 
+//       bottom: 0;
+//     }
+
+//     &::-webkit-scrollbar-thumb {
+//       border-radius: 10px;
+//       background-color: #bdbdbd;
+//       border: 0px solid #030303;
+//     }
+
+//     &::-webkit-scrollbar-track {
+//       margin-top: 0.8rem; 
+//       margin-bottom: 0.8rem;
+//     }
+
+//     // &::-webkit-scrollbar {
+//     //     width:5px; 
+//     //     height: 10px;
+//     //     position: absolute;
+//     //     left: -5px !important;
+//     //     top: 200px; 
+//     //     bottom: 20px; 
+//     //     padding-left: -2.2rem;
+//     // }
+
+//     // &::-webkit-scrollbar-thumb {
+//     //   margin-top: 20rem;
+//     //   margin-bottom: 1rem;
+//     //   border-radius: 10px;
+//     //   background-color: #bdbdbd;
+//     //   border: 0px solid #030303;
+//     // }
+
+//     // &::-webkit-scrollbar-track {
+//     //   margin-top: 0.8rem; 
+//     //   margin-bottom: 0.8rem;
+//     //   margin-right: 5px;
+//     //   padding-right: 1rem !important;
+//     // }
+//   }
+
+//   // .hughJackedManContainer {
+//   //   display: flex;
+//   //   justify-content: center;
+//   //   flex-wrap: wrap;
+//   //   padding: 0;
+//   // }
+
+//   .hughJackedManPhoto {
+//     // height: auto;
+//     // width: 80%;
+//     // margin: auto;
+//     // margin-top: 0;
+//     // padding-top: 0;
+//     // margin-left: 1rem;
+//     // margin-right: 1rem;
+//     width: 100%;
+//     height:30rem;
+//     // max-width: auto;
+//     margin: auto;
+//     margin-bottom: 1rem;
+//     background-position: inherit center;
+//     // background-position: center bottom;
+//     // height: auto;
+//   }
+
+//   // .description {
+//   //   margin: auto;
+//   //   width: 90vw
+//   // }
+
+//   // p.customText {
+//   //   font-size: 1.3rem;
+//   //   line-height: 1.8rem;
+//   //   font-weight: 500;
+//   //   margin-top: 2rem;
+//   //   padding-left: 1rem;
+//   //   padding-right: 1rem;
+//   // }
+
+// }
+
+@media screen and (min-width: 300px) and (max-width: 671px) {
   .wide{
     display: none;
   }
@@ -259,72 +449,64 @@ img {
     display: flex;
   }
 
-  // h1.heading{
-  //   font-size: 5rem;
-  //   text-align: center;
-  //   padding-left:0;
-  //   padding-top: 13rem;
-  //   padding-bottom: 0;
-  //   margin-bottom: 0;
-  // }
-
   .pageName {
-    font-size: clamp(6rem, 15vw, 10rem);
+    font-size: clamp(6rem, 15vw, 8rem);
     margin-left: auto;
     margin-right: auto;
     padding-left: 0;
-    // text-align: left;
     padding-top: 8.5rem;
-    // padding-left: 1.5rem;
     margin-bottom: 0;
-    // letter-spacing: -2px
   }
 
   .pageContent{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    width: 85%;
+    width: 80%;
+    max-height: 45rem;
+    position: relative; /* Added to establish positioning context */
+    overflow: hidden; /* Hide overflow on the container */
+    padding-bottom: 1rem;
   }
-
-  // .hughJackedManContainer {
-  //   display: flex;
-  //   justify-content: center;
-  //   flex-wrap: wrap;
-  //   padding: 0;
-  // }
 
   .hughJackedManPhoto {
-    // height: auto;
-    // width: 80%;
-    // margin: auto;
-    // margin-top: 0;
-    // padding-top: 0;
-    // margin-left: 1rem;
-    // margin-right: 1rem;
     width: 100%;
-    height:30rem;
-    // max-width: auto;
+    height: 15rem;
     margin: auto;
     margin-bottom: 1rem;
-    background-position: inherit center;
-    // background-position: center bottom;
-    // height: auto;
+    background-position: top center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
+  
+  .description {
+    width: 100%;
+    overflow-y: auto; /* Add scroll to the description only */
+    max-height: calc(40rem - 15rem); /* Account for image height + margin */
+    padding: 0 0.5rem;
+    
+    /* Scrollbar styling for the description */
+    &::-webkit-scrollbar {
+      width: 5px; 
+      height: 10px;
+      position: absolute;
+      right: 0;
+      top: 0; 
+      bottom: 0;
+    }
 
-  // .description {
-  //   margin: auto;
-  //   width: 90vw
-  // }
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      background-color: #9b9a9a;
+      border: 0px solid #030303;
+    }
 
-  // p.customText {
-  //   font-size: 1.3rem;
-  //   line-height: 1.8rem;
-  //   font-weight: 500;
-  //   margin-top: 2rem;
-  //   padding-left: 1rem;
-  //   padding-right: 1rem;
-  // }
-
+    &::-webkit-scrollbar-track {
+      margin-top: 0.3rem; 
+      margin-bottom: 0.3rem;
+      background-color: #e6e4e4;
+    }
+  }
 }

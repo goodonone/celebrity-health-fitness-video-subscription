@@ -9,7 +9,7 @@ a {
   height: 100%;
   min-height: 100vh;
   overflow-y: auto;
-  max-width: 3000px;
+  max-width: 2000px;
   /* max-width: 100%; */
   margin-top: 0rem;
   margin-left: auto;
@@ -56,9 +56,11 @@ div.cardsDiv {
 mat-card.products {
   position: relative;
   background-color: rgb(18, 17, 17);
-  width: 23rem;
-  height: 35rem;
-  // transform: scale(0.85);
+  // width: 23rem;
+  // height: 35rem;
+  width: 22rem;
+  height: 34rem;
+
   border-radius: 0.9rem;
   margin-top: 2rem;
   margin-bottom: 10rem;
@@ -68,20 +70,20 @@ mat-card.products {
 }
 
 /* Disable all hover animations */
-.tablet.dimmed-card {
-  filter: none !important;
-  transition: none !important;
-}
+// .tablet.dimmed-card {
+//   filter: none !important;
+//   transition: none !important;
+// }
 
-.tablet.active-card {
-  transform: none !important;
-  transition: none !important;
-}
+// .tablet.active-card {
+//   transform: none !important;
+//   transition: none !important;
+// }
 
-/* Make sure all cards have proper pointer events */
-.tablet.cardsDiv {
-  pointer-events: auto;
-}
+// /* Make sure all cards have proper pointer events */
+// .tablet.cardsDiv {
+//   pointer-events: auto;
+// }
 
 ///////// Hovering effects for cards ///////////
 /* Hovering one card makes other cards dimmer */
@@ -114,14 +116,15 @@ mat-card.products {
 /* Add this class to your CSS */
 .dimmed-card {
   filter: brightness(0.9) blur(5px) saturate(60%);
-  transition: filter 0.2s ease;
+  transition: filter 0.1s ease-in-out;
 }
 
 .active-card {
   transform: scale(1.05) !important;
   z-index: 3;
   filter: saturate(120%) !important;
-  transition: transform 0.2s ease !important;
+  transition: transform 0.1s cubic-bezier(0.2, 0.0, 0.8, 1.0) !important;
+  box-shadow: 0 0 50px rgb(118, 117, 117) !important;
 }
 
 .products:not(.dimmed-card) {
@@ -513,6 +516,7 @@ mat-card.products {
   .active-card {
     transform: none !important;
     transition: none !important;
+    box-shadow: 0 0 20px rgb(65, 64, 64) !important;
   }
 
   /* Make sure all cards have proper pointer events */
@@ -551,6 +555,10 @@ mat-card.products {
     background-color: black;
     color: white;
   }
+
+  .buttonContainer:hover{
+    box-shadow: none !important;
+  }
   
 }
 
@@ -587,9 +595,12 @@ mat-card.products {
   mat-card.products {
     position: relative;
     background-color: rgb(18, 17, 17);
-    width: 80vw;
-    max-width: 22rem;
-    height: auto;
+    // width: 80vw;
+    // max-width: 22rem;
+    width: 90%;
+    max-width: 21.5rem;
+    // height: auto;
+    height: 33rem;
     // max-height: 23rem;
     aspect-ratio: 2/3;
     // padding-top: 75%; /* Adjust this to set the aspect ratio */

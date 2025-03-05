@@ -2452,6 +2452,12 @@ triggerAnimations() {
     //   void arrows.offsetWidth;
     //   arrows.classList.add('firstTimeAnimation');
     // }
+
+    const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+    if (arrowContainer) {
+      void arrowContainer.offsetWidth;
+      arrowContainer.classList.add('firstTimeAnimation');
+    }
     
     this.cdr.detectChanges();
   }, 100);
@@ -2463,6 +2469,9 @@ skipAnimations(){
   
   const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
   profileNameTier?.classList.remove('firstTimeAnimation');
+
+  const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+  arrowContainer?.classList.remove('firstTimeAnimation');
 
   this.firstTimeAnimation = false;
   this.cdr.detectChanges();

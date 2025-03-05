@@ -13,7 +13,8 @@ import { auth } from '../firebase.config';
 import { ImageUrlManagerService } from './imageurlmanager.service';
 import { StorageService } from './storage.service';
 import { SharedStateService } from './sharedstate.service';
-
+import { Product } from '../models/product';
+import { ProductPositionService } from './product-position.service';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,8 @@ export class UserService {
     private injector: Injector,
     private imageUrlManager: ImageUrlManagerService,
     private storageService: StorageService,
-    private sharedState: SharedStateService
+    private sharedState: SharedStateService,
+    private productPositionService: ProductPositionService
   ) {
     // this.oauthService.isAuthenticated$.subscribe(isAuthenticated => {
     //   this.isLoggedInSubject.next(isAuthenticated);
@@ -291,6 +293,8 @@ logoutUser() {
   localStorage.removeItem("authToken");
   this.updateLoginStatus(false);
   this.setGoogleAuthEnabled(false);
+  // this.productPositionService.clearStoredPositions();
+  localStorage.removeItem('imagesLoaded');
 
   // this.storageService.clearUrlCache();
 

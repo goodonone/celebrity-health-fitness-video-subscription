@@ -95,7 +95,7 @@
 //   }
 // }
 
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { CartService } from 'src/app/services/cart.service';
@@ -103,11 +103,12 @@ import { ProductService } from 'src/app/services/product.service';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { ProductStatusService } from 'src/app/services/productstatus.service';
+import { ProductPositionService } from 'src/app/services/product-position.service';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css']
+  styleUrls: ['./product.component.scss']
 })
 
 export class ProductComponent implements OnInit {
@@ -117,7 +118,19 @@ export class ProductComponent implements OnInit {
   private cartSubscription?: Subscription;
   isCartEmpty: boolean = true;
   viewCartButtonText: string = 'View Cart';
+  addButtonHovered: boolean = false;
+  hoverTimeout: any = null;
+  hoverDelayTime: number = 100;
+  leaveTimeout: any = null;
+  backgroundPosition: string = '';
+  isTabletOrMobile: boolean = false;
   // isLimitReached: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkDeviceType();
+    this.cdr.detectChanges();
+  }
   
   constructor(
     private actRoute: ActivatedRoute,
@@ -125,7 +138,15 @@ export class ProductComponent implements OnInit {
     private cartService: CartService,
     private router: Router,
     private productStatusService: ProductStatusService,
-  ) {}
+    private productPositionService: ProductPositionService,
+    private cdr: ChangeDetectorRef
+  ) {
+    window.addEventListener('touchstart', () => {
+      // this.isTabletOrMobile = window.innerWidth <= 937;
+      this.checkDeviceType();
+      this.cdr.detectChanges();
+    });
+  }
 
   ngOnInit() {
     console.log('ProductComponent initialized');
@@ -164,6 +185,13 @@ export class ProductComponent implements OnInit {
       this.updateViewCartButtonText();
     });
 
+    // window.addEventListener('touch', () => {
+    //   // this.isTabletOrMobile = window.innerWidth <= 937;
+    //   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this.isTabletOrMobile = window.innerWidth <= 937;
+    //   this.cdr.detectChanges();
+    // });
+
     this.updateProductStatuses();
   }
 
@@ -174,6 +202,17 @@ export class ProductComponent implements OnInit {
     if (this.cartSubscription) {
       this.cartSubscription.unsubscribe();
     }
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+    }
+    if (this.leaveTimeout) {
+      clearTimeout(this.leaveTimeout);
+    }
+  }
+
+  private checkDeviceType(): void {
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this.isTabletOrMobile = (isTouchDevice && window.innerWidth <= 937) || window.innerWidth <= 937;
   }
 
   // addToCart(product: Product) {
@@ -252,11 +291,39 @@ export class ProductComponent implements OnInit {
   }
 
   onMouseEnter(product: Product): void {
-    this.productStatusService.setHoverState(product.productId, true);
+    if (this.isProductLimitReached(product)) return;
+
+    // if (this.hoverTimeout) {
+    //   clearTimeout(this.hoverTimeout);
+    //   this.hoverTimeout = null;
+    // }
+    // if (this.leaveTimeout) {
+    //   clearTimeout(this.leaveTimeout);
+    //   this.leaveTimeout = null;
+    // }
+
+    // this.hoverTimeout = setTimeout(() => {
+    //   this.addButtonHovered = true;
+      this.productStatusService.setHoverState(product.productId, true);
+    //   this.cdr.detectChanges(); // Ensure UI updates
+    // }, this.hoverDelayTime); 
+
+   
   }
 
   onMouseLeave(product: Product): void {
-    this.productStatusService.setHoverState(product.productId, false);
+    // if (this.isProductLimitReached(product)) return;
+
+    // if (this.hoverTimeout) {
+    //   clearTimeout(this.hoverTimeout);
+    //   this.hoverTimeout = null;
+    // }
+
+    // this.leaveTimeout = setTimeout(() => {
+    //   this.addButtonHovered = false;
+      this.productStatusService.setHoverState(product.productId, false);
+    //   this.cdr.detectChanges();
+    // }, 100);
   }
 
   onViewCartMouseEnter(): void {
@@ -278,5 +345,96 @@ export class ProductComponent implements OnInit {
   //     console.log('Cart emptied');
   //   });
   // }
+
+
+// getProductImageStyles(product: Product): any {
+//   // Base styles that will be applied to all products
+//   const baseStyles = {
+//     'background-image': `url(${this.getProductImageUrl(product)})`,
+//     'background-repeat': 'no-repeat',
+//     'background-size': '100%'
+//   };
+  
+//   // If no custom styling is defined, return defaults
+//   if (!product.imageStyle) {
+//     return {
+//       ...baseStyles,
+//       'background-position': 'center bottom'
+//     };
+//   }
+  
+//   // Add custom styling properties if they exist
+//   return {
+//     ...baseStyles,
+//     'background-position': product.imageStyle.position || 'center bottom',
+//     'background-size': product.imageStyle.size || '100%',
+//     'background-repeat': product.imageStyle.repeat || 'no-repeat',
+//     'background-blend-mode': product.imageStyle.blend || 'normal',
+//     'opacity': product.imageStyle.opacity !== undefined ? product.imageStyle.opacity : 1
+//   };
+// }
+
+// private positionMap: { [key: number]: string } = {
+//   1: 'center center',
+//   2: 'center bottom',
+//   3: 'center center',
+//   4: 'center center',
+//   5: 'center center',
+//   6: 'center center',
+//   7: 'center bottom',
+//   8: 'center center',
+//   9: 'center center',
+//   10: 'center bottom',
+//   11: 'bottom center',
+//   12: 'center center'
+// };
+
+// Method for the store component
+// getProductBackgroundPosition(product: Product): string {
+//   // Extract a digit from the product ID
+//   const lastChar = String(product.productId).slice(-1);
+//   const lastDigit = parseInt(lastChar, 10);
+  
+//   // Map to a value between 1-12
+//   const index = (lastDigit % 12) + 1;
+  
+//   // Return the corresponding position
+//   return this.positionMap[index] || 'center center';
+// }
+
+// Method for the product detail component
+getProductImageStyles(product: Product): any {
+  console.log('getProductImageStyles called with product:', product);
+
+  if (!product || !product.productId) {
+    return {
+      'background-image': 'url(assets/Images/default-product-image.jpg)',
+      'background-position': 'center center',
+      'background-repeat': 'no-repeat',
+      'background-size': '100%'
+    };
+  }
+
+  // For debugging - log all positions
+  // this.productPositionService.logAllPositions();
+  
+  // Get position from service
+  
+  // const backgroundPosition = this.productPositionService.getBackgroundPosition(product.productId);
+  const backgroundPosition = this.isTabletOrMobile ? 'center center' : this.productPositionService.getBackgroundPosition(product.productId);
+  const backgroundSize = this.isTabletOrMobile ? 'cover' : '100%';
+  
+  // Log for debugging
+  // console.log(`Applied background position for product ${product.productId}: ${}`);
+  
+  return {
+    'background-image': `url(${product.productUrl || 'assets/Images/default-product-image.jpg'})`,
+    'background-position': backgroundPosition,
+    'background-repeat': 'no-repeat',
+    'background-size': backgroundSize
+  };
+}
+
+
   
 }
