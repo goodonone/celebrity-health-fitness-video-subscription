@@ -2095,10 +2095,7 @@ h3.profileDetails.plan{
   color: black !important;
 }
 
-.btn-editPhotoButton.deletePicture:active {
-  background-color: red;
-  color: black !important;
-}
+
 
 // .btn-savePhotoButton {
 //     height: 2.6rem;
@@ -3087,22 +3084,22 @@ input[matInput]:focus.error-input::placeholder {
 //   }
 // }
 
-.btn-change:active,
-.btn-editPhotoButton:active,
-.btn-editProfileButton:active,
-.btn-updateProfileButton:active,
-.btn-backButton:active,
-.btn-signOutButton:active,
-.btn-changePasswordButton:active,
-.btn-cancelPasswordButton:active,
-.btn-updatePasswordButton:active,
-.btn-savePhotoButton:active,
-.btn-cancelPhotoButton:active,
-.btn-cancelProfileButton:active,
-.btn-billingDetailsButton:active {
-  background-color: #ffffff;
-  color: black;
-}
+// .btn-change:active,
+// .btn-editPhotoButton:active,
+// .btn-editProfileButton:active,
+// .btn-updateProfileButton:active,
+// .btn-backButton:active,
+// .btn-signOutButton:active,
+// .btn-changePasswordButton:active,
+// .btn-cancelPasswordButton:active,
+// .btn-updatePasswordButton:active,
+// .btn-savePhotoButton:active,
+// .btn-cancelPhotoButton:active,
+// .btn-cancelProfileButton:active,
+// .btn-billingDetailsButton:active {
+//   background-color: #ffffff;
+//   color: black;
+// }
 
 @media (pointer:coarse) and (hover:none) {
 
@@ -3192,6 +3189,76 @@ input[matInput]:focus.error-input::placeholder {
       opacity: 1 !important;
       transform: scale(0.75);
     }
+
+  }
+
+  .btn-change:hover,
+  .btn-editPhotoButton:hover,
+  .btn-editProfileButton:hover,
+  .btn-updateProfileButton:hover,
+  .btn-backButton:hover,
+  .btn-signOutButton:hover,
+  .btn-changePasswordButton:hover,
+  .btn-cancelPasswordButton:hover,
+  .btn-updatePasswordButton:hover,
+  .btn-savePhotoButton:hover,
+  .btn-cancelPhotoButton:hover,
+  .btn-cancelProfileButton:hover,
+  .btn-billingDetailsButton:hover {
+    background-color: rgb(25, 25, 25) !important; /* Reset to default */
+    color: white !important; /* For delete button, reset to red */
+  }
+
+  .btn-change:active,
+  .btn-editPhotoButton:active,
+  .btn-editProfileButton:active,
+  .btn-updateProfileButton:active,
+  .btn-backButton:active,
+  .btn-signOutButton:active,
+  .btn-changePasswordButton:active,
+  .btn-cancelPasswordButton:active,
+  .btn-updatePasswordButton:active,
+  .btn-savePhotoButton:active,
+  .btn-cancelPhotoButton:active,
+  .btn-cancelProfileButton:active,
+  .btn-billingDetailsButton:active {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  // .btn-cancelSubscriptionButton:active,
+  // .btn-editPhotoButton.deletePicture:active {
+  //   background-color: red ;
+  //   color: black !important;
+  // }
+
+  .btn-cancelSubscriptionButton:hover,
+  .btn-editPhotoButton.deletePicture:hover,
+  .btn-billingDetailsButton:hover {
+    background-color: rgb(25, 25, 25) !important; /* Reset to default */
+    color: white !important; /* For delete button, reset to red */
+  }
+  
+  /* Make active states stronger to immediately override hover */
+  .btn-cancelSubscriptionButton:active,
+  .btn-billingDetailsButton:active {
+    background-color: white !important;
+    color: black !important;
+    transition: none !important; /* Disable transitions for immediate effect */
+  }
+
+  .btn-editPhotoButton.deletePicture:hover,
+  .btn-cancelSubscriptionButtonFinal:hover {
+    background-color: red !important;
+    color: black !important;
+    transition: none !important;
+  }
+  
+  .btn-editPhotoButton.deletePicture:active,
+  .btn-cancelSubscriptionButtonFinal:active {
+    background-color: red !important;
+    color: black !important;
+    transition: none !important;
   }
 
   
@@ -4311,11 +4378,6 @@ input[matInput]:focus.error-input::placeholder {
     // margin: 0 auto 0 1rem;
   }
 
-  .btn-cancelSubscriptionButton:active{
-    background-color: red;
-    color: black !important;
-  }
-
   h3.profileDetails {
     color: white;
     font-weight: 500;
@@ -4461,7 +4523,8 @@ input[matInput]:focus.error-input::placeholder {
     gap: 0;
 
     &.firstTimeAnimation {
-      animation: fadeIn 1s ease-in-out 0.5s both;
+      animation: fadeIn 0.5s ease-in-out 0.5s both;
+      animation-delay: 2.7s !important;
 
       @keyframes fadeIn {
         from {
@@ -5008,13 +5071,13 @@ input[matInput]:focus.error-input::placeholder {
     opacity: 0.4;
   }
 
-  .zoomIn:active,
-  .zoomOut:active,
-  .chevronLeft:active,
-  .chevronRight:active {
-    opacity: 1 !important;
-    transform: scale(0.75);
-  }
+  // .zoomIn:active,
+  // .zoomOut:active,
+  // .chevronLeft:active,
+  // .chevronRight:active {
+  //   opacity: 1 !important;
+  //   transform: scale(0.75);
+  // }
 
 }
 

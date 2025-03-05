@@ -1,6 +1,6 @@
 <div class="pageContainer">
         <ng-container *ngIf="currentProduct$ | async as currentProduct;">
-            <mat-card class="productContainer" [ngStyle]="getProductImageStyles(currentProduct)" [ngClass]="{'addHovered': addButtonHovered}">
+            <mat-card class="productContainer" [ngStyle]="getProductImageStyles(currentProduct)">
                 <mat-card-content class="cardFlex">
                     <!-- <mat-card class="productImage" [ngStyle]="{'background-image': 'url(' + getProductImageUrl(currentProduct) + ')', 'background-size': 'cover', 'background-position': 'center center', 'background-repeat': 'no-repeat'}">
                     </mat-card> -->

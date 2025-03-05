@@ -9,7 +9,7 @@ a {
   height: 100%;
   min-height: 100vh;
   overflow-y: auto;
-  max-width: 3000px;
+  max-width: 2000px;
   /* max-width: 100%; */
   margin-top: 0rem;
   margin-left: auto;
@@ -595,9 +595,12 @@ mat-card.products {
   mat-card.products {
     position: relative;
     background-color: rgb(18, 17, 17);
-    width: 80vw;
-    max-width: 22rem;
-    height: auto;
+    // width: 80vw;
+    // max-width: 22rem;
+    width: 90%;
+    max-width: 21.5rem;
+    // height: auto;
+    height: 33rem;
     // max-height: 23rem;
     aspect-ratio: 2/3;
     // padding-top: 75%; /* Adjust this to set the aspect ratio */

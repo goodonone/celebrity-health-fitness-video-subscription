@@ -95,7 +95,7 @@
 //   }
 // }
 
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/models/product';
 import { CartService } from 'src/app/services/cart.service';
@@ -122,7 +122,15 @@ export class ProductComponent implements OnInit {
   hoverTimeout: any = null;
   hoverDelayTime: number = 100;
   leaveTimeout: any = null;
+  backgroundPosition: string = '';
+  isTabletOrMobile: boolean = false;
   // isLimitReached: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkDeviceType();
+    this.cdr.detectChanges();
+  }
   
   constructor(
     private actRoute: ActivatedRoute,
@@ -132,7 +140,13 @@ export class ProductComponent implements OnInit {
     private productStatusService: ProductStatusService,
     private productPositionService: ProductPositionService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    window.addEventListener('touchstart', () => {
+      // this.isTabletOrMobile = window.innerWidth <= 937;
+      this.checkDeviceType();
+      this.cdr.detectChanges();
+    });
+  }
 
   ngOnInit() {
     console.log('ProductComponent initialized');
@@ -171,6 +185,13 @@ export class ProductComponent implements OnInit {
       this.updateViewCartButtonText();
     });
 
+    // window.addEventListener('touch', () => {
+    //   // this.isTabletOrMobile = window.innerWidth <= 937;
+    //   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this.isTabletOrMobile = window.innerWidth <= 937;
+    //   this.cdr.detectChanges();
+    // });
+
     this.updateProductStatuses();
   }
 
@@ -187,6 +208,11 @@ export class ProductComponent implements OnInit {
     if (this.leaveTimeout) {
       clearTimeout(this.leaveTimeout);
     }
+  }
+
+  private checkDeviceType(): void {
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    this.isTabletOrMobile = (isTouchDevice && window.innerWidth <= 937) || window.innerWidth <= 937;
   }
 
   // addToCart(product: Product) {
@@ -267,37 +293,37 @@ export class ProductComponent implements OnInit {
   onMouseEnter(product: Product): void {
     if (this.isProductLimitReached(product)) return;
 
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
-      this.hoverTimeout = null;
-    }
-    if (this.leaveTimeout) {
-      clearTimeout(this.leaveTimeout);
-      this.leaveTimeout = null;
-    }
+    // if (this.hoverTimeout) {
+    //   clearTimeout(this.hoverTimeout);
+    //   this.hoverTimeout = null;
+    // }
+    // if (this.leaveTimeout) {
+    //   clearTimeout(this.leaveTimeout);
+    //   this.leaveTimeout = null;
+    // }
 
-    this.hoverTimeout = setTimeout(() => {
-      this.addButtonHovered = true;
+    // this.hoverTimeout = setTimeout(() => {
+    //   this.addButtonHovered = true;
       this.productStatusService.setHoverState(product.productId, true);
-      this.cdr.detectChanges(); // Ensure UI updates
-    }, this.hoverDelayTime); 
+    //   this.cdr.detectChanges(); // Ensure UI updates
+    // }, this.hoverDelayTime); 
 
    
   }
 
   onMouseLeave(product: Product): void {
-    if (this.isProductLimitReached(product)) return;
+    // if (this.isProductLimitReached(product)) return;
 
-    if (this.hoverTimeout) {
-      clearTimeout(this.hoverTimeout);
-      this.hoverTimeout = null;
-    }
+    // if (this.hoverTimeout) {
+    //   clearTimeout(this.hoverTimeout);
+    //   this.hoverTimeout = null;
+    // }
 
-    this.leaveTimeout = setTimeout(() => {
-      this.addButtonHovered = false;
+    // this.leaveTimeout = setTimeout(() => {
+    //   this.addButtonHovered = false;
       this.productStatusService.setHoverState(product.productId, false);
-      this.cdr.detectChanges();
-    }, 100);
+    //   this.cdr.detectChanges();
+    // }, 100);
   }
 
   onViewCartMouseEnter(): void {
@@ -393,16 +419,19 @@ getProductImageStyles(product: Product): any {
   // this.productPositionService.logAllPositions();
   
   // Get position from service
-  const backgroundPosition = this.productPositionService.getBackgroundPosition(product.productId);
+  
+  // const backgroundPosition = this.productPositionService.getBackgroundPosition(product.productId);
+  const backgroundPosition = this.isTabletOrMobile ? 'center center' : this.productPositionService.getBackgroundPosition(product.productId);
+  const backgroundSize = this.isTabletOrMobile ? 'cover' : '100%';
   
   // Log for debugging
-  console.log(`Applied background position for product ${product.productId}: ${backgroundPosition}`);
+  // console.log(`Applied background position for product ${product.productId}: ${}`);
   
   return {
     'background-image': `url(${product.productUrl || 'assets/Images/default-product-image.jpg'})`,
     'background-position': backgroundPosition,
     'background-repeat': 'no-repeat',
-    'background-size': '100%'
+    'background-size': backgroundSize
   };
 }
 
