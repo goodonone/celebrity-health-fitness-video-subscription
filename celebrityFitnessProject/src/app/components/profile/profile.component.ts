@@ -541,6 +541,8 @@ export class ProfileComponent implements OnInit {
   minZoom: number = 1;
   maxZoom: number = 2;
   zoomStep: number = 0.1;
+  private _initialDragPosX: number = 0;
+  private _initialDragPosY: number = 0;
 
   private moveListener!: () => void;
   private upListener!: () => void;
@@ -5048,6 +5050,54 @@ canDrag(): boolean {
 //          hasProfileImg === true;
 // }
 
+// Last working
+// startDrag(event: MouseEvent | TouchEvent) {
+//   console.log('startDrag called');
+//   if (!this.canDrag()) {
+//     console.log('Cannot drag');
+//     return;
+//   }
+  
+//   this.isDragging = true;
+//   this.isDragged = true;
+//   this.isDefaultPosition = false;
+
+//   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+//   // Adjust here to account for the current position
+//   this.startX = clientX - this.position.x;
+//   this.startY = clientY - this.position.y;
+
+//   console.log('Start drag', {
+//     clientX,
+//     clientY,
+//     startX: this.startX,
+//     startY: this.startY,
+//     isDragging: this.isDragging
+//   });
+
+//   // Store the initial mouse coordinates
+//   // this.startX = clientX;
+//   // this.startY = clientY;
+  
+//   // // Store the initial position of the image
+//   // this.initialPosition = { ...this.position };
+
+//   console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
+
+//   // this.isDefaultPosition = false;
+
+//   // Attach event listeners
+//   this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
+//   this.upListener = this.renderer.listen('document', 'mouseup', (e) => this.endDrag(e));
+//   this.touchMoveListener = this.renderer.listen('document', 'touchmove', (e) => this.drag(e));
+//   this.touchEndListener = this.renderer.listen('document', 'touchend', (e) => this.endDrag(e));
+
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
+
 startDrag(event: MouseEvent | TouchEvent) {
   console.log('startDrag called');
   if (!this.canDrag()) {
@@ -5059,42 +5109,34 @@ startDrag(event: MouseEvent | TouchEvent) {
   this.isDragged = true;
   this.isDefaultPosition = false;
 
-  // Force all controls to disappear when dragging starts
- 
-  // const container = document.querySelector('.profilePictureContainerForDragging');
-  // if (container) {
-  //   container.classList.add('is-dragging');
-  // }
-
-  // if(this.isMobile || this.isTablet){
-  //   this.hideAllControls();
-  // }
-
+  // Get current cursor position
   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
   
-  // Adjust here to account for the current position
-  this.startX = clientX - this.position.x;
-  this.startY = clientY - this.position.y;
-
-  console.log('Start drag', {
-    clientX,
-    clientY,
-    startX: this.startX,
-    startY: this.startY,
-    isDragging: this.isDragging
-  });
-
-  // Store the initial mouse coordinates
-  // this.startX = clientX;
-  // this.startY = clientY;
+  // Store the initial mouse/touch position
+  this.startX = clientX;
+  this.startY = clientY;
   
-  // // Store the initial position of the image
-  // this.initialPosition = { ...this.position };
-
-  console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
-
-  // this.isDefaultPosition = false;
+  // Store initial background position for this drag session
+  const containerElement = this.profileImg.nativeElement;
+  const computedStyle = window.getComputedStyle(containerElement);
+  
+  // Get initial position in pixels to use as our baseline
+  const initialBgPosX = parseFloat(computedStyle.backgroundPositionX);
+  const initialBgPosY = parseFloat(computedStyle.backgroundPositionY);
+  
+  // Store these values in temporary properties
+  this._initialDragPosX = initialBgPosX;
+  this._initialDragPosY = initialBgPosY;
+  
+  console.log('Start drag', { 
+    clientX, 
+    clientY, 
+    startX: this.startX, 
+    startY: this.startY, 
+    isDragging: this.isDragging,
+    initialBackgroundPos: { x: initialBgPosX, y: initialBgPosY }
+  });
 
   // Attach event listeners
   this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
@@ -5106,62 +5148,276 @@ startDrag(event: MouseEvent | TouchEvent) {
   event.stopPropagation();
 }
 
+// Last working
+// drag(event: MouseEvent | TouchEvent) {
+//   if (!this.isDragging || !this.canDrag()) {
+//     return;
+//   }
+
+//   console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
+//   console.log('this.profileImg:', this.profileImg);
+
+//   // this.ngZone.run(() => {
+//     requestAnimationFrame(() => {
+//     const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//     const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+//     // Calculate new position based on the initial offset
+//     const newX = clientX - this.startX;
+//     const newY = clientY - this.startY;
+
+//     // Get dimensions
+//     const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
+//     const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
+
+//     // Calculate maximum allowed movement - implement later for better UX (so image edges never show in div)
+//     const maxX = imgRect.width - containerRect.width;
+//     const maxY = imgRect.height - containerRect.height;
+
+//     // Adjust constraints to allow negative movement
+//     const constrainedX = Math.min(Math.max(newX, -maxX), 0);
+//     const constrainedY = Math.min(Math.max(newY, -maxY), 0);
+
+//     console.log('imgRect:', imgRect);
+//     console.log('containerRect:', containerRect);
+//     console.log('maxX:', maxX, 'maxY:', maxY);
+//     console.log('newX:', newX, 'newY:', newY);
+//     console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
+
+//     this.position = { x: newX, y: newY };
+//     console.log('About to call updateImagePosition', this.position);
+
+//     // Update image position
+//     this.updateImageTransform();
+
+//     // this.renderer.setStyle(
+//     //   this.profileImg.nativeElement,
+//     //   'background-position',
+//     //   `${this.position.x}% ${this.position.y}%`
+//     // );
+
+//     // this.imageStyles = {
+//     //   ...this.imageStyles,
+//     //   'background-position': `${this.position.x}% ${this.position.y}%`
+//     // };
+
+//     event.preventDefault();
+//     event.stopPropagation();
+//   });
+// }
+
+// Almost working with constraints
+// drag(event: MouseEvent | TouchEvent) {
+//   if (!this.isDragging || !this.canDrag() || !this.profileImg?.nativeElement) {
+//     return;
+//   }
+
+//   // Get current cursor position
+//   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+//   // Calculate the change in position from the start point
+//   const deltaX = clientX - this.startX;
+//   const deltaY = clientY - this.startY;
+
+//   // Get container dimensions
+//   const containerElement = this.profileImg.nativeElement;
+//   const containerRect = containerElement.getBoundingClientRect();
+  
+//   // Calculate actual displayed background image dimensions
+//   const backgroundWidth = containerRect.width * this.zoomLevel;
+//   const backgroundHeight = containerRect.height * this.zoomLevel;
+  
+//   // Skip if nothing to drag (when zoom is 1.0 exactly)
+//   if (this.zoomLevel <= 1) {
+//     return;
+//   }
+  
+//   // Calculate the range that should be available for dragging
+//   // These are the actual pixel dimensions of the draggable area
+//   const dragRangeX = backgroundWidth - containerRect.width;
+//   const dragRangeY = backgroundHeight - containerRect.height;
+  
+//   // Calculate the move amounts for background-position
+//   // We need to convert deltaX/Y to background-position percentages
+//   // For background-position, moving the mouse right should decrease the percentage
+//   // and moving the mouse left should increase the percentage
+//   const movePercentX = (deltaX / dragRangeX) * -100;
+//   const movePercentY = (deltaY / dragRangeY) * -100;
+  
+//   // Calculate new position percentages starting from initial position
+//   let newPercentX = this._initialDragPosX + movePercentX;
+//   let newPercentY = this._initialDragPosY + movePercentY;
+  
+//   // Constrain boundaries to prevent showing background
+//   // For background-position percentages:
+//   // - 0% means left/top edge of image aligns with left/top of container
+//   // - 100% means right/bottom edge of image aligns with right/bottom of container
+//   // But since our image is larger than container, we need to limit the range
+//   const minX = 0;
+//   const maxX = (backgroundWidth - containerRect.width) / backgroundWidth * 100;
+//   const minY = 0;
+//   const maxY = (backgroundHeight - containerRect.height) / backgroundHeight * 100;
+  
+//   // Apply constraints
+//   newPercentX = Math.max(minX, Math.min(newPercentX, maxX));
+//   newPercentY = Math.max(minY, Math.min(newPercentY, maxY));
+  
+//   // Store the new position (for use in updateImageTransform)
+//   this.position = { x: newPercentX, y: newPercentY };
+  
+//   console.log('Dragging:', {
+//     deltaMovement: { x: deltaX, y: deltaY },
+//     maxConstraints: { x: maxX, y: maxY },
+//     newPosition: { x: newPercentX, y: newPercentY }
+//   });
+  
+//   // Apply the change directly to the element for immediate feedback
+//   this.renderer.setStyle(
+//     containerElement,
+//     'background-position',
+//     `${newPercentX}% ${newPercentY}%`
+//   );
+  
+//   // Update stored styles
+//   if (this.imageStyles) {
+//     this.imageStyles['background-position'] = `${newPercentX}% ${newPercentY}%`;
+//   }
+  
+//   // Mark as dragged
+//   this.isDragged = true;
+//   this.isDefaultPosition = false;
+  
+//   // Force change detection
+//   this.cdr.detectChanges();
+  
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
 
 drag(event: MouseEvent | TouchEvent) {
-  if (!this.isDragging || !this.canDrag()) {
+  if (!this.isDragging || !this.canDrag() || !this.profileImg?.nativeElement) {
     return;
   }
 
-  console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
-  console.log('this.profileImg:', this.profileImg);
+  // Get current cursor position
+  const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+  const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
 
-  // this.ngZone.run(() => {
-    requestAnimationFrame(() => {
-    const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-    const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  // Calculate the change in position from the start point
+  const deltaX = clientX - this.startX;
+  const deltaY = clientY - this.startY;
 
-    // Calculate new position based on the initial offset
-    const newX = clientX - this.startX;
-    const newY = clientY - this.startY;
-
-    // Get dimensions
-    const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
-    const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
-
-    // Calculate maximum allowed movement - implement later for better UX (so image edges never show in div)
-    const maxX = imgRect.width - containerRect.width;
-    const maxY = imgRect.height - containerRect.height;
-
-    // Adjust constraints to allow negative movement
-    const constrainedX = Math.min(Math.max(newX, -maxX), 0);
-    const constrainedY = Math.min(Math.max(newY, -maxY), 0);
-
-    console.log('imgRect:', imgRect);
-    console.log('containerRect:', containerRect);
-    console.log('maxX:', maxX, 'maxY:', maxY);
-    console.log('newX:', newX, 'newY:', newY);
-    console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
-
-    this.position = { x: newX, y: newY };
-    console.log('About to call updateImagePosition', this.position);
-
-    // Update image position
-    this.updateImageTransform();
-
-    // this.renderer.setStyle(
-    //   this.profileImg.nativeElement,
-    //   'background-position',
-    //   `${this.position.x}% ${this.position.y}%`
-    // );
-
-    // this.imageStyles = {
-    //   ...this.imageStyles,
-    //   'background-position': `${this.position.x}% ${this.position.y}%`
-    // };
-
-    event.preventDefault();
-    event.stopPropagation();
+  // Get container dimensions
+  const containerElement = this.profileImg.nativeElement;
+  const containerRect = containerElement.getBoundingClientRect();
+  
+  // Get the current background image
+  const computedStyle = window.getComputedStyle(containerElement);
+  
+  // Load image dimensions for precise calculations
+  const loadImageDimensions = () => {
+    return new Promise<{width: number, height: number}>((resolve) => {
+      // Extract image URL from background-image
+      const bgImage = computedStyle.backgroundImage;
+      const urlMatch = bgImage.match(/url\(['"]?(.*?)['"]?\)/);
+      
+      if (!urlMatch) {
+        // Default to container dimensions if no background image
+        resolve({ 
+          width: containerRect.width * this.zoomLevel, 
+          height: containerRect.height * this.zoomLevel 
+        });
+        return;
+      }
+      
+      const url = urlMatch[1];
+      const img = new Image();
+      
+      img.onload = () => {
+        // Calculate actual dimensions after applying zoom
+        const actualWidth = img.width * this.zoomLevel;
+        const actualHeight = img.height * this.zoomLevel;
+        
+        resolve({ width: actualWidth, height: actualHeight });
+      };
+      
+      img.onerror = () => {
+        // Fallback to estimated dimensions
+        resolve({ 
+          width: containerRect.width * this.zoomLevel, 
+          height: containerRect.height * this.zoomLevel 
+        });
+      };
+      
+      img.src = url;
+    });
+  };
+  
+  // We'll use a simpler approach first without loading image dimensions
+  // Calculate background image size based on zoom (proportional estimate)
+  const backgroundWidth = containerRect.width * this.zoomLevel;
+  const backgroundHeight = containerRect.height * this.zoomLevel;
+  
+  // Skip if no zoom (nothing to drag)
+  if (this.zoomLevel <= 1) {
+    return;
+  }
+  
+  // Calculate the range that should be available for dragging
+  const dragRangeX = backgroundWidth - containerRect.width;
+  const dragRangeY = backgroundHeight - containerRect.height;
+  
+  // Calculate the move amounts for background-position
+  const movePercentX = (deltaX / dragRangeX) * -100;
+  const movePercentY = (deltaY / dragRangeY) * -100;
+  
+  // Calculate new position percentages starting from initial position
+  let newPercentX = this._initialDragPosX + movePercentX;
+  let newPercentY = this._initialDragPosY + movePercentY;
+  
+  // Force greater range for vertical dragging to ensure bottom is visible
+  // For background-position percentages with contain/cover:
+  // We need to ensure we can reach 100% for bottom visibility
+  const minX = 0;
+  const maxX = 100;  // Allow full horizontal range
+  const minY = 0;
+  const maxY = 100;  // Allow full vertical range
+  
+  // Apply constraints
+  newPercentX = Math.max(minX, Math.min(newPercentX, maxX));
+  newPercentY = Math.max(minY, Math.min(newPercentY, maxY));
+  
+  // Store the new position (for use in updateImageTransform)
+  this.position = { x: newPercentX, y: newPercentY };
+  
+  console.log('Dragging:', {
+    deltaMovement: { x: deltaX, y: deltaY },
+    newPosition: { x: newPercentX, y: newPercentY },
+    dragRanges: { x: dragRangeX, y: dragRangeY }
   });
+  
+  // Apply the change directly to the element for immediate feedback
+  this.renderer.setStyle(
+    containerElement,
+    'background-position',
+    `${newPercentX}% ${newPercentY}%`
+  );
+  
+  // Update stored styles
+  if (this.imageStyles) {
+    this.imageStyles['background-position'] = `${newPercentX}% ${newPercentY}%`;
+  }
+  
+  // Mark as dragged
+  this.isDragged = true;
+  this.isDefaultPosition = false;
+  
+  // Force change detection
+  this.cdr.detectChanges();
+  
+  event.preventDefault();
+  event.stopPropagation();
 }
 
   // drag(event: MouseEvent | TouchEvent) {
@@ -5198,38 +5454,70 @@ drag(event: MouseEvent | TouchEvent) {
   //   event.stopPropagation();
   // }
 
+// // Last working
+// endDrag(event: MouseEvent | TouchEvent) {
+//   console.log('endDrag called');
+//   if (this.isDragging && this.canDrag()) {
+//     this.updateImageTransform();
+//     // this.savePositionAndZoom();
+//   }
+
+//   // if(this.isMobile || this.isTablet){
+//   //   const container = document.querySelector('.profilePictureContainerForDragging');
+//   //   if (container) {
+//   //     container.classList.remove('is-dragging');
+//   //   }
+//   // }
+  
+//   setTimeout(() => {
+//     this.isDragging = false;
+//     this.cdr.detectChanges(); 
+//   }, 50);
+
+//   // Remove event listeners
+//   // document.removeEventListener('mousemove', this.drag);
+//   // document.removeEventListener('mouseup', this.endDrag);
+//   // document.removeEventListener('touchmove', this.drag);
+//   // document.removeEventListener('touchend', this.endDrag);
+//   if (this.moveListener) this.moveListener();
+//   if (this.upListener) this.upListener();
+//   if (this.touchMoveListener) this.touchMoveListener();
+//   if (this.touchEndListener) this.touchEndListener();
+
+//   // if(this.isMobile || this.isTablet){
+//   //   this.showAllControls();
+//   // }
+
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
+
 endDrag(event: MouseEvent | TouchEvent) {
   console.log('endDrag called');
   if (this.isDragging && this.canDrag()) {
-    this.updateImageTransform();
-    // this.savePositionAndZoom();
+    // Ensure final position is stored
+    if (this.profileImg?.nativeElement) {
+      const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
+      const finalX = parseFloat(computedStyle.backgroundPositionX);
+      const finalY = parseFloat(computedStyle.backgroundPositionY);
+      
+      // Update stored position
+      this.position = { x: finalX, y: finalY };
+      this.updateImagePositionAndZoom();
+    }
   }
 
-  // if(this.isMobile || this.isTablet){
-  //   const container = document.querySelector('.profilePictureContainerForDragging');
-  //   if (container) {
-  //     container.classList.remove('is-dragging');
-  //   }
-  // }
-  
+  // Reset dragging state
   setTimeout(() => {
     this.isDragging = false;
     this.cdr.detectChanges(); 
   }, 50);
 
   // Remove event listeners
-  // document.removeEventListener('mousemove', this.drag);
-  // document.removeEventListener('mouseup', this.endDrag);
-  // document.removeEventListener('touchmove', this.drag);
-  // document.removeEventListener('touchend', this.endDrag);
   if (this.moveListener) this.moveListener();
   if (this.upListener) this.upListener();
   if (this.touchMoveListener) this.touchMoveListener();
   if (this.touchEndListener) this.touchEndListener();
-
-  // if(this.isMobile || this.isTablet){
-  //   this.showAllControls();
-  // }
 
   event.preventDefault();
   event.stopPropagation();
@@ -5422,6 +5710,103 @@ savePositionAndZoom() {
 //   }
 // }
 
+// Last working
+// async updateImageTransform() {
+//   if (!this.profileImg?.nativeElement) return;
+
+//   const imgElement = this.profileImg.nativeElement;
+  
+//   try {
+//     this.renderer.addClass(imgElement, 'smooth-transform');
+
+//     // Get current URL from form or user
+//     let currentUrl = this.pictureForm.get('imgUrl')?.value || this.currentUser?.imgUrl;
+//     if (!currentUrl) return;
+
+//     // Handle Promise/ZoneAwarePromise
+//     if (currentUrl instanceof Promise || (currentUrl && typeof currentUrl === 'object' && '__zone_symbol__value' in currentUrl)) {
+//       currentUrl = await currentUrl;
+//     }
+
+//     if (!currentUrl) return;
+
+//     // Convert Firebase URLs if needed
+//     if (currentUrl.includes('firebasestorage.googleapis.com')) {
+//       currentUrl = await this.storageService.convertFirebaseUrl(currentUrl);
+//     }
+
+//     // Get current background image
+//     const currentBgImage = window.getComputedStyle(imgElement).backgroundImage;
+
+//     // If we have a valid current background image and it's not changing, keep it
+//     let backgroundImage = currentBgImage;
+    
+//     if (currentBgImage === 'none' || this.isImageUrlChanged) {
+//       // Only fetch new image with auth if URL is changing
+//       if (currentUrl.includes('/api/storage/')) {
+//         // Create a new image element
+//         const img = new Image();
+//         await new Promise<void>(async (resolve, reject) => {
+//           img.onload = () => resolve();
+//           img.onerror = () => reject();
+//           // Use fetch with auth headers to get image
+//           fetch(currentUrl, { 
+//             headers: await this.storageService.getAuthHeaders() 
+//           })
+//           .then(response => response.blob())
+//           .then(blob => {
+//             img.src = URL.createObjectURL(blob);
+//           });
+//         });
+//       }
+//       backgroundImage = `url("${currentUrl}")`;
+//     }
+
+//     // Create the styles object
+//     const styles = {
+//       'background-image': backgroundImage,
+//       'background-position': `${this.position.x}% ${this.position.y}%`,
+//       'background-repeat': 'no-repeat',
+//       'background-size': `${this.zoomLevel * 100}%`,
+//       'background-color': '#c7ff20'
+//     };
+
+//       // Apply opacity if needed for animation
+//     //   if (!this.currentUser.imgUrl && 
+//     //     this.currentState === ProfileState.ChangingPicture && 
+//     //     !this.imageManagementService.hasAnyFirebaseImages() &&
+//     //     !this.isTransitioning) {
+      
+//     //   styles.opacity = this.imageState === 'visible' ? 1 : 0;
+//     //   styles.transition = 'opacity 300ms ease-in';
+//     // }
+
+//     // Apply styles
+//     Object.entries(styles).forEach(([key, value]) => {
+//       if (key !== 'background-image' || this.isImageUrlChanged) {
+//         this.renderer.setStyle(imgElement, key, value);
+//       }
+//     });
+    
+//     // Store styles for reference
+//     this.imageStyles = styles;
+
+//     // Update user settings if they exist
+//     if (this.currentUser) {
+//       this.currentUser.profilePictureSettings = {
+//         zoom: this.zoomLevel,
+//         x: this.position.x,
+//         y: this.position.y
+//       };
+//     }
+
+//     // Reset the image URL changed flag
+//     this.isImageUrlChanged = false;
+
+//   } catch (error) {
+//     console.error('Error updating image transform:', error);
+//   }
+// }
 
 async updateImageTransform() {
   if (!this.profileImg?.nativeElement) return;
@@ -5483,19 +5868,14 @@ async updateImageTransform() {
       'background-color': '#c7ff20'
     };
 
-      // Apply opacity if needed for animation
-    //   if (!this.currentUser.imgUrl && 
-    //     this.currentState === ProfileState.ChangingPicture && 
-    //     !this.imageManagementService.hasAnyFirebaseImages() &&
-    //     !this.isTransitioning) {
-      
-    //   styles.opacity = this.imageState === 'visible' ? 1 : 0;
-    //   styles.transition = 'opacity 300ms ease-in';
-    // }
-
-    // Apply styles
+    // Apply styles - directly apply position and size for immediate update
+    this.renderer.setStyle(imgElement, 'background-position', `${this.position.x}% ${this.position.y}%`);
+    this.renderer.setStyle(imgElement, 'background-size', `${this.zoomLevel * 100}%`);
+    
+    // Then apply other styles
     Object.entries(styles).forEach(([key, value]) => {
-      if (key !== 'background-image' || this.isImageUrlChanged) {
+      if (key !== 'background-position' && key !== 'background-size' && 
+          (key !== 'background-image' || this.isImageUrlChanged)) {
         this.renderer.setStyle(imgElement, key, value);
       }
     });
@@ -5517,6 +5897,31 @@ async updateImageTransform() {
 
   } catch (error) {
     console.error('Error updating image transform:', error);
+  }
+}
+
+updateImagePositionAndZoom() {
+  if (!this.profileImg?.nativeElement) return;
+
+  const imgElement = this.profileImg.nativeElement;
+  
+  // Apply position and zoom directly
+  this.renderer.setStyle(
+    imgElement, 
+    'background-position', 
+    `${this.position.x}% ${this.position.y}%`
+  );
+  
+  this.renderer.setStyle(
+    imgElement, 
+    'background-size', 
+    `${this.zoomLevel * 100}%`
+  );
+  
+  // Update stored styles
+  if (this.imageStyles) {
+    this.imageStyles['background-position'] = `${this.position.x}% ${this.position.y}%`;
+    this.imageStyles['background-size'] = `${this.zoomLevel * 100}%`;
   }
 }
 
