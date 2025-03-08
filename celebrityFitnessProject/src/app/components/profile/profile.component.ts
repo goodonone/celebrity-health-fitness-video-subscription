@@ -175,33 +175,39 @@ interface ProfilePictureSettings {
         // Base states
         state('current', style({
           transform: 'translateX(0) translateZ(0)',
-          zIndex: 1
+          zIndex: 1,
+          opacity: 1
         })),
         
         // Next image states
         state('next', style({
           transform: 'translateX(100%) translateZ(0)',
-          zIndex: 2
+          zIndex: 2,
+          opacity: 1
         })),
         state('slideOutLeft', style({
           transform: 'translateX(-100%) translateZ(0)',
-          zIndex: 1
+          zIndex: 1,
+          opacity: 1
         })),
         
         // Previous image states
         state('prev', style({
           transform: 'translateX(-100%) translateZ(0)',
-          zIndex: 2
+          zIndex: 2,
+          opacity: 1
         })),
         state('slideOutRight', style({
           transform: 'translateX(100%) translateZ(0)',
-          zIndex: 1
+          zIndex: 1,
+          opacity: 1
         })),
         
         // Common destination state
         state('slideIn', style({
           transform: 'translateX(0) translateZ(0)',
-          zIndex: 2
+          zIndex: 2,
+          opacity: 1
         })),
   
         // Transitions
@@ -216,7 +222,17 @@ interface ProfilePictureSettings {
         ]),
         transition('prev => slideIn', [
           animate('400ms cubic-bezier(0.4, 0, 0.2, 1)')
-        ])
+        ]),
+          // State resetting
+          transition('* => current', [
+            animate('0ms')
+          ]),
+          transition('* => next', [
+            animate('0ms')
+          ]),
+          transition('* => prev', [
+            animate('0ms')
+          ])
       ])  
   ]
 })
@@ -509,6 +525,9 @@ export class ProfileComponent implements OnInit {
   private ANIMATION_DURATION = 400;
   currentSlideState = 'in';
   nextSlideState = 'outRight';
+  private animationLock = false;
+  private animationPromise: Promise<void> | null = null;
+  private imageQueue: string[] = [];
   // Flags to indicate which direction we are sliding
   
   // isSlidingLeft = false;
@@ -541,6 +560,8 @@ export class ProfileComponent implements OnInit {
   minZoom: number = 1;
   maxZoom: number = 2;
   zoomStep: number = 0.1;
+  private _initialDragPosX: number = 0;
+  private _initialDragPosY: number = 0;
 
   private moveListener!: () => void;
   private upListener!: () => void;
@@ -998,6 +1019,8 @@ export class ProfileComponent implements OnInit {
   if (this.controlsAnimationTimeout) {
     clearTimeout(this.controlsAnimationTimeout);
   }
+
+  this.forceUnlockAnimation();
 }
 
 
@@ -2375,6 +2398,9 @@ async cancelAction(): Promise<void> {
         this.providerUrlPasted = false;
         this.hasProfilePictureTransitioned = false;
         this.showButton = true;
+        // this.leftClicked = false;
+        // this.rightClicked = false;
+        // this.isTransitioning = false;
 
         // const container = document.querySelector('.profilePictureContainerForDragging');
         // if (container && (this.isMobile || this.isTablet)) {
@@ -2428,40 +2454,115 @@ removeEventListeners(): void {
 //   this.cdr.detectChanges();
 // }
 
-triggerAnimations() {
-  // Set the flag first
-  this.firstTimeAnimation = true;
-  this.cdr.detectChanges();
+// triggerAnimations() {
+//   // Set the flag first
+//   this.firstTimeAnimation = true;
+  // this.cdr.detectChanges();
   
-  setTimeout(() => {
-    const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
-    if (profilePicture) {
-      // Force a reflow before adding the animation class
-      void profilePicture.offsetWidth;
-      profilePicture.classList.add('firstTimeAnimation');
-    }
+  // setTimeout(() => {
+  //   const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
+  //   if (profilePicture) {
+  //     // Force a reflow before adding the animation class
+  //     void profilePicture.offsetWidth;
+  //     profilePicture.classList.add('firstTimeAnimation');
+  //   }
     
-    const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
-    if (profileNameTier) {
-      void profileNameTier.offsetWidth;
-      profileNameTier.classList.add('firstTimeAnimation');
-    }
+  //   const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
+  //   if (profileNameTier) {
+  //     void profileNameTier.offsetWidth;
+  //     profileNameTier.classList.add('firstTimeAnimation');
+  //   }
 
-    // const arrows = document.querySelector('.arrows') as HTMLElement;
-    // if (arrows) {
-    //   void arrows.offsetWidth;
-    //   arrows.classList.add('firstTimeAnimation');
-    // }
+  //   // const arrows = document.querySelector('.arrows') as HTMLElement;
+  //   // if (arrows) {
+  //   //   void arrows.offsetWidth;
+  //   //   arrows.classList.add('firstTimeAnimation');
+  //   // }
 
-    const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
-    if (arrowContainer) {
-      void arrowContainer.offsetWidth;
-      arrowContainer.classList.add('firstTimeAnimation');
-    }
+  //   const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+  //   if (arrowContainer) {
+  //     void arrowContainer.offsetWidth;
+  //     arrowContainer.classList.add('firstTimeAnimation');
+  //   }
     
-    this.cdr.detectChanges();
-  }, 100);
+  //   this.cdr.detectChanges();
+  // }, 300);
+
+    // Wait for loading to complete
+    // setTimeout(() => {
+    //   this.loadingComplete = true;
+    //   this.cdr.detectChanges();
+      
+    //   // After loading is complete, prepare and trigger animations with a short delay
+    //   setTimeout(() => {
+    //     const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
+    //     if (profilePicture) {
+    //       // For first visit, add firstTimeAnimation class to trigger the animation
+    //       // but don't add tierThreeStyle yet (it will be added by the animation)
+    //       void profilePicture.offsetWidth; // Force reflow
+    //       profilePicture.classList.add('firstTimeAnimation');
+    //     }
+        
+    //     const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
+    //     if (profileNameTier) {
+    //       void profileNameTier.offsetWidth;
+    //       profileNameTier.classList.add('firstTimeAnimation');
+    //     }
+  
+    //     const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+    //     if (arrowContainer) {
+    //       void arrowContainer.offsetWidth;
+    //       arrowContainer.classList.add('firstTimeAnimation');
+    //     }
+        
+    //     this.cdr.detectChanges();
+    //   }, 100);
+    // }, 300);
+  
+// }
+
+triggerAnimations() {
+  // First, set the animation flag
+  this.firstTimeAnimation = true;
+  
+  // Wait for the loadingComplete flag to be set to true elsewhere in your code
+  // This creates a listener that will trigger once loadingComplete changes to true
+  const checkLoading = () => {
+    if (this.loadingComplete) {
+      // Loading is complete, now trigger animations after a short delay
+      // to ensure the spinner has fully disappeared visually
+      setTimeout(() => {
+        const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
+        if (profilePicture && this.tierThree) {
+          // Force a reflow before adding the animation class
+          void profilePicture.offsetWidth;
+          profilePicture.classList.add('firstTimeAnimation');
+        }
+        
+        const profileNameTier = document.querySelector('.profileNameTier') as HTMLElement;
+        if (profileNameTier) {
+          void profileNameTier.offsetWidth;
+          profileNameTier.classList.add('firstTimeAnimation');
+        }
+
+        const arrowContainer = document.querySelector('.arrowContainer') as HTMLElement;
+        if (arrowContainer) {
+          void arrowContainer.offsetWidth;
+          arrowContainer.classList.add('firstTimeAnimation');
+        }
+        
+        this.cdr.detectChanges();
+      }, 0); // Add a delay after loading completes to ensure spinner has disappeared
+    } else {
+      // Check again in a short interval
+      setTimeout(checkLoading, 50);
+    }
+  };
+  
+  // Start checking for loading state
+  checkLoading();
 }
+
 
 skipAnimations(){
   const profilePicture = document.querySelector('#profilePicture') as HTMLElement;
@@ -3903,8 +4004,6 @@ private async updateProfileImageUrl(url: string | null): Promise<void> {
   }
 }
 
-
-// Update onImageUrlInput to handle paste events better
 async onImageUrlInput(event: Event) {
   const input = event.target as HTMLInputElement;
   if (!input) return;
@@ -4339,6 +4438,9 @@ async saveProfilePicture(): Promise<void> {
       this.isUploadingOrPasting = false;
       this.hasProfilePictureTransitioned = false;
       this.showButton = true;
+      // this.leftClicked = false;
+      // this.rightClicked = false;
+      // this.isTransitioning = false;
       // const container = document.querySelector('.profilePictureContainerForDragging');
       // if (container && (this.isMobile || this.isTablet)) {
       //   container.classList.remove('post-animation');
@@ -5048,6 +5150,54 @@ canDrag(): boolean {
 //          hasProfileImg === true;
 // }
 
+// Last working
+// startDrag(event: MouseEvent | TouchEvent) {
+//   console.log('startDrag called');
+//   if (!this.canDrag()) {
+//     console.log('Cannot drag');
+//     return;
+//   }
+  
+//   this.isDragging = true;
+//   this.isDragged = true;
+//   this.isDefaultPosition = false;
+
+//   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+  
+//   // Adjust here to account for the current position
+//   this.startX = clientX - this.position.x;
+//   this.startY = clientY - this.position.y;
+
+//   console.log('Start drag', {
+//     clientX,
+//     clientY,
+//     startX: this.startX,
+//     startY: this.startY,
+//     isDragging: this.isDragging
+//   });
+
+//   // Store the initial mouse coordinates
+//   // this.startX = clientX;
+//   // this.startY = clientY;
+  
+//   // // Store the initial position of the image
+//   // this.initialPosition = { ...this.position };
+
+//   console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
+
+//   // this.isDefaultPosition = false;
+
+//   // Attach event listeners
+//   this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
+//   this.upListener = this.renderer.listen('document', 'mouseup', (e) => this.endDrag(e));
+//   this.touchMoveListener = this.renderer.listen('document', 'touchmove', (e) => this.drag(e));
+//   this.touchEndListener = this.renderer.listen('document', 'touchend', (e) => this.endDrag(e));
+
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
+
 startDrag(event: MouseEvent | TouchEvent) {
   console.log('startDrag called');
   if (!this.canDrag()) {
@@ -5059,42 +5209,34 @@ startDrag(event: MouseEvent | TouchEvent) {
   this.isDragged = true;
   this.isDefaultPosition = false;
 
-  // Force all controls to disappear when dragging starts
- 
-  // const container = document.querySelector('.profilePictureContainerForDragging');
-  // if (container) {
-  //   container.classList.add('is-dragging');
-  // }
-
-  // if(this.isMobile || this.isTablet){
-  //   this.hideAllControls();
-  // }
-
+  // Get current cursor position
   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
   
-  // Adjust here to account for the current position
-  this.startX = clientX - this.position.x;
-  this.startY = clientY - this.position.y;
-
-  console.log('Start drag', {
-    clientX,
-    clientY,
-    startX: this.startX,
-    startY: this.startY,
-    isDragging: this.isDragging
-  });
-
-  // Store the initial mouse coordinates
-  // this.startX = clientX;
-  // this.startY = clientY;
+  // Store the initial mouse/touch position
+  this.startX = clientX;
+  this.startY = clientY;
   
-  // // Store the initial position of the image
-  // this.initialPosition = { ...this.position };
-
-  console.log('Start drag', { clientX, clientY, startX: this.startX, startY: this.startY, isDragging: this.isDragging });
-
-  // this.isDefaultPosition = false;
+  // Store initial background position for this drag session
+  const containerElement = this.profileImg.nativeElement;
+  const computedStyle = window.getComputedStyle(containerElement);
+  
+  // Get initial position in pixels to use as our baseline
+  const initialBgPosX = parseFloat(computedStyle.backgroundPositionX);
+  const initialBgPosY = parseFloat(computedStyle.backgroundPositionY);
+  
+  // Store these values in temporary properties
+  this._initialDragPosX = initialBgPosX;
+  this._initialDragPosY = initialBgPosY;
+  
+  console.log('Start drag', { 
+    clientX, 
+    clientY, 
+    startX: this.startX, 
+    startY: this.startY, 
+    isDragging: this.isDragging,
+    initialBackgroundPos: { x: initialBgPosX, y: initialBgPosY }
+  });
 
   // Attach event listeners
   this.moveListener = this.renderer.listen('document', 'mousemove', (e) => this.drag(e));
@@ -5106,62 +5248,282 @@ startDrag(event: MouseEvent | TouchEvent) {
   event.stopPropagation();
 }
 
+// Last working
+// drag(event: MouseEvent | TouchEvent) {
+//   if (!this.isDragging || !this.canDrag()) {
+//     return;
+//   }
+
+//   console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
+//   console.log('this.profileImg:', this.profileImg);
+
+//   // this.ngZone.run(() => {
+//     requestAnimationFrame(() => {
+//     const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//     const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+//     // Calculate new position based on the initial offset
+//     const newX = clientX - this.startX;
+//     const newY = clientY - this.startY;
+
+//     // Get dimensions
+//     const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
+//     const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
+
+//     // Calculate maximum allowed movement - implement later for better UX (so image edges never show in div)
+//     const maxX = imgRect.width - containerRect.width;
+//     const maxY = imgRect.height - containerRect.height;
+
+//     // Adjust constraints to allow negative movement
+//     const constrainedX = Math.min(Math.max(newX, -maxX), 0);
+//     const constrainedY = Math.min(Math.max(newY, -maxY), 0);
+
+//     console.log('imgRect:', imgRect);
+//     console.log('containerRect:', containerRect);
+//     console.log('maxX:', maxX, 'maxY:', maxY);
+//     console.log('newX:', newX, 'newY:', newY);
+//     console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
+
+//     this.position = { x: newX, y: newY };
+//     console.log('About to call updateImagePosition', this.position);
+
+//     // Update image position
+//     this.updateImageTransform();
+
+//     // this.renderer.setStyle(
+//     //   this.profileImg.nativeElement,
+//     //   'background-position',
+//     //   `${this.position.x}% ${this.position.y}%`
+//     // );
+
+//     // this.imageStyles = {
+//     //   ...this.imageStyles,
+//     //   'background-position': `${this.position.x}% ${this.position.y}%`
+//     // };
+
+//     event.preventDefault();
+//     event.stopPropagation();
+//   });
+// }
+
+// Almost working with constraints
+// drag(event: MouseEvent | TouchEvent) {
+//   if (!this.isDragging || !this.canDrag() || !this.profileImg?.nativeElement) {
+//     return;
+//   }
+
+//   // Get current cursor position
+//   const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+//   const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
+
+//   // Calculate the change in position from the start point
+//   const deltaX = clientX - this.startX;
+//   const deltaY = clientY - this.startY;
+
+//   // Get container dimensions
+//   const containerElement = this.profileImg.nativeElement;
+//   const containerRect = containerElement.getBoundingClientRect();
+  
+//   // Calculate actual displayed background image dimensions
+//   const backgroundWidth = containerRect.width * this.zoomLevel;
+//   const backgroundHeight = containerRect.height * this.zoomLevel;
+  
+//   // Skip if nothing to drag (when zoom is 1.0 exactly)
+//   if (this.zoomLevel <= 1) {
+//     return;
+//   }
+  
+//   // Calculate the range that should be available for dragging
+//   // These are the actual pixel dimensions of the draggable area
+//   const dragRangeX = backgroundWidth - containerRect.width;
+//   const dragRangeY = backgroundHeight - containerRect.height;
+  
+//   // Calculate the move amounts for background-position
+//   // We need to convert deltaX/Y to background-position percentages
+//   // For background-position, moving the mouse right should decrease the percentage
+//   // and moving the mouse left should increase the percentage
+//   const movePercentX = (deltaX / dragRangeX) * -100;
+//   const movePercentY = (deltaY / dragRangeY) * -100;
+  
+//   // Calculate new position percentages starting from initial position
+//   let newPercentX = this._initialDragPosX + movePercentX;
+//   let newPercentY = this._initialDragPosY + movePercentY;
+  
+//   // Constrain boundaries to prevent showing background
+//   // For background-position percentages:
+//   // - 0% means left/top edge of image aligns with left/top of container
+//   // - 100% means right/bottom edge of image aligns with right/bottom of container
+//   // But since our image is larger than container, we need to limit the range
+//   const minX = 0;
+//   const maxX = (backgroundWidth - containerRect.width) / backgroundWidth * 100;
+//   const minY = 0;
+//   const maxY = (backgroundHeight - containerRect.height) / backgroundHeight * 100;
+  
+//   // Apply constraints
+//   newPercentX = Math.max(minX, Math.min(newPercentX, maxX));
+//   newPercentY = Math.max(minY, Math.min(newPercentY, maxY));
+  
+//   // Store the new position (for use in updateImageTransform)
+//   this.position = { x: newPercentX, y: newPercentY };
+  
+//   console.log('Dragging:', {
+//     deltaMovement: { x: deltaX, y: deltaY },
+//     maxConstraints: { x: maxX, y: maxY },
+//     newPosition: { x: newPercentX, y: newPercentY }
+//   });
+  
+//   // Apply the change directly to the element for immediate feedback
+//   this.renderer.setStyle(
+//     containerElement,
+//     'background-position',
+//     `${newPercentX}% ${newPercentY}%`
+//   );
+  
+//   // Update stored styles
+//   if (this.imageStyles) {
+//     this.imageStyles['background-position'] = `${newPercentX}% ${newPercentY}%`;
+//   }
+  
+//   // Mark as dragged
+//   this.isDragged = true;
+//   this.isDefaultPosition = false;
+  
+//   // Force change detection
+//   this.cdr.detectChanges();
+  
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
 
 drag(event: MouseEvent | TouchEvent) {
-  if (!this.isDragging || !this.canDrag()) {
+  if (!this.isDragging || !this.canDrag() || !this.profileImg?.nativeElement) {
     return;
   }
 
-  console.log('drag called', { isDragging: this.isDragging, canDrag: this.canDrag() });
-  console.log('this.profileImg:', this.profileImg);
+  requestAnimationFrame(() => {
 
-  // this.ngZone.run(() => {
-    requestAnimationFrame(() => {
+    // Ensure dragging state is properly reflected for CSS
+    this.isDragging = true;
+
+    // Get current cursor position
     const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
     const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0].clientY;
 
-    // Calculate new position based on the initial offset
-    const newX = clientX - this.startX;
-    const newY = clientY - this.startY;
+    // Calculate the change in position from the start point
+    const deltaX = clientX - this.startX;
+    const deltaY = clientY - this.startY;
 
-    // Get dimensions
-    const imgRect = this.profileImg.nativeElement.getBoundingClientRect();
-    const containerRect = this.profileImg.nativeElement.parentElement!.getBoundingClientRect();
-
-    // Calculate maximum allowed movement - implement later for better UX (so image edges never show in div)
-    const maxX = imgRect.width - containerRect.width;
-    const maxY = imgRect.height - containerRect.height;
-
-    // Adjust constraints to allow negative movement
-    const constrainedX = Math.min(Math.max(newX, -maxX), 0);
-    const constrainedY = Math.min(Math.max(newY, -maxY), 0);
-
-    console.log('imgRect:', imgRect);
-    console.log('containerRect:', containerRect);
-    console.log('maxX:', maxX, 'maxY:', maxY);
-    console.log('newX:', newX, 'newY:', newY);
-    console.log('constrainedX:', constrainedX, 'constrainedY:', constrainedY);
-
-    this.position = { x: newX, y: newY };
-    console.log('About to call updateImagePosition', this.position);
-
-    // Update image position
-    this.updateImageTransform();
-
-    // this.renderer.setStyle(
-    //   this.profileImg.nativeElement,
-    //   'background-position',
-    //   `${this.position.x}% ${this.position.y}%`
-    // );
-
-    // this.imageStyles = {
-    //   ...this.imageStyles,
-    //   'background-position': `${this.position.x}% ${this.position.y}%`
-    // };
-
-    event.preventDefault();
-    event.stopPropagation();
+    // Get container dimensions
+    const containerElement = this.profileImg.nativeElement;
+    const containerRect = containerElement.getBoundingClientRect();
+    
+    // Get the current background image
+    const computedStyle = window.getComputedStyle(containerElement);
+    
+    // Load image dimensions for precise calculations
+    const loadImageDimensions = () => {
+      return new Promise<{width: number, height: number}>((resolve) => {
+        // Extract image URL from background-image
+        const bgImage = computedStyle.backgroundImage;
+        const urlMatch = bgImage.match(/url\(['"]?(.*?)['"]?\)/);
+        
+        if (!urlMatch) {
+          // Default to container dimensions if no background image
+          resolve({ 
+            width: containerRect.width * this.zoomLevel, 
+            height: containerRect.height * this.zoomLevel 
+          });
+          return;
+        }
+        
+        const url = urlMatch[1];
+        const img = new Image();
+        
+        img.onload = () => {
+          // Calculate actual dimensions after applying zoom
+          const actualWidth = img.width * this.zoomLevel;
+          const actualHeight = img.height * this.zoomLevel;
+          
+          resolve({ width: actualWidth, height: actualHeight });
+        };
+        
+        img.onerror = () => {
+          // Fallback to estimated dimensions
+          resolve({ 
+            width: containerRect.width * this.zoomLevel, 
+            height: containerRect.height * this.zoomLevel 
+          });
+        };
+        
+        img.src = url;
+      });
+    };
+    
+    // We'll use a simpler approach first without loading image dimensions
+    // Calculate background image size based on zoom (proportional estimate)
+    const backgroundWidth = containerRect.width * this.zoomLevel;
+    const backgroundHeight = containerRect.height * this.zoomLevel;
+    
+    // Skip if no zoom (nothing to drag)
+    if (this.zoomLevel <= 1) {
+      return;
+    }
+    
+    // Calculate the range that should be available for dragging
+    const dragRangeX = backgroundWidth - containerRect.width;
+    const dragRangeY = backgroundHeight - containerRect.height;
+    
+    // Calculate the move amounts for background-position
+    const movePercentX = (deltaX / dragRangeX) * -100;
+    const movePercentY = (deltaY / dragRangeY) * -100;
+    
+    // Calculate new position percentages starting from initial position
+    let newPercentX = this._initialDragPosX + movePercentX;
+    let newPercentY = this._initialDragPosY + movePercentY;
+    
+    // Force greater range for vertical dragging to ensure bottom is visible
+    // For background-position percentages with contain/cover:
+    // We need to ensure we can reach 100% for bottom visibility
+    const minX = 0;
+    const maxX = 100;  // Allow full horizontal range
+    const minY = 0;
+    const maxY = 100;  // Allow full vertical range
+    
+    // Apply constraints
+    newPercentX = Math.max(minX, Math.min(newPercentX, maxX));
+    newPercentY = Math.max(minY, Math.min(newPercentY, maxY));
+    
+    // Store the new position (for use in updateImageTransform)
+    this.position = { x: newPercentX, y: newPercentY };
+    
+    console.log('Dragging:', {
+      deltaMovement: { x: deltaX, y: deltaY },
+      newPosition: { x: newPercentX, y: newPercentY },
+      dragRanges: { x: dragRangeX, y: dragRangeY }
+    });
+    
+    // Apply the change directly to the element for immediate feedback
+    this.renderer.setStyle(
+      containerElement,
+      'background-position',
+      `${newPercentX}% ${newPercentY}%`
+    );
+    
+    // Update stored styles
+    if (this.imageStyles) {
+      this.imageStyles['background-position'] = `${newPercentX}% ${newPercentY}%`;
+    }
+    
+    // Mark as dragged
+    this.isDragged = true;
+    this.isDefaultPosition = false;
+    
+    // Force change detection
+    this.cdr.detectChanges();
   });
+  
+  event.preventDefault();
+  event.stopPropagation();
 }
 
   // drag(event: MouseEvent | TouchEvent) {
@@ -5198,38 +5560,70 @@ drag(event: MouseEvent | TouchEvent) {
   //   event.stopPropagation();
   // }
 
+// // Last working
+// endDrag(event: MouseEvent | TouchEvent) {
+//   console.log('endDrag called');
+//   if (this.isDragging && this.canDrag()) {
+//     this.updateImageTransform();
+//     // this.savePositionAndZoom();
+//   }
+
+//   // if(this.isMobile || this.isTablet){
+//   //   const container = document.querySelector('.profilePictureContainerForDragging');
+//   //   if (container) {
+//   //     container.classList.remove('is-dragging');
+//   //   }
+//   // }
+  
+//   setTimeout(() => {
+//     this.isDragging = false;
+//     this.cdr.detectChanges(); 
+//   }, 50);
+
+//   // Remove event listeners
+//   // document.removeEventListener('mousemove', this.drag);
+//   // document.removeEventListener('mouseup', this.endDrag);
+//   // document.removeEventListener('touchmove', this.drag);
+//   // document.removeEventListener('touchend', this.endDrag);
+//   if (this.moveListener) this.moveListener();
+//   if (this.upListener) this.upListener();
+//   if (this.touchMoveListener) this.touchMoveListener();
+//   if (this.touchEndListener) this.touchEndListener();
+
+//   // if(this.isMobile || this.isTablet){
+//   //   this.showAllControls();
+//   // }
+
+//   event.preventDefault();
+//   event.stopPropagation();
+// }
+
 endDrag(event: MouseEvent | TouchEvent) {
   console.log('endDrag called');
   if (this.isDragging && this.canDrag()) {
-    this.updateImageTransform();
-    // this.savePositionAndZoom();
+    // Ensure final position is stored
+    if (this.profileImg?.nativeElement) {
+      const computedStyle = window.getComputedStyle(this.profileImg.nativeElement);
+      const finalX = parseFloat(computedStyle.backgroundPositionX);
+      const finalY = parseFloat(computedStyle.backgroundPositionY);
+      
+      // Update stored position
+      this.position = { x: finalX, y: finalY };
+      this.updateImagePositionAndZoom();
+    }
   }
 
-  // if(this.isMobile || this.isTablet){
-  //   const container = document.querySelector('.profilePictureContainerForDragging');
-  //   if (container) {
-  //     container.classList.remove('is-dragging');
-  //   }
-  // }
-  
+  // Reset dragging state
   setTimeout(() => {
     this.isDragging = false;
     this.cdr.detectChanges(); 
   }, 50);
 
   // Remove event listeners
-  // document.removeEventListener('mousemove', this.drag);
-  // document.removeEventListener('mouseup', this.endDrag);
-  // document.removeEventListener('touchmove', this.drag);
-  // document.removeEventListener('touchend', this.endDrag);
   if (this.moveListener) this.moveListener();
   if (this.upListener) this.upListener();
   if (this.touchMoveListener) this.touchMoveListener();
   if (this.touchEndListener) this.touchEndListener();
-
-  // if(this.isMobile || this.isTablet){
-  //   this.showAllControls();
-  // }
 
   event.preventDefault();
   event.stopPropagation();
@@ -5261,16 +5655,34 @@ resetImagePositionAndZoom() {
 }
 
 resetImagePositionAndZoomDuringNavigation(){
+
+  // const imgElement = this.profileImg.nativeElement;
+  // this.renderer.setStyle(imgElement, 'background-size', 'cover'); 
+
   this.position = { x: 0, y: 0 };
   this.zoomLevel = 1;
   this.isDragged = false;
   this.isDefaultPosition = true;
 
   setTimeout(() => {
-    this.updateImageTransform();
+    // this.updateImageTransform();
+    if (this.profileImg?.nativeElement) {
+      this.renderer.setStyle(
+        this.profileImg.nativeElement,
+        'background-position',
+        '0% 0%'
+      );
+      
+      this.renderer.setStyle(
+        this.profileImg.nativeElement,
+        'background-size',
+        '100%'
+      );
+    }
     this.cdr.detectChanges();
   }, 0);
 }
+
 
 resetImagePositionAndZoomToSaved() {
   if (this.currentUser.profilePictureSettings) {
@@ -5422,6 +5834,103 @@ savePositionAndZoom() {
 //   }
 // }
 
+// Last working
+// async updateImageTransform() {
+//   if (!this.profileImg?.nativeElement) return;
+
+//   const imgElement = this.profileImg.nativeElement;
+  
+//   try {
+//     this.renderer.addClass(imgElement, 'smooth-transform');
+
+//     // Get current URL from form or user
+//     let currentUrl = this.pictureForm.get('imgUrl')?.value || this.currentUser?.imgUrl;
+//     if (!currentUrl) return;
+
+//     // Handle Promise/ZoneAwarePromise
+//     if (currentUrl instanceof Promise || (currentUrl && typeof currentUrl === 'object' && '__zone_symbol__value' in currentUrl)) {
+//       currentUrl = await currentUrl;
+//     }
+
+//     if (!currentUrl) return;
+
+//     // Convert Firebase URLs if needed
+//     if (currentUrl.includes('firebasestorage.googleapis.com')) {
+//       currentUrl = await this.storageService.convertFirebaseUrl(currentUrl);
+//     }
+
+//     // Get current background image
+//     const currentBgImage = window.getComputedStyle(imgElement).backgroundImage;
+
+//     // If we have a valid current background image and it's not changing, keep it
+//     let backgroundImage = currentBgImage;
+    
+//     if (currentBgImage === 'none' || this.isImageUrlChanged) {
+//       // Only fetch new image with auth if URL is changing
+//       if (currentUrl.includes('/api/storage/')) {
+//         // Create a new image element
+//         const img = new Image();
+//         await new Promise<void>(async (resolve, reject) => {
+//           img.onload = () => resolve();
+//           img.onerror = () => reject();
+//           // Use fetch with auth headers to get image
+//           fetch(currentUrl, { 
+//             headers: await this.storageService.getAuthHeaders() 
+//           })
+//           .then(response => response.blob())
+//           .then(blob => {
+//             img.src = URL.createObjectURL(blob);
+//           });
+//         });
+//       }
+//       backgroundImage = `url("${currentUrl}")`;
+//     }
+
+//     // Create the styles object
+//     const styles = {
+//       'background-image': backgroundImage,
+//       'background-position': `${this.position.x}% ${this.position.y}%`,
+//       'background-repeat': 'no-repeat',
+//       'background-size': `${this.zoomLevel * 100}%`,
+//       'background-color': '#c7ff20'
+//     };
+
+//       // Apply opacity if needed for animation
+//     //   if (!this.currentUser.imgUrl && 
+//     //     this.currentState === ProfileState.ChangingPicture && 
+//     //     !this.imageManagementService.hasAnyFirebaseImages() &&
+//     //     !this.isTransitioning) {
+      
+//     //   styles.opacity = this.imageState === 'visible' ? 1 : 0;
+//     //   styles.transition = 'opacity 300ms ease-in';
+//     // }
+
+//     // Apply styles
+//     Object.entries(styles).forEach(([key, value]) => {
+//       if (key !== 'background-image' || this.isImageUrlChanged) {
+//         this.renderer.setStyle(imgElement, key, value);
+//       }
+//     });
+    
+//     // Store styles for reference
+//     this.imageStyles = styles;
+
+//     // Update user settings if they exist
+//     if (this.currentUser) {
+//       this.currentUser.profilePictureSettings = {
+//         zoom: this.zoomLevel,
+//         x: this.position.x,
+//         y: this.position.y
+//       };
+//     }
+
+//     // Reset the image URL changed flag
+//     this.isImageUrlChanged = false;
+
+//   } catch (error) {
+//     console.error('Error updating image transform:', error);
+//   }
+// }
 
 async updateImageTransform() {
   if (!this.profileImg?.nativeElement) return;
@@ -5483,19 +5992,14 @@ async updateImageTransform() {
       'background-color': '#c7ff20'
     };
 
-      // Apply opacity if needed for animation
-    //   if (!this.currentUser.imgUrl && 
-    //     this.currentState === ProfileState.ChangingPicture && 
-    //     !this.imageManagementService.hasAnyFirebaseImages() &&
-    //     !this.isTransitioning) {
-      
-    //   styles.opacity = this.imageState === 'visible' ? 1 : 0;
-    //   styles.transition = 'opacity 300ms ease-in';
-    // }
-
-    // Apply styles
+    // Apply styles - directly apply position and size for immediate update
+    this.renderer.setStyle(imgElement, 'background-position', `${this.position.x}% ${this.position.y}%`);
+    this.renderer.setStyle(imgElement, 'background-size', `${this.zoomLevel * 100}%`);
+    
+    // Then apply other styles
     Object.entries(styles).forEach(([key, value]) => {
-      if (key !== 'background-image' || this.isImageUrlChanged) {
+      if (key !== 'background-position' && key !== 'background-size' && 
+          (key !== 'background-image' || this.isImageUrlChanged)) {
         this.renderer.setStyle(imgElement, key, value);
       }
     });
@@ -5517,6 +6021,31 @@ async updateImageTransform() {
 
   } catch (error) {
     console.error('Error updating image transform:', error);
+  }
+}
+
+updateImagePositionAndZoom() {
+  if (!this.profileImg?.nativeElement) return;
+
+  const imgElement = this.profileImg.nativeElement;
+  
+  // Apply position and zoom directly
+  this.renderer.setStyle(
+    imgElement, 
+    'background-position', 
+    `${this.position.x}% ${this.position.y}%`
+  );
+  
+  this.renderer.setStyle(
+    imgElement, 
+    'background-size', 
+    `${this.zoomLevel * 100}%`
+  );
+  
+  // Update stored styles
+  if (this.imageStyles) {
+    this.imageStyles['background-position'] = `${this.position.x}% ${this.position.y}%`;
+    this.imageStyles['background-size'] = `${this.zoomLevel * 100}%`;
   }
 }
 
@@ -6901,11 +7430,17 @@ async nextImage() {
     // Reset states if coming from opposite direction
     if (this.lastDirection === 'prev') {
       this.nextImageState = 'next';
-      await this.cdr.detectChanges();
+      // await this.cdr.detectChanges();
     }
     this.lastDirection = 'next';
 
-    // this.resetImagePositionAndZoomDuringNavigation();
+    // if(this.isCurrentImageProfilePicture()){
+    //   setTimeout(() => {
+    //     this.resetImagePositionAndZoomDuringNavigation();
+    //   }, 400)
+    // }
+
+    this.resetImagePositionAndZoomDuringNavigation();
 
     // if(this.isCurrentImageProfilePicture()){
     //   this.imageStyles = this.imageStyles;
@@ -6939,23 +7474,27 @@ async nextImage() {
     await new Promise<void>(resolve => {
       this.transitionTimeout = setTimeout(() => {
         this.imageStyles = { ...this.nextImageStyles };
+
         this.nextImageStyles = null;
         this.currentImageState = 'current';
         this.nextImageState = 'next';
         this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
         
         // Reset position and zoom after animation completes
-        this.resetImagePositionAndZoomDuringNavigation();
+        // this.resetImagePositionAndZoomDuringNavigation();
+        this.cdr.markForCheck();
         
         resolve();
-      }, 400); // Match animation duration
+      }, 500); // Match animation duration
     });
     
   } catch (error) {
     console.error('Error in nextImage:', error);
   } finally {
-    this.rightClicked = false;
-    this.isTransitioning = false;
+    setTimeout(() => {
+      this.isTransitioning = false;
+      this.rightClicked = false;
+      }, 50); // Small delay to ensure animation completes
     if (this.transitionTimeout) {
       clearTimeout(this.transitionTimeout);
       this.transitionTimeout = null;
@@ -6963,84 +7502,103 @@ async nextImage() {
   }
 }
 
+// async nextImage() {
+//   // Single exit point if animation in progress or button clicked
+//   if (this.animationLock || this.rightClicked) {
+//     return;
+//   }
 
-// async previousImage() {
-//   if (this.leftClicked || this.isTransitioning) return;
 //   try {
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-
-//     this.leftClicked = true;
-//     this.hasStartedNavigating = true;
+//     // Set flags immediately to prevent multiple calls
+//     this.animationLock = true;
+//     this.rightClicked = true;
 //     this.showUploadSuccess = false;
-//     this.isTransitioning = true;
 
-//     // Reset next image state if coming from opposite direction
-//     if (this.lastDirection === 'next') {
-//       this.nextImageState = 'prev';
-//       await this.cdr.detectChanges();
-//     }
-//     this.lastDirection = 'prev';
-
-//     // this.resetImagePositionAndZoomDuringNavigation();
-
-//     setTimeout(() => {
-//       this.resetImagePositionAndZoomDuringNavigation();
-//     }, 400)
-
-//     // Get previous image URL
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const prevUrl = subject.value.urls[subject.value.currentIndex];
-
-//     // Set up previous image styles
-//     this.nextImageStyles = {
-//       'background-image': `url("${prevUrl}")`,
-//       // 'background-position': this.imageStyles['background-position'] || '0% 0%',
-//       // 'background-size': this.imageStyles['background-size'] || '100%',
-//       'background-repeat': 'no-repeat',
-//       'background-color': '#c7ff20',
-//       'background-position': '0% 0%',  // Force default position
-//       'background-size': '100%'        // Force default zoom
-//     };
-
-
-//     // Force a change detection cycle before animation
-//     await this.cdr.detectChanges();
-
-//     // Trigger animations
-//     requestAnimationFrame(() => {
-//       this.currentImageState = 'slideOutRight';
-//       this.nextImageState = 'slideIn';
-//     });
-
-//     // Wait for animation to complete
-//     await new Promise<void>(resolve => {
-//       this.transitionTimeout = setTimeout(() => {
-//         // Update current image
-//         this.imageStyles = { ...this.nextImageStyles };
-//         this.nextImageStyles = null;
-//         this.currentImageState = 'current';
-//         this.nextImageState = 'prev';
-//         // Update form
-//         this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-//         this.imageManagementService.logNavigationState(this.userId);
-//         resolve();
-//       }, 400);
-//     });
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     this.leftClicked = false;
-//     this.isTransitioning = false;
+//     // Cancel any existing animation promise/timeout
 //     if (this.transitionTimeout) {
 //       clearTimeout(this.transitionTimeout);
 //       this.transitionTimeout = null;
 //     }
+
+//     // Get the subject directly
+//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+    
+//     // Move to next image
+//     this.imageManagementService.nextImage(this.userId);
+    
+//     // Get next image URL after navigation
+//     const nextUrl = subject.value.urls[subject.value.currentIndex];
+    
+//     // Reset position and zoom immediately (before animation)
+//     this.position = { x: 0, y: 0 };
+//     this.zoomLevel = 1;
+//     this.isDragged = false;
+//     this.isDefaultPosition = true;
+
+//     // Create an atomic animation promise that will complete
+//     this.animationPromise = (async () => {
+//       try {
+//         // Setup animation states
+//         this.nextImageStyles = {
+//           'background-image': `url("${nextUrl}")`,
+//           'background-position': '0% 0%',
+//           'background-size': '100%',
+//           'background-repeat': 'no-repeat',
+//           'background-color': '#c7ff20'
+//         };
+
+//         // Force layout recalculation
+//         await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+//         this.cdr.detectChanges();
+        
+//         // Update animation states to trigger transition
+//         this.currentImageState = 'slideOutLeft';
+//         this.nextImageState = 'slideIn';
+//         this.isTransitioning = true;
+//         this.lastDirection = 'next';
+        
+//         // Force another layout calculation to apply the animation
+//         await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+//         this.cdr.detectChanges();
+
+//         // Wait for animation to complete - use Promise instead of timeout
+//         await new Promise<void>(resolve => {
+//           this.transitionTimeout = setTimeout(() => {
+//             // Animation completed, update state
+//             this.imageStyles = { ...this.nextImageStyles };
+//             this.nextImageStyles = null;
+//             this.currentImageState = 'current';
+//             this.nextImageState = 'next';
+            
+//             // Update form with new URL
+//             this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
+            
+//             // Force final layout update
+//             requestAnimationFrame(() => {
+//               this.cdr.detectChanges();
+//               resolve();
+//             });
+//           }, this.ANIMATION_DURATION + 50); // Add buffer to ensure animation completes
+//         });
+//       } finally {
+//         // Always clean up promise reference when done
+//         this.animationPromise = null;
+//       }
+//     })();
+
+//     // Wait for animation to complete before exiting method
+//     await this.animationPromise;
+
+//   } catch (error) {
+//     console.error('Error in nextImage:', error);
+//   } finally {
+//     // Reset all flags
+//     this.rightClicked = false;
+//     this.isTransitioning = false;
+//     this.animationLock = false;
 //   }
 // }
+
 
 // Last working
 async previousImage() {
@@ -7060,7 +7618,7 @@ async previousImage() {
     // Reset states if coming from opposite direction
     if (this.lastDirection === 'next') {
       this.nextImageState = 'prev';
-      await this.cdr.detectChanges();
+      // await this.cdr.detectChanges();
     }
     this.lastDirection = 'prev';
 
@@ -7070,6 +7628,8 @@ async previousImage() {
     this.imageManagementService.previousImage(this.userId);
     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
     const prevUrl = subject.value.urls[subject.value.currentIndex];
+
+    
 
     // Set both current and next image styles simultaneously
     this.nextImageStyles = {
@@ -7100,21 +7660,128 @@ async previousImage() {
         this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
         
         // Reset position and zoom after animation completes
-        this.resetImagePositionAndZoomDuringNavigation();
-        
+        // this.resetImagePositionAndZoomDuringNavigation();
+        this.cdr.markForCheck();
+
         resolve();
-      }, 400); 
+      }, 500); 
     });
+
   } catch (error) {
     console.error('Error navigating to previous image:', error);
   } finally {
-    this.leftClicked = false;
-    this.isTransitioning = false;
+    setTimeout(() => {
+      this.isTransitioning = false;
+      this.leftClicked = false;
+    }, 50); // Small delay to ensure animation completes
     if (this.transitionTimeout) {
       clearTimeout(this.transitionTimeout);
       this.transitionTimeout = null;
     }
   }
+}
+
+// async previousImage() {
+//   if (this.animationLock || this.leftClicked) {
+//     return;
+//   }
+
+//   try {
+//     this.animationLock = true;
+//     this.leftClicked = true;
+//     this.showUploadSuccess = false;
+
+//     if (this.transitionTimeout) {
+//       clearTimeout(this.transitionTimeout);
+//       this.transitionTimeout = null;
+//     }
+
+//     // Get the subject directly
+//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
+
+//     // Move to previous image
+//     this.imageManagementService.previousImage(this.userId);
+    
+//     // Get previous image URL after navigation
+//     const prevUrl = subject.value.urls[subject.value.currentIndex];
+    
+//     this.position = { x: 0, y: 0 };
+//     this.zoomLevel = 1;
+//     this.isDragged = false;
+//     this.isDefaultPosition = true;
+
+//     this.animationPromise = (async () => {
+//       try {
+//         this.nextImageStyles = {
+//           'background-image': `url("${prevUrl}")`,
+//           'background-position': '0% 0%',
+//           'background-size': '100%',
+//           'background-repeat': 'no-repeat',
+//           'background-color': '#c7ff20'
+//         };
+
+//         await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+//         this.cdr.detectChanges();
+        
+//         this.currentImageState = 'slideOutRight';
+//         this.nextImageState = 'slideIn';
+//         this.isTransitioning = true;
+//         this.lastDirection = 'prev';
+        
+//         await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+//         this.cdr.detectChanges();
+
+//         await new Promise<void>(resolve => {
+//           this.transitionTimeout = setTimeout(() => {
+//             this.imageStyles = { ...this.nextImageStyles };
+//             this.nextImageStyles = null;
+//             this.currentImageState = 'current';
+//             this.nextImageState = 'prev';
+            
+//             this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
+            
+//             requestAnimationFrame(() => {
+//               this.cdr.detectChanges();
+//               resolve();
+//             });
+//           }, this.ANIMATION_DURATION + 50);
+//         });
+//       } finally {
+//         this.animationPromise = null;
+//       }
+//     })();
+
+//     await this.animationPromise;
+
+//   } catch (error) {
+//     console.error('Error in previousImage:', error);
+//   } finally {
+//     this.leftClicked = false;
+//     this.isTransitioning = false;
+//     this.animationLock = false;
+//   }
+// }
+
+private forceUnlockAnimation() {
+  // Clear any pending timeouts
+  if (this.transitionTimeout) {
+    clearTimeout(this.transitionTimeout);
+    this.transitionTimeout = null;
+  }
+  
+  // Reset all animation state
+  this.animationLock = false;
+  this.isTransitioning = false;
+  this.rightClicked = false;
+  this.leftClicked = false;
+  this.animationPromise = null;
+  
+  // Reset to stable state
+  this.nextImageStyles = null;
+  this.currentImageState = 'current';
+  this.nextImageState = 'next';
+  
+  this.cdr.detectChanges();
 }
 
 shouldShowAvatar(){
@@ -7127,169 +7794,6 @@ shouldShowAvatar(){
           !this.imageManagementService.hasProfileImageInStorage(this.userId)) ||
          !this.imageManagementService.hasAnyFirebaseImages();
 }
-
-// async nextImage() {
-//   if (this.rightClicked || this.isTransitioning) return;
-  
-//   try {
-//     this.rightClicked = true;
-//     this.isTransitioning = true;
-//     this.showUploadSuccess = false;
-    
-//     // Get the current index before transition
-//     const prevIndex = this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex;
-    
-//     // Clear any existing transition timeouts
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-
-//     // Reset states if coming from opposite direction
-//     if (this.lastDirection === 'prev') {
-//       this.nextImageState = 'next';
-//       await this.cdr.detectChanges();
-//     }
-//     this.lastDirection = 'next';
-
-//     // Prepare next image
-//     this.imageManagementService.nextImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const nextUrl = subject.value.urls[subject.value.currentIndex];
-//     const currentIndex = subject.value.currentIndex;
-
-//     this.direction = 1;
-
-//     // Start segment animation
-//     this.animateTransition(prevIndex, currentIndex);
-
-//     // Set both current and next image styles simultaneously
-//     this.nextImageStyles = {
-//       'background-image': `url("${nextUrl}")`,
-//       'background-position': '0% 0%',
-//       'background-size': '100%',
-//       'background-repeat': 'no-repeat',
-//       'background-color': '#c7ff20'
-//     };
-
-//     // Force change detection before animation
-//     await this.cdr.detectChanges();
-    
-//     // Start both animations in the same frame
-//     requestAnimationFrame(() => {
-//       this.currentImageState = 'slideOutLeft';
-//       this.nextImageState = 'slideIn';
-//       this.cdr.detectChanges();
-//     });
-
-//     // Wait for animation completion
-//     await new Promise<void>(resolve => {
-//       this.transitionTimeout = setTimeout(() => {
-//         this.imageStyles = { ...this.nextImageStyles };
-//         this.nextImageStyles = null;
-//         this.currentImageState = 'current';
-//         this.nextImageState = 'next';
-//         this.pictureForm.patchValue({ imgUrl: nextUrl }, { emitEvent: false });
-        
-//         // Reset position and zoom after animation completes
-//         this.resetImagePositionAndZoomDuringNavigation();
-        
-//         resolve();
-//       }, 400); // Match animation duration
-//     });
-//   } catch (error) {
-//     console.error('Error in nextImage:', error);
-//   } finally {
-//     this.rightClicked = false;
-//     this.isTransitioning = false;
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-//   }
-// }
-
-// async previousImage() {
-//   if (this.leftClicked || this.isTransitioning) return;
-  
-//   try {
-//     this.leftClicked = true;
-//     this.isTransitioning = true;
-//     this.showUploadSuccess = false;
-    
-//     // Get the current index before transition
-//     const prevIndex = this.imageManagementService.getUserImagesSubject(this.userId).value.currentIndex;
-    
-//     // Clear any existing transition timeouts
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-
-//     // Reset states if coming from opposite direction
-//     if (this.lastDirection === 'next') {
-//       this.nextImageState = 'prev';
-//       await this.cdr.detectChanges();
-//     }
-//     this.lastDirection = 'prev';
-
-//     // Prepare previous image
-//     this.imageManagementService.previousImage(this.userId);
-//     const subject = this.imageManagementService.getUserImagesSubject(this.userId);
-//     const prevUrl = subject.value.urls[subject.value.currentIndex];
-//     const currentIndex = subject.value.currentIndex;
-
-//     this.direction = -1;
-
-//     // Start segment animation
-//     this.animateTransition(prevIndex, currentIndex);
-
-//     // Set both current and next image styles simultaneously
-//     this.nextImageStyles = {
-//       'background-image': `url("${prevUrl}")`,
-//       'background-position': '0% 0%',
-//       'background-size': '100%',
-//       'background-repeat': 'no-repeat',
-//       'background-color': '#c7ff20'
-//     };
-
-//     // Force change detection before animation
-//     await this.cdr.detectChanges();
-    
-//     // Start both animations in the same frame
-//     requestAnimationFrame(() => {
-//       this.currentImageState = 'slideOutRight';
-//       this.nextImageState = 'slideIn';
-//       this.cdr.detectChanges();
-//     });
-
-//     // Wait for animation completion
-//     await new Promise<void>(resolve => {
-//       this.transitionTimeout = setTimeout(() => {
-//         this.imageStyles = { ...this.nextImageStyles };
-//         this.nextImageStyles = null;
-//         this.currentImageState = 'current';
-//         this.nextImageState = 'prev';
-//         this.pictureForm.patchValue({ imgUrl: prevUrl }, { emitEvent: false });
-        
-//         // Reset position and zoom after animation completes
-//         this.resetImagePositionAndZoomDuringNavigation();
-//         this.imageManagementService.logNavigationState(this.userId);
-        
-//         resolve();
-//       }, 400); // Match animation duration
-//     });
-//   } catch (error) {
-//     console.error('Error navigating to previous image:', error);
-//   } finally {
-//     this.leftClicked = false;
-//     this.isTransitioning = false;
-//     if (this.transitionTimeout) {
-//       clearTimeout(this.transitionTimeout);
-//       this.transitionTimeout = null;
-//     }
-//   }
-// }
 
 
 private isCurrentImageProfilePicture(): boolean {
@@ -7446,6 +7950,7 @@ private isCurrentImageProfilePicture(): boolean {
 //   }
 // }
 
+// Last working
 onSlideAnimationEnd(event: TransitionEvent) {
   console.log('[onSlideAnimationEnd]', event);
   // Only handle transform transitions

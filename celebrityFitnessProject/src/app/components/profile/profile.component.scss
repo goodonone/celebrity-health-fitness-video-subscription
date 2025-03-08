@@ -148,7 +148,7 @@
 
   /* Adding the fade-in class for the fade-in effect */
   &.firstTimeAnimation {
-    animation: fadeIn 0.5s ease-in-out 0.5s both;
+    animation: fadeIn 0.5s ease-in-out 0.8s both;
   }
 }
 
@@ -558,8 +558,8 @@ fieldset {
   aspect-ratio: 1/1;
   background-color: #c7ff20;
   border-radius: 100rem;
+  // background-size: cover;
   overflow: hidden;
-
   transform: translateZ(0);
   backface-visibility: hidden;
   will-change: transform, background-image;
@@ -579,11 +579,12 @@ fieldset {
   // }
 
   &.firstTimeAnimation {
+    box-shadow: 0 0 0 #C7FF20;
     animation-name: boxShadowExpand;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
-    animation-delay: 0.6s; 
+    animation-delay: 0.3s; 
   }
 
   &.dragged {
@@ -864,26 +865,41 @@ fieldset {
     width: calc(100% + 2px);
     height: calc(100% + 2px);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
+    will-change: transform, opacity;
     backface-visibility: hidden;
     transform-style: preserve-3d;
-    background-size: cover;
+    // background-size: cover !important;
     background-repeat: no-repeat;
     pointer-events: none; // Prevent interaction during transition
+    transform: translateZ(0);
+    /* Smoother transitions on mobile */
+    // Smoother transitions
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
     // Ensure complete coverage
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: inherit;
-      background-size: cover;
-      background-position: inherit;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      /* Smoother transitions on mobile */
+      transition: background-image 0.1s ease-out, 
+                  background-position 0.1s ease-out, 
+                  background-size 0.1s ease-out,
+                  transform 0.1s ease-out,
+                  opacity 0.1s ease-out !important;
+      // background: inherit;
+      // background-size: cover;
+      // background-position: inherit;
     }
   
 
   &.current {
+    // background-size: cover !important;
     z-index: 1;
+    /* Smoother transitions on mobile */
     transform: translateX(0) translateZ(0);
     
     &.sliding-left { 
@@ -1242,6 +1258,11 @@ fieldset {
   // width: fit-content;
   // margin: auto;
   margin-bottom: 1rem;
+  transform: translateZ(0);
+  transition: background-image 0.4s ease-out, 
+              background-position 0.4s ease-out, 
+              background-size 0.4s ease-out,
+              opacity 0.4s ease-out !important;
   // cursor: pointer;
 
   &.draggable {
@@ -1313,14 +1334,15 @@ fieldset {
   &.disabled {
     cursor: default;
     pointer-events: none;
+    cursor: not-allowed;
     // pointer-events: none;
     opacity: 0.4;
   } 
   
-  // &.draggingOver{
-  //   opacity: 0;
-  //   pointer-events: none;
-  // }
+  &.is-dragging{
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 // .reset:hover:has(.disabled):hover .zoomButtons{
@@ -1501,8 +1523,13 @@ fieldset {
   // When dragging, hide all controls
   &.is-dragging {
     .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight, .circular-nav-container{
-      opacity: 0;
+      opacity: 0 !important;
       pointer-events: none;
+    }
+
+    .zoomIn, 
+    .zoomOut{
+      pointer-events: none !important;
     }
   }
 
@@ -1535,7 +1562,6 @@ fieldset {
     .reset:not(.disabled) {
       opacity: 1;
     }
-
     
   }
 
@@ -1575,10 +1601,20 @@ fieldset {
   .chevronRight.disabled {
     opacity: 0.4;
     // pointer-events: not-allowed;
-    // pointer-events: none;
+    pointer-events: none;
   }
 
+  &:has(.zoomIn:hover),
+  &:has(.zoomOut:hover){
+    pointer-events: none;
+  }
 
+}
+
+.profilePictureContainerForDragging:has(.reset.disabled:hover) .dragToCenter,
+.profilePictureContainerForDragging:has(.reset.disabled:hover) .zoomButtons,
+.profilePictureContainerForDragging:has(.reset.disabled:hover) .profile-image-navigation {
+  opacity: 0.8 !important;
 }
 
 
@@ -4031,6 +4067,10 @@ input[matInput]:focus.error-input::placeholder {
   .profileNameTier.tierTwo, 
   .profileNameTier.tierThree {
     letter-spacing: -3px;
+
+    &.firstTimeAnimation {
+      animation: fadeIn 0.5s ease-in-out 0.5s both;
+    }
   }
 
   // .profilePicture{
@@ -4524,7 +4564,7 @@ input[matInput]:focus.error-input::placeholder {
 
     &.firstTimeAnimation {
       animation: fadeIn 0.5s ease-in-out 0.5s both;
-      animation-delay: 2.7s !important;
+      animation-delay: 2.8s !important;
 
       @keyframes fadeIn {
         from {

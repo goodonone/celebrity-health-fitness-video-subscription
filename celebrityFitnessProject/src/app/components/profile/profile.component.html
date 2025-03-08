@@ -143,7 +143,7 @@
                                     (pointerleave)="onPointerLeave('reset')"
                                     [ngClass]="{'clicked': isResetClicked, 
                                     'disabled': isInDefaultPosition(), 
-                                    'draggingOver': isDragging}"
+                                    'is-dragging': isDragging}"
                                     (click)="resetImagePositionAndZoom()"
                                     [@fadeInReset]="{value: 'enter', params: { finalOpacity: getResetControlOpacity() }}">RESET</p>
                                     <!-- <p class="dragToCenter narrow" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'narrow': true}" [@fadeInControls]>DRAG</p> -->
@@ -252,7 +252,7 @@
                                                         <ng-container *ngFor="let _ of imageManagementService.getUserImagesSubject(userId).value.urls; let i = index">
                                                                 <path
                                                                     [attr.d]="getSegmentPath(i)"
-                                                                    [attr.stroke]="getSegmentClass(i) === 'active' ? '#FFFFFF' : 'rgba(116, 115, 115, 0.7)'"
+                                                                    [attr.stroke]="getSegmentClass(i) === 'active' ? '#FFFFFF' : 'rgba(116, 115, 115, 0.8)'"
                                                                     [attr.stroke-width]="circleStrokeWidth"
                                                                     fill="none"
                                                                     stroke-linecap="round"
