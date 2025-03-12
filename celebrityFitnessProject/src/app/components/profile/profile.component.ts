@@ -482,6 +482,8 @@ export class ProfileComponent implements OnInit {
   hasProfilePictureTransitioned = false;
   private isStateTransitioning = false;
   externalUrlError: boolean = false;
+  navigationUnavailable: boolean = false;
+
 
   imageState: 'hidden' | 'visible' = 'hidden';
   // slideState: 'current' | 'slideOutLeft' | 'slideOutRight' | 'slideInLeft' | 'slideInRight' = 'current';
@@ -4194,7 +4196,7 @@ onImageAnimationDone() {
 // }
 
 shouldShowNavigation(): boolean {
-  // return this.onlyFirebaseImageCount >= 1;
+  
   if (this.isUploadingOrPasting) {
     return false;
   }
@@ -7699,6 +7701,8 @@ zoomOut() {
 }
 
 onPointerEnter(button: string) {
+  if(this.shouldShowNavigation() && this.isUploadingOrPasting) return;
+
   this.hoveredButton = button;
   this.isIconHovered = true;
 }
@@ -7741,6 +7745,8 @@ onPointerLeave(button: string) {
 }
 
 onChevronEnter() {
+  if(this.shouldShowNavigation() && this.isUploadingOrPasting) return;
+
   if (!this.isMobile) {
     this.showSegments = true;
     this.cdr.detectChanges();
@@ -7748,6 +7754,8 @@ onChevronEnter() {
 }
 
 onChevronLeave() {
+  if(this.shouldShowNavigation() && this.isUploadingOrPasting) return;
+
   if (!this.isMobile) {
     this.showSegments = false;
     this.cdr.detectChanges();
@@ -7876,6 +7884,10 @@ handlePointerLeave() {
 getCancelButtonText(): string {
   return this.isInitialChangingPictureState ? 'Cancel' : 'Back';
 }
+
+// getDeleteButtonText(): string {
+//   return this.isInitialChangingPictureState ? 'Delete Picture' : 'Discard Upload/Url';
+// }
 
 private initializeDragging() {
   if (this.container && this.profileImg) {
