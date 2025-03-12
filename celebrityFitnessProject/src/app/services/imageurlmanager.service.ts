@@ -513,6 +513,14 @@ getFileNameFromUrl(url: string): string {
       throw new Error('URL is required');
     }
 
+    // Handle data URLs
+    if (url.startsWith('data:image/')) {
+      const mimeType = url.substring(5, url.indexOf(';'));
+      const extension = mimeType.split('/')[1];
+      const timestamp = Date.now();
+      return `data-image-${timestamp}.${extension}`;
+    }
+
     const decodedUrl = decodeURIComponent(url);
 
     // Handle different URL types
@@ -554,6 +562,43 @@ getFileNameFromUrl(url: string): string {
   }
 }
 
+// Add this method to your ImageUrlManagerService
+private dataURLToBlob(dataUrl: string): Blob {
+  // Split the data URL to get the content type and the base64 data
+  const arr = dataUrl.split(',');
+  const mime = arr[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  
+  // Convert base64 to binary
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  
+  return new Blob([u8arr], { type: mime });
+}
+
+// Usage example: Add this to your service
+async handleDataUrl(dataUrl: string, userId: string): Promise<string> {
+  try {
+    // Convert the data URL to a Blob
+    const blob = this.dataURLToBlob(dataUrl);
+    
+    // Create a file from the blob
+    const extension = dataUrl.substring(5, dataUrl.indexOf(';')).split('/')[1];
+    const timestamp = Date.now();
+    const fileName = `data-image-${timestamp}.${extension}`;
+    const file = new File([blob], fileName, { type: blob.type });
+    
+    // Use the existing upload function
+    return await this.handleImageUpload(file, userId);
+  } catch (error) {
+    console.error('Error handling data URL:', error);
+    throw error;
+  }
+}
+
 
 private isImageUrl(url: string): boolean {
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
@@ -572,6 +617,33 @@ private isImageUrl(url: string): boolean {
 private isValidUrl(url: string): boolean {
   try {
     new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+private isValidImageUrl(url: string): boolean {
+  // Skip data URLs as requested
+  if (url.startsWith('data:image/')) {
+    return false;
+  }
+
+  try {
+    // Basic URL validation
+    new URL(url);
+    
+    // Check for image extensions in the path
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    const lowercaseUrl = url.toLowerCase();
+    
+    // Check if URL has an image extension or contains image-related patterns
+    if (imageExtensions.some(ext => lowercaseUrl.endsWith(ext) || lowercaseUrl.includes(ext + '?'))) {
+      return true;
+    }
+    
+    // For URLs without explicit extensions, we'll need to verify them by actually making a request
+    // This will be done in the verifyImageUrl method
     return true;
   } catch {
     return false;
@@ -616,45 +688,140 @@ private isValidUrl(url: string): boolean {
 //   }
 // }
 
+// async handleImageUrl(url: string): Promise<string> {
+//   try {
+//     if (!url) return '';
+
+//     // Handle data URLs (like data:image/jpeg;base64,...)
+//     if (url.startsWith('data:image/')) {
+//       // Data URLs can be used directly, no need for additional processing
+//       return url;
+//     }
+
+//     // Handle provider-specific URLs first (Unsplash, etc.)
+//     const provider = this.detectImageProvider(url);
+//     if (provider) {
+//       const imageUrl = provider.extractImageUrl(url);
+//       if (imageUrl) {
+//         // Skip verification for provider URLs since they're trusted
+//         return imageUrl;
+//       }
+//     }
+
+//     // Handle API URLs - append auth token
+//     if (url.startsWith('/api/')) {
+//       const token = await this.authService.getToken();
+//       return `${this.baseUrl}${url}?token=${token}`;
+//     }
+
+//     // Handle Firebase Storage URLs
+//     if (url.includes('firebasestorage.googleapis.com')) {
+//       return this.storageService.convertFirebaseUrl(url);
+//     }
+
+//     // Handle direct image URLs
+//     if (this.isDirectImageUrl(url)) {
+//       await this.verifyImageAccess(url);
+//       return url;
+//     }
+
+//     // If we get here, the URL might still be valid but not in a format we recognize
+//     return url;
+
+//   } catch (error) {
+//     console.error('Error handling image URL:', error);
+//     throw error;
+//   }
+// }
+
 async handleImageUrl(url: string): Promise<string> {
   try {
-    if (!url) return '';
-
-    // Handle provider-specific URLs first (Unsplash, etc.)
-    const provider = this.detectImageProvider(url);
-    if (provider) {
-      const imageUrl = provider.extractImageUrl(url);
-      if (imageUrl) {
-        // Skip verification for provider URLs since they're trusted
-        return imageUrl;
-      }
+    // Basic validation
+    if (!url || !this.isValidImageUrl(url)) {
+      return '';
     }
-
-    // Handle API URLs - append auth token
+    
+    // For Firebase URLs, convert to proper format
+    if (url.includes('firebasestorage.googleapis.com')) {
+      return this.storageService.convertFirebaseUrl(url);
+    }
+    
+    // For API URLs, append token
     if (url.startsWith('/api/')) {
       const token = await this.authService.getToken();
       return `${this.baseUrl}${url}?token=${token}`;
     }
-
-    // Handle Firebase Storage URLs
-    if (url.includes('firebasestorage.googleapis.com')) {
-      return this.storageService.convertFirebaseUrl(url);
+    
+    // For all other URLs, verify they point to an image (but don't block on failure)
+    try {
+      const isImage = await this.verifyImageUrl(url);
+      if (!isImage) {
+        console.warn('URL does not appear to point to an image:', url);
+      }
+    } catch (error) {
+      // Log but don't block - some valid image URLs might fail verification due to CORS
+      console.warn('Image verification warning:', error);
     }
-
-    // Handle direct image URLs
-    if (this.isDirectImageUrl(url)) {
-      await this.verifyImageAccess(url);
-      return url;
-    }
-
-    // If we get here, the URL might still be valid but not in a format we recognize
+    
+    // Return the URL as is - we'll download it when saving
     return url;
-
   } catch (error) {
-    console.error('Error handling image URL:', error);
+    console.error('Error handling URL:', error);
+    return '';
+  }
+}
+
+async downloadAndUploadUrl(url: string, userId: string): Promise<string> {
+  try {
+    console.log('Downloading image from URL:', url);
+    
+    // Fetch the image with proper headers for CORS
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'image/*'
+      },
+      // Try without mode: 'cors' to handle more URLs
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`);
+    }
+    
+    const blob = await response.blob();
+    
+    // Verify it's an image type
+    if (!blob.type.startsWith('image/')) {
+      throw new Error(`Not an image: ${blob.type}`);
+    }
+    
+    // Generate filename from URL
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split('/');
+    let fileName = pathParts[pathParts.length - 1];
+    
+    // If filename doesn't have extension, add one based on mime type
+    if (!fileName.includes('.')) {
+      const ext = blob.type.split('/')[1] || 'jpg';
+      fileName = `image_${Date.now()}.${ext}`;
+    } else {
+      // Add timestamp to avoid name collisions
+      const nameParts = fileName.split('.');
+      const ext = nameParts.pop() || 'jpg';
+      fileName = `${nameParts.join('.')}_${Date.now()}.${ext}`;
+    }
+    
+    // Create file object and upload
+    const file = new File([blob], fileName, { type: blob.type });
+    const uploadedUrl = await this.firebaseService.uploadFile(file, userId);
+    
+    console.log('URL downloaded and uploaded successfully:', uploadedUrl);
+    return uploadedUrl;
+  } catch (error) {
+    console.error('Error processing URL:', error);
     throw error;
   }
 }
+
 
 private async processUrl(url: string): Promise<string | null> {
   try {
@@ -733,25 +900,76 @@ private async processUrl(url: string): Promise<string | null> {
 //   this.hasImageMimeTypeParam(url);
 // }  
 
+// Last working
+// private isDirectImageUrl(url: string): boolean {
+//   // Handle data URLs
+//   if (url.startsWith('data:image/')) {
+//     return true;
+//   }
+
+//   // Add common provider domains to skip validation
+//   const trustedDomains = [
+//     'unsplash.com',
+//     'images.unsplash.com',
+//     'pexels.com',
+//     'images.pexels.com',
+//     'pixabay.com'
+//   ];
+
+//   try {
+//     const urlObj = new URL(url);
+//     if (trustedDomains.some(domain => urlObj.hostname.includes(domain))) {
+//       return true;
+//     }
+
+//     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+//     const lowercaseUrl = url.toLowerCase();
+//     return imageExtensions.some(ext => lowercaseUrl.endsWith(ext)) ||
+//            this.hasImageMimeTypeParam(url);
+//   } catch {
+//     return false;
+//   }
+// }
+
 private isDirectImageUrl(url: string): boolean {
+  // Handle data URLs
+  if (url.startsWith('data:image/')) {
+    return true;
+  }
+
   // Add common provider domains to skip validation
   const trustedDomains = [
     'unsplash.com',
     'images.unsplash.com',
     'pexels.com',
     'images.pexels.com',
-    'pixabay.com'
+    'pixabay.com',
+    'i.imgur.com',      
+    'cdn.domain.com'    
   ];
 
   try {
     const urlObj = new URL(url);
+    
+    // Check trusted domains
     if (trustedDomains.some(domain => urlObj.hostname.includes(domain))) {
       return true;
     }
-
+    
+    // Check for image extensions in the path
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
     const lowercaseUrl = url.toLowerCase();
-    return imageExtensions.some(ext => lowercaseUrl.endsWith(ext)) ||
+    const hasImageExtension = imageExtensions.some(ext => {
+      // Check if URL ends with extension or has extension followed by query parameters
+      return lowercaseUrl.endsWith(ext) || lowercaseUrl.includes(ext + '?');
+    });
+    
+    // Check for image-related patterns in the URL path
+    const imagePatterns = ['/image/', '/images/', '/img/', '/photo/', '/upload/'];
+    const hasImagePattern = imagePatterns.some(pattern => urlObj.pathname.includes(pattern));
+    
+    return hasImageExtension || 
+           hasImagePattern || 
            this.hasImageMimeTypeParam(url);
   } catch {
     return false;
@@ -787,6 +1005,11 @@ private isDirectImageUrl(url: string): boolean {
   
   private async verifyImageAccess(url: string): Promise<void> {
     try {
+      // Data URLs are always accessible
+      if (url.startsWith('data:image/')) {
+        return;
+      }
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
   
@@ -811,6 +1034,37 @@ private isDirectImageUrl(url: string): boolean {
       }
       throw new Error(`Failed to verify image: ${error.message}`);
     }
+}
+
+async verifyImageUrl(url: string): Promise<boolean> {
+  try {
+    // Set up a request with a timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(url, { 
+      method: 'HEAD',  // HEAD request is faster than GET
+      signal: controller.signal,
+      headers: {
+        'Accept': 'image/*'
+      }
+    });
+    
+    clearTimeout(timeoutId);
+    
+    // Check if response is successful
+    if (!response.ok) {
+      return false;
+    }
+    
+    // Check if content type indicates an image
+    const contentType = response.headers.get('content-type');
+    return contentType ? contentType.startsWith('image/') : false;
+  } catch (error) {
+    console.warn('Image URL verification failed:', error);
+    // If verification fails, we'll still allow the URL (could be CORS issues)
+    return true;
+  }
 }
 
 }

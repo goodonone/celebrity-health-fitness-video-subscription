@@ -1103,7 +1103,7 @@ fieldset {
 
 }
 
-.uploadInstructionsAndSuccess {
+.uploadInstructionsSuccessAndFailure {
   width: 100%;
   max-width: 17.5rem;
   height: 100%;
@@ -1111,8 +1111,7 @@ fieldset {
   box-sizing: border-box;
 }
 
-.supportedFileTypes,
-.uploadSuccess {
+.supportedFileTypes{
   font-family: 'Roboto-mono', monospace !important;
   font-size: 0.8rem;
   color: rgb(178, 176, 176);
@@ -1129,8 +1128,48 @@ fieldset {
   white-space: normal; /* Allow text to wrap */
 }
 
+.uploadSuccess,
+.uploadFailure {
+  font-family: 'Roboto-mono', monospace !important;
+  font-size: 0.8rem;
+  color: rgb(178, 176, 176);
+  background-color: rgb(35, 35, 35);
+  padding: 1rem;
+  border-radius: 0.3rem;
+  margin-top: 0.8rem;
+  line-height: 1.15;
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box; /* Include padding in width calculation */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal; /* Allow text to wrap */
+
+  /* Initial state (hidden) */
+  max-height: 0;
+  padding: 0 1rem;
+  margin-top: 0;
+  overflow: hidden;
+  opacity: 0;
+  position: absolute; /* Remove from document flow when hidden */
+  pointer-events: none; /* Prevent interaction when hidden */
+  
+  /* Animation properties - identical for both appearing and disappearing */
+  transition: max-height 0.4s ease-in-out, 
+              opacity 0.3s ease-in-out, 
+              padding 0.4s ease-in-out,
+              margin 0.4s ease-in-out;
+}
+
 .uploadedSuccessSpan{
   color:#2fc062;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit
+}
+
+.uploadedFailureSpan{
+  color:red;
   font-size: inherit;
   font-weight: inherit;
   line-height: inherit
@@ -1170,9 +1209,28 @@ fieldset {
 //   margin-bottom: 0.3rem;
 // }
 
-.uploadSuccess{
+.uploadSuccess,
+.uploadFailure{
+  max-height: 0;
+  padding: 0 1rem;
+  margin-top: 0;
+  overflow: hidden;
+  opacity: 0;
   text-align: center;
-  // margin-top: 0.9rem;
+  transition: max-height 0.3s ease-in-out, 
+              opacity 0.3s ease-in-out, 
+              padding 0.3s ease-in-out,
+              margin 0.3s ease-in-out;
+}
+
+.uploadFailure.visible,
+.uploadSuccess.visible {
+  max-height: 100px; 
+  padding: 1rem;
+  margin-top: 0.8rem;
+  opacity: 1;
+  position: relative; 
+  pointer-events: auto; 
 }
 
 .zoomButtons{
@@ -1812,59 +1870,212 @@ h3.profileDetailsInputGender{
 h3.profileDetails.name{
   width: 100%;
   max-width: 18rem;
-  // min-width: 5rem;
-  // overflow-x: hidden;
-  // overflow-y: hidden;
-  // text-overflow: ellipsis;
-  // white-space: nowrap;
+  overflow: hidden; 
+  white-space: nowrap; 
+  text-overflow: ellipsis;
+  position: relative;
 }
 
-// h3.profileDetails.email:hover {
-//   overflow-x: scroll;
-//   cursor: pointer;
-//   scroll-padding: 0;
-//   scrollbar-width: thin;
-// }
-
-// h3.profileDetails.email {
-// //   // width: 18rem;
-// //   width: 100%;
-// //   max-width: 18rem;
-//   width: 100%;
-//   max-width: 18rem;
-//   overflow-x: hidden;
-//   overflow-y: visible !important;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-// }
-
-// h3.profileDetails.email {
-//   // display: flex;
-//   width: 100%;
-//   max-width: 18rem;     
-// }
+h3.profileDetails.name:hover {
+  overflow: visible;
+}
 
 /* Ensure the h3 element doesn't constrain the content */
 h3.profileDetails.email {
   width: 100%;
   max-width: 18rem;
-  overflow: visible; /* Allow content to expand vertically */
-  /* Remove any height constraints if present */
-  /* height: auto; */ /* Uncomment if necessary */
+  overflow: hidden; 
+  white-space: nowrap; /* Ensure text stays on one line */
+  text-overflow: ellipsis;
+  position: relative;
 }
 
+// h3.profileDetails.email:hover{
+//   overflow-x: auto; /* Make overflow visible on hover */
+//   z-index: 10; /* Ensure it appears above other elements */
+//   position: relative; /* Required for z-index to work */
+// }
+
+h3.profileDetails.email:hover {
+  overflow: visible;
+}
+
+// .emailScrollContainer {
+//   white-space: nowrap;
+//   overflow-x: auto;
+//   overflow-y: hidden;
+//   width: 100%;
+//   padding-bottom: 5px; /* Space for scrollbar */
+//   scrollbar-width: thin;
+//   scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+  
+//   /* Hide scrollbar by default */
+//   -ms-overflow-style: none;  /* IE and Edge */
+//   scrollbar-width: none;  /* Firefox */
+// }
+
+// .emailScrollContainer::-webkit-scrollbar {
+//   display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+//   height: 4px;
+// }
+
+// /* Show scrollbar on hover */
+// .emailScrollContainer:hover {
+//   -ms-overflow-style: auto;  /* IE and Edge */
+//   scrollbar-width: thin;  /* Firefox */
+// }
+
+// .emailScrollContainer:hover::-webkit-scrollbar {
+//   display: block;
+// }
+
+// .emailScrollContainer::-webkit-scrollbar-thumb {
+//   background-color: rgba(255, 255, 255, 0.5);
+//   border-radius: 4px;
+// }
+
+// .emailScrollContainer {
+//   white-space: nowrap;
+//   overflow-x: hidden;
+//   width: 100%;
+//   transition: all 0.3s ease;
+// }
+
+// .emailScrollContainer:hover {
+//   overflow-x: auto;
+//   padding-bottom: 5px; /* Space for scrollbar */
+// }
+
+// /* Nice scrollbar styling */
+// .emailScrollContainer::-webkit-scrollbar {
+//   height: 4px;
+// }
+
+// .emailScrollContainer::-webkit-scrollbar-thumb {
+//   background-color: rgba(255, 255, 255, 0.5);
+//   border-radius: 4px;
+// }
+
+// .emailScrollContainer::-webkit-scrollbar-track {
+//   background: rgba(0, 0, 0, 0.2);
+//   border-radius: 4px;
+// }
+
+// /* Firefox scrollbar */
+// .emailScrollContainer {
+//   scrollbar-width: thin;
+//   scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.2);
+// }
+
 /* Style the email text to handle overflow */
-.emailSpan {
-  display: block;
+// .emailSpan {
+//   display: block;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+//   font-size: inherit; /* Or specify a size, e.g., 1rem */
+//   line-height: 1.1;
+//   margin: 0;
+//   padding: 0;
+//   margin-top: -0.3rem;
+//   transition: all 0.3s ease;
+// }
+
+.nameSpan {
+  display: inline-block;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: inherit; /* Or specify a size, e.g., 1rem */
-  line-height: 1.1;
+  line-height: 1.15;
   margin: 0;
   padding: 0;
   margin-top: -0.3rem;
+  transition: all 0.3s ease;
 }
+
+.emailSpan {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.15;
+  margin: 0;
+  padding: 0;
+  margin-top: -0.3rem;
+  transition: all 0.3s ease;
+}
+
+h3.profileDetails.name:hover .nameSpan, 
+h3.profileDetails.email:hover .emailSpan {
+  cursor: pointer;
+  overflow-x: auto;
+  text-overflow: clip;
+  white-space: nowrap;
+  display: inline-block;
+  background: #000; /* Match background */
+  padding: 0.1rem;
+  border-radius: 4px;
+  z-index: 10;
+  max-width: none; /* Ensure full width */
+  width: fit-content; /* Allow content to expand */
+  // position: absolute; /* Prevent content from being constrained */
+  // left: 0;
+  // min-width: 25rem; /* Set minimum width */
+  max-width: 18rem; /* Prevent constraints */
+}
+
+/* Style scrollbar */
+h3.profileDetails.name:hover .nameSpan::-webkit-scrollbar,
+h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar {
+  height: 4px;
+}
+
+h3.profileDetails.name:hover .nameSpan::-webkit-scrollbar-thumb,
+h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+}
+
+h3.profileDetails.name:hover .nameSpan::-webkit-scrollbar-track
+h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+// h3.profileDetails.email:hover .emailSpan {
+//   cursor: pointer;
+//   overflow-x: auto;
+//   // text-overflow: ellipsis;
+//   white-space: nowrap;
+//   display: inline-block;
+//   // position: absolute;
+//   background: #000; /* Match background */
+//   padding: 0.1rem;
+//   border-radius: 4px;
+//   z-index: 10;
+//   // line-height: 1;
+//   max-width: max-content; /* Allow full content to be visible */
+//   overflow-x: scroll;
+//   max-width: 25rem;
+// }
+
+// /* Style scrollbar for email */
+// h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar {
+//   width: 4px;
+//   height: 4px;
+// }
+
+// h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-thumb {
+//   background-color: rgba(255, 255, 255, 0.5);
+//   border-radius: 4px;
+// }
+
+// h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-track {
+//   background: rgba(0, 0, 0, 0.2);
+//   border-radius: 4px;
+// }
 
 // h3.profileDetails.email span:last-child {
 //   overflow-x: hidden;
@@ -2123,6 +2334,10 @@ h3.profileDetails.plan{
 .btn-editPhotoButton.deletePicture {
   background-color: rgb(25, 25, 25);
   color: red !important;
+}
+
+.btn-editPhotoButton.deletePicture:disabled {
+  color:rgb(94, 94, 94) !important;
 }
 
 /* Delete Picture button hover - only works when can-hover class is present */
@@ -3563,6 +3778,7 @@ input[matInput]:focus.error-input::placeholder {
   
   p.supportedFileTypes,
   p.uploadSuccess,
+  p.uploadFailure,
   p.providerUrlReminder {
     width: 100% !important;
     max-width: 14rem;
@@ -3575,8 +3791,14 @@ input[matInput]:focus.error-input::placeholder {
     // padding-left: 0;
   }
 
-  .uploadSuccess {
+  h3.profileDetails.email:hover .emailSpan {
+    max-width: 15rem; 
+  }
+
+  .uploadSuccess,
+  .uploadFailure {
     letter-spacing: -0.5px;
+
   }
 
   input::placeholder {
@@ -4230,7 +4452,12 @@ input[matInput]:focus.error-input::placeholder {
     height: auto;
   }
 
-  .uploadInstructionsAndSuccess{
+  .uploadSuccess,
+  .uploadFailure {
+    text-align: center;
+  }
+
+  .uploadInstructionsSuccessAndFailure{
     // width: 100%;
     max-width: 100%;
     /* max-width: 17.5rem; */
