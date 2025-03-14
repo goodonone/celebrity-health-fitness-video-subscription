@@ -13,7 +13,8 @@ html {
     height: 100%; 
     width: 100%; 
     margin:0; 
-    box-sizing: border-box
+    box-sizing: border-box;
+    overflow-x: hidden
 }
 
 body {
@@ -55,6 +56,10 @@ body {
     font-style: italic;
 }
 
+app-root {
+    display: block;
+    min-height: 100vh;
+}
 
 /* ::-webkit-scrollbar
 {

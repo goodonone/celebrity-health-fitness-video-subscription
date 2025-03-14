@@ -16,6 +16,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firebasestorage.googleapis.com">
+  <link rel="preconnect" href="http://localhost:3000">
+  <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com">
+  <link rel="dns-prefetch" href="http://localhost:3000">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -25,7 +29,39 @@
 </head>
 
 <body class="mat-typography">
+
+  <style>
+    .app-loading {
+      min-height: 100vh;
+      position: relative;
+    }
+    
+    /* Ensure the body doesn't have margin that could cause initial layout shifts */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  
+  <!-- Loading div: created to set footer at bottom of page on page reloads -->
+  <div class="app-loading" id="app-loading">
+  </div>
+  
   <app-root></app-root>
+
+  <!-- Script to remove loading div: created to set footer at bottom of page on page reloads -->
+  <script>
+    // Remove loading div once app is bootstrapped
+    document.addEventListener('DOMContentLoaded', function() {
+      // Short timeout to ensure Angular has started
+      setTimeout(function() {
+        const loadingElement = document.getElementById('app-loading');
+        if (loadingElement) {
+          loadingElement.style.display = 'none';
+        }
+      }, 100);
+    });
+  </script>
 
 </body>
 
