@@ -1,5 +1,7 @@
 <div class="pageContainer">
 
+    <!-- Loading Spinner -->
+    <!-- Shows during initial page load, replaced by main content when ready -->
     <ng-container *ngIf="!loadingComplete" class="spinnerContainer">
         <div class="spinner-overlay">
             <svg class="spinner" viewBox="0 0 50 50">
@@ -9,22 +11,34 @@
         </div>
     </ng-container>
     
-    
     <div class="flexContainer" [@fadeInOut]="loadingComplete">
+
+        <!-- User greeting with tier-specific styling -->
+        <!-- Shows different styling based on user's membership tier -->
         <div class="nameTier">
             <h1 class="profileNameTier tierOne" id="tierOne" *ngIf="tierOne" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierOne">Hi {{firstName}}!</span> You're {{currentUser.tier | uppercase}}</h1>
             <h1 class="profileNameTier tierTwo"  id="tierTwo" *ngIf="tierTwo" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierTwo">Hi {{firstName}}!</span> You are <span class="mobileTierTwo">{{currentUser.tier | uppercase}}</span> </h1>
             <h1 class="profileNameTier tierThree" id="tierThree" *ngIf="tierThree" [ngClass]="{'firstTimeAnimation': firstTimeAnimation}"><span class="nameTierThree">Hi {{firstName}}!</span> You are {{currentUser.tier | uppercase}}</h1>
+            
+            <!-- Down facing arrows on mobile only for better ux -->
             <div class="arrowContainer" [ngClass]="{'firstTimeAnimation': firstTimeAnimation, 'narrow': true}">
+                
+                <!-- Down arrows -->
                 <div class="arrows">
                     <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
                     <fa-icon [icon]="['fas', 'angle-down']" [ngClass]="{'narrow': true, 'arrow-size': true}" class="arrow-icon"></fa-icon>
                 </div>
+
             </div>
         </div>
 
+        <!-- Main profile container with card -->
         <div class="profileContainer">
+
+            <!-- Cancel subscription overlay (conditionally shown) -->
             <div class="deleteProfileContainer" [class.active]="currentState === ProfileState.DeletingProfile">
+
+                <!-- Warning message and confirmation buttons -->
                 <div class="absoluteContainer" *ngIf="currentState === ProfileState.DeletingProfile">
                     <div class="cancelSubscription">
                         <img class="warningImg" src="assets/Images/Exclamation.svg">
@@ -38,92 +52,35 @@
                 </div>
             </div>
 
+            <!-- Main profile card with different States -->
             <fieldset id="deleteProfile" [class.active]="currentState === ProfileState.DeletingProfile" [disabled]="currentState === ProfileState.DeletingProfile">
            
             <mat-card class="profileInfo">
-                <!-- [ngClass]="{'firstTimeAnimation': currentUser.tier === 'All In' && 'firstTimeAnimation'} -->
-                <!-- 'box-shadow': tierThree ? '0 0 40px #C7FF20' : 'none' -->
+               <!-- Content changes based on Current State -->
+
                 <div class="flexAllProfileData">
+
+                    <!-- Profile picture container with image manipulation controls -->
                     <div class="profilePictureAndButtonsContainer">
                         <div class="profilePictureAndButtons">
                             <div class="profilePictureContainerForDragging" #container [ngClass]="{'draggable': canDrag(), 'is-dragging': isDragging, 'tablet': isTablet }">
                                 
-                                <!-- Loading Spinner Overlay -->
+                                <!-- Loading overlay during image operations -->
                                 <div class="loading-overlay" *ngIf="shouldShowLoadingOverlay">
                                     <mat-spinner class="loadingImagesSpinner" diameter="40" style="--mdc-circular-progress-active-indicator-color: white;"></mat-spinner>
                                     <p class="loadingImagesText">Loading...</p>
                                 </div>
 
-                                <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded))">
-                                    <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }">DRAG <br> TO <br> POSITION</p>
-                                    <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()">
-                                        <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
-                                        (pointerenter)="!isDisabled('minus') && onMouseEnter('minus')"
-                                        (pointerdown)="onMouseDown('minus')" 
-                                        (pointerup)="onMouseUp('minus')" 
-                                        (pointerleave)="onMouseLeave('minus')"
-                                        (click)="zoomOut()"></fa-icon>
-                                        <fa-icon [icon]="['fas', 'plus']" class="zoomIn" [ngClass]="{'clicked': isInClicked, 'disabled': zoomLevel >= maxZoom}" 
-                                        (pointerenter)="!isDisabled('plus') && onMouseEnter('plus')"
-                                        (pointerdown)="onMouseDown('plus')" 
-                                        (pointerup)="onMouseUp('plus')" 
-                                        (pointerleave)="onMouseLeave('plus')"
-                                        (click)="zoomIn()"></fa-icon>
-                                    </div>
-                                    <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" (pointerdown)="onMouseDown('reset')" 
-                                    (pointerenter)="!isDisabled('reset') && onMouseEnter('reset')"
-                                    (pointerup)="onMouseUp('reset')" 
-                                    (pointerleave)="onMouseLeave('reset')"
-                                    [ngClass]="{'clicked': isResetClicked, 
-                                    'disabled': isInDefaultPosition(), 
-                                    'draggingOver': isDragging}"
-                                    (click)="resetImagePositionAndZoom()">RESET</p>
-                                    <p class="dragToCenter narrow" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'narrow': true}">DRAG</p>
-                                    <div class="profile-image-navigation" *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()) && shouldShowNavigation()">
-                                        <fa-icon [icon]="['fas', 'chevron-left']" 
-                                                    class="chevronLeft" 
-                                                    (click)="previousImage()"
-                                                    (pointerdown)="onMouseDown('left')"
-                                                    (pointerenter)="!isDisabled('left') && onMouseEnter('left')"
-                                                    (pointerup)="onMouseUp('left')" 
-                                                    (pointerleave)="onMouseLeave('left')"
-                                                    [ngClass]="{'clicked': leftClicked}">
-                                        </fa-icon>                                   
-                                        <fa-icon [icon]="['fas', 'chevron-right']" 
-                                                    class="chevronRight"
-                                                    (click)="nextImage()"
-                                                    (pointerdown)="onMouseDown('right')"
-                                                    (pointerenter)="!isDisabled('right') && onMouseEnter('right')"
-                                                    (pointerup)="onMouseUp('right')" 
-                                                    (pointerleave)="onMouseLeave('right')"
-                                                    [ngClass]="{'clicked': rightClicked}">
-                                        </fa-icon>
-                                    </div>
-                                </ng-container>
-                                <mat-card class="profilePicture" id="profilePicture" 
-                                    [ngStyle]="imageStyles" 
-                                    [class.changing-picture]="currentState === ProfileState.ChangingPicture"
-                                    [ngClass]="{'default-position': !isDragged, 
-                                    'loaded': imageLoadedSuccessfully,
-                                    'loading': !imageLoadedSuccessfully || isLoadingImages,
-                                    'firstTimeAnimation': firstTimeAnimation && tierThree, 
-                                    'tierThreeStyle': tierThree, 
-                                    'draggable': canDrag()}" 
-                                    (mousedown)="startDrag($event)"
-                                    (touchstart)="startDrag($event)" 
-                                    #profileImg>
-                                <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
-                                <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && (currentState !== ProfileState.ChangingPicture || !imageManagementService.hasAnyFirebaseImages())">
-                                </mat-card>  -->
-
-
-                                <!-- <ng-container *ngIf="(!isLoadingImages && currentState === ProfileState.ChangingPicture) && (currentUser.imgUrl || (imageManagementService.hasAnyFirebaseImages() && firebaseImageLoaded) || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully))"> -->
+                                <!-- Image manipulation controls (zoom, drag, navigation) -->
                                 <ng-container *ngIf="isControlsVisible()">
-                                    <!-- <div style="width: 100%; height: 100%;"> -->
-                                    <!-- <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }" [@fadeInControls]>DRAG <br> TO <br> POSITION</p> -->
+               
+                                    <!-- Position instructions -->
                                     <p class="dragToCenter wide" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [ngClass]="{'fadeOut': isIconHovered, 'fadeIn': !isIconHovered }" [@fadeInControls]>DRAG <br> TO <br> POSITION</p>
-                                    <!-- <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [@fadeInControls]> -->
+
+                                    <!-- Zoom controls -->
                                     <div class="zoomButtons" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [@fadeInControls]>
+
+                                        <!-- Zoom in/out buttons -->
                                         <fa-icon [icon]="['fas', 'minus']" class="zoomOut" [ngClass]="{'clicked': isOutClicked, 'disabled': zoomLevel <= minZoom}" 
                                         (pointerenter)="!isDisabled('minus') && onPointerEnter('minus')"
                                         (pointerdown)="onPointerDown('minus')" 
@@ -137,7 +94,8 @@
                                         (pointerleave)="onPointerLeave('plus')"
                                         (click)="zoomIn()"></fa-icon>
                                     </div>
-                                    <!-- <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" (pointerdown)="onMouseDown('reset')"  -->
+
+                                    <!-- Reset position button -->
                                     <p class="reset" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)"
                                         (pointerdown)="onPointerDown('reset')"
                                         (pointerenter)="!isDisabled('reset') && onPointerEnter('reset')"
@@ -148,9 +106,11 @@
                                         'is-dragging': isDragging}"
                                         (click)="resetImagePositionAndZoom()"
                                         [@fadeInReset]="{value: 'enter', params: { finalOpacity: getResetControlOpacity() }}">RESET</p>
-                                    <!-- <p class="dragToCenter narrow" *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()" [ngClass]="{'narrow': true}" [@fadeInControls]>DRAG</p> -->
+
+                                    <!-- Mobile version of drag instructions -->
                                     <p class="dragToCenter narrow"  *ngIf="(canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully)" [ngClass]="{'narrow': true}" [@fadeInControls]>DRAG</p>
-                                    <!-- <div class="profile-image-navigation" *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages()) && shouldShowNavigation()" [@fadeInControls]> -->
+
+                                    <!-- Image navigation controls (previous/next) -->
                                     <div class="profile-image-navigation"  *ngIf="((canDrag() && isImageUrlFilled()) || imageManagementService.hasAnyFirebaseImages() || (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully))" [@fadeInControls]>    
                                         <fa-icon [icon]="['fas', 'chevron-left']" 
                                                     class="chevronLeft" 
@@ -173,47 +133,22 @@
                                                     *ngIf="shouldShowNavigation()">
                                         </fa-icon>
 
-                                        <!-- Disabled Chevrons -->
+                                        <!-- Disabled Chevrons for Upload/Paste  -->
                                         <fa-icon [icon]="['fas', 'chevron-left']" 
                                                     class="chevronLeftDisabled" 
                                                     [ngClass]="{'disabled': !shouldShowNavigation()}"
                                                     *ngIf="!shouldShowNavigation()">
-                                        </fa-icon> 
-                                        <!-- <p class="navigationUnavailable" [ngClass]="{'visible': !navigationUnavailable}">Save/Discard to Enable</p> -->                                  
+                                        </fa-icon>                           
                                         <fa-icon [icon]="['fas', 'chevron-right']" 
                                                     class="chevronRightDisabled"
                                                     [ngClass]="{'disabled': !shouldShowNavigation()}"
                                                     *ngIf="!shouldShowNavigation()">
                                         </fa-icon>
                                     </div>
-                                <!-- </div> -->
+                               
                                 </ng-container>
-                                    <!-- <mat-card class="profilePicture" id="profilePicture" 
-                                        [ngStyle]="imageStyles" 
-                                        [style.--old-image]="oldBackgroundUrl ? 'url(' + oldBackgroundUrl + ')' : ''"
-                                        [style.--new-image]="newBackgroundUrl ? 'url(' + newBackgroundUrl + ')' : ''"
-                                        [style.--x-direction]="xDirection"
-                                        [class.changing-picture]="currentState === ProfileState.ChangingPicture"
-                                        [ngClass]="[
-                                            newImageStartingClass,
-                                            isSlidingLeft ? 'slide-left' : '',
-                                            isSlidingRight ? 'slide-right' : '',
-                                            currentState === ProfileState.ChangingPicture ? 'changing-picture' : '',
-                                            !isDragged ? 'default-position' : '',
-                                            imageLoadedSuccessfully ? 'loaded' : '',
-                                            (!imageLoadedSuccessfully || isLoadingImages) ? 'loading' : '',
-                                            (firstTimeAnimation && tierThree) ? 'firstTimeAnimation' : '',
-                                            tierThree ? 'tierThreeStyle' : '',
-                                            canDrag() ? 'draggable' : ''
-                                        ]"
-                                        (mousedown)="startDrag($event)"
-                                        (touchstart)="startDrag($event)"
-                                        (transitionend)="onSlideAnimationEnd($event)"  
-                                        #profileImg>
-                                    <p class="imageNotFound" *ngIf="imageNotFound">Image Not Found. <br> Please Contact Support!</p>
-                                    <img class="avatar" src="assets/Images/avatar.png" *ngIf="!currentUser.imgUrl && (currentState !== ProfileState.ChangingPicture || !imageManagementService.hasAnyFirebaseImages())">
-                                    </mat-card>  -->
 
+                                    <!-- The actual profile picture display -->
                                     <mat-card class="profilePicture" id="profilePicture"
                                                 [class.changing-picture]="currentState === ProfileState.ChangingPicture"
                                                 [ngClass]="getProfileClasses()"
@@ -223,21 +158,10 @@
                                                 (touchend)="endDrag($event)"
                                                 (transitionend)="onSlideAnimationEnd($event)"
                                                 #profileImg>
-                                                
-                                                <!-- Current Image -->
-                                                <!-- <div class="image-wrapper"
-                                                    [ngStyle]="imageStyles"
-                                                    [@slideAnimation]="currentImageState"
-                                                    *ngIf="isTransitioning">
-                                                </div> -->
-
-                                                <!-- Next Image -->
-                                                <!-- <div class="image-wrapper"
-                                                    [ngStyle]="nextImageStyles"
-                                                    [@slideAnimation]="nextImageState">
-                                                </div> -->
 
                                                 <div class="image-container">
+                                                    <!-- Current and next image containers for transitions -->
+
                                                     <!-- Current Image -->
                                                     <div class="image-wrapper"
                                                         [ngStyle]="imageStyles"
@@ -253,6 +177,7 @@
                                                     </div>
                                                  </div>
 
+                                                <!-- Circular navigation indicator for multiple images -->
                                                 <div class="circular-nav-container" 
                                                     *ngIf="currentState === ProfileState.ChangingPicture && 
                                                            imageManagementService.getUserImagesSubject(userId).value.urls.length > 1 && 
@@ -261,6 +186,8 @@
                                                            (pictureForm.get('imgUrl')?.value && imageLoadedSuccessfully))"
                                                     [class.visible]="isMobile || showSegments"
                                                     [@fadeInControls]="isMobile">
+
+                                                    <!-- SVG segments for image indicators -->
                                                     <svg
                                                         class="progress-ring"
                                                         [attr.width]="circleSize"
@@ -285,15 +212,19 @@
                                                     *ngIf="shouldShowAvatar()"
                                                     [@fadeInImage]="(!currentUser.imgUrl && currentState === ProfileState.ChangingPicture && this.imageManagementService.hasAnyFirebaseImages()) ? imageState : 'visible'">
                                     </mat-card>
-                                    <!-- <p class="navigationUnavailable" [ngClass]="{'visible': !navigationUnavailable}">Save/Discard to Enable</p> -->
+                                    
                             </div>
+
+                            <!-- Profile picture action buttons -->
                             <div class="editProfileButtonsContainerIncludingPicture">
-                                <!-- <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
-                                <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="(currentUser.imgUrl && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile))" (click)="changePicture()">Change Picture</button> -->
+
+                                <!-- Add/Change/Delete picture buttons -->
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="!currentUser.imgUrl && !imageManagementService.hasAnyFirebaseImages() && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Add Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton" *ngIf="(currentUser.imgUrl || imageManagementService.hasAnyFirebaseImages()) && (currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile)" (click)="changePicture()">Change Picture</button>
                                 <button mat-button style="color:white" class="btn btn-editPhotoButton deletePicture" *ngIf="((currentUser.imgUrl || imageManagementService.hasAnyFirebaseImages()) && currentState === ProfileState.ChangingPicture)"
                                         (click)="deleteCurrentImage()" [class.can-hover]="canHoverDelete" (mouseenter)="handlePointerEnter()" (mouseleave)="handlePointerLeave()">Delete Picture</button>
+                                
+                                <!-- Other profile action buttons for mobile -->
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Billing Details</button>
@@ -301,7 +232,11 @@
                                 <button mat-button style="color:white" class="btn btn-signOutButton" (click)="logOut()" id="buttonDisappearEdit" [ngClass]="{'narrow': true}">Log Out</button>
                             </div>
                         </div>
+
+                        <!-- Desktop version of profile action buttons -->
                         <div class="editProfileButtonsContainer" *ngIf="currentState === ProfileState.Viewing || currentState === ProfileState.DeletingProfile">
+
+                                <!-- Same buttons as above but with 'wide' class -->
                                 <button mat-button style="color:white" class="btn btn-editProfileButton" (click)="editProfile()" id="buttonDisappearEdit" [ngClass]="{'wide': true}">Edit Profile</button>
                                 <button mat-button style="color:white" class="btn btn-changePasswordButton"(click)="changePassword()" id="buttonDisappearEdit" [ngClass]="{'wide': true}" [disabled]="profileForm.get('isGoogleAuth')?.value === true">Change Password</button>
                                 <button mat-button style="color:white" class="btn btn-billingDetailsButton"id="buttonDisappearEdit" [ngClass]="{'wide': true}" matTooltip="For Stripe Integration">Billing Details</button>
@@ -310,20 +245,25 @@
                         </div>
 
                      </div>
-                    <!-- </div> -->
-                    <!-- [ngClass]="{'animateBoxShadow': currentUser.tier === 'All In' && firstTimeAnimationTierThree}" -->
 
                 <div class="currentState" [ngSwitch]="currentState">
-                  <!-- Viewing State -->
+
+                  <!-- Profile data display in Viewing State -->
                   <ng-container *ngSwitchCase="ProfileState.Viewing">
                     <div class="profileDataContainer">
+
+                        <!-- Display fields for name, email, DOB, gender, etc. -->
                         <h3 class="profileDetails name"><span class="spanProfileCategory">Name</span> <br> <span class="nameSpan">{{currentUser.name}}</span></h3>
                         <h3 class="profileDetails email"><span class="spanProfileCategory">Email Address</span> <br>  <span class="emailSpan">{{currentUser.email}}</span></h3>
                         <h3 class="profileDetails DOB" *ngIf="currentUser.dateOfBirth"><span class="spanProfileCategory">Date Of Birth</span> <br>{{currentUser.dateOfBirth}}</h3>
+
+                        <!-- Additional fields with conditional display -->
                         <h3 class="profileDetails gender" *ngIf="currentUser.gender"><span class="spanProfileCategory">Gender</span> <br> {{currentUser.gender}}</h3>
                         <h3 class="profileDetails weight" *ngIf="currentUser.weight"><span class="spanProfileCategory">Weight</span> <br> {{currentUser.weight}}lbs</h3>
                         <h3 class="profileDetails height" *ngIf="currentUser.height"><span class="spanProfileCategory">Height</span> <br> {{displayHeight}}</h3>
                         <h3 class="profileDetails objective" *ngIf="currentUser.goals"><span class="spanProfileCategory">Objective</span> <br> {{currentUser.goals}}</h3>
+
+                        <!-- Plan information and pricing -->
                         <div class="planContainer">
                             <h3 class="profileDetails plan" *ngIf="currentUser.tier === 'Just Looking'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
                             <h3 class="profileDetails" *ngIf="currentUser.tier === 'All In' || currentUser.tier === 'Motivated'"><span class="spanProfileCategory">Plan</span> <br> {{currentUser.tier}}</h3>
@@ -334,42 +274,13 @@
                     </div>
                 </ng-container>
 
-                <!-- Edit Profile State -->
+                <!-- Profile form in Editing Profile State -->
                 <ng-container *ngSwitchCase="ProfileState.EditingProfile">
                     <div class="profileDataContainer">
-                        <!-- <form (ngSubmit)="saveProfile()" id="profileForm">
-                            <div class="updateOnlyPicture">
-                                <h3 class="profileDetailsInput name"><span class="spanProfileCategory">Name</span> <br>  <input class="name" matInput placeholder="Enter Full Name" type="text" name="firstName" [(ngModel)]="currentUser.name"></h3>
-                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Email Address</span><br> <input class="email"  matInput placeholder="Enter Email" type="text" name="email" [(ngModel)]="currentUser.email"></h3>
-                                <h3 class="profileDetailsInput"><span class="spanProfileCategory">Date Of Birth</span> <br> <input placeholder="mm/dd/yy" matInput type="text" name="dateOfBirth" id="dob" [(ngModel)]="currentUser.dateOfBirth"></h3>
-                                <h3 class="profileDetailsInputGender"><span class="spanProfileCategory">Gender</span> <br> 
-                                    <select matNativeControl name="gender" id="gender" [(ngModel)]="currentUser.gender">
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                    </select>
-                                </h3>
-                                <h3 class="profileDetailsInputWeight"><span class="spanProfileCategory">Weight</span><br> <input matInput pattern="[0-9]*" placeholder="Enter Weight in lbs" type="text" name="weight" id="weight" [(ngModel)]="currentUser.weight"></h3>
-                                <h3 class="profileDetailsInputHeight"><span class="spanProfileCategory">Height</span><br> <input matInput placeholder="Enter Height in feet" type="text" name="height" id="height" [(ngModel)]="currentUser.height"></h3>
-                                <h3 class="profileDetailsInputObjective"><span class="spanProfileCategory">Objective</span> <br>
-                                    <select matNativeControl name="objective" id="objective" [(ngModel)]="currentUser.goals">
-                                        <option value="Lose Fat">Lose Fat</option>
-                                        <option value="Maintain Weight">Maintain Weight</option>
-                                        <option value="Build Muscle">Build Muscle</option>
-                                    </select>
-                                </h3> 
-                            </div>
-                            <div class="profilePictureLinkContainer">
-                                <h3 class="profileDetailsInputPhoto" *ngIf="!updatePassword"><span class="spanProfileCategory">Profile Picture Link</span> <br></h3>
-                                <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl">
-                            </div>
-                            <div class="updateProfileButtonContainer">
-                                <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
-                                <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" type="submit">Update</button>
-                            </div>
-                        </form>  -->
                         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" id="profileForm">
                             <div class="updateProfile">
 
+                                <!-- Form fields for each profile attribute with validation -->
                                 <h3 class="profileDetailsInput name">
                                         <span class="spanProfileCategory name" [ngStyle]="getLabelStyle('name')">
                                             <span>Name</span>
@@ -388,6 +299,7 @@
                                         [ngClass]="{'error-input': shouldShowError('name')}">
                                 </h3>
 
+                                <!-- Similar input fields for email, DOB, gender, weight, height, objective -->
                                 <h3 class="profileDetailsInput email">
                                     <span class="spanProfileCategory email" [ngStyle]="getLabelStyle('email')">Email Address
                                         <label for="error" 
@@ -481,23 +393,6 @@
 
                             </div>
 
-                            <!-- <div class="profilePictureLinkContainer">
-
-                                <h3 class="profileDetailsInputPhoto">
-                                    <span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture Link
-                                        <label for="error" 
-                                            id="error" 
-                                            *ngIf="shouldShowError('imgUrl')" 
-                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
-                                    </span><br>
-                                </h3>
-                                <input matInput class="imgUrl" placeholder="Insert URL of Profile Picture" name="imgUrl" 
-                                       formControlName="imgUrl"
-                                       (input)="onImageUrlInput($event)"
-                                       [ngStyle]="getInputStyle('imgUrl')"
-                                       [ngClass]="{'error-input': shouldShowError('imgUrl')}"
-                                       pattern="https?://.+">
-                            </div> -->
                             <div class="updateProfileButtonContainer" [ngClass]="{'wide': true}">
                                 <button mat-button style="color:white" class="btn btn-cancelProfileButton" type="button" (click)="cancelAction()">Cancel</button>
                                 <button mat-button style="color:white" class="btn btn-updateProfileButton" 
@@ -525,84 +420,7 @@
                     </div>
                 </ng-container>
 
-                <!-- Change Picture State -->
-                <!-- <ng-container *ngSwitchCase="ProfileState.ChangingPicture">  
-                    <form [formGroup]="pictureForm" (ngSubmit)="saveProfile()" id="pictureForm">
-                    <div class="profilePictureLinkContainer">
-                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory">Profile Picture Link</span> <br></h3>
-                        <input class="imgUrl" placeholder="Insert URL of Profile Picture" type="text" name="imgUrl" [(ngModel)]="currentUser.imgUrl">
-                    </div>
-                    <div class="savePictureButtonContainer">
-                        <button mat-button style="color:white" class="btn btn-cancelPasswordButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button style="color:white" class="btn btn-savePhotoButton" id="buttonDisappear" form="profileForm" type="submit" (click)="saveProfile()">Save Picture</button>
-                    </div>
-                </form>
-                </ng-container> -->
-                <!-- <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
-                    <div class="profilePictureFormContainer">
-                    <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
-                      <div class="profilePictureLinkContainer">
-                        <h3 class="profileDetailsInputPhoto"><span class="spanProfileCategory" [ngStyle]="getLabelStyle('imgUrl')">Profile Picture
-                            <label for="error" 
-                                            id="error" 
-                                            *ngIf="shouldShowError('imgUrl')" 
-                                            class="error-alert">{{getErrorMessage('imgUrl')}}</label>
-                        </span></h3>
-
-                        <div class="imageInputContainer">
-                            <input matInput 
-                                class="imgUrl" 
-                                placeholder="Paste Link/File Upload"
-                                type="text" 
-                                [ngStyle]="getInputStyle('imgUrl')"
-                                [ngClass]="{'error-input': shouldShowError('imgUrl')}"
-                                formControlName="imgUrl" 
-                                (input)="onImageUrlInput($event)"
-                                pattern="https?://.+">
-
-                            Hidden File Input -->
-                            <!-- <input
-                                #fileInput
-                                type="file"
-                                accept="image/*"
-                                (change)="onFileSelected($event)"
-                                style="display: none"> -->
-                                
-                            
-                            <!-- Upload Button -->
-                            <!-- <button mat-button 
-                                class="uploadButton"
-                                (click)="fileInput.click()"
-                                [disabled]="isUploading"
-                                type="button">
-                            <span *ngIf="!isUploading">Upload</span>
-                            <div *ngIf="isUploading" class="uploadingState">
-                            <mat-spinner diameter="20" style="--mdc-circular-progress-active-indicator-color: black"></mat-spinner>
-                            <span>{{uploadProgress | number:'1.0-0'}}%</span>
-                            </div>
-                            </button> -->
-
-                            <!--                             
-                        </div>
-
-                      </div>
-                      <div class="savePictureButtonContainer">
-                        <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">Cancel</button>
-                        <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
-                            <ng-container *ngIf="!isSavingPicture">Save</ng-container>
-                                <div *ngIf="isSavingPicture" class="savingState">
-                                <mat-spinner diameter="16" 
-                                            style="--mdc-circular-progress-active-indicator-color: white">
-                                </mat-spinner>
-                                </div>
-                        </button>
-                        </div>
-                    </form>
-                    <p class="supportedFileTypes">Supported file formats include .jpg, .jpeg, .png, .gif & .webp & 5MB max size. </p>
-                    <p class="uploadSuccess" *ngIf="shouldShowUploadSuccess()">Image Uploaded! <strong>Save</strong> to store or <strong>Cancel</strong> to discard.</p>
-                </div> 
-                </ng-container> -->
-
+                <!-- Picture form in Changing Picture State -->
                 <ng-container *ngSwitchCase="ProfileState.ChangingPicture"> 
                     <div class="profilePictureFormContainer">
                     <form [formGroup]="pictureForm" (ngSubmit)="saveProfilePicture()">
@@ -615,6 +433,8 @@
                         </span></h3>
 
                         <div class="imageInputContainer">
+
+                            <!-- URL input field -->
                             <input matInput 
                                 #urlInput
                                 class="imgUrl" 
@@ -641,12 +461,12 @@
                                 (change)="onFileSelected($event)"
                                 style="display: none">
 
-                            <!-- Paste Url Here Button --> 
+                            <!-- Paste URL Button --> 
                             <button mat-button
                                     class="pasteButton" (click)="pasteUrl()" 
                                     *ngIf="showButton"  [disabled]="isUploading || shouldShowLoadingOverlay"> Paste URL </button>   
                         
-                            <!-- Upload Button -->
+                            <!-- Upload button with progress spinner -->
                             <button mat-button 
                                 class="uploadButton"
                                 (click)="fileInput.click()"
@@ -659,10 +479,10 @@
                             </div>
                             </button>
 
-                           
                         </div>
-
                       </div>
+
+                      <!-- Save/Cancel Buttons -->
                       <div class="savePictureButtonContainer">
                         <button mat-button  class="btn btn-cancelPhotoButton" type="button" (click)="cancelAction()">{{ getCancelButtonText() }}</button>
                         <button mat-button  class="btn btn-savePhotoButton" type="submit" [disabled]="isUploading || !pictureForm.valid">
@@ -675,25 +495,27 @@
                         </button>
                       </div>
                     </form>
+
+                    <!-- Upload status messages -->
                     <div class="uploadInstructionsSuccessAndFailure">
                         <p class="uploadSuccess" [ngClass]="{'visible': showUploadSuccess && !externalUrlError}"><span class="uploadedSuccessSpan"><strong>Image Uploaded to View Only!</strong> &nbsp;</span> <br> <strong>Save</strong> to store.<strong>Cancel</strong> to discard.</p>
                         <p class="uploadFailure" [ngClass]="{'visible': externalUrlError && !showUploadSuccess}"><span class="uploadedFailureSpan"><strong>URL Access Denied!</strong> &nbsp;</span>Please proceed to download and upload the image.</p>
                         <p class="supportedFileTypes">Supported File Formats: .jpg, .jpeg, .png, .gif & .webp with file size of 5MB max. <br><br> Or, Paste Image URLs into the input field above and we'll save you a step.</p>
-                        <!-- <p class="providerUrlReminder" *ngIf="providerUrlPasted"><sup>*</sup>These image urls are only retained as long as they are set as your Profile Picture.</p> -->
                     </div>
                 </div> 
                 </ng-container>
 
-                <!-- Change Password State -->
+                <!-- Password form in Changing Password State -->
                 <ng-container *ngSwitchCase="ProfileState.ChangingPassword">
                         <div class="updatePassword">
                             <h3 class="profileDetailsChangePassword"><span class="spanProfileCategory">Change Password</span> <br> </h3>
                             <form [formGroup]="passwordForm" (ngSubmit)="updateUserPassword()" id="passwordForm">
+                                
+                                <!-- Current password field -->
                                 <div class="oldPassword">
                                     <div class="input-details">
                                         <label class="label" for="oldPassword" [ngStyle]="getLabelStyle('oldPassword')">Current Password</label>
                                         <label for="error" *ngIf="authenticating" class="authenticating">Authenticating</label>
-                                        <!-- <label for="error" *ngIf="isOldPasswordError() && !authenticating" class="error-alert">{{oldPasswordError}}</label> -->
                                         <label for="error" 
                                         id="error" 
                                         *ngIf="shouldShowError('oldPassword')" 
@@ -711,17 +533,21 @@
                                             [ngClass]="{'error-input': shouldShowError('password')}">
                                         <fa-icon [icon]="oldPasswordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('oldPassword')" (click)="toggleOldPasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#oldPassword']"></fa-icon>        
                                     </div>
-                                </div>        
+                                </div>   
+                                
+                                <!-- New password fields with group validation -->
                                 <div formGroupName="passwordGroup">
+
+                                    <!-- New password field -->
                                     <div>
                                         <div class="input-details passwordRelative">
                                             <label class="label" for="password" [ngStyle]="getLabelStyle('password')">New Password</label>
-                                            <!-- <label for="error" *ngIf="passwordGroup.get('password')?.invalid && passwordGroup.get('password')?.touched && !this.passwordMismatch" class="error-alert">{{getPasswordErrorMessage()}}</label>
-                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label> -->
                                             <label for="error" 
                                                 id="error" 
                                                 *ngIf="shouldShowError('password')" 
                                                 class="error-alert">{{getErrorMessage('password')}}</label>
+
+                                            <!-- Password requirements popup -->
                                             <div class="popup" *ngIf="isPopupVisible">
                                                 <p>Password must:</p>
                                                 <ul>
@@ -746,11 +572,11 @@
                                             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('password')" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
+
+                                    <!-- Confirm password field -->
                                     <div>
                                         <div class="input-details focusedInput">
                                             <label class="label" for="confirmPassword" [ngStyle]="getLabelStyle('confirmPassword')">Confirm New Password</label>
-                                            <!-- <label for="error" *ngIf="passwordGroup.get('confirmPassword')?.invalid && passwordGroup.get('confirmPassword')?.touched && !this.passwordMismatch" class="error-alert">{{getConfirmPasswordErrorMessage()}}</label>
-                                            <label for="error" *ngIf="passwordMismatch && passwordGroup.get('confirmPassword')?.touched" class="error-alert">Mismatch!</label> -->
                                             <label for="error" 
                                                 id="error" 
                                                 *ngIf="shouldShowError('confirmPassword')" 
@@ -774,13 +600,11 @@
                                             <fa-icon [icon]="passwordVisible ? ['fas', 'eye-slash'] : ['fas', 'eye']" [ngStyle]="getInputStyle('confirmPassword')" (click)="togglePasswordVisibility()" class="eye-icon" appShowHidePassword [targetInputs]="['#confirmPassword', '#password']"></fa-icon>
                                         </div>
                                     </div>
-                                    <!-- <div *ngIf="passwordGroup.errors?.['passwordMismatch'] && (passwordGroup.touched || passwordGroup.dirty)" class="error-alert">
-                                        Passwords do not match
-                                    </div> -->
                                 </div>
+
+                                <!-- Submit buttons -->
                                 <div class="updatePasswordButtonContainer">
                                     <button mat-button style="color:white" class="btn btn-cancelPasswordButton" type="button" (click)="cancelAction()">Cancel</button>
-                                    <!-- <button mat-button style="color:white" class="btn btn-updatePasswordButton" [disabled]="!isFormValid()" type="submit">Update</button> -->
                                     <button mat-button style="color:white" class="btn btn-updatePasswordButton" form="passwordForm" 
                                     type="submit" [disabled]="!isFormValid('password')" (click)="updateUserPassword()">Change</button>
                                 </div>
@@ -790,11 +614,9 @@
                 </div>
               </div>
 
-              <!-- Buttons On Mobile View for Editing Profile -->
+              <!-- Mobile-specific buttons for profile editing -->
               <div class="updateProfileButtonContainerMobile" [ngClass]="{'narrow': true}" *ngIf="currentState === ProfileState.EditingProfile">
                 <button mat-button style="color:white" class="btn btn-cancelProfileButton mobile" type="button" (click)="cancelAction()">Cancel</button>
-                <!-- <button mat-button style="color:white" class="btn btn-updateProfileButton" form="profileForm" 
-                        type="submit" [disabled]="!profileForm.form.valid">Update</button> -->
                 <button mat-button style="color:white" class="btn btn-updateProfileButton mobile" form="profileForm" 
                 type="submit" [disabled]="!isFormValid('profile')" (click)="saveProfile()">Update</button>
             </div>
@@ -806,5 +628,3 @@
 
 </div>
 
-
-<!-- <app-upload-test></app-upload-test> -->
