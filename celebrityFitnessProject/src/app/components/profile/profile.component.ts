@@ -5,14 +5,12 @@ import { User } from 'src/app/models/user';
 import { CartService } from 'src/app/services/cart.service';
 import { UserService } from 'src/app/services/user.service';
 import { faEye, faEyeSlash, faAngleDown, faPlus, faMinus, faChevronLeft, faChevronRight, faListNumeric} from '@fortawesome/free-solid-svg-icons';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter, finalize, firstValueFrom, from, fromEvent, of, Subject, Subscription, switchMap, takeUntil, tap, timeout } from 'rxjs';
 import { passwordMatchValidator } from 'src/app/shared/Multi-Step-Form/form/form.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { profile } from 'console';
-import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject, connectStorageEmulator } from 'firebase/storage';
+import { ref, deleteObject } from 'firebase/storage';
 import { storage, auth } from 'src/app/firebase.config';
-import { signInWithCustomToken } from 'firebase/auth';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { ImageManagementService } from 'src/app/services/imagemanagement.service';
@@ -46,18 +44,18 @@ interface ImageStyles {
   transition?: string;  
 }     
 
-class NetworkError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NetworkError';
-  }
-}
+// class NetworkError extends Error {
+//   constructor(message: string) {
+//     super(message);
+//     this.name = 'NetworkError';
+//   }
+// }
 
-interface ProfilePictureSettings {
-  zoom: number;
-  x: number;
-  y: number;
-}
+// interface ProfilePictureSettings {
+//   zoom: number;
+//   x: number;
+//   y: number;
+// }
 
 @Component({
   selector: 'app-profile',
@@ -165,113 +163,6 @@ interface ProfilePictureSettings {
       ])  
   ]
 })
-//   animations: [
-//     trigger('fadeInOut', [
-//       transition(':enter', [
-//         style({ opacity: 0 }),
-//         animate('100ms ease-in', style({ opacity: 1 }))
-//       ])
-//     ]),
-//     trigger('fadeInControls', [
-//       state('void', style({ 
-//         opacity: 0,
-//         // pointerEvents: 'none'
-//       })),
-//       state('visible', style({ 
-//         opacity: 0.8,
-//         // pointerEvents: 'auto'
-//       })),
-//       transition('void => visible', [
-//         animate('300ms ease-in')
-//       ])
-//     ]),
-//     trigger('fadeInImage', [
-//       state('void', style({ 
-//         opacity: 0
-//       })),
-//       state('visible', style({ 
-//         opacity: 1
-//       })),
-//       transition('void => visible', [
-//         animate('300ms ease-in')
-//       ])
-//     ]),
-//     trigger('fadeInReset', [
-//         transition(':enter', [
-//           style({ opacity: 0 }),
-//           animate('300ms ease-in', 
-//             style({ opacity: '{{finalOpacity}}' })
-//           )
-//         ])
-//       ])
-//   ]
-// })
-  // animations: [
-  //   trigger('fadeInOut', [
-  //     transition(':enter', [
-  //       style({ opacity: 0 }),
-  //       animate('100ms ease-in', 
-  //         style({ opacity: 1 }))
-  //     ])
-  //   ]),
-  //   trigger('fadeInControls', [
-  //     state('void', style({ 
-  //       opacity: 0,
-  //     })),
-  //     state('visible', style({ 
-  //       opacity: 0.8,
-  //     })),
-  //     transition('void => visible', [
-  //       animate('300ms ease-in')
-  //     ])
-  //   ]),
-  //   trigger('fadeInImage', [
-  //     state('void', style({ 
-  //       opacity: 0,
-  //     })),
-  //     state('visible', style({ 
-  //       opacity: 1,
-  //     })),
-  //     transition('void => visible', [
-  //       animate('300ms ease-in')
-  //     ])
-  //   ]),
-  //   trigger('fadeInReset', [
-  //     state('void', style({ opacity: 0 })),
-  //     state('visible', style({ opacity: '{{finalOpacity}}' }), { params: { finalOpacity: 0.8 }}),
-  //     transition('void => visible', [
-  //       animate('300ms ease-in')
-  //     ])
-  //   ])
-  // ]
-
-//     trigger('fadeInControls', [
-//       transition(':enter', [
-//         style({ opacity: 0 }),
-//         animate('300ms ease-in', 
-//           style({ opacity: 1 })
-//         )
-//       ])
-//     ]),
-//     trigger('fadeInImage', [
-//       transition(':enter', [
-//         style({ opacity: 0 }),
-//         animate('200ms ease-in', 
-//           style({ opacity: 1 })
-//         )
-//       ])
-//     ]),
-//     trigger('fadeInReset', [
-//       transition(':enter', [
-//         style({ opacity: 0 }),
-//         animate('300ms ease-in', 
-//           style({ opacity: '{{finalOpacity}}' })
-//         )
-//       ])
-//     ])
-//   ]
-// })
-
 
 export class ProfileComponent implements OnInit {
 

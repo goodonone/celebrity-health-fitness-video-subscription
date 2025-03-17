@@ -53,7 +53,7 @@
   box-sizing: border-box;
   // opacity: 1;
   // justify-content: center;
-  // max-width: 1400px; 
+  // max-width: 1400px;
 
   // &[style*="visibility: hidden"] {
   //   position: absolute;
@@ -64,12 +64,12 @@
 
   &[style*="opacity: 0"] {
     pointer-events: none;
-    position: absolute;  
-    visibility: hidden;   
+    position: absolute;
+    visibility: hidden;
   }
 }
 
-.hidden{
+.hidden {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
@@ -165,46 +165,7 @@
   }
 }
 
-// .profileNameTier.tierTwo{
-//   display: flex;
-//   flex-direction: column;
-//   // margin: 0 auto;
-//   // justify-content: flex-start;
-//   justify-content: center;
-//   align-items: center;
-//   // text-align: center;
-//   width: 100%;
-//   max-width: 40rem;
-//   // height: 100%;
-//   line-height: clamp(6rem, 8.5vw, 9rem);
-//   padding-right: 0.5rem;
-//   font-size: clamp(4.5rem, 7.5vw, 7.5rem);
-//   font-weight: 700;
-//   letter-spacing: -2px;
-//   // height: auto;
-//   // overflow-x: hidden;
-//   // text-overflow: ellipsis;
-//   // white-space: nowrap;
-//   // overflow: hidden;
-//   // background-color: turquoise;
-//   // position: relative;
-
-//   /* Adding the fade-in class for the fade-in effect */
-//   &.firstTimeAnimation {
-//     animation: fadeIn 0.5s ease-in-out 0.5s both;
-//   }
-// }
-
-// @keyframes fadeIn {
-//   from {
-//     opacity: 0;
-//   }
-//   to {
-//     opacity: 1;
-//   }
-// }
-
-.mobileTierTwo{
+.mobileTierTwo {
   font-size: inherit;
   font-weight: inherit;
   font-family: inherit;
@@ -212,70 +173,22 @@
   // margin-right: 50rem;
 }
 
-// .profileNameTier.tierThree {
-//   display: flex;
-//   flex-direction: column;
-//   // text-align: center;
-//   justify-content: center;
-//   align-items: center;
-//   width: 100%;
-//   // min-width: 20rem;
-//   max-width: 40rem;
-//   // max-width: fit-content;
-//   line-height: clamp(6rem, 8.5vw, 9rem);
-//   padding-right: 0.5rem;
-//   font-size: clamp(5rem, 7.5vw, 7.5rem);
-//   font-weight: 700;
-//   letter-spacing: -2px;
-//   // letter-spacing: -15px;
-//   // background-color: lavender;
-//   // overflow: hidden;
-//   // position: relative;
- 
-//   // padding-right: 2.5rem;
-
-//   /* Adding the fade-in class for the fade-in effect */
-//   &.firstTimeAnimation {
-//     animation: fadeIn 1s ease-in-out 0.5s both;
-//   }
-// }
-
-// @keyframes fadeIn {
-//   from {
-//     opacity: 0;
-//   }
-//   to {
-//     opacity: 1;
-//   }
-// }
-
-// .nameTierOne, .nameTierTwo, .nameTierThree {
-//   display: inline-block;
-//   max-width: 100%;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-//   vertical-align: bottom;
-//   font-size: inherit;
-//   font-weight: inherit;
-//   font-family: inherit;
-//   position:relative;
-// }
-
-.nameTierOne, .nameTierTwo, .nameTierThree {
-  // display: -webkit-box; 
-  // -webkit-line-clamp: 2; 
+.nameTierOne,
+.nameTierTwo,
+.nameTierThree {
+  // display: -webkit-box;
+  // -webkit-line-clamp: 2;
   // line-clamp: 2;
-  // -webkit-box-orient: vertical; 
-  display:block;
+  // -webkit-box-orient: vertical;
+  display: block;
 
   // line-clamp: 1;
   max-width: 100%;
   overflow: hidden; /* Hide any overflowing content */
   text-overflow: ellipsis; /* Add ellipsis for overflowing text */
   // word-break: break-word; /* Break long words to wrap properly */
-  line-height: 1.2em; 
-  max-height: 2.4em; 
+  line-height: 1.2em;
+  max-height: 2.4em;
   font-size: inherit;
   font-weight: inherit;
   font-family: inherit;
@@ -283,159 +196,6 @@
   // font-family: "Roboto", sans-serif !important;
   // background-color: lawngreen;
 }
-
-
-// .nameTierOne::after,
-// .nameTierTwo::after,
-// .nameTierThree::after {
-//   content: '!';
-//   position: absolute;
-//   right: 0;
-//   top: 0;
-//   bottom: 0;
-//   width: 0.5em;
-//   background-color: inherit;
-//   color: inherit;
-// }
-
-// .nameTierOne::after,
-// .nameTierTwo::after,
-// .nameTierThree::after {
-//   content: '!';
-//   position: absolute;
-//   right: 0;
-//   top: 0;
-//   bottom: 0;
-//   width: 1em;
-//   background-color: inherit;
-//   color: inherit;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
-
-// /* Show exclamation mark when text is truncated */
-// .nameTierOne.text-truncated::after,
-// .nameTierTwo.text-truncated::after,
-// .nameTierThree.text-truncated::after {
-//   display: flex;
-// }
-
-// /* Hide exclamation mark when text is not truncated */
-// .nameTierOne:not(.text-truncated)::after,
-// .nameTierTwo:not(.text-truncated)::after,
-// .nameTierThree:not(.text-truncated)::after {
-//   display: none;
-// }
-
-// .nameTierOne:not(:hover)::after,
-// .nameTierTwo:not(:hover)::after,
-// .nameTierThree:not(:hover)::after {
-//   display: none;
-// }
-
-// .profileNameTier.tierOne .nameTierOne::after,
-// .profileNameTier.tierTwo .nameTierTwo::after,
-// .profileNameTier.tierThree .nameTierThree::after {
-//   content: '!';
-//   position: absolute;
-//   right: 0rem;
-//   background: inherit;
-//   padding-left: 0.1rem;
-// }
-
-// .nameTierOne:after, .nameTierTwo:after, .nameTierThree:after {
-//   content: '!';
-//   position: absolute;
-//   right: 1rem;
-//   background: inherit;
-//   padding-left: 3rem;
-//   color: black;
-// }
-
-// .nameTierOne.truncated::after,
-// .nameTierTwo.truncated::after,
-// .nameTierThree.truncated::after {
-//   content: '!';
-//   position: absolute;
-//   right: -0.5em;
-//   background: inherit;
-// }
-
-// .profileNameTier.tierOne .nameTierOne:not(.text-truncated)::after,
-// .profileNameTier.tierTwo .nameTierTwo:not(.text-truncated)::after,
-// .profileNameTier.tierThree .nameTierThree:not(.text-truncated)::after {
-//   display: none;
-// }
-
-// .nameTierOne:after, .nameTierTwo:after, .nameTierThree:after {
-//   content: none;
-// }
-
-// .nameTierOne::after,
-// .nameTierTwo::after,
-// .nameTierThree::after {
-//   content: '!';
-//   position: absolute;
-//   right: -2rem;
-//   top: 0;
-//   padding-left: 3rem;
-// }
-
-// /* Hide the exclamation mark when text isn't truncated */
-// .nameTierOne:not(:nth-last-child(2))::after,
-// .nameTierTwo:not(:nth-last-child(2))::after,
-// .nameTierThree:not(:nth-last-child(2))::after {
-//   // display: none;
-//   content: ''
-// }
-
-// .nameTierOne:not(.is-truncated):after,
-// .nameTierTwo:not(.is-truncated):after,
-// .nameTierThree:not(.is-truncated):after {
-//   display: none;
-// }
-
-// .profileNameTier.tierOne:hover,
-// .profileNameTier.tierTwo:hover,
-// .profileNameTier.tierThree:hover {
-//   overflow: hidden;
-// }
-
-// .profileNameTier.tierOne:hover .nameTierOne,
-// .profileNameTier.tierTwo:hover .nameTierTwo,
-// .profileNameTier.tierThree:hover .nameTierThree {
-//   overflow: visible;
-//   text-overflow: clip;
-// }
-
-// .profileNameTier.tierOne:hover .nameTierOne:after,
-// .profileNameTier.tierTwo:hover .nameTierTwo:after,
-// .profileNameTier.tierThree:hover .nameTierThree:after {
-//   content: '';
-// }
-
-
-// .fade-in {
-//   animation: fadeIn 1s ease-in-out 0.5s both;
-// }
-
-// .animateBoxShadow {
-//   animation: expandBoxShadow 0.5s;
-// }
-
-// @keyframes expandBoxShadow {
-//   0% { box-shadow: 0 0 0 #C7FF20; }
-//   50% { box-shadow: 0 0 60px #C7FF20; }
-//   100% { box-shadow: 0 0 40px #C7FF20; }
-// }
-
-// .nameTier .tierOne{
-//   padding-top: 3rem;
-//   padding-left: 2rem;
-//   text-align: center;
-// //   margin: auto;
-// }
 
 #deleteProfile.active {
   border-radius: 6px;
@@ -568,13 +328,11 @@ fieldset {
   backface-visibility: hidden;
   will-change: transform, background-image;
   /* Ensure single transition property for all related changes */
-  transition: background-image 0.1s ease-out, 
-              background-position 0.1s ease-out, 
-              background-size 0.1s ease-out,
-              opacity 0.1s ease-out !important;
+  transition: background-image 0.1s ease-out, background-position 0.1s ease-out,
+    background-size 0.1s ease-out, opacity 0.1s ease-out !important;
 
   &.tierThreeStyle {
-    box-shadow: 0 0 30px 10px #C7FF20;
+    box-shadow: 0 0 30px 10px #c7ff20;
     // box-shadow: 0px 0px 0 10px #C7FF20;
   }
 
@@ -583,12 +341,12 @@ fieldset {
   // }
 
   &.firstTimeAnimation {
-    box-shadow: 0 0 0 #C7FF20;
+    box-shadow: 0 0 0 #c7ff20;
     animation-name: boxShadowExpand;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
-    animation-delay: 0.5s; 
+    animation-delay: 0.5s;
   }
 
   &.dragged {
@@ -612,11 +370,11 @@ fieldset {
   &.loading {
     opacity: 0.8;
   }
-  
+
   &.dragging {
-    transition: none; 
+    transition: none;
   }
-  
+
   &.zooming {
     transition: background-size 0.2s ease-out;
   }
@@ -634,10 +392,10 @@ fieldset {
     background-color: #c7ff20 !important;
   }
 
-  &:not([style*="background-image"]), 
-    &[style*="background-image: none"] {
-      background-color: #c7ff20 !important;
-      opacity: 1 !important;
+  &:not([style*="background-image"]),
+  &[style*="background-image: none"] {
+    background-color: #c7ff20 !important;
+    opacity: 1 !important;
   }
 
   &[style*="background-image"]:not([style*="background-image: none"]) {
@@ -648,15 +406,15 @@ fieldset {
 
   &.changing-picture {
     &[style*="background-image:url"] {
-          .avatar {
-            display: none;
-          }
-        }
+      .avatar {
+        display: none;
+      }
+    }
     &[style*="background-image:none"] {
       .avatar {
         display: block !important;
       }
-    }        
+    }
   }
 
   &[style*="background-image:none"] {
@@ -697,14 +455,13 @@ fieldset {
 //   align-items: center;
 // }
 
-
 // .no-image {
 //   display: flex;
 //   justify-content: center;
 //   align-items: center;
 //   background-color: #c7ff20 !important;
 //   color: #121212;
-  
+
 //   &::after {
 //     content: '';
 //     background-image: url('/assets/Images/avatar.png');
@@ -787,19 +544,19 @@ fieldset {
 
 @keyframes slideOut {
   from {
-      transform: translateX(0);
+    transform: translateX(0);
   }
   to {
-      transform: translateX(-100%);
+    transform: translateX(-100%);
   }
-  }
+}
 
-  @keyframes slideIn {
+@keyframes slideIn {
   from {
-      transform: translateX(100%);
+    transform: translateX(100%);
   }
   to {
-      transform: translateX(0);
+    transform: translateX(0);
   }
 }
 
@@ -847,7 +604,7 @@ fieldset {
 //   &.current {
 //       z-index: 1;
 //       transform: translateX(0);
-      
+
 //       &.sliding-left {
 //           transform: translateX(-100%);
 //       }
@@ -856,7 +613,7 @@ fieldset {
 //   &.next {
 //       z-index: 2;
 //       transform: translateX(100%);
-      
+
 //       &.sliding-in {
 //           transform: translateX(0);
 //       }
@@ -873,90 +630,51 @@ fieldset {
   will-change: transform;
 }
 
-// .image-wrapper {
-//   position: absolute;
-//   inset: 0;
-//   width: 100%;
-//   height: 100%;
-//   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-//   will-change: transform;
-//   backface-visibility: hidden;
-//   transform-style: preserve-3d;
-//   background: {
-//     size: cover;
-//     // position: center;
-//     repeat: no-repeat;
-//   }
-
-  // &.current {
-  //   z-index: 1;
-  //   transform: translateX(0);
-  //   &.sliding-left { transform: translateX(-100%); }
-  // }
-
-  // &.next {
-  //   z-index: 2;
-  //   transform: translateX(100%);
-    
-  //   &.sliding-in { transform: translateX(0); }
-  // }
-
-  // &::after {
-  //   content: '';
-  //   position: absolute;
-  //   inset: 0;
-  //   background: inherit;
-  //   background-size: cover;
-  // }
-
-  .image-wrapper {
-    position: absolute;
-    // Slightly overlap edges to prevent gaps
-    inset: -1px;
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform, opacity;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    // background-size: cover !important;
-    background-repeat: no-repeat;
-    pointer-events: none; // Prevent interaction during transition
-    transform: translateZ(0);
-    /* Smoother transitions on mobile */
-    // Smoother transitions
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+.image-wrapper {
+  position: absolute;
+  // Slightly overlap edges to prevent gaps
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  // background-size: cover !important;
+  background-repeat: no-repeat;
+  pointer-events: none; // Prevent interaction during transition
+  transform: translateZ(0);
+  /* Smoother transitions on mobile */
+  // Smoother transitions
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  
-    // Ensure complete coverage
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      /* Smoother transitions on mobile */
-      transition: background-image 0.1s ease-out, 
-                  background-position 0.1s ease-out, 
-                  background-size 0.1s ease-out,
-                  transform 0.1s ease-out,
-                  opacity 0.1s ease-out !important;
-      // background: inherit;
-      // background-size: cover;
-      // background-position: inherit;
-    }
-  
+
+  // Ensure complete coverage
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Smoother transitions on mobile */
+    transition: background-image 0.1s ease-out,
+      background-position 0.1s ease-out, background-size 0.1s ease-out,
+      transform 0.1s ease-out, opacity 0.1s ease-out !important;
+    // background: inherit;
+    // background-size: cover;
+    // background-position: inherit;
+  }
 
   &.current {
     // background-size: cover !important;
     z-index: 1;
     /* Smoother transitions on mobile */
     transform: translateX(0) translateZ(0);
-    
-    &.sliding-left { 
+
+    &.sliding-left {
       transform: translateX(-100%) translateZ(0);
     }
-    
+
     &.sliding-right {
       transform: translateX(100%) translateZ(0);
     }
@@ -965,168 +683,21 @@ fieldset {
   &.next {
     z-index: 2;
     transform: translateX(100%) translateZ(0);
-    
-    &.sliding-in { 
+
+    &.sliding-in {
       transform: translateX(0) translateZ(0);
     }
   }
-  
+
   &.prev {
     z-index: 2;
     transform: translateX(-100%) translateZ(0);
-    
+
     &.sliding-in {
       transform: translateX(0) translateZ(0);
     }
   }
 }
-
-
-// .dragToCenter, 
-// .zoomButtons, 
-// .reset, 
-// .profile-image-navigation {
-//   opacity: 0; // Start hidden
-//   pointer-events: none;
-  
-//   &.controls-animation-complete {
-//     // opacity: 0.8; // Final opacity
-//     pointer-events: auto;
-//   }
-
-//   &.fadeOut {
-//     opacity: 0;
-//     transition: opacity 0.3s ease;
-//   }
-
-//   &.fadeIn {
-//     opacity: 0.8;
-//     transition: opacity 0.3s ease;
-//   }
-// }
-
-
-//   @keyframes boxShadowExpand {
-//     0% {
-//       box-shadow: 0 0 0 #c7ff20;
-//     }
-//     50% {
-//       box-shadow: 0 0 60px #c7ff20;
-//     }
-//     100% {
-//       box-shadow: 0 0 40px #c7ff20;
-//     }
-
-// .boxShadow{
-//     box-shadow: 0 0 40px #C7FF20;
-// }
-
-// #profilePicture {
-//   &.firstTimeAnimation {
-//     @keyframes boxShadowExpand {
-//       0% {
-//         box-shadow: 0 0 0 #c7ff20;
-//         // box-shadow: 0 0 0 0 #C7FF20;
-//       }
-//       100% {
-//         // box-shadow: 0 0 0 9px #C7FF20;
-//         box-shadow: 0 0 40px #c7ff20;
-//       }
-//     }
-//   }
-// }
-
-//     .profilePicture.animateBoxShadow {
-//       animation: boxShadowExpand 0.5s ease-in forwards;
-//     }
-//   }
-// }
-
-// #profilePicture {
-//   &.animateBoxShadow {
-//     animation: boxShadowExpand 0.5s ease-in forwards;
-
-//     @keyframes boxShadowExpand {
-//       0% {
-//         box-shadow: 0 0 0 #c7ff20;
-//       }
-//       50% {
-//         box-shadow: 0 0 60px #c7ff20;
-//       }
-//       100% {
-//         box-shadow: 0 0 40px #c7ff20;
-//       }
-//     }
-//   }
-// }
-
-// .profilePicture {
-
-//     &.tierThreeStyle {
-//       box-shadow: 0 0 40px #C7FF20;
-//     }
-
-//     &.animateBoxShadow {
-//       animation: boxShadowExpand 0.5s ease-in forwards;
-//     }
-//   }
-
-//   @keyframes boxShadowExpand {
-//     0% {
-//       box-shadow: 0 0 0 #c7ff20;
-//     }
-//     50% {
-//       box-shadow: 0 0 50px #c7ff20;
-//     }
-//     100% {
-//       box-shadow: 0 0 40px #c7ff20;
-//     }
-//   }
-
-// .profilePicture:active{
-//   cursor: grabbing;
-// }
-
-// .draggable {
-//   cursor: grab;
-// }
-
-// .supportedFileTypes, 
-// .uploadSuccess{
-//   font-family: 'Roboto-mono', monospace !important;
-//   font-size: 0.8rem;
-//   color: rgb(178, 176, 176);
-//   background-color: rgb(35, 35, 35);
-//   padding: 1rem;
-//   border-radius: 0.3rem;
-//   margin-top: 0.8rem;
-//   line-height: 1.1;
-// }
-
-// .uploadInstructionsAndSuccess{
-//   width: 100%;
-//   max-width: 18rem;
-//   height: 100%;
-//   // padding-left: 1rem;
-//   box-sizing: border-box;
-// }
-
-// .supportedFileTypes, 
-// .uploadSuccess {
-//   font-family: 'Roboto-mono', monospace !important;
-//   font-size: 0.8rem;
-//   color: rgb(178, 176, 176);
-//   background-color: rgb(35, 35, 35);
-//   padding: 1rem;
-//   border-radius: 0.3rem;
-//   margin-top: 0.8rem;
-//   line-height: 1.1;
-//   /* Add these properties to handle text wrapping */
-//   width: 100% !important;
-//   box-sizing: border-box;
-//   word-wrap: break-word;
-//   overflow-wrap: break-word;
-// }
 
 .loading-overlay {
   position: absolute;
@@ -1143,15 +714,13 @@ fieldset {
   // width: 100%;
   // height: 100%;
   // overflow: visible;
-  
+
   p {
     color: white;
     margin-top: 16px;
     font-size: 14px;
     text-shadow: #000000 0 0 7px;
   }
-
-
 }
 
 .uploadInstructionsSuccessAndFailure {
@@ -1162,8 +731,8 @@ fieldset {
   box-sizing: border-box;
 }
 
-.supportedFileTypes{
-  font-family: 'Roboto-mono', monospace !important;
+.supportedFileTypes {
+  font-family: "Roboto-mono", monospace !important;
   font-size: 0.8rem;
   color: rgb(178, 176, 176);
   background-color: rgb(35, 35, 35);
@@ -1181,7 +750,7 @@ fieldset {
 
 .uploadSuccess,
 .uploadFailure {
-  font-family: 'Roboto-mono', monospace !important;
+  font-family: "Roboto-mono", monospace !important;
   font-size: 0.8rem;
   color: rgb(178, 176, 176);
   background-color: rgb(35, 35, 35);
@@ -1204,12 +773,10 @@ fieldset {
   opacity: 0;
   position: absolute; /* Remove from document flow when hidden */
   pointer-events: none; /* Prevent interaction when hidden */
-  
+
   /* Animation properties - identical for both appearing and disappearing */
-  transition: max-height 0.4s ease-in-out, 
-              opacity 0.3s ease-in-out, 
-              padding 0.4s ease-in-out,
-              margin 0.4s ease-in-out;
+  transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out,
+    padding 0.4s ease-in-out, margin 0.4s ease-in-out;
 }
 
 .uploadSuccess {
@@ -1240,26 +807,26 @@ fieldset {
 //   opacity: 0;
 //   position: absolute; /* Remove from document flow when hidden */
 //   pointer-events: none; /* Prevent interaction when hidden */
-  
+
 //   /* Animation properties - identical for both appearing and disappearing */
-//   transition: max-height 0.3s ease-in-out, 
-//               opacity 0.3s ease-in-out, 
+//   transition: max-height 0.3s ease-in-out,
+//               opacity 0.3s ease-in-out,
 //               padding 0.3s ease-in-out,
 //               margin 0.4s ease-in-out;
 // }
 
-.uploadedSuccessSpan{
-  color:#2fc062;
+.uploadedSuccessSpan {
+  color: #2fc062;
   font-size: inherit;
   font-weight: inherit;
-  line-height: inherit
+  line-height: inherit;
 }
 
-.uploadedFailureSpan{
-  color:red;
+.uploadedFailureSpan {
+  color: red;
   font-size: inherit;
   font-weight: inherit;
-  line-height: inherit
+  line-height: inherit;
 }
 
 // .providerUrlReminder{
@@ -1289,8 +856,6 @@ fieldset {
 //   background-color: #ccc;
 // }
 
-
-
 // .supportedFileTypes {
 //   margin-top: 0.38rem;
 //   margin-bottom: 0.3rem;
@@ -1304,32 +869,32 @@ fieldset {
 //   overflow: hidden;
 //   opacity: 0;
 //   text-align: center;
-//   transition: max-height 0.3s ease-in-out, 
-//               opacity 0.3s ease-in-out, 
+//   transition: max-height 0.3s ease-in-out,
+//               opacity 0.3s ease-in-out,
 //               padding 0.3s ease-in-out,
 //               margin 0.3s ease-in-out;
 // }
 
 .uploadFailure.visible,
-.uploadSuccess.visible{
-  max-height: 100px; 
+.uploadSuccess.visible {
+  max-height: 100px;
   padding: 1rem;
   margin-top: 0.8rem;
   opacity: 1;
-  position: relative; 
-  pointer-events: auto; 
+  position: relative;
+  pointer-events: auto;
 }
 
 // .navigationUnavailable.visible {
-//   max-height: 100px; 
+//   max-height: 100px;
 //   padding: 0.8rem;
 //   margin-top: 0.8rem;
 //   opacity: 1;
-//   position: relative; 
-//   pointer-events: auto; 
+//   position: relative;
+//   pointer-events: auto;
 // }
 
-.zoomButtons{
+.zoomButtons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1342,14 +907,14 @@ fieldset {
   // text-align: center;
   top: 67%;
   left: 50%;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
   // text-shadow: 0 0 7px #000000;
   z-index: 5;
   pointer-events: none;
 }
 
-.zoomIn, 
-.zoomOut{
+.zoomIn,
+.zoomOut {
   // font-size: ;
   font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   color: white;
@@ -1360,12 +925,12 @@ fieldset {
   cursor: pointer;
   pointer-events: auto;
 
-  &.clicked{
+  &.clicked {
     opacity: 1;
     color: rgb(191, 191, 191);
   }
 
-  &.disabled{
+  &.disabled {
     // cursor: not-allowed;
     pointer-events: none;
     // color: rgb(0, 0, 0);
@@ -1389,16 +954,16 @@ fieldset {
   transition: opacity 0.3s ease;
 }
 
-
-.zoomIn::selection{
+.zoomIn::selection {
   color: grey;
 }
 
-::ng-deep .zoomOut svg, ::ng-deep .zoomIn svg{
+::ng-deep .zoomOut svg,
+::ng-deep .zoomIn svg {
   filter: drop-shadow(0 0 4px #000000);
 }
 
-.profilePictureContainerForDragging{
+.profilePictureContainerForDragging {
   position: relative;
   width: 100%;
   height: auto;
@@ -1414,10 +979,8 @@ fieldset {
   // margin: auto;
   margin-bottom: 1rem;
   transform: translateZ(0);
-  transition: background-image 0.4s ease-out, 
-              background-position 0.4s ease-out, 
-              background-size 0.4s ease-out,
-              opacity 0.4s ease-out !important;
+  transition: background-image 0.4s ease-out, background-position 0.4s ease-out,
+    background-size 0.4s ease-out, opacity 0.4s ease-out !important;
   // cursor: pointer;
 
   &.draggable {
@@ -1433,7 +996,6 @@ fieldset {
   }
 }
 
-
 .dragToCenter {
   position: absolute;
   display: flex;
@@ -1444,7 +1006,7 @@ fieldset {
   // margin: auto;
   top: 40%;
   left: 50%;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
   z-index: 50;
   font-size: clamp(1.5rem, 2.5vw, 2.5rem);
   color: white;
@@ -1458,11 +1020,11 @@ fieldset {
   // transition: opacity 1s ease-in-out;
 }
 
-.reset{
+.reset {
   position: absolute;
   top: 80%;
   left: 50%;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
   z-index: 5;
   font-size: clamp(0.4rem, 1.8vw, 1.5rem);
   color: white;
@@ -1480,7 +1042,7 @@ fieldset {
   // padding-bottom: clamp(0.2rem, 0.5vw, 0.3rem);
   // cursor: pointer
 
-  &.clicked{
+  &.clicked {
     opacity: 1;
     color: rgb(191, 191, 191);
     // border-color: rgb(0, 0, 0);
@@ -1492,175 +1054,13 @@ fieldset {
     cursor: not-allowed;
     // pointer-events: none;
     opacity: 0.4;
-  } 
-  
-  &.is-dragging{
+  }
+
+  &.is-dragging {
     opacity: 0;
     pointer-events: none;
   }
 }
-
-// .reset:hover:has(.disabled):hover .zoomButtons{
-//     opacity:0;
-// }
-
-// Define the mixin
-// Fade In Controls
-// Animation Mixins
-// @mixin staggered-fade-in($delay) {
-//   animation: fadeInControls 0.5s ease-out forwards;
-//   animation-delay: $delay;
-//   opacity: 0;
-// }
-
-// @keyframes fadeInControls {
-//   from {
-//     opacity: 0;
-//   }
-//   to {
-//     opacity: 0.8;
-//   }
-// }
-
-// .profilePictureContainerForDragging {
-//   // Base styles for controls
-//   .dragToCenter, .zoomButtons, .reset, .profile-image-navigation {
-//     opacity: 0;
-//     visibility: hidden;
-//     transition: opacity 0.3s ease, visibility 0.3s ease;
-//   }
-
-//   // Initial fade-in animations when entering ChangingPicture state
-//   &:has(.profilePicture.loaded) {
-//     .dragToCenter, .zoomButtons, .reset, .profile-image-navigation {
-//       visibility: visible;
-//     }
-
-//     .dragToCenter {
-//       @include staggered-fade-in(0.2s);
-//     }
-
-//     .zoomButtons {
-//       @include staggered-fade-in(0.4s);
-//     }
-
-//     .reset {
-//       @include staggered-fade-in(0.6s);
-//     }
-
-//     .profile-image-navigation {
-//       @include staggered-fade-in(0.8s);
-//     }
-//   }
-
-//   // Default state (not dragging)
-//   &:not(.is-dragging) {
-//     .dragToCenter, .zoomButtons, .reset, .profile-image-navigation {
-//       opacity: 0.8;
-//       visibility: visible;
-//     }
-
-//     // Zoom buttons hover - keep both zoom buttons visible
-//     &:has(.zoomIn:hover:not(.disabled)), 
-//     &:has(.zoomOut:hover:not(.disabled)) {
-//       .zoomButtons {
-//         opacity: 1;
-//       }
-
-//       .dragToCenter,
-//       .reset,
-//       .profile-image-navigation {
-//         opacity: 0;
-//       }
-//     }
-
-//     // Reset button hover
-//     &:has(.reset:hover:not(.disabled)) {
-//       .reset {
-//         opacity: 1;
-//       }
-
-//       .dragToCenter,
-//       .zoomButtons,
-//       .profile-image-navigation {
-//         opacity: 0;
-//       }
-//     }
-
-//     // Navigation chevrons hover - keep both chevrons visible
-//     &:has(.chevronLeft:hover:not(.disabled)),
-//     &:has(.chevronRight:hover:not(.disabled)) {
-//       .profile-image-navigation {
-//         opacity: 1;
-//       }
-
-//       .dragToCenter,
-//       .zoomButtons,
-//       .reset {
-//         opacity: 0;
-//       }
-//     }
-//   }
-
-//   // Dragging state
-//   &.is-dragging {
-//     .dragToCenter, .zoomButtons, .reset, .profile-image-navigation {
-//       opacity: 0;
-//       visibility: hidden;
-//     }
-//   }
-// }
-
-// // Individual control states
-// .zoomIn, .zoomOut {
-//   opacity: 0.8;
-//   transition: opacity 0.3s ease;
-
-//   &:hover:not(.disabled) {
-//     opacity: 1;
-//   }
-
-//   &.disabled {
-//     opacity: 0.4;
-//     pointer-events: none;
-//   }
-// }
-
-// .chevronLeft, .chevronRight {
-//   opacity: 0.8;
-//   transition: opacity 0.3s ease;
-
-//   &:hover:not(.disabled) {
-//     opacity: 1;
-//   }
-
-//   &.disabled {
-//     opacity: 0.4;
-//     pointer-events: none;
-//   }
-// }
-
-// .reset {
-//   &:hover:not(.disabled) {
-//     opacity: 1;
-//   }
-
-//   &.disabled {
-//     opacity: 0.4;
-//     pointer-events: none;
-//   }
-// }
-
-// // Loading state
-// .loading-overlay {
-//   ~ .dragToCenter,
-//   ~ .zoomButtons,
-//   ~ .reset,
-//   ~ .profile-image-navigation {
-//     opacity: 0;
-//     visibility: hidden;
-//   }
-// }
 /////////////
 
 .profilePictureContainerForDragging {
@@ -1668,24 +1068,37 @@ fieldset {
   transition: opacity 0.3s ease;
   aspect-ratio: auto;
 
-  .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight {
+  .zoomButtons,
+  .dragToCenter,
+  .reset,
+  .chevronLeft,
+  .chevronRight {
     transition: opacity 0.3s ease;
   }
-  
+
   // Default state - all elements visible
-  .zoomIn, .zoomOut, .reset, .chevronLeft, .chevronRight {
+  .zoomIn,
+  .zoomOut,
+  .reset,
+  .chevronLeft,
+  .chevronRight {
     opacity: 0.8;
   }
 
   // When dragging, hide all controls
   &.is-dragging {
-    .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight, .circular-nav-container{
+    .zoomButtons,
+    .dragToCenter,
+    .reset,
+    .chevronLeft,
+    .chevronRight,
+    .circular-nav-container {
       opacity: 0 !important;
       pointer-events: none;
     }
 
-    .zoomIn, 
-    .zoomOut{
+    .zoomIn,
+    .zoomOut {
       pointer-events: none !important;
     }
   }
@@ -1715,11 +1128,10 @@ fieldset {
     .chevronRight {
       opacity: 0;
     }
-    
+
     .reset:not(.disabled) {
       opacity: 1;
     }
-    
   }
 
   // When hovering over chevron-left button
@@ -1729,7 +1141,7 @@ fieldset {
     .reset {
       opacity: 0;
     }
-    
+
     .chevronLeft:not(.disabled),
     .chevronRight:not(.disabled) {
       opacity: 1;
@@ -1743,7 +1155,7 @@ fieldset {
     .reset {
       opacity: 0;
     }
-    
+
     .chevronLeft:not(.disabled),
     .chevronRight:not(.disabled) {
       opacity: 1;
@@ -1762,19 +1174,19 @@ fieldset {
   }
 
   &:has(.zoomIn:hover),
-  &:has(.zoomOut:hover){
+  &:has(.zoomOut:hover) {
     pointer-events: none;
   }
 
   &.loaded {
     opacity: 1;
     transition: opacity 300ms ease-in;
-    
+
     &.no-image {
       background-color: #c7ff20 !important;
     }
   }
-  
+
   &.loading {
     opacity: 0;
     cursor: wait;
@@ -1785,20 +1197,19 @@ fieldset {
   //     animation: fadeIn 0.3s ease-in;
   //   }
   // }
-  
+
   // @keyframes fadeIn {
   //   from { opacity: 0.7; }
   //   to { opacity: 1; }
   // }
-
 }
 
 .profilePictureContainerForDragging:has(.reset.disabled:hover) .dragToCenter,
 .profilePictureContainerForDragging:has(.reset.disabled:hover) .zoomButtons,
-.profilePictureContainerForDragging:has(.reset.disabled:hover) .profile-image-navigation {
+.profilePictureContainerForDragging:has(.reset.disabled:hover)
+  .profile-image-navigation {
   opacity: 0.8 !important;
 }
-
 
 // .profilePictureContainerForDragging:has(.reset:hover:not(.disabled)) .reset:not(.disabled) {
 //   opacity: 0;
@@ -1816,18 +1227,18 @@ fieldset {
   transition: opacity 0.3s ease;
 }
 
-// Upload image button 
+// Upload image button
 .imageInputContainer {
   position: relative;
   width: 100%;
   // display: flex;
-  
+
   .imgUrl {
     width: 100%;
     // max-width: 17rem;
     // padding-right: 100px; // Make room for upload button
   }
-  
+
   .uploadButton {
     position: absolute;
     right: 0.15rem;
@@ -1835,12 +1246,12 @@ fieldset {
     transform: translateY(-49%);
     min-width: 90px;
     background-color: white;
-    
+
     .uploadingState {
       display: flex;
       align-items: center;
       gap: 8px;
-      
+
       mat-spinner {
         margin-right: 8px;
       }
@@ -1857,14 +1268,14 @@ fieldset {
   }
 }
 
-.uploadButton:hover{
+.uploadButton:hover {
   background-color: rgb(238, 238, 238) !important;
   color: rgb(0, 0, 0);
   border: rgb(238, 238, 238) 1px solid !important;
 }
 
 // .uploadButton:hover {
-  
+
 // }
 
 .uploadingOverlay {
@@ -1964,7 +1375,7 @@ h3.profileDetailsInputDOB,
 h3.profileDetailsInputWeight,
 h3.profileDetailsInputHeight,
 h3.profileDetailsInputObjective,
-h3.profileDetailsInputGender{
+h3.profileDetailsInputGender {
   color: white;
   font-weight: 500;
   font-size: 1.9rem;
@@ -1994,117 +1405,26 @@ h3.profileDetailsInputGender{
 // h3.profileDetails.name{
 //   width: 100%;
 //   max-width: 18rem;
-//   overflow: hidden; 
-//   white-space: nowrap; 
+//   overflow: hidden;
+//   white-space: nowrap;
 //   text-overflow: ellipsis;
 //   position: relative;
 // }
 
-h3.profileDetails.name:hover {
-  overflow: visible;
-}
-
-/* Ensure the h3 element doesn't constrain the content */
 h3.profileDetails.name,
 h3.profileDetails.email {
   width: 100%;
   max-width: 18rem;
-  overflow: hidden; 
+  overflow: hidden;
   white-space: nowrap; /* Ensure text stays on one line */
   text-overflow: ellipsis;
   position: relative;
 }
 
-// h3.profileDetails.email:hover{
-//   overflow-x: auto; /* Make overflow visible on hover */
-//   z-index: 10; /* Ensure it appears above other elements */
-//   position: relative; /* Required for z-index to work */
-// }
-
+h3.profileDetails.name:hover,
 h3.profileDetails.email:hover {
   overflow: visible;
 }
-
-// .emailScrollContainer {
-//   white-space: nowrap;
-//   overflow-x: auto;
-//   overflow-y: hidden;
-//   width: 100%;
-//   padding-bottom: 5px; /* Space for scrollbar */
-//   scrollbar-width: thin;
-//   scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
-  
-//   /* Hide scrollbar by default */
-//   -ms-overflow-style: none;  /* IE and Edge */
-//   scrollbar-width: none;  /* Firefox */
-// }
-
-// .emailScrollContainer::-webkit-scrollbar {
-//   display: none; /* Hide scrollbar for Chrome, Safari and Opera */
-//   height: 4px;
-// }
-
-// /* Show scrollbar on hover */
-// .emailScrollContainer:hover {
-//   -ms-overflow-style: auto;  /* IE and Edge */
-//   scrollbar-width: thin;  /* Firefox */
-// }
-
-// .emailScrollContainer:hover::-webkit-scrollbar {
-//   display: block;
-// }
-
-// .emailScrollContainer::-webkit-scrollbar-thumb {
-//   background-color: rgba(255, 255, 255, 0.5);
-//   border-radius: 4px;
-// }
-
-// .emailScrollContainer {
-//   white-space: nowrap;
-//   overflow-x: hidden;
-//   width: 100%;
-//   transition: all 0.3s ease;
-// }
-
-// .emailScrollContainer:hover {
-//   overflow-x: auto;
-//   padding-bottom: 5px; /* Space for scrollbar */
-// }
-
-// /* Nice scrollbar styling */
-// .emailScrollContainer::-webkit-scrollbar {
-//   height: 4px;
-// }
-
-// .emailScrollContainer::-webkit-scrollbar-thumb {
-//   background-color: rgba(255, 255, 255, 0.5);
-//   border-radius: 4px;
-// }
-
-// .emailScrollContainer::-webkit-scrollbar-track {
-//   background: rgba(0, 0, 0, 0.2);
-//   border-radius: 4px;
-// }
-
-// /* Firefox scrollbar */
-// .emailScrollContainer {
-//   scrollbar-width: thin;
-//   scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.2);
-// }
-
-/* Style the email text to handle overflow */
-// .emailSpan {
-//   display: block;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-//   font-size: inherit; /* Or specify a size, e.g., 1rem */
-//   line-height: 1.1;
-//   margin: 0;
-//   padding: 0;
-//   margin-top: -0.3rem;
-//   transition: all 0.3s ease;
-// }
 
 .nameSpan {
   display: inline-block;
@@ -2132,7 +1452,7 @@ h3.profileDetails.email:hover {
   transition: all 0.3s ease;
 }
 
-h3.profileDetails.name:hover .nameSpan, 
+h3.profileDetails.name:hover .nameSpan,
 h3.profileDetails.email:hover .emailSpan {
   cursor: pointer;
   overflow-x: auto;
@@ -2143,15 +1463,11 @@ h3.profileDetails.email:hover .emailSpan {
   padding: 0.2rem;
   border-radius: 4px;
   z-index: 10;
-  max-width: none; /* Ensure full width */
-  width: fit-content; /* Allow content to expand */
-  // position: absolute; /* Prevent content from being constrained */
-  // left: 0;
-  // min-width: 25rem; /* Set minimum width */
+  max-width: none;
+  width: fit-content;
   max-width: 18rem; /* Prevent constraints */
 }
 
-/* Style scrollbar */
 h3.profileDetails.name:hover .nameSpan::-webkit-scrollbar,
 h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar {
   height: 4px;
@@ -2163,8 +1479,10 @@ h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-thumb {
   border-radius: 4px;
 }
 
-h3.profileDetails.name:hover .nameSpan::-webkit-scrollbar-track
-h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-track {
+h3.profileDetails.name:hover
+  .nameSpan::-webkit-scrollbar-track
+  h3.profileDetails.email:hover
+  .emailSpan::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
@@ -2227,7 +1545,6 @@ h3.profileDetails.email:hover .emailSpan::-webkit-scrollbar-track {
   margin: 0;
 }
 
-
 // .errorTwentyOne {
 //   color: red;
 //   font-weight: bold;
@@ -2273,8 +1590,6 @@ h3.profileDetailsChangePassword {
   margin-bottom: 0.5rem;
 }
 
-
-
 // h3.profileDetailsInputHeight {
 //   color: white;
 //   font-weight: 500;
@@ -2289,11 +1604,11 @@ h3.profileDetailsChangePassword {
 //   margin-bottom: 1.1rem;
 // }
 
-h3.profileDetails.plan{
+h3.profileDetails.plan {
   font-size: clamp(1.6rem, 1.5vw, 1.9rem);
 }
 
-.planPricing{
+.planPricing {
   font-family: "Roboto Mono", monospace !important;
   letter-spacing: -2px;
 }
@@ -2319,7 +1634,7 @@ h3.profileDetails.plan{
   min-height: 1.4rem;
 }
 
-.imageNotFound{
+.imageNotFound {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -2347,7 +1662,7 @@ h3.profileDetails.plan{
   justify-content: space-between;
 }
 
-.spanProfileCategory.email{
+.spanProfileCategory.email {
   // width: 10rem;
   width: 100%;
   // margin-bottom: 0.5rem;
@@ -2359,8 +1674,6 @@ h3.profileDetails.plan{
 //   justify-content: space-between;
 //   // height: auto;
 // }
-
-
 
 .buttons {
   display: flex;
@@ -2462,7 +1775,7 @@ h3.profileDetails.plan{
 }
 
 .btn-editPhotoButton.deletePicture:disabled {
-  color:rgb(94, 94, 94) !important;
+  color: rgb(94, 94, 94) !important;
 }
 
 /* Delete Picture button hover - only works when can-hover class is present */
@@ -2470,8 +1783,6 @@ h3.profileDetails.plan{
   background-color: red;
   color: black !important;
 }
-
-
 
 // .btn-savePhotoButton {
 //     height: 2.6rem;
@@ -2503,7 +1814,7 @@ h3.profileDetails.plan{
 
 .btn-changePasswordButton:disabled {
   // background-color: rgb(0, 0, 0);
-  color:rgb(94, 94, 94) !important;
+  color: rgb(94, 94, 94) !important;
 }
 
 .planContainer {
@@ -2615,7 +1926,6 @@ h3.profileDetails.plan{
 
 .eye-icon:hover {
   color: var(--eye-icon-hover-color, #c7ff20) !important;
-
 }
 
 .popup {
@@ -2699,10 +2009,10 @@ input:disabled:-moz-placeholder {
   font-size: 0.875rem;
   // margin-top: 0.5rem;
   padding-top: 0.5rem;
-  line-height: 1.2rem
+  line-height: 1.2rem;
 }
 
-.error-alert-input{
+.error-alert-input {
   color: red;
   font-weight: bold;
   text-align: right;
@@ -2850,7 +2160,7 @@ input:disabled:-moz-placeholder {
     opacity: 1;
   }
 
-  &.clicked{
+  &.clicked {
     transition: color 0s;
     opacity: 1;
     color: rgb(191, 191, 191);
@@ -2882,7 +2192,7 @@ input:disabled:-moz-placeholder {
   &.disabled {
     opacity: 0.4;
     pointer-events: auto;
-    cursor: not-allowed
+    cursor: not-allowed;
   }
 }
 
@@ -2891,41 +2201,6 @@ input:disabled:-moz-placeholder {
 ::ng-deep .chevronRight svg {
   filter: drop-shadow(0 0 4px #000000);
 }
-
-// .nav-button {
-//   position: absolute;
-//   top: 50%;
-//   transform: translateY(-50%);
-//   background: rgba(0, 0, 0, 0.5);
-//   border: none;
-//   border-radius: 50%;
-//   width: 32px;
-//   height: 32px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   cursor: pointer;
-//   transition: opacity 0.3s;
-//   background-color: red;
-// }
-
-// .nav-button.prev {
-//   left: -16px;
-// }
-
-// .nav-button.next {
-//   right: -16px;
-// }
-
-// .nav-button.disabled {
-//   opacity: 0.5;
-//   cursor: not-allowed;
-// }
-
-// .nav-button fa-icon {
-//   color: white;
-//   font-size: 16px;
-// }
 
 .cancelSubscription {
   display: flex;
@@ -2989,31 +2264,6 @@ img.warningImg {
   margin-bottom: 5rem;
 }
 
-// .control-fade-in {
-//   animation: controlFadeIn 0.5s ease-out forwards;
-// }
-
-// @keyframes controlFadeIn {
-//   from {
-//     opacity: 0;
-//     // transform: translateY(10px);
-//   }
-//   to {
-//     opacity: 0.8;
-//     // transform: translateY(0);
-//   }
-// }
-
-// .fadeOut {
-//   opacity: 0;
-//   transition: opacity 0.3s ease;
-// }
-
-// .fadeIn {
-//   opacity: 1;
-//   transition: opacity 0.3s ease;
-// }
-
 .avatar {
   position: absolute;
   z-index: 1;
@@ -3036,7 +2286,7 @@ img.warningImg {
   // box-shadow: 0 0 0 #C7FF20;
 }
 
-.avatar.fade-in{
+.avatar.fade-in {
   opacity: 0;
   transition: opacity 300ms ease-in;
 }
@@ -3073,14 +2323,14 @@ select {
 }
 
 select {
-    width: 17.7rem;
-    height: 2.7rem;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 0.5rem center;
+  width: 17.7rem;
+  height: 2.7rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
 }
 
 // .currentState{
@@ -3090,12 +2340,12 @@ select {
 input.imgUrl {
   box-sizing: border-box;
   padding-left: 0.5rem;
-  width: calc(17rem - 0.5rem); 
+  width: calc(17rem - 0.5rem);
 }
 
 input.imgUrl::placeholder {
-  font-size: 1rem
- }
+  font-size: 1rem;
+}
 
 .btn-savePhotoButton {
   &:disabled {
@@ -3116,79 +2366,11 @@ input.imgUrl::placeholder {
   justify-content: center;
   height: 100%;
   width: 100%;
-  
+
   mat-spinner {
     margin: 0 auto;
   }
 }
-
-/* Remove these as they're no longer needed */
-// input.imgUrl::placeholder {
-//   padding-left: 0.5rem; 
-// }
-
-// input.imgUrl{
-//   padding-left: 0; 
-// }
-
-// // input.imgUrl::content{
-// //   padding-left: 0.5rem;
-// // }
-
-// input.imgUrl::placeholder{
-//   padding-left: 0.5rem; 
-// }
-// /* Style for the placeholder option */
-// select option[value=""] {
-//   color: gray;
-// }
-
-// /* Style for the select when the placeholder is selected */
-// select:invalid,
-// select option:first-child {
-//   color: gray;
-// }
-
-// /* Style for the other options */
-// select option:not(:first-child) {
-//   color: white;
-// }
-
-// /* Ensure the select and its options are visible */
-// .profileDetailsInputGender select,
-// .profileDetailsInputObjective select {
-//   display: block;
-//   visibility: visible;
-//   opacity: 1;
-// }
-
-// select:required:invalid {
-//   color: gray;
-// }
-
-// option[value=""][disabled] {
-//   display: block
-// }
-
-// option {
-//   color: white;
-// }
-
-// input#dob, {
-//   padding-left: 0.2rem;
-// }
-
-// input{
-//   padding-left: 0.2rem;
-// }
-
-/* input{
-    padding-left: 0.5rem;
-} */
-
-// input.name, input.imgUrl, input.email {
-//     width: 17rem;
-// }
 
 .imgUrl {
   margin-bottom: 0.5rem;
@@ -3274,11 +2456,11 @@ input#weight,
 }
 
 .wide {
-  &.updateProfileButtonContainer{
+  &.updateProfileButtonContainer {
     display: flex;
   }
 
-  &.deleteProfileText{
+  &.deleteProfileText {
     display: block;
   }
 }
@@ -3369,8 +2551,8 @@ input[type="text"].password-visible {
 
 input[type="password"].error-input::placeholder,
 input[type="text"].error-input::placeholder {
-color: var(--placeholder-color, red);
-transition: color 0.1s ease;
+  color: var(--placeholder-color, red);
+  transition: color 0.1s ease;
 }
 
 input:focus.error-input {
@@ -3392,113 +2574,7 @@ input[matInput]:focus.error-input::placeholder {
   stroke: black !important;
 }
 
-// .profilePictureContainerForDragging.tablet {
-//   /* All your existing rules go inside here */
-//   .dragToCenter.pre-animation,
-//   .zoomButtons.pre-animation,
-//   .profile-image-navigation.pre-animation,
-//   .reset.pre-animation,
-//   .circular-nav-container.pre-animation {
-//     opacity: 0 !important;
-//     visibility: visible !important;
-//   }
-
-//   &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-//   &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-//   &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-//   &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
-//     opacity: 1;
-//     transition: opacity 0.2s ease-out;
-//   }
-
-//   /* Ensure all controls (including reset) disappear during drag */
-//   &.is-dragging .dragToCenter,
-//   &.is-dragging .zoomButtons,
-//   &.is-dragging .profile-image-navigation,
-//   &.is-dragging .reset,
-//   &.is-dragging .circular-nav-container {
-//     opacity: 0 !important;
-//     transition: opacity 0.2s ease-out;
-//     pointer-events: none !important;
-//   }
-
-//   /* Make sure zoom buttons have proper opacity */
-//   .zoomIn:not(.disabled),
-//   .zoomOut:not(.disabled) {
-//     opacity: 1 !important;
-//   }
-
-//   /* Chevron visibility */
-//   &:has(.zoomIn:hover) .chevronRight,
-//   &:has(.zoomOut:hover) .chevronLeft,
-//   &:has(.zoomButtons) .chevronLeft,
-//   &:has(.zoomButtons) .chevronRight {
-//     opacity: 1 !important;
-//   }
-
-//   /* Disabled state */
-//   .zoomOut:disabled,
-//   .zoomIn:disabled,
-//   .reset:disabled {
-//     opacity: 0.4 !important;
-//   }
-
-//   &:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
-//   &:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
-//     opacity: 1;
-//   }
-
-//   /* Reset button default state */
-//   &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-//     opacity: 1 !important;
-//   }
-
-//   &:has(.chevronRight:hover:not(.disabled)) .reset,
-//   &:has(.chevronLeft:hover:not(.disabled)) .reset {
-//     opacity: 0.4;
-//   }
-
-//   /* If you want to nest again, we can do:
-//    * &.is-dragging .reset {
-//    *   opacity: 0 !important;
-//    * }
-//    */
-
-//   /* Override the hover state effects completely on mobile */
-//   &:has(.zoomButtons:hover) .reset,
-//   &:has(.chevronLeft:hover) .reset,
-//   &:has(.chevronRight:hover) .reset {
-//     opacity: 0.4;
-//   }
-
-//   .zoomIn:active,
-//   .zoomOut:active,
-//   .chevronLeft:active,
-//   .chevronRight:active {
-//     opacity: 1 !important;
-//     transform: scale(0.75);
-//   }
-// }
-
-// .btn-change:active,
-// .btn-editPhotoButton:active,
-// .btn-editProfileButton:active,
-// .btn-updateProfileButton:active,
-// .btn-backButton:active,
-// .btn-signOutButton:active,
-// .btn-changePasswordButton:active,
-// .btn-cancelPasswordButton:active,
-// .btn-updatePasswordButton:active,
-// .btn-savePhotoButton:active,
-// .btn-cancelPhotoButton:active,
-// .btn-cancelProfileButton:active,
-// .btn-billingDetailsButton:active {
-//   background-color: #ffffff;
-//   color: black;
-// }
-
-@media (pointer:coarse) and (hover:none) {
-
+@media (pointer: coarse) and (hover: none) {
   .profilePictureContainerForDragging {
     /* All your existing rules go inside here */
     .dragToCenter.pre-animation,
@@ -3512,8 +2588,10 @@ input[matInput]:focus.error-input::placeholder {
 
     &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
     &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-    &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-    &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
+    &:not(.is-dragging)
+      .profile-image-navigation:not(.pre-animation):not(.entering),
+    &:not(.is-dragging)
+      .circular-nav-container:not(.pre-animation):not(.entering) {
       opacity: 1;
       transition: opacity 0.2s ease-out;
     }
@@ -3556,7 +2634,8 @@ input[matInput]:focus.error-input::placeholder {
     }
 
     /* Reset button default state */
-    &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
+    &:not(.is-dragging)
+      .reset:not(.disabled):not(.pre-animation):not(.entering) {
       opacity: 1 !important;
     }
 
@@ -3585,7 +2664,6 @@ input[matInput]:focus.error-input::placeholder {
       opacity: 1 !important;
       transform: scale(0.75);
     }
-
   }
 
   .btn-change:hover,
@@ -3634,7 +2712,7 @@ input[matInput]:focus.error-input::placeholder {
     background-color: rgb(25, 25, 25) !important; /* Reset to default */
     color: white !important; /* For delete button, reset to red */
   }
-  
+
   /* Make active states stronger to immediately override hover */
   .btn-cancelSubscriptionButton:active,
   .btn-billingDetailsButton:active {
@@ -3649,7 +2727,7 @@ input[matInput]:focus.error-input::placeholder {
     color: black !important;
     transition: none !important;
   }
-  
+
   .btn-editPhotoButton.deletePicture:active,
   .btn-cancelSubscriptionButtonFinal:active {
     background-color: red !important;
@@ -3657,7 +2735,43 @@ input[matInput]:focus.error-input::placeholder {
     transition: none !important;
   }
 
-  
+  // Styles for Name & Email expanding on click
+  h3.profileDetails.expanded {
+    overflow: visible;
+  }
+
+  h3.profileDetails.expanded .nameSpan,
+  h3.profileDetails.expanded .emailSpan {
+    overflow-x: auto;
+    text-overflow: clip;
+    white-space: nowrap;
+    display: inline-block;
+    background: rgb(0, 0, 0);
+    padding: 0.2rem;
+    border-radius: 4px;
+    z-index: 10;
+    max-width: none;
+    width: fit-content;
+    max-width: 18rem;
+  }
+
+  h3.profileDetails.expanded .nameSpan::-webkit-scrollbar,
+  h3.profileDetails.expanded .emailSpan::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  h3.profileDetails.expanded .nameSpan::-webkit-scrollbar-thumb,
+  h3.profileDetails.expanded .emailSpan::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 4px;
+  }
+
+  h3.profileDetails.expanded .nameSpan::-webkit-scrollbar-track,
+  h3.profileDetails.expanded .emailSpan::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  ////////////////////////////
 }
 
 @media screen and (min-width: 2400px) {
@@ -3682,10 +2796,10 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   input.imgUrl::placeholder {
-    font-size: 0.7rem
-   }
+    font-size: 0.7rem;
+  }
 
- .profileNameTier.tierTwo{
+  .profileNameTier.tierTwo {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -3853,7 +2967,7 @@ input[matInput]:focus.error-input::placeholder {
 
   .imageInputContainer {
     width: 25vw;
-    max-width:225px;
+    max-width: 225px;
     box-sizing: border-box;
     // margin-bottom: 0.5rem;
 
@@ -3871,7 +2985,7 @@ input[matInput]:focus.error-input::placeholder {
       position: absolute;
       transform: translate(-174%, -49%);
       top: 40.5%;
-      // width: 
+      // width:
       // width: 1.5rem;
       width: calc(100% - 100px);
       background-color: white;
@@ -3886,7 +3000,7 @@ input[matInput]:focus.error-input::placeholder {
   //   box-sizing: border-box;
   // }
 
-  // .supportedFileTypes, 
+  // .supportedFileTypes,
   // .uploadSuccess {
   //   width: 100%;
   //   max-width: 17rem;
@@ -3903,7 +3017,7 @@ input[matInput]:focus.error-input::placeholder {
   //   overflow: hidden;
   // }
 
-  // .supportedFileTypes, 
+  // .supportedFileTypes,
   // .uploadSuccess {
   //   /* Maintain the same styling as outside media query */
   //   width: 100% !important;
@@ -3920,7 +3034,6 @@ input[matInput]:focus.error-input::placeholder {
   //   // padding:0;
   // }
 
-  
   p.supportedFileTypes,
   p.uploadSuccess,
   p.uploadFailure,
@@ -3937,13 +3050,12 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   h3.profileDetails.email:hover .emailSpan {
-    max-width: 15rem; 
+    max-width: 15rem;
   }
 
   .uploadSuccess,
   .uploadFailure {
     letter-spacing: -0.5px;
-
   }
 
   input::placeholder {
@@ -3958,246 +3070,6 @@ input[matInput]:focus.error-input::placeholder {
     display: flex;
   }
 }
-
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation,
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container{
-  //   opacity: 1 !important;
-  //   transition: opacity 0.2s ease-out;
-  // }
-
-  // .post-animation {
-  //   .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation {
-  //     opacity: 1 !important;
-  //   }
-  // }
-
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container{
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled{
-  //   opacity: 0.4 !important;
-  // }
-
-  // /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 0.4 !important;
-  // }
-  
-
-  // .profilePictureContainerForDragging .dragToCenter.pre-animation,
-  // .profilePictureContainerForDragging .zoomButtons.pre-animation,
-  // .profilePictureContainerForDragging .profile-image-navigation.pre-animation,
-  // .profilePictureContainerForDragging .reset.pre-animation,
-  // .profilePictureContainerForDragging .circular-nav-container.pre-animation {
-  //   opacity: 0 !important;
-  //   visibility: visible !important;
-  // }
-
-  // /* Your existing rules with the same specificity */
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
-  //   opacity: 1 ;
-  //   transition: opacity 0.2s ease-out;
-  // }
-
-  // /* Ensure all controls (including reset) disappear during drag */
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container {
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // /* Rest of your rules... */
-  // /* Make sure zoom buttons have proper opacity */
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // /* Chevron visibility */
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // /* Disabled state */
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled {
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
-  //   opacity: 1;
-  // }
-
-  // /* Reset button default state */
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.pre-animation):not(.entering) {
-  //   opacity: 0.4;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.chevronRight:hover:not(.disabled)) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover:not(.disabled)) .reset {
-  //   opacity: 0.4;
-  // }
-
-  // .profilePictureContainerForDragging{
-  //     .is-dragging .reset {
-  //     opacity: 0 !important;
-  //   }
-  // }
-
-  // /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 0.4;
-  // }
-
-  // .zoomIn:active,
-  // .zoomOut:active,
-  // .chevronLeft:active,
-  // .chevronRight:active {
-  //   opacity: 1 !important;
-  //   transform: scale(0.75);
-  // }
-
-
-
-//   .profilePictureContainerForDragging.tablet {
-//     /* All your existing rules go inside here */
-//     .dragToCenter.pre-animation,
-//     .zoomButtons.pre-animation,
-//     .profile-image-navigation.pre-animation,
-//     .reset.pre-animation,
-//     .circular-nav-container.pre-animation {
-//       opacity: 0 !important;
-//       visibility: visible !important;
-//     }
-  
-//     &:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-//     &:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-//     &:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-//     &:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
-//       opacity: 1;
-//       transition: opacity 0.2s ease-out;
-//     }
-  
-//     /* Ensure all controls (including reset) disappear during drag */
-//     &.is-dragging .dragToCenter,
-//     &.is-dragging .zoomButtons,
-//     &.is-dragging .profile-image-navigation,
-//     &.is-dragging .reset,
-//     &.is-dragging .circular-nav-container {
-//       opacity: 0 !important;
-//       transition: opacity 0.2s ease-out;
-//       pointer-events: none !important;
-//     }
-  
-//     /* Make sure zoom buttons have proper opacity */
-//     .zoomIn:not(.disabled),
-//     .zoomOut:not(.disabled) {
-//       opacity: 1 !important;
-//     }
-  
-//     /* Chevron visibility */
-//     &:has(.zoomIn:hover) .chevronRight,
-//     &:has(.zoomOut:hover) .chevronLeft,
-//     &:has(.zoomButtons) .chevronLeft,
-//     &:has(.zoomButtons) .chevronRight {
-//       opacity: 1 !important;
-//     }
-  
-//     /* Disabled state */
-//     .zoomOut:disabled,
-//     .zoomIn:disabled,
-//     .reset:disabled {
-//       opacity: 0.4 !important;
-//     }
-  
-//     &:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
-//     &:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
-//       opacity: 1;
-//     }
-  
-//     /* Reset button default state */
-//     &:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-//       opacity: 1 !important;
-//     }
-  
-//     &:has(.chevronRight:hover:not(.disabled)) .reset,
-//     &:has(.chevronLeft:hover:not(.disabled)) .reset {
-//       opacity: 0.4;
-//     }
-  
-//     /* If you want to nest again, we can do:
-//      * &.is-dragging .reset {
-//      *   opacity: 0 !important;
-//      * }
-//      */
-  
-//     /* Override the hover state effects completely on mobile */
-//     &:has(.zoomButtons:hover) .reset,
-//     &:has(.chevronLeft:hover) .reset,
-//     &:has(.chevronRight:hover) .reset {
-//       opacity: 0.4;
-//     }
-  
-//     .zoomIn:active,
-//     .zoomOut:active,
-//     .chevronLeft:active,
-//     .chevronRight:active {
-//       opacity: 1 !important;
-//       transform: scale(0.75);
-//     }
-//   }
-
 
 @media screen and (min-width: 300px) and (max-width: 937px) {
   .narrow {
@@ -4374,12 +3246,12 @@ input[matInput]:focus.error-input::placeholder {
     // margin-left: -0.2rem;
   }
 
-  .updatePasswordButtonContainer{
+  .updatePasswordButtonContainer {
     width: 97%;
     max-width: 40rem;
   }
 
-  .savePictureButtonContainer{
+  .savePictureButtonContainer {
     width: 100%;
     max-width: 40rem;
     padding-left: 0;
@@ -4422,16 +3294,15 @@ input[matInput]:focus.error-input::placeholder {
     /* Force hardware acceleration */
     transform: translateZ(0);
     /* Smoother transitions on mobile */
-    transition: background-image 0.1s ease-out, 
-                background-position 0.1s ease-out, 
-                background-size 0.1s ease-out,
-                opacity 0.1s ease-out !important;
+    transition: background-image 0.1s ease-out,
+      background-position 0.1s ease-out, background-size 0.1s ease-out,
+      opacity 0.1s ease-out !important;
     /* Prevent flickering during state changes */
     will-change: background-image, background-position, background-size, opacity;
   }
 
-  .profileNameTier.tierOne, 
-  .profileNameTier.tierTwo, 
+  .profileNameTier.tierOne,
+  .profileNameTier.tierTwo,
   .profileNameTier.tierThree {
     letter-spacing: -3px;
 
@@ -4486,8 +3357,8 @@ input[matInput]:focus.error-input::placeholder {
     padding-right: 0;
   }
 
-  .mobileTierTwo{
-    font-size: 4.2rem; 
+  .mobileTierTwo {
+    font-size: 4.2rem;
   }
 
   .editProfileButtonsContainerIncludingPicture {
@@ -4602,7 +3473,7 @@ input[matInput]:focus.error-input::placeholder {
     text-align: center;
   }
 
-  .uploadInstructionsSuccessAndFailure{
+  .uploadInstructionsSuccessAndFailure {
     // width: 100%;
     max-width: 100%;
     /* max-width: 17.5rem; */
@@ -4612,7 +3483,7 @@ input[matInput]:focus.error-input::placeholder {
     margin-right: auto;
   }
 
-  // .supportedFileTypes, 
+  // .supportedFileTypes,
   // .uploadSuccess {
   //   /* Adjust for mobile screens */
   //   width: 100%;
@@ -4732,7 +3603,7 @@ input[matInput]:focus.error-input::placeholder {
     margin-bottom: 0.5rem;
   }
 
-  input, 
+  input,
   select {
     // width: 97%;
     width: 96%;
@@ -4749,7 +3620,7 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   select.gender,
-  select.goals{
+  select.goals {
     width: 99%;
   }
 
@@ -4839,10 +3710,10 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   h3.profileDetailsInput.DOB,
-   h3.profileDetailsInputGender, 
-   h3.profileDetailsInputWeight, 
-   h3.profileDetailsInputHeight, 
-   h3.profileDetailsInputObjective {
+  h3.profileDetailsInputGender,
+  h3.profileDetailsInputWeight,
+  h3.profileDetailsInputHeight,
+  h3.profileDetailsInputObjective {
     margin-bottom: 0.6rem;
   }
 
@@ -4948,24 +3819,24 @@ input[matInput]:focus.error-input::placeholder {
       }
     }
   }
-    /* Both fade-in and bounce animations combined */
+  /* Both fade-in and bounce animations combined */
 
-    .arrows{
-      animation: bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-    }  
-    
-    @keyframes bounce {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(15%);
-        animation-timing-function: cubic-bezier(0.3, 0.5, 0.45, 0.3);
-      }
-      100% {
-        transform: translateY(0);
-      }
+  .arrows {
+    animation: bounce 1s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
+  }
+
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
     }
+    50% {
+      transform: translateY(15%);
+      animation-timing-function: cubic-bezier(0.3, 0.5, 0.45, 0.3);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 
   .arrow-icon {
     // background-color : black;
@@ -4987,18 +3858,18 @@ input[matInput]:focus.error-input::placeholder {
     height: 60px;
     animation: rotate 2s linear infinite;
   }
-  
+
   .spinner-text {
     color: #000000;
     font-size: 1rem;
     margin-top: 1rem;
   }
 
-  .dragToCenter.wide{
+  .dragToCenter.wide {
     display: none;
   }
 
-  .dragToCenter.narrow{
+  .dragToCenter.narrow {
     padding-bottom: 0;
     // top: 30%;
     z-index: 2;
@@ -5006,7 +3877,7 @@ input[matInput]:focus.error-input::placeholder {
     font-size: clamp(2.5rem, 2.5vw, 3rem);
   }
 
-  .zoomButtons{
+  .zoomButtons {
     // width: 10%;
     // max-width: 7rem;
     width: 90px;
@@ -5016,7 +3887,7 @@ input[matInput]:focus.error-input::placeholder {
     transform: translate(-50%, -50%);
   }
 
-  .reset{
+  .reset {
     // top: 75%;
     top: 76%;
     opacity: 1;
@@ -5028,7 +3899,7 @@ input[matInput]:focus.error-input::placeholder {
     transition: opacity 0.3s ease-out;
   }
 
-  .loading-overlay{
+  .loading-overlay {
     top: 55%;
     transform: translateY(-50%);
   }
@@ -5038,350 +3909,47 @@ input[matInput]:focus.error-input::placeholder {
     border-style: none !important;
   }
 
-  .profile-image-navigation{
+  .profile-image-navigation {
     // top: 55%;
     top: 50%;
     // width: 83%;
     // min-width: 10rem;
-    // max-width: 12rem; 
+    // max-width: 12rem;
     width: 95%;
     min-width: 10rem;
     max-width: 13rem;
   }
 
-  .circular-nav-container{
+  .circular-nav-container {
     opacity: 1;
     visibility: visible;
   }
 
-  .imageInputContainer{
+  .imageInputContainer {
     // gap: 0.1rem;
     display: flex;
 
     .pasteButton {
-    flex: 1;
-    transform: none;
-    top: 0.13rem;
-    margin-left: 0.12rem;
-    // right: 0.15rem;
-    // transform: translate(-131%, -49%);
-    // width: calc(70% - 0.2rem);
-    // margin-right: 0.1rem;
+      flex: 1;
+      transform: none;
+      top: 0.13rem;
+      margin-left: 0.12rem;
+      // right: 0.15rem;
+      // transform: translate(-131%, -49%);
+      // width: calc(70% - 0.2rem);
+      // margin-right: 0.1rem;
 
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: 10%;
-      height: 80%;
-      width: 3px;
-      background: transparent;
-    }
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 10%;
+        height: 80%;
+        width: 3px;
+        background: transparent;
+      }
     }
   }
-
-
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container{
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled{
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging).post-animation {
-  //   .circular-nav-container,
-  //   .dragToCenter,
-  //   .zoomButtons,
-  //   .profile-image-navigation,
-  //   .reset {
-  //     opacity: 1 !important;
-  //     transition: opacity 0.3s ease-in;
-  //   }
-  // }
-
-  // .profilePictureContainerForDragging{
-  //   .reset:not(.disabled){
-  //     opacity: 0.4 !important;
-  //   }
-  // // }
-
-
-
-
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container{
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled{
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging).post-animation {
-  //   .circular-nav-container,
-  //   .dragToCenter,
-  //   .zoomButtons,
-  //   .profile-image-navigation,
-  //   .reset {
-  //     opacity: 1 !important;
-  //     transition: opacity 0.3s ease-in;
-  //   }
-  // }
-
-  // .profilePictureContainerForDragging{
-  //   .reset:not(.disabled){
-  //     opacity: 0.4 !important;
-  //   }
-  // }
-  
-  // /* Add initial animation classes */
-  // .dragToCenter.entering,
-  // .zoomButtons.entering,
-  // .profile-image-navigation.entering,
-  // .reset.entering,
-  // .circular-nav-container.entering {
-  //   animation: fadeInControl 0.3s ease forwards;
-  // }
-  
-  // /* Define the animation */
-  // @keyframes fadeInControl {
-  //   from {
-  //     opacity: 0;
-  //   }
-  //   to {
-  //     opacity: 1;
-  //   }
-  // }
-  
-  // /* Add initial state for elements before animation */
-  // .dragToCenter.pre-animation,
-  // .zoomButtons.pre-animation,
-  // .profile-image-navigation.pre-animation,
-  // .reset.pre-animation,
-  // .circular-nav-container.pre-animation {
-  //   opacity: 0 !important;
-  // }
-
-
-
-
-// Last working
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation,
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container{
-  //   opacity: 1 !important;
-  //   transition: opacity 0.2s ease-out;
-  // }
-
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container,
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container{
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled{
-  //   opacity: 0.4 !important;
-  // }
-
-  // /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 0.4 !important;
-  // }
-  /////////////////
-  
-  
-////// Works with no initial animations
-/// 
-  /* Define the fade-in animation */
-  // @keyframes fadeInControl {
-  //   from {
-  //     opacity: 0;
-  //   }
-  //   to {
-  //     opacity: 1;
-  //   }
-  // }
-
-  // /* Animation classes */
-  // .dragToCenter.entering,
-  // .zoomButtons.entering,
-  // .profile-image-navigation.entering,
-  // .reset.entering,
-  // .circular-nav-container.entering {
-  //   animation: fadeInControl 0.3s ease forwards !important;
-  // }
-
-  // /* Pre-animation state */
-  // .dragToCenter.pre-animation,
-  // .zoomButtons.pre-animation,
-  // .profile-image-navigation.pre-animation,
-  // .reset.pre-animation,
-  // .circular-nav-container.pre-animation {
-  //   opacity: 0 !important;
-  // }
-
-  // /* Default visibility when not animating or dragging */
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering),
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.pre-animation):not(.entering) {
-  //   opacity: 1 !important;
-  //   transition: opacity 0.2s ease-out;
-  // }
-
-  // /* Ensure all controls (including reset) disappear during drag */
-  // .profilePictureContainerForDragging.is-dragging .dragToCenter,
-  // .profilePictureContainerForDragging.is-dragging .zoomButtons,
-  // .profilePictureContainerForDragging.is-dragging .profile-image-navigation,
-  // .profilePictureContainerForDragging.is-dragging .reset,
-  // .profilePictureContainerForDragging.is-dragging .circular-nav-container {
-  //   opacity: 0 !important;
-  //   transition: opacity 0.2s ease-out;
-  //   pointer-events: none !important;
-  // }
-
-  // /* Make sure zoom buttons have proper opacity */
-  // .profilePictureContainerForDragging .zoomIn:not(.disabled),
-  // .profilePictureContainerForDragging .zoomOut:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // /* Chevron visibility */
-  // .profilePictureContainerForDragging:has(.zoomIn:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.zoomOut:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons) .chevronRight {
-  //   opacity: 1 !important;
-  // }
-
-  // /* Disabled state */
-  // .zoomOut:disabled,
-  // .zoomIn:disabled,
-  // .reset:disabled {
-  //   opacity: 0.4 !important;
-  // }
-
-  // /* Reset button default state */
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.pre-animation):not(.entering) {
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.chevronRight:hover:not(.disabled)) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover:not(.disabled)) .reset {
-  //   opacity: 0;
-  // }
-
-  // .profilePictureContainerForDragging{
-  //     .is-dragging .reset {
-  //     opacity: 0 !important;
-  //   }
-  // }
-
-  // /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 0.4;
-  // }
-//////////////////////  
-
-  // @keyframes fadeInControl {
-  //   0% {
-  //     opacity: 0;
-  //     visibility: visible;
-  //   }
-  //   100% {
-  //     opacity: 1;
-  //     visibility: visible;
-  //   }
-  // }
-
-  /* Stronger animation classes with higher specificity */
-  // .profilePictureContainerForDragging .dragToCenter.entering,
-  // .profilePictureContainerForDragging .zoomButtons.entering,
-  // .profilePictureContainerForDragging .profile-image-navigation.entering,
-  // .profilePictureContainerForDragging .reset.entering,
-  // .profilePictureContainerForDragging .circular-nav-container.entering {
-  //   animation: fadeInControl 0.3s ease forwards !important;
-  // }
 
   //////////////////////
   .profilePictureContainerForDragging {
@@ -5389,10 +3957,9 @@ input[matInput]:focus.error-input::placeholder {
     backface-visibility: hidden;
     will-change: transform, background-image;
     /* Ensure single transition property for all related changes */
-    transition: background-image 0.1s ease-out, 
-                background-position 0.1s ease-out, 
-                background-size 0.1s ease-out,
-                opacity 0.1s ease-out !important;
+    transition: background-image 0.1s ease-out,
+      background-position 0.1s ease-out, background-size 0.1s ease-out,
+      opacity 0.1s ease-out !important;
     will-change: transform;
   }
 
@@ -5406,11 +3973,15 @@ input[matInput]:focus.error-input::placeholder {
   }
 
   /* Your existing rules with the same specificity */
-  .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons:not(.pre-animation):not(.entering),
-  .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter:not(.pre-animation):not(.entering),
-  .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation:not(.pre-animation):not(.entering),
-  .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container:not(.pre-animation):not(.entering) {
-    opacity: 1 ;
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .zoomButtons:not(.pre-animation):not(.entering),
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .dragToCenter:not(.pre-animation):not(.entering),
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .profile-image-navigation:not(.pre-animation):not(.entering),
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .circular-nav-container:not(.pre-animation):not(.entering) {
+    opacity: 1;
     transition: opacity 0.2s ease-out;
   }
 
@@ -5447,31 +4018,42 @@ input[matInput]:focus.error-input::placeholder {
     opacity: 0.4 !important;
   }
 
-  .profilePictureContainerForDragging:has(.zoomButtons .zoomIn:hover:not(.disabled)) .dragToCenter,
-  .profilePictureContainerForDragging:has(.zoomButtons .zoomOut:hover:not(.disabled)) .dragToCenter {
+  .profilePictureContainerForDragging:has(
+      .zoomButtons .zoomIn:hover:not(.disabled)
+    )
+    .dragToCenter,
+  .profilePictureContainerForDragging:has(
+      .zoomButtons .zoomOut:hover:not(.disabled)
+    )
+    .dragToCenter {
     opacity: 1;
   }
 
   /* Reset button default state */
-  .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .reset:not(.disabled):not(.pre-animation):not(.entering) {
     opacity: 0.4 !important;
   }
 
-  .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.pre-animation):not(.entering) {
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .reset:not(.pre-animation):not(.entering) {
     opacity: 0.4;
   }
 
-  .profilePictureContainerForDragging:not(.is-dragging) .reset:not(.disabled):not(.pre-animation):not(.entering) {
+  .profilePictureContainerForDragging:not(.is-dragging)
+    .reset:not(.disabled):not(.pre-animation):not(.entering) {
     opacity: 1 !important;
   }
 
-  .profilePictureContainerForDragging:has(.chevronRight:hover:not(.disabled)) .reset,
-  .profilePictureContainerForDragging:has(.chevronLeft:hover:not(.disabled)) .reset {
+  .profilePictureContainerForDragging:has(.chevronRight:hover:not(.disabled))
+    .reset,
+  .profilePictureContainerForDragging:has(.chevronLeft:hover:not(.disabled))
+    .reset {
     opacity: 0.4;
   }
 
-  .profilePictureContainerForDragging{
-      .is-dragging .reset {
+  .profilePictureContainerForDragging {
+    .is-dragging .reset {
       opacity: 0 !important;
     }
   }
@@ -5482,252 +4064,4 @@ input[matInput]:focus.error-input::placeholder {
   .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
     opacity: 0.4;
   }
-
-  // .zoomIn:active,
-  // .zoomOut:active,
-  // .chevronLeft:active,
-  // .chevronRight:active {
-  //   opacity: 1 !important;
-  //   transform: scale(0.75);
-  // }
-
 }
-
-
-
-
-
-  // solution stopped working
-  // .profilePictureContainerForDragging {
-  //   /* Make sure aspect ratio is maintained */
-  //   aspect-ratio: auto;
-    
-  //   /* Default state - always show controls with proper opacity */
-  //   .zoomIn, .zoomOut, .dragToCenter, .chevronLeft, .chevronRight {
-  //     opacity: 1 !important;
-  //     transition: opacity 0.2s ease-out;
-  //   }
-    
-  //   /* Only hide controls during dragging */
-  //   &.is-dragging {
-  //     .zoomButtons, .dragToCenter, .reset, .chevronLeft, .chevronRight, .circular-nav-container {
-  //       opacity: 0 !important;
-  //       pointer-events: none !important;
-  //     }
-  //   }
-    
-  //   /* Override all hover-based behavior */
-  //   .zoomButtons:hover,
-  //   &:has(.zoomButtons .zoomIn:hover),
-  //   &:has(.zoomButtons .zoomOut:hover),
-  //   &:has(.reset:hover),
-  //   &:has(.chevronLeft:hover),
-  //   &:has(.chevronRight:hover) {
-  //     /* Reset any hover effects on child elements */
-  //     .dragToCenter, .zoomButtons, .chevronLeft, .chevronRight {
-  //       opacity: 0.8 !important;
-  //     }
-  //   }
-    
-  //   /* Maintain disabled state appearance */
-  //   .zoomIn.disabled,
-  //   .zoomOut.disabled,
-  //   .reset.disabled,
-  //   .chevronLeft.disabled,
-  //   .chevronRight.disabled {
-  //     opacity: 0.4 !important;
-  //     pointer-events: none;
-  //   }
-    
-  //   /* Enable active state feedback for buttons for better mobile UX */
-  //   .zoomIn:active,
-  //   .zoomOut:active,
-  //   .chevronLeft:active,
-  //   .chevronRight:active {
-  //     opacity: 1 !important;
-  //     transform: scale(0.75);
-  //   }
-
-  //   .dragToCenter:has(.reset:hover){
-  //     opacity: 1 !important;
-  //   }
-  // }
-
-  // .profilePictureContainerForDragging:has(.reset:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .dragToCenter {
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomIn:hover:not(.disabled)) .reset,
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomOut:hover:not(.disabled)) .reset{
-  //   opacity: 1 !important;
-  // }
-
-  // .profilePictureContainerForDragging:has(.chevronRight:hover:not(.disabled)) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover:not(.disabled)) .reset{
-  //   opacity: 0.4 !important;
-  // }
-  /////////////////////////
-
-
-  // .profilePictureContainerForDragging .reset,
-  // .profilePictureContainerForDragging .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .chevronRight,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .chevronLeft,
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomIn:hover:not(.disabled)) .zoomIn,
-  // .profilePictureContainerForDragging:has(.zoomButtons .zoomOut:hover:not(.disabled)) .zoomOut
-  // {
-  //   opacity: 1 !important;
-  // }
-
-
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .profile-image-navigation,
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .circular-nav-container,
-  // .profilePictureContainerForDragging:has(.reset:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.reset:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.reset:hover) .profile-image-navigation,
-  // .profilePictureContainerForDragging:has(.reset:hover) .circular-nav-container,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .circular-nav-container,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .circular-nav-container{
-  //   opacity: 1 !important;
-  // }
-
-  
-
-  /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 0.4 !important;
-  // }
-
-  // .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container,
-  // .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  // .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  // .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation{
-  //   opacity: 1 !important;
-  // }
-
-  // .post-animation:not(.is-dragging) .circular-nav-container,
-  // .post-animation:not(.is-dragging) .dragToCenter,
-  // .post-animation:not(.is-dragging) .zoomButtons,
-  // .post-animation:not(.is-dragging) .profile-image-navigation,
-  // .post-animation:not(.is-dragging) .reset:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  // .post-animation.animations-complete .circular-nav-container,
-  // .post-animation.animations-complete .dragToCenter,
-  // .post-animation.animations-complete .zoomButtons,
-  // .post-animation.animations-complete .profile-image-navigation,
-  // .post-animation.animations-complete .reset:not(.disabled) {
-  //   opacity: 1 !important;
-  // }
-
-  
-
-  // .profilePictureContainerForDragging:not(.is-dragging) {
-  //   .circular-nav-container,
-  //   .dragToCenter,
-  //   .zoomButtons,
-  //   .profile-image-navigation,
-  //   .reset {
-  //     opacity: 0 !important;
-  //     // pointer-events: none; 
-  //     transition: opacity 0.3s ease !important; // This creates the fade effect
-  //   }
-  // }
-  
-  // /* Once we add .post-animation, fade them in */
-  // .profilePictureContainerForDragging:not(.is-dragging).post-animation {
-  //   .circular-nav-container,
-  //   .dragToCenter,
-  //   .zoomButtons,
-  //   .profile-image-navigation,
-  //   .reset {
-  //     opacity: 1 !important;
-  //     transition: opacity 0.3s ease !important; 
-  //     // pointer-events: auto;
-  //   }
-  // }
-
-
-
-  // .post-animation {
-  //   .profilePictureContainerForDragging:not(.is-dragging) .circular-nav-container,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .dragToCenter,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .zoomButtons,
-  //   .profilePictureContainerForDragging:not(.is-dragging) .profile-image-navigation {
-  //     opacity: 1 !important;
-  //   }
-  // }
-
-  // .profilePictureContainerForDragging{
-  //   .reset{
-  //     opacity: 0.4 !important;
-  //   }
-  // }
-
-  // .zoomButtons:has(.zoomIn:hover) .reset,
-  // .zoomButtons:has(.zoomOut:hover) .reset{
-  //   opacity: default !important;
-  // }
-
-
-
-
-
-
-
-
-
-
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .zoomIn,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .zoomOut {
-  //   opacity: 1 !important;
-  // }
-
-  // .reset:active{
-  //   opacity: 1 !important;
-  // }
-
-  // /* Override the hover state effects completely on mobile */
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .reset,
-  // .profilePictureContainerForDragging:has(.zoomButtons:hover) .profile-image-navigation,
-  // .profilePictureContainerForDragging:has(.reset:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.reset:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.reset:hover) .profile-image-navigation,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.chevronLeft:hover) .reset,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .dragToCenter,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .zoomButtons,
-  // .profilePictureContainerForDragging:has(.chevronRight:hover) .reset {
-  //   opacity: 1 !important;
-  // }
-
-  
-  // /* Add active state styles for better mobile feedback */
-  // .zoomIn:active,
-  // .zoomOut:active, 
-  // .chevronLeft:active,
-  // .chevronRight:active
-  // .reset:active {
-  //   // opacity: 1 !important;
-  //   transform: scale(0.75);
-  // }
-
-
-
-  
-
