@@ -36,7 +36,7 @@
       <h6 *ngIf="userIsLoggedIn" class="navBarText" routerLink="/store">Store</h6>
       <h6 *ngIf="userIsLoggedIn && cartQuantity>=1" class="navBarText" routerLink="/cart">Cart <span class="reddot">{{cartQuantity}}</span></h6>
 
-      <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home" >Sign Out</h6>
+      <h6 *ngIf="userIsLoggedIn" class="navBarText" (click)="logOut()" routerLink="/home" >Log Out</h6>
 
 
       <!-- <form class="form" *ngIf="viewSearchBar" #form="ngForm">
